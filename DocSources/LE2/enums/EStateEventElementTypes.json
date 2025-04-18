@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "SEE_Bool": {
+      "value": 0,
+      "documentation": null
+    },
+    "SEE_Consequence": {
+      "value": 1,
+      "documentation": null
+    },
+    "SEE_Float": {
+      "value": 2,
+      "documentation": null
+    },
+    "SEE_Function": {
+      "value": 3,
+      "documentation": null
+    },
+    "SEE_Int": {
+      "value": 4,
+      "documentation": null
+    },
+    "SEE_LocalBool": {
+      "value": 5,
+      "documentation": null
+    },
+    "SEE_LocalFloat": {
+      "value": 6,
+      "documentation": null
+    },
+    "SEE_LocalInt": {
+      "value": 7,
+      "documentation": null
+    },
+    "SEE_Substate": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

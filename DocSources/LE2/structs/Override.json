@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "AnimSet_Override": {
+      "type": "Override_AnimSet",
+      "documentation": null
+    },
+    "Asset_Override": {
+      "type": "Override_Asset",
+      "documentation": null
+    },
+    "iKeyIndex": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

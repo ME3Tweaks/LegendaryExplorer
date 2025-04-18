@@ -1,0 +1,24 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "TransitionParams": {
+      "type": "ViewTargetTransitionParams",
+      "documentation": null
+    },
+    "CameraTarget": {
+      "type": "Actor",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

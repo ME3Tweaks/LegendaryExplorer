@@ -1,19 +1,19 @@
 {
   "Members": {
     "nStrRefID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "fLength": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bShowAtTop": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bUseOnlyAsReplyWheelHint": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "m_Base": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_Current": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_Max": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_Min": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_Dirty": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

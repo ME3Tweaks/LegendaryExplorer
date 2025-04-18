@@ -1,19 +1,19 @@
 {
   "Members": {
     "CategoryName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "CategoryStrength": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "categoryId": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bHasNewItems": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

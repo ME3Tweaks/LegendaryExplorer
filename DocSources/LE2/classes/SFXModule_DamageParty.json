@@ -1,0 +1,71 @@
+{
+  "parent": "SFXModule_Damage",
+  "package": "SFXGame",
+  "variables": {
+    "HealthRegenRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "HealthRegenTimeout": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeLastHurt": {
+      "type": "float",
+      "documentation": null
+    },
+    "bHealthRegenerates": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ApplyDamageToHealth": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "InstigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyDamageToHealth(float Damage, Controller InstigatedBy, Class<SFXDamageType> DamageType, out Vector HitLocation)"
+    },
+    "Regen": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Regen(float DeltaTime)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

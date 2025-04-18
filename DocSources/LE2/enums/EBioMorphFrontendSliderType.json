@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BMFE_SLIDER_MORPH_SINGLE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BMFE_SLIDER_MORPH_DOUBLE": {
+      "value": 1,
+      "documentation": null
+    },
+    "BMFE_SLIDER_MATERIAL": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

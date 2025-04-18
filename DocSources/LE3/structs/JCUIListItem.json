@@ -1,27 +1,27 @@
 {
   "Members": {
     "sName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "nIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bComplete": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bUpdated": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bHasSubItems": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

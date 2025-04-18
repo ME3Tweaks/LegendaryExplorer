@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "sRoleName": {
+      "type": "string",
+      "documentation": null
+    },
+    "aProperties": {
+      "type": "ArtPlaceableProperty",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

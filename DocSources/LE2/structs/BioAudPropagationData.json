@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "aFacingData": {
+      "type": "BioEvtSysTrackSetFacing",
+      "documentation": null
+    },
+    "aGestureData": {
+      "type": "BioEvtSysTrackGesture",
+      "documentation": null
+    },
+    "aPropData": {
+      "type": "BioEvtSysTrackProp",
+      "documentation": null
+    },
+    "aLightingData": {
+      "type": "BioEvtSysTrackLighting",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

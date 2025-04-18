@@ -1,0 +1,68 @@
+{
+  "parent": "Info",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IEditorLinkSelectionInterface": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "RouteType": {
+      "type": "ERouteType",
+      "documentation": null
+    },
+    "RouteList": {
+      "type": "ActorReference",
+      "documentation": null
+    },
+    "FudgeFactor": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "MoveOntoRoutePath": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        },
+        "RouteDirection": {
+          "type": null,
+          "documentation": null
+        },
+        "DistFudgeFactor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int MoveOntoRoutePath(Pawn P, optional ERouteDirection RouteDirection, optional float DistFudgeFactor)"
+    },
+    "ResolveRouteIndex": {
+      "documentation": null,
+      "signature_members": {
+        "Idx": {
+          "type": null,
+          "documentation": null
+        },
+        "RouteDirection": {
+          "type": null,
+          "documentation": null
+        },
+        "out_bComplete": {
+          "type": null,
+          "documentation": null
+        },
+        "out_bReverse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int ResolveRouteIndex(int Idx, ERouteDirection RouteDirection, out byte out_bComplete, out byte out_bReverse)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

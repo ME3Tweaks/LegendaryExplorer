@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "PowerTutorial_Pull": {
+      "value": 0,
+      "documentation": null
+    },
+    "PowerTutorial_Unity": {
+      "value": 1,
+      "documentation": null
+    },
+    "PowerTutorial_Overload": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,91 @@
+{
+  "parent": "BioGUIBox",
+  "package": "SFXGame",
+  "variables": {
+    "m_aMenuEntries": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_colorSelected": {
+      "type": "Color",
+      "documentation": null
+    },
+    "m_nSelectedEntry": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nScrollPosition": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nMaxScrollPosition": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nLineCount": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ScrollUp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ScrollUp()"
+    },
+    "ScrollDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ScrollDown()"
+    },
+    "RenderContent": {
+      "documentation": null,
+      "signature_members": {
+        "oCanvas": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RenderContent(Canvas oCanvas)"
+    },
+    "ComputeDrawParameters": {
+      "documentation": null,
+      "signature_members": {
+        "oCanvas": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ComputeDrawParameters(Canvas oCanvas)"
+    },
+    "ShouldRender": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldRender()"
+    },
+    "Clear": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Clear()"
+    },
+    "AddEntry": {
+      "documentation": null,
+      "signature_members": {
+        "sMenuEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddEntry(string sMenuEntry)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

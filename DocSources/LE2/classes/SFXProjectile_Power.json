@@ -1,0 +1,249 @@
+{
+  "parent": "SFXProjectile_Explosive",
+  "package": "SFXGame",
+  "variables": {
+    "ImpactedActors": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "WorldImpactPoint": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "WorldImpactNormal": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "LastLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "TargetLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "CameraLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "CameraRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "ProjectileVFX": {
+      "type": "BioVisualEffect",
+      "documentation": null
+    },
+    "Power": {
+      "type": "BioPower",
+      "documentation": null
+    },
+    "Caster": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "TargetActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "ReservationID": {
+      "type": "int",
+      "documentation": null
+    },
+    "ImpactedCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "bUsePowerReservation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ShowPowerAiming": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "BioClearCrossLevelReferences": {
+      "documentation": null,
+      "signature_members": {
+        "oLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BioClearCrossLevelReferences(Level oLevel)"
+    },
+    "ShutDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShutDown()"
+    },
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "InitializePowerProjectile": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": null,
+          "documentation": null
+        },
+        "fTravelSpeed": {
+          "type": null,
+          "documentation": null
+        },
+        "fRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "oPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InitializePowerProjectile(Actor oCaster, float fTravelSpeed, float fRadius, BioPower oPower)"
+    },
+    "GenerateOnCastAt": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GenerateOnCastAt(Actor Target)"
+    },
+    "Explode": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Explode(Vector HitLocation, Vector HitNormal)"
+    },
+    "ProjectileHurtRadius": {
+      "documentation": null,
+      "signature_members": {
+        "InDamageAmount": {
+          "type": null,
+          "documentation": null
+        },
+        "InDamageRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "HurtOrigin": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ProjectileHurtRadius(float InDamageAmount, float InDamageRadius, float Momentum, Vector HurtOrigin, Vector HitNormal)"
+    },
+    "DoPowerImpact": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        },
+        "InstigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "nImpactedCount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoPowerImpact(Actor oActor, Controller InstigatedBy, int nImpactedCount)"
+    },
+    "ProcessTouch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessTouch(Actor Other, Vector HitLocation, Vector HitNormal)"
+    },
+    "HitWall": {
+      "documentation": null,
+      "signature_members": {
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "Wall": {
+          "type": null,
+          "documentation": null
+        },
+        "WallComp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HitWall(Vector HitNormal, Actor Wall, PrimitiveComponent WallComp)"
+    },
+    "Timer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Timer()"
+    },
+    "GetDamageRadius": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDamageRadius()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

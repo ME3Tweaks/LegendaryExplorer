@@ -1,0 +1,76 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_oChoiceImage": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "m_nmResource": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_srChoiceName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srChoiceTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srChoiceImageTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srChoiceDescription": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_nOptionalPaneItemValue": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nChoiceColor": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nChoiceID": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_srActionText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "OverrideDefaultResource": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDefaultSelection": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bNested": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eResource": {
+      "type": "EInventoryResourceTypes",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

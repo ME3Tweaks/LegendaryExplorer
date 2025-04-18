@@ -1,35 +1,35 @@
 {
   "Members": {
     "FireCallback": {
-      "type": null,
+      "type": "FireWeaponDelegate",
       "documentation": null
     },
     "MoveCallback": {
-      "type": null,
+      "type": "MoveToDelegate",
       "documentation": null
     },
     "oTargetActor": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "fDistOffset": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "fAttackDuration": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bWalk": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bForceShoot": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "eOrderType": {
-      "type": null,
+      "type": "KismetOrderType",
       "documentation": null
     }
   },

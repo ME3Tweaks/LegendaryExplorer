@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "m_sMessage": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_stParams": {
+      "type": "BioMessageBoxOptionalParams",
+      "documentation": null
+    },
+    "m_nmName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_pCallbackObject": {
+      "type": "Object",
+      "documentation": null
+    },
+    "m_nmCallbackFunction": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nPriority": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nContext": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

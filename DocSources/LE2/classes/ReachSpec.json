@@ -1,0 +1,126 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "PruneSpecList": {
+      "type": "Class",
+      "documentation": null
+    },
+    "NavOctreeObject": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "End": {
+      "type": "ActorReference",
+      "documentation": null
+    },
+    "Direction": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Start": {
+      "type": "NavigationPoint",
+      "documentation": null
+    },
+    "BlockedBy": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "Distance": {
+      "type": "int",
+      "documentation": null
+    },
+    "CollisionRadius": {
+      "type": "int",
+      "documentation": null
+    },
+    "CollisionHeight": {
+      "type": "int",
+      "documentation": null
+    },
+    "reachFlags": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxLandingVelocity": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nBlockedCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "bAddToNavigationOctree": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanCutCorners": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCheckForObstructions": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSkipPrune": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPruned": {
+      "type": "byte",
+      "documentation": null
+    },
+    "PathColorIndex": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "IsBlocked": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsBlocked()"
+    },
+    "IsBlockedFor": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsBlockedFor(Pawn P)"
+    },
+    "GetDirection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetDirection()"
+    },
+    "GetEnd": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "NavigationPoint",
+      "signature": "NavigationPoint GetEnd()"
+    },
+    "CostFor": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int CostFor(Pawn P)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

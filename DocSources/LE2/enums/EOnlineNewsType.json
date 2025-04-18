@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "ONT_Unknown": {
+      "value": 0,
+      "documentation": null
+    },
+    "ONT_GameNews": {
+      "value": 1,
+      "documentation": null
+    },
+    "ONT_ContentAnnouncements": {
+      "value": 2,
+      "documentation": null
+    },
+    "ONT_Misc": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

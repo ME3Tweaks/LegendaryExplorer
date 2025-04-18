@@ -1,0 +1,24 @@
+{
+  "parent": "SequenceCondition",
+  "package": "SFXGame",
+  "variables": {
+    "sEntitlementName": {
+      "type": "string",
+      "documentation": null
+    },
+    "sEntitlementGroup": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

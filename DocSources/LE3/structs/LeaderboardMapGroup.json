@@ -1,11 +1,11 @@
 {
   "Members": {
     "MapName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Entries": {
-      "type": null,
+      "type": "LeaderboardDefinition",
       "documentation": null
     }
   },

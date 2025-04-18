@@ -1,0 +1,17 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Tabs": {
+      "type": "CurveEdTab",
+      "documentation": null
+    },
+    "ActiveTab": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,15 +1,15 @@
 {
   "Members": {
     "PSysComponents": {
-      "type": null,
+      "type": "ParticleSystemComponent",
       "documentation": null
     },
     "Template": {
-      "type": null,
+      "type": "ParticleSystem",
       "documentation": null
     },
     "NextIdx": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

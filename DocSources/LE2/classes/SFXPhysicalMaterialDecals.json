@@ -1,0 +1,121 @@
+{
+  "parent": "SFXPhysicalMaterialBase",
+  "package": "SFXGame",
+  "variables": {
+    "HeavyPistol": {
+      "type": "DecalComponent",
+      "documentation": null
+    },
+    "AutoPistol": {
+      "type": "DecalComponent",
+      "documentation": null
+    },
+    "HandCannon": {
+      "type": "DecalComponent",
+      "documentation": null
+    },
+    "SMG": {
+      "type": "DecalComponent",
+      "documentation": null
+    },
+    "Shotgun": {
+      "type": "DecalComponent",
+      "documentation": null
+    },
+    "HeavyShotgun": {
+      "type": "DecalComponent",
+      "documentation": null
+    },
+    "FlakGun": {
+      "type": "DecalComponent",
+      "documentation": null
+    },
+    "AssaultRifle": {
+      "type": "DecalComponent",
+      "documentation": null
+    },
+    "Needler": {
+      "type": "DecalComponent",
+      "documentation": null
+    },
+    "Machinegun": {
+      "type": "DecalComponent",
+      "documentation": null
+    },
+    "SniperRifle": {
+      "type": "DecalComponent",
+      "documentation": null
+    },
+    "AntiMatRifle": {
+      "type": "DecalComponent",
+      "documentation": null
+    },
+    "MassCannon": {
+      "type": "DecalComponent",
+      "documentation": null
+    },
+    "ParticleBeam": {
+      "type": "DecalComponent",
+      "documentation": null
+    },
+    "HeavyPistolFadeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "AutoPistolFadeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "HandCannonFadeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "SMGFadeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ShotgunFadeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "HeavyShotgunFadeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "FlakGunFadeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "AssaultRifleFadeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "NeedlerFadeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "MachinegunFadeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "SniperRifleFadeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "AntiMatRifleFadeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "MassCannonFadeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ParticleBeamFadeTime": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

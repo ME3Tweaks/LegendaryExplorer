@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "MOD_Ready": {
+      "value": 0,
+      "documentation": null
+    },
+    "MOD_Explore": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

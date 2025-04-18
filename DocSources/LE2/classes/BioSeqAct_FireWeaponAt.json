@@ -1,0 +1,60 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "oPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "oTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "fReqStab": {
+      "type": "float",
+      "documentation": null
+    },
+    "fAbortStab": {
+      "type": "float",
+      "documentation": null
+    },
+    "fReqRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "fTimeOut": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nReason": {
+      "type": "int",
+      "documentation": null
+    },
+    "nCompletionReason": {
+      "type": "int",
+      "documentation": null
+    },
+    "bIgnorePerception": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDone": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eFireMode": {
+      "type": "EBioEpicPawnBehaviorWeaponFireMode",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

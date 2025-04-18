@@ -1,0 +1,37 @@
+{
+  "parent": "Volume",
+  "package": "Engine",
+  "variables": {
+    "Settings": {
+      "type": "PostProcessSettings",
+      "documentation": null
+    },
+    "NextLowerPriorityVolume": {
+      "type": "PostProcessVolume",
+      "documentation": null
+    },
+    "Priority": {
+      "type": "float",
+      "documentation": null
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle Action)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,23 +1,23 @@
 {
   "Members": {
     "location": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "XAxis": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "YAxis": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "ZAxis": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "DistanceFactorSquared": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

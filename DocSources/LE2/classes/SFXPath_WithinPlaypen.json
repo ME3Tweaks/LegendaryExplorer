@@ -1,0 +1,29 @@
+{
+  "parent": "PathConstraint",
+  "package": "SFXGame",
+  "variables": {
+    "m_bOnlyAvoidSubtractive": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "WithinPlaypen": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        },
+        "bAvoidSubtractive": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool WithinPlaypen(BioPawn P, bool bAvoidSubtractive)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

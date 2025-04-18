@@ -1,0 +1,108 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "Triggers": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "CurrentTrigger": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Priority": {
+      "type": "int",
+      "documentation": null
+    },
+    "Enabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "IsFloor": {
+      "type": "bool",
+      "documentation": null
+    },
+    "IsGlobal": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ValidCurrentTrigger": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Retouch": {
+      "documentation": null,
+      "signature_members": {
+        "bForce": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Retouch(bool bForce)"
+    },
+    "FindTriggerForPosition": {
+      "documentation": null,
+      "signature_members": {
+        "pos": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioTriggerStream",
+      "signature": "BioTriggerStream FindTriggerForPosition(Vector pos)"
+    },
+    "GetCurrentTrigger": {
+      "documentation": null,
+      "signature_members": {
+        "OnlyIfValid": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioTriggerStream",
+      "signature": "BioTriggerStream GetCurrentTrigger(optional bool OnlyIfValid)"
+    },
+    "SetCurrentTrigger": {
+      "documentation": null,
+      "signature_members": {
+        "TriggerIn": {
+          "type": null,
+          "documentation": null
+        },
+        "Valid": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCurrentTrigger(BioTriggerStream TriggerIn, optional bool Valid)"
+    },
+    "RemoveTrigger": {
+      "documentation": null,
+      "signature_members": {
+        "TriggerIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveTrigger(BioTriggerStream TriggerIn)"
+    },
+    "AddTrigger": {
+      "documentation": null,
+      "signature_members": {
+        "TriggerIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddTrigger(BioTriggerStream TriggerIn)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

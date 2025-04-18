@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "Career": {
+      "type": "string",
+      "documentation": null
+    },
+    "FirstName": {
+      "type": "string",
+      "documentation": null
+    },
+    "ClassName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "SaveTypes": {
+      "type": "int",
+      "documentation": null
+    },
+    "Origin": {
+      "type": "EOriginType",
+      "documentation": null
+    },
+    "Notoriety": {
+      "type": "ENotorietyType",
+      "documentation": null
+    },
+    "EndGameState": {
+      "type": "EEndGameState",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

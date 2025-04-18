@@ -1,35 +1,35 @@
 {
   "Members": {
     "TracerScale3D": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "StartLocation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "HitLocation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "TracerMesh": {
-      "type": null,
+      "type": "StaticMesh",
       "documentation": null
     },
     "TracerVFX": {
-      "type": null,
+      "type": "ParticleSystem",
       "documentation": null
     },
     "Instigator": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "TracerSpeed": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "TracerSpawnOffset": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

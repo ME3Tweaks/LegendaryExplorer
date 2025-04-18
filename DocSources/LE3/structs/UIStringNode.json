@@ -1,31 +1,31 @@
 {
   "Members": {
     "VfTable": {
-      "type": null,
+      "type": "Pointer",
       "documentation": null
     },
     "SourceText": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "ParentNode": {
-      "type": null,
+      "type": "Pointer",
       "documentation": null
     },
     "NodeDataStore": {
-      "type": null,
+      "type": "UIDataStore",
       "documentation": null
     },
     "Extent": {
-      "type": null,
+      "type": "Vector2D",
       "documentation": null
     },
     "Scaling": {
-      "type": null,
+      "type": "Vector2D",
       "documentation": null
     },
     "bForceWrap": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

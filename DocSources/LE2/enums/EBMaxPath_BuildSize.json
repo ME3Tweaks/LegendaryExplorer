@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "BMP_Common": {
+      "value": 0,
+      "documentation": null
+    },
+    "BMP_Large": {
+      "value": 1,
+      "documentation": null
+    },
+    "BMP_ExtraLarge": {
+      "value": 2,
+      "documentation": null
+    },
+    "BMP_VeryVeryLarge": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

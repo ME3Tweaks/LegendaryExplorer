@@ -1,0 +1,53 @@
+{
+  "EnumValues": {
+    "SFXPersOpt_Type": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXPersOpt_Helmet": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXPersOpt_Torso": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXPersOpt_Shoulder": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXPersOpt_Arm": {
+      "value": 4,
+      "documentation": null
+    },
+    "SFXPersOpt_Leg": {
+      "value": 5,
+      "documentation": null
+    },
+    "SFXPersOpt_Spec": {
+      "value": 6,
+      "documentation": null
+    },
+    "SFXPersOpt_Tint1": {
+      "value": 7,
+      "documentation": null
+    },
+    "SFXPersOpt_Tint2": {
+      "value": 8,
+      "documentation": null
+    },
+    "SFXPersOpt_Pattern": {
+      "value": 9,
+      "documentation": null
+    },
+    "SFXPersOpt_PatternColor": {
+      "value": 10,
+      "documentation": null
+    },
+    "SFXPersOpt_Casual": {
+      "value": 11,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

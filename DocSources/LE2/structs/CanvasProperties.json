@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "m_font": {
+      "type": "Font",
+      "documentation": null
+    },
+    "m_nCurX": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCurY": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nOrgX": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nOrgY": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nClipX": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nClipY": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_color": {
+      "type": "Color",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

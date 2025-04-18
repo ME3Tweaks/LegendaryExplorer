@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "StringContent": {
+      "type": "string",
+      "documentation": null
+    },
+    "StringData": {
+      "type": "stringref",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

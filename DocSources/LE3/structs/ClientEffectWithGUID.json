@@ -1,11 +1,11 @@
 {
   "Members": {
     "EffectGUID": {
-      "type": null,
+      "type": "Guid",
       "documentation": null
     },
     "EffectInterface": {
-      "type": null,
+      "type": "RvrClientEffectInterface",
       "documentation": null
     }
   },

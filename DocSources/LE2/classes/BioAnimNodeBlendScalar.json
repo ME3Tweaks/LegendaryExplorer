@@ -1,0 +1,61 @@
+{
+  "parent": "BioAnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_aChildBlendParams": {
+      "type": "BioScalarBlendParams",
+      "documentation": null
+    },
+    "m_sDescription": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_aChildPrecomputes": {
+      "type": "BioScalarPrecomputedValues",
+      "documentation": null
+    },
+    "m_oBehavior": {
+      "type": "BioAnimNodeBlendScalarBehavior",
+      "documentation": null
+    },
+    "m_fBlendPctPerSecond": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fBlendSpanTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fRangeMin": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fRangeMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fUnitsPerSecond": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCurrentScalar": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fTargetScalar": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bBlendInstant": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUseBlendSpanTime": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

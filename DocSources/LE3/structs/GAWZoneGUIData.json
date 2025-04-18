@@ -1,23 +1,23 @@
 {
   "Members": {
     "ZoneName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "ZoneDescription": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "CurrentRating": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "ZoneDisplayNumber": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "ZoneID": {
-      "type": null,
+      "type": "EGAWZone",
       "documentation": null
     }
   },

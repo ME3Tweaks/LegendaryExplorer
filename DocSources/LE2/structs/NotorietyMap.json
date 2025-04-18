@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Ref": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "Type": {
+      "type": "ENotorietyType",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

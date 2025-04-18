@@ -1,0 +1,93 @@
+{
+  "EnumValues": {
+    "MATUSAGE_SkeletalMesh": {
+      "value": 0,
+      "documentation": null
+    },
+    "MATUSAGE_FracturedMeshes": {
+      "value": 1,
+      "documentation": null
+    },
+    "MATUSAGE_ParticleSprites": {
+      "value": 2,
+      "documentation": null
+    },
+    "MATUSAGE_BeamTrails": {
+      "value": 3,
+      "documentation": null
+    },
+    "MATUSAGE_ParticleSubUV": {
+      "value": 4,
+      "documentation": null
+    },
+    "MATUSAGE_Foliage": {
+      "value": 5,
+      "documentation": null
+    },
+    "MATUSAGE_SpeedTree": {
+      "value": 6,
+      "documentation": null
+    },
+    "MATUSAGE_StaticLighting": {
+      "value": 7,
+      "documentation": null
+    },
+    "MATUSAGE_GammaCorrection": {
+      "value": 8,
+      "documentation": null
+    },
+    "MATUSAGE_LensFlare": {
+      "value": 9,
+      "documentation": null
+    },
+    "MATUSAGE_InstancedMeshParticles": {
+      "value": 10,
+      "documentation": null
+    },
+    "MATUSAGE_FluidSurface": {
+      "value": 11,
+      "documentation": null
+    },
+    "MATUSAGE_Decals": {
+      "value": 12,
+      "documentation": null
+    },
+    "MATUSAGE_MaterialEffect": {
+      "value": 13,
+      "documentation": null
+    },
+    "MATUSAGE_MorphTargets": {
+      "value": 14,
+      "documentation": null
+    },
+    "MATUSAGE_FogVolumes": {
+      "value": 15,
+      "documentation": null
+    },
+    "MATUSAGE_RadialBlur": {
+      "value": 16,
+      "documentation": null
+    },
+    "MATUSAGE_InstancedMeshes": {
+      "value": 17,
+      "documentation": null
+    },
+    "MATUSAGE_SplineMesh": {
+      "value": 18,
+      "documentation": null
+    },
+    "MATUSAGE_ScreenDoorFade": {
+      "value": 19,
+      "documentation": null
+    },
+    "MATUSAGE_APEXMesh": {
+      "value": 20,
+      "documentation": null
+    },
+    "MATUSAGE_LightEnvironments": {
+      "value": 21,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

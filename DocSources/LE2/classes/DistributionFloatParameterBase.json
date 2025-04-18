@@ -1,0 +1,33 @@
+{
+  "parent": "DistributionFloatConstant",
+  "package": "Engine",
+  "variables": {
+    "ParameterName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "MinInput": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxInput": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinOutput": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxOutput": {
+      "type": "float",
+      "documentation": null
+    },
+    "ParamMode": {
+      "type": "DistributionParamMode",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

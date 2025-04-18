@@ -1,0 +1,50 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGameContent",
+  "variables": {
+    "AnimatedReactions": {
+      "type": "EAICustomAction",
+      "documentation": null
+    },
+    "Player": {
+      "type": "Object",
+      "documentation": null
+    },
+    "Instigator": {
+      "type": "Object",
+      "documentation": null
+    },
+    "Radius": {
+      "type": "float",
+      "documentation": null
+    },
+    "Damage": {
+      "type": "float",
+      "documentation": null
+    },
+    "Momentum": {
+      "type": "float",
+      "documentation": null
+    },
+    "VerticalOffset": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

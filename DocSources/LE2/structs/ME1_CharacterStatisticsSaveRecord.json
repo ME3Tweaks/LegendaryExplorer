@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Stamina": {
+      "type": "int",
+      "documentation": null
+    },
+    "Focus": {
+      "type": "int",
+      "documentation": null
+    },
+    "Precision": {
+      "type": "int",
+      "documentation": null
+    },
+    "Coordination": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "EShieldType_All": {
+      "value": 0,
+      "documentation": null
+    },
+    "EShieldType_Energy": {
+      "value": 1,
+      "documentation": null
+    },
+    "EShieldType_Barrier": {
+      "value": 2,
+      "documentation": null
+    },
+    "EShieldType_Armour": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

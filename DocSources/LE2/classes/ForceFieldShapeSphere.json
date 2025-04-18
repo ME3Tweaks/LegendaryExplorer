@@ -1,0 +1,86 @@
+{
+  "parent": "ForceFieldShape",
+  "package": "Engine",
+  "variables": {
+    "Shape": {
+      "type": "DrawSphereComponent",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetDrawComponent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "PrimitiveComponent",
+      "signature": "PrimitiveComponent GetDrawComponent()"
+    },
+    "FillByCylinder": {
+      "documentation": null,
+      "signature_members": {
+        "BottomRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "TopRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "Height": {
+          "type": null,
+          "documentation": null
+        },
+        "HeightOffset": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FillByCylinder(float BottomRadius, float TopRadius, float Height, float HeightOffset)"
+    },
+    "FillByCapsule": {
+      "documentation": null,
+      "signature_members": {
+        "Height": {
+          "type": null,
+          "documentation": null
+        },
+        "Radius": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FillByCapsule(float Height, float Radius)"
+    },
+    "FillByBox": {
+      "documentation": null,
+      "signature_members": {
+        "Extent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FillByBox(Vector Extent)"
+    },
+    "FillBySphere": {
+      "documentation": null,
+      "signature_members": {
+        "Radius": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FillBySphere(float Radius)"
+    },
+    "GetRadius": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetRadius()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,35 +1,35 @@
 {
   "Members": {
     "BoolVariables": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "IntVariables": {
-      "type": null,
+      "type": "IntVariablePair",
       "documentation": null
     },
     "FloatVariables": {
-      "type": null,
+      "type": "FloatVariablePair",
       "documentation": null
     },
     "QuestProgress": {
-      "type": null,
+      "type": "PlotQuest",
       "documentation": null
     },
     "QuestIDs": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "CodexEntries": {
-      "type": null,
+      "type": "PlotCodex",
       "documentation": null
     },
     "CodexIDs": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "QuestProgressCounter": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

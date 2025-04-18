@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "srParseString": {
+      "type": "string",
+      "documentation": null
+    },
+    "Action": {
+      "type": "string",
+      "documentation": null
+    },
+    "Mode": {
+      "type": "EGameModes",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

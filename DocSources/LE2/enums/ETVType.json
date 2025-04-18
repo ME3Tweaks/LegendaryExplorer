@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "TVT_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "TVT_Soft": {
+      "value": 1,
+      "documentation": null
+    },
+    "TVT_Lucent": {
+      "value": 2,
+      "documentation": null
+    },
+    "TVT_Vibrant": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

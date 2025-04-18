@@ -1,0 +1,52 @@
+{
+  "parent": "AnimNodeBlend",
+  "package": "SFXGame",
+  "variables": {
+    "aTransition": {
+      "type": "AnimNodeSequence",
+      "documentation": null
+    },
+    "aState": {
+      "type": "AnimNodeSequence",
+      "documentation": null
+    },
+    "bTransitioning": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTransitionAllowed": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GotoToState": {
+      "documentation": null,
+      "signature_members": {
+        "LoopAnim": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GotoToState(Name LoopAnim)"
+    },
+    "TransitionToState": {
+      "documentation": null,
+      "signature_members": {
+        "TransAnim": {
+          "type": null,
+          "documentation": null
+        },
+        "LoopAnim": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TransitionToState(Name TransAnim, Name LoopAnim)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

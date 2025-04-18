@@ -1,0 +1,8 @@
+{
+  "parent": "SFXGameEffect_PassiveWeaponDamageBonus",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

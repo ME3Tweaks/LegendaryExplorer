@@ -1,0 +1,122 @@
+{
+  "parent": "BioInterface_Appearance",
+  "package": "SFXGame",
+  "variables": {
+    "m_headGearVisibilityOverride": {
+      "type": "BioPawnHeadGearVisibility",
+      "documentation": null
+    },
+    "m_headGearVisibilityRunTimeOverride": {
+      "type": "BioPawnHeadGearVisibility",
+      "documentation": null
+    },
+    "m_cachedHeadGearVisibility": {
+      "type": "BioPawnHeadGearVisibility",
+      "documentation": null
+    },
+    "m_oSettings": {
+      "type": "Bio_Appr_Character_Settings",
+      "documentation": null
+    },
+    "CreatureSpeedOverride": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmCreatureSpeed": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmBloodColor": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_oCreatureSpeedsTable": {
+      "type": "Bio2DA",
+      "documentation": null
+    },
+    "m_pMaterialParameters": {
+      "type": "BioMaterialOverride",
+      "documentation": null
+    },
+    "m_bHeadGearVisiblePreference": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetDefaultCollisionReadyHeight": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDefaultCollisionReadyHeight()"
+    },
+    "GetDefaultCollisionCrouchHeight": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDefaultCollisionCrouchHeight()"
+    },
+    "GetDefaultCollisionRadius": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDefaultCollisionRadius()"
+    },
+    "GetDefaultCollisionHeight": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDefaultCollisionHeight()"
+    },
+    "GetCreatureSpeeds": {
+      "documentation": null,
+      "signature_members": {
+        "SpeedsRecord": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetCreatureSpeeds(out CreatureSpeeds SpeedsRecord)"
+    },
+    "UpdateAppearance": {
+      "documentation": null,
+      "signature_members": {
+        "bForceUpdate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateAppearance(optional bool bForceUpdate)"
+    },
+    "ExtractResources": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        },
+        "Appearance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExtractResources(BioPawn Pawn, Bio_Appr_Character Appearance)"
+    },
+    "SetHeadGearVisiblePreference": {
+      "documentation": null,
+      "signature_members": {
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHeadGearVisiblePreference(bool B)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

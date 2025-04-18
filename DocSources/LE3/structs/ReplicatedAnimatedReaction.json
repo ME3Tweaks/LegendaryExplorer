@@ -1,31 +1,31 @@
 {
   "Members": {
     "DamageType": {
-      "type": null,
+      "type": "Class",
       "documentation": null
     },
     "HitLocation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "HitNormal": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "CustomActionType": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "BoneIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "TriggerCounter": {
-      "type": null,
+      "type": "byte",
       "documentation": null
     },
     "RandomRoll": {
-      "type": null,
+      "type": "byte",
       "documentation": null
     }
   },

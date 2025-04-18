@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "PawnName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "PowerID": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

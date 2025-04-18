@@ -1,0 +1,56 @@
+{
+  "parent": "SplineActor",
+  "package": "Engine",
+  "variables": {
+    "SplineMeshComps": {
+      "type": "SplineMeshComponent",
+      "documentation": null
+    },
+    "DeformMeshMaterials": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "WorldXDir": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "DeformMesh": {
+      "type": "StaticMesh",
+      "documentation": null
+    },
+    "Offset": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "ScaleX": {
+      "type": "float",
+      "documentation": null
+    },
+    "ScaleY": {
+      "type": "float",
+      "documentation": null
+    },
+    "Roll": {
+      "type": "float",
+      "documentation": null
+    },
+    "bSmoothInterpRollAndScale": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAcceptsLights": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ClearLoftMesh": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearLoftMesh()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

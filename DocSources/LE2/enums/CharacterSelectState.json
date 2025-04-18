@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "CharSel_Unknown": {
+      "value": 0,
+      "documentation": null
+    },
+    "CharSel_Discovered": {
+      "value": 1,
+      "documentation": null
+    },
+    "CharSel_Available": {
+      "value": 2,
+      "documentation": null
+    },
+    "CharSel_InParty": {
+      "value": 3,
+      "documentation": null
+    },
+    "CharSel_Forced": {
+      "value": 4,
+      "documentation": null
+    },
+    "CharSel_Dead": {
+      "value": 5,
+      "documentation": null
+    },
+    "CharSel_FireTeam": {
+      "value": 6,
+      "documentation": null
+    },
+    "CharSel_Specialist": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

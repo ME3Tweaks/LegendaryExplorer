@@ -1,51 +1,51 @@
 {
   "Members": {
     "Anim": {
-      "type": null,
+      "type": "CameraAnim",
       "documentation": null
     },
     "Anim_Left": {
-      "type": null,
+      "type": "CameraAnim",
       "documentation": null
     },
     "Anim_Right": {
-      "type": null,
+      "type": "CameraAnim",
       "documentation": null
     },
     "Anim_Rear": {
-      "type": null,
+      "type": "CameraAnim",
       "documentation": null
     },
     "AnimPlayRate": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "AnimScale": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "AnimBlendInTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "AnimBlendOutTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "RandomSegmentDuration": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bUseDirectionalAnimVariants": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bRandomSegment": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bSingleInstance": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "SOUNDDISTANCE_Normal": {
+      "value": 0,
+      "documentation": null
+    },
+    "SOUNDDISTANCE_InfiniteXYPlane": {
+      "value": 1,
+      "documentation": null
+    },
+    "SOUNDDISTANCE_InfiniteXZPlane": {
+      "value": 2,
+      "documentation": null
+    },
+    "SOUNDDISTANCE_InfiniteYZPlane": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

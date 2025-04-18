@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "SFXONLINE_EVENT_STATUS_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXONLINE_EVENT_STATUS_PENDING": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXONLINE_EVENT_STATUS_COMPLETE": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

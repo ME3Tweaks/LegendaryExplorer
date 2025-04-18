@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "m_nmLabel": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_oVFXTemplate": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "m_nmTagOfActorAtVFXLocation": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

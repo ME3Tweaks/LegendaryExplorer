@@ -1,75 +1,75 @@
 {
   "Members": {
     "CookData": {
-      "type": null,
+      "type": "SFXWeaponUICookData",
       "documentation": null
     },
     "ClassPath": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "WeaponModGripColors": {
-      "type": null,
+      "type": "LinearColor",
       "documentation": null
     },
     "WeaponModBodyColors": {
-      "type": null,
+      "type": "LinearColor",
       "documentation": null
     },
     "WeaponModEmissiveValues": {
-      "type": null,
+      "type": "LinearColor",
       "documentation": null
     },
     "LoadoutInfo": {
-      "type": null,
+      "type": "LoadoutWeaponInfo",
       "documentation": null
     },
     "Stats": {
-      "type": null,
+      "type": "SFXWeaponUIStats",
       "documentation": null
     },
     "className": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "Image": {
-      "type": null,
+      "type": "Texture2D",
       "documentation": null
     },
     "IconResource": {
-      "type": null,
+      "type": "GFxMovieInfo",
       "documentation": null
     },
     "Name": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Description": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "ShortDescription": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "IconIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "EncumbranceWeight": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Level": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Unlocked": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "Type": {
-      "type": null,
+      "type": "ELoadoutWeapons",
       "documentation": null
     }
   },

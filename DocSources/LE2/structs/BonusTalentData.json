@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "PowerClassName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "oChoiceImage": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "srChoiceName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srChoiceTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srChoiceDescription": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "bMorinthSpecialCase": {
+      "type": "bool",
+      "documentation": null
+    },
+    "AchievementId": {
+      "type": "EAchievementID",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

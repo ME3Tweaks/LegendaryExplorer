@@ -1,0 +1,45 @@
+{
+  "parent": "AnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "LimitsDefault": {
+      "type": "BioAnimNodeBlendByAimLimits",
+      "documentation": null
+    },
+    "LimitsMirrored": {
+      "type": "BioAnimNodeBlendByAimLimits",
+      "documentation": null
+    },
+    "BlendOut": {
+      "type": "BioAnimCheckBlendOut",
+      "documentation": null
+    },
+    "AimBlendOutDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "YawRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "Yaw": {
+      "type": "float",
+      "documentation": null
+    },
+    "Pitch": {
+      "type": "float",
+      "documentation": null
+    },
+    "RemainingBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "bUseMirrored": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

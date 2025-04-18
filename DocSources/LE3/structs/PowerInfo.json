@@ -1,19 +1,19 @@
 {
   "Members": {
     "PowerName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "PowerInfoID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "DisplayName": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Description": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

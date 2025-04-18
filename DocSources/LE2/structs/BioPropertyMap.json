@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "sDisplayName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "sFuncPropName": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,49 @@
+{
+  "Members": {
+    "Mesh": {
+      "type": "PlayerMeshInfo",
+      "documentation": null
+    },
+    "GameEffects": {
+      "type": "string",
+      "documentation": null
+    },
+    "Pattern": {
+      "type": "PlayerPatternInfo",
+      "documentation": null
+    },
+    "Tint": {
+      "type": "PlayerTintInfo",
+      "documentation": null
+    },
+    "Spec": {
+      "type": "PlayerSpecInfo",
+      "documentation": null
+    },
+    "Id": {
+      "type": "int",
+      "documentation": null
+    },
+    "Name": {
+      "type": "int",
+      "documentation": null
+    },
+    "Description": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlotFlag": {
+      "type": "int",
+      "documentation": null
+    },
+    "bCustomizable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Type": {
+      "type": "ECustomizableElementType",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

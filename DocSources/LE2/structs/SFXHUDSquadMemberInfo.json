@@ -1,0 +1,121 @@
+{
+  "Members": {
+    "sPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "sIconImagePath": {
+      "type": "string",
+      "documentation": null
+    },
+    "sShieldPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "sBioticPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "sArmourPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "sHealthPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "sPowerPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "Resistances": {
+      "type": "SFXHUDResistances",
+      "documentation": null
+    },
+    "DisplayedResistances": {
+      "type": "SFXHUDResistances",
+      "documentation": null
+    },
+    "pPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "pIcon": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "fCooldown": {
+      "type": "float",
+      "documentation": null
+    },
+    "fElapsedFullResistTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bCooldownVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShieldVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBioticVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bArmourVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHealthVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShieldDamage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBioticDamage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bArmourDamage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHealthDamage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInvalidated": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUpdateResistance": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUpdateHealth": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUpdatePower": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUpdateIcon": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisplayVisible": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

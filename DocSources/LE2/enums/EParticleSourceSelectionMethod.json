@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "EPSSM_Random": {
+      "value": 0,
+      "documentation": null
+    },
+    "EPSSM_Sequential": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,169 @@
+{
+  "parent": "SFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "VfTable_IISFXOnlineComponentTelemetry": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "bForceAnonymousChannel": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableSpam": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInitWithEngineConfig": {
+      "type": "bool",
+      "documentation": null
+    },
+    "InitTestServerAddressOverride": {
+      "type": "string",
+      "documentation": null
+    },
+    "InitProdServerAddressOverride": {
+      "type": "string",
+      "documentation": null
+    },
+    "InitServerPortOverride": {
+      "type": "int",
+      "documentation": null
+    },
+    "InitDomain": {
+      "type": "string",
+      "documentation": null
+    },
+    "InitTitleProjectId": {
+      "type": "int",
+      "documentation": null
+    },
+    "InitTitleMode": {
+      "type": "string",
+      "documentation": null
+    },
+    "InitDisabledCountryList": {
+      "type": "string",
+      "documentation": null
+    },
+    "InitSendPercent": {
+      "type": "int",
+      "documentation": null
+    },
+    "InitSendTimeout": {
+      "type": "int",
+      "documentation": null
+    },
+    "bConnectedToChannel": {
+      "type": "int",
+      "documentation": null
+    },
+    "__CanCollect__Delegate": {
+      "type": "CanCollect",
+      "documentation": null
+    },
+    "__OnAuthenticate__Delegate": {
+      "type": "OnAuthenticate",
+      "documentation": null
+    },
+    "__OnDisconnect__Delegate": {
+      "type": "OnDisconnect",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnTick": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTick(SFXOnlineEvent oEvent)"
+    },
+    "Flush": {
+      "documentation": null,
+      "signature_members": {
+        "Channel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Flush(ETelemetryChannel Channel)"
+    },
+    "GetAPIName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetAPIName()"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "OnInitialize": {
+      "documentation": null,
+      "signature_members": {
+        "oOnlineSubsystem": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnInitialize(SFXOnlineSubsystem oOnlineSubsystem)"
+    },
+    "RegisterConnectionDelegates": {
+      "documentation": null,
+      "signature_members": {
+        "CollectDelegate": {
+          "type": null,
+          "documentation": null
+        },
+        "AuthenticateDelegate": {
+          "type": null,
+          "documentation": null
+        },
+        "DisconnectDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RegisterConnectionDelegates(delegate<CanCollect> CollectDelegate, delegate<OnAuthenticate> AuthenticateDelegate, delegate<OnDisconnect> DisconnectDelegate)"
+    },
+    "OnDisconnect": {
+      "documentation": null,
+      "signature_members": {
+        "Error": {
+          "type": null,
+          "documentation": null
+        },
+        "SessionId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDisconnect(int Error, const string SessionId)"
+    },
+    "OnAuthenticate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnAuthenticate()"
+    },
+    "CanCollect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanCollect()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "ACM_Cancelled": {
+      "value": 0,
+      "documentation": null
+    },
+    "ACM_Success": {
+      "value": 1,
+      "documentation": null
+    },
+    "ACM_Failed": {
+      "value": 2,
+      "documentation": null
+    },
+    "ACM_Dead": {
+      "value": 3,
+      "documentation": null
+    },
+    "ACM_LostCover": {
+      "value": 4,
+      "documentation": null
+    },
+    "ACM_Disabled": {
+      "value": 5,
+      "documentation": null
+    },
+    "ACM_CantSeeTarget": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,35 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Owner": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "bTickWhilePaused": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

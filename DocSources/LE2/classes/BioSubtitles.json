@@ -1,0 +1,222 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_sSubtitle": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_FontColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "m_fTimeRemaining": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_FontSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bAlert": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSubtitleVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bNewSubtitle": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_DefaultRenderMode": {
+      "type": "ESubtitlesRenderMode",
+      "documentation": null
+    },
+    "m_CurrentRenderMode": {
+      "type": "ESubtitlesRenderMode",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "MoveTopBottomElements": {
+      "documentation": null,
+      "signature_members": {
+        "fPixelOffset": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MoveTopBottomElements(float fPixelOffset)"
+    },
+    "Enforce16x9": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Enforce16x9()"
+    },
+    "HideSubtitle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideSubtitle()"
+    },
+    "ShowSubtitle": {
+      "documentation": null,
+      "signature_members": {
+        "strSubtitle": {
+          "type": null,
+          "documentation": null
+        },
+        "nRenderMode": {
+          "type": null,
+          "documentation": null
+        },
+        "nColor": {
+          "type": null,
+          "documentation": null
+        },
+        "nAlpha": {
+          "type": null,
+          "documentation": null
+        },
+        "bAlert": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowSubtitle(string strSubtitle, int nRenderMode, int nColor, int nAlpha, bool bAlert)"
+    },
+    "UpdateSubtitles": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        },
+        "bAllowSubtitle": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsConversationActive": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateSubtitles(float fDeltaT, bool bAllowSubtitle, bool bIsConversationActive)"
+    },
+    "GetAlert": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetAlert()"
+    },
+    "SetAlert": {
+      "documentation": null,
+      "signature_members": {
+        "bAlert": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAlert(bool bAlert)"
+    },
+    "GetFontColor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Color",
+      "signature": "Color GetFontColor()"
+    },
+    "SetFontColor": {
+      "documentation": null,
+      "signature_members": {
+        "oColor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFontColor(Color oColor)"
+    },
+    "GetSubtitle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetSubtitle()"
+    },
+    "SetSubtitle": {
+      "documentation": null,
+      "signature_members": {
+        "strSubtitle": {
+          "type": null,
+          "documentation": null
+        },
+        "nSize": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSubtitle(string strSubtitle, optional int nSize)"
+    },
+    "ClearHistory": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearHistory()"
+    },
+    "SetRenderMode": {
+      "documentation": null,
+      "signature_members": {
+        "RenderMode": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceDisplay": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ESubtitlesRenderMode",
+      "signature": "ESubtitlesRenderMode SetRenderMode(ESubtitlesRenderMode RenderMode, optional bool bForceDisplay)"
+    },
+    "GetRenderMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ESubtitlesRenderMode",
+      "signature": "ESubtitlesRenderMode GetRenderMode()"
+    },
+    "HasSubtitle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasSubtitle()"
+    },
+    "DisplaySubtitle": {
+      "documentation": null,
+      "signature_members": {
+        "sSubtitle": {
+          "type": null,
+          "documentation": null
+        },
+        "fDuration": {
+          "type": null,
+          "documentation": null
+        },
+        "nSize": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplaySubtitle(string sSubtitle, float fDuration, optional int nSize)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "PlaythroughID": {
+      "type": "int",
+      "documentation": null
+    },
+    "DifficultySetting": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

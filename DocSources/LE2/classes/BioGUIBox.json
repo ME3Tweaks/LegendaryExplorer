@@ -1,0 +1,126 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_canvasProperties": {
+      "type": "CanvasProperties",
+      "documentation": null
+    },
+    "m_font": {
+      "type": "Font",
+      "documentation": null
+    },
+    "m_colorBackground": {
+      "type": "Color",
+      "documentation": null
+    },
+    "m_colorForeground": {
+      "type": "Color",
+      "documentation": null
+    },
+    "m_nCanvasWidth": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCanvasHeight": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fX": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fY": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fWidth": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bComputeDrawParameters": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Draw": {
+      "documentation": null,
+      "signature_members": {
+        "oCanvas": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Draw(Canvas oCanvas)"
+    },
+    "SetFont": {
+      "documentation": null,
+      "signature_members": {
+        "Font": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFont(Font Font)"
+    },
+    "PopCanvasProperties": {
+      "documentation": null,
+      "signature_members": {
+        "oCanvas": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PopCanvasProperties(Canvas oCanvas)"
+    },
+    "PushCanvasProperties": {
+      "documentation": null,
+      "signature_members": {
+        "oCanvas": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PushCanvasProperties(Canvas oCanvas)"
+    },
+    "RenderContent": {
+      "documentation": null,
+      "signature_members": {
+        "oCanvas": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RenderContent(Canvas oCanvas)"
+    },
+    "ComputeDrawParameters": {
+      "documentation": null,
+      "signature_members": {
+        "oCanvas": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ComputeDrawParameters(Canvas oCanvas)"
+    },
+    "ShouldRender": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldRender()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

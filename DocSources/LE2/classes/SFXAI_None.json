@@ -1,0 +1,97 @@
+{
+  "parent": "SFXAI_Core",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "SwitchWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "oWpn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SwitchWeapon(SFXWeapon oWpn)"
+    },
+    "MoveToGoalExternal": {
+      "documentation": null,
+      "signature_members": {
+        "NewMoveGoal": {
+          "type": null,
+          "documentation": null
+        },
+        "NewMoveOffset": {
+          "type": null,
+          "documentation": null
+        },
+        "MoveDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MoveToGoalExternal(Actor NewMoveGoal, optional float NewMoveOffset, optional delegate<MoveToDelegate> MoveDelegate)"
+    },
+    "FireWeaponAtTarget": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "bCheckLOS": {
+          "type": null,
+          "documentation": null
+        },
+        "FireDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FireWeaponAtTarget(Actor oTarget, bool bCheckLOS, optional delegate<FireWeaponDelegate> FireDelegate)"
+    },
+    "UsePowerOnTarget": {
+      "documentation": null,
+      "signature_members": {
+        "nmPowerToUse": {
+          "type": null,
+          "documentation": null
+        },
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "PowerDelegate": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnoreSuppression": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UsePowerOnTarget(Name nmPowerToUse, Actor oTarget, optional delegate<UsePowerDelegate> PowerDelegate, optional bool bIgnoreSuppression)"
+    },
+    "SetTarget": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTarget(Actor oTarget)"
+    }
+  },
+  "states": {
+    "AI_None": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,20 @@
+{
+  "parent": "NxCylindricalForceField",
+  "package": "Engine",
+  "variables": {
+    "RenderComponent": {
+      "type": "DrawCapsuleComponent",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DoInitRBPhys": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoInitRBPhys()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

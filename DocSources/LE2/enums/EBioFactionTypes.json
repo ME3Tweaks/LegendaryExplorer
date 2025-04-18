@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "BIO_Faction_Player": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_Faction_Commoner": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_Faction_Ambient": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_Faction_Defender1": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_Faction_Defender2": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_Faction_Hostile1": {
+      "value": 5,
+      "documentation": null
+    },
+    "BIO_Faction_Hostile2": {
+      "value": 6,
+      "documentation": null
+    },
+    "BIO_Faction_Hacked": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,131 @@
+{
+  "parent": "UIDataStore",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementProvider": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ElementProviderTypes": {
+      "type": "GameResourceDataProvider",
+      "documentation": null
+    },
+    "ListElementProviders": {
+      "type": "MultiMap_Mirror",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "FindProviderIndexByFieldValue": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": null,
+          "documentation": null
+        },
+        "SearchField": {
+          "type": null,
+          "documentation": null
+        },
+        "ValueToSearchFor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindProviderIndexByFieldValue(Name ProviderTag, Name SearchField, const out UIProviderScriptFieldValue ValueToSearchFor)"
+    },
+    "GetProviderFieldValue": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": null,
+          "documentation": null
+        },
+        "SearchField": {
+          "type": null,
+          "documentation": null
+        },
+        "ProviderIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "out_FieldValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProviderFieldValue(Name ProviderTag, Name SearchField, int ProviderIndex, out UIProviderScriptFieldValue out_FieldValue)"
+    },
+    "GetResourceProviderFields": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": null,
+          "documentation": null
+        },
+        "ProviderFieldTags": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetResourceProviderFields(Name ProviderTag, out array<Name> ProviderFieldTags)"
+    },
+    "GetResourceProviders": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": null,
+          "documentation": null
+        },
+        "out_Providers": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetResourceProviders(Name ProviderTag, out array<UIResourceDataProvider> out_Providers)"
+    },
+    "GetProviderCount": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetProviderCount(Name ProviderTag)"
+    },
+    "GenerateProviderAccessTag": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "InstanceIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GenerateProviderAccessTag(int ProviderIndex, int InstanceIndex)"
+    },
+    "FindProviderTypeIndex": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindProviderTypeIndex(Name ProviderTag)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

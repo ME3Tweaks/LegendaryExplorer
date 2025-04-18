@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "sFeatureName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "MinModel": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "MaxModel": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

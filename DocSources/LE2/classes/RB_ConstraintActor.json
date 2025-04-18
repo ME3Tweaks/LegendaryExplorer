@@ -1,0 +1,123 @@
+{
+  "parent": "RigidBodyBase",
+  "package": "Engine",
+  "variables": {
+    "ConstraintActor1": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "ConstraintActor2": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "PulleyPivotActor1": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "PulleyPivotActor2": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "ConstraintSetup": {
+      "type": "RB_ConstraintSetup",
+      "documentation": null
+    },
+    "ConstraintInstance": {
+      "type": "RB_ConstraintInstance",
+      "documentation": null
+    },
+    "bDisableCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUpdateActor1RefFrame": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUpdateActor2RefFrame": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnToggleConstraintDrive": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggleConstraintDrive(SeqAct_ToggleConstraintDrive Action)"
+    },
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle Action)"
+    },
+    "OnDestroy": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDestroy(SeqAct_Destroy Action)"
+    },
+    "TermConstraint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TermConstraint()"
+    },
+    "InitConstraint": {
+      "documentation": null,
+      "signature_members": {
+        "Actor1": {
+          "type": null,
+          "documentation": null
+        },
+        "Actor2": {
+          "type": null,
+          "documentation": null
+        },
+        "Actor1Bone": {
+          "type": null,
+          "documentation": null
+        },
+        "Actor2Bone": {
+          "type": null,
+          "documentation": null
+        },
+        "BreakThreshold": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitConstraint(Actor Actor1, Actor Actor2, optional Name Actor1Bone, optional Name Actor2Bone, optional float BreakThreshold)"
+    },
+    "SetDisableCollision": {
+      "documentation": null,
+      "signature_members": {
+        "NewDisableCollision": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDisableCollision(bool NewDisableCollision)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,47 +1,47 @@
 {
   "Members": {
     "Title": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Names": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "FontScale": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Columns": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "StartTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "FadeInTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "HoldTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "FadeOutTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "DelayTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "BreakSpace": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Type": {
-      "type": null,
+      "type": "ECreditEntryType",
       "documentation": null
     }
   },

@@ -1,0 +1,25 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "Alpha": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "Bias": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "BiasScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "bNormalize": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

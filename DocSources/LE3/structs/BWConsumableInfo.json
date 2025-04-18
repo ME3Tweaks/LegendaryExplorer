@@ -1,11 +1,11 @@
 {
   "Members": {
     "Id": {
-      "type": null,
+      "type": "BWConsumableId",
       "documentation": null
     },
     "nCopies": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

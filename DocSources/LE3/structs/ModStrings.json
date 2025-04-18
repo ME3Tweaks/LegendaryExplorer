@@ -1,23 +1,23 @@
 {
   "Members": {
     "className": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Custom0Tokens": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Custom1Tokens": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "srModName": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "srModDescription": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

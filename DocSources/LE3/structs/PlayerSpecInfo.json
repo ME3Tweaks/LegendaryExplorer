@@ -1,15 +1,15 @@
 {
   "Members": {
     "SpecParam": {
-      "type": null,
+      "type": "ScalarParameterValue",
       "documentation": null
     },
     "SpecPwrParam": {
-      "type": null,
+      "type": "ScalarParameterValue",
       "documentation": null
     },
     "EnvMapParam": {
-      "type": null,
+      "type": "ScalarParameterValue",
       "documentation": null
     }
   },

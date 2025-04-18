@@ -1,0 +1,29 @@
+{
+  "parent": "BioAnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "BlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxInclineUpAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxInclineDownAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fInclineAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "bForceLevelReferenceAngle": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

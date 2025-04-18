@@ -1,11 +1,11 @@
 {
   "Members": {
     "pLinkedNode": {
-      "type": null,
+      "type": "SFXSceneShopNode",
       "documentation": null
     },
     "nLinkedIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

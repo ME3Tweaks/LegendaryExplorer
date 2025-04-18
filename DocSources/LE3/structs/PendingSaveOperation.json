@@ -1,11 +1,11 @@
 {
   "Members": {
     "SaveDelegate": {
-      "type": null,
+      "type": "OnSaveRecordsDelegate",
       "documentation": null
     },
     "ForceSaveBase": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

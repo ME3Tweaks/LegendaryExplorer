@@ -1,0 +1,145 @@
+{
+  "parent": "BioInteractiveActorType",
+  "package": "SFXGame",
+  "variables": {
+    "PawnClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "AIController": {
+      "type": "Class",
+      "documentation": null
+    },
+    "CharacterBloodColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "m_nmDefaultAIBehaviour": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Loadout": {
+      "type": "SFXLoadoutData",
+      "documentation": null
+    },
+    "EliteCrust": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "DeathCrust": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "m_oAppearance": {
+      "type": "Bio_Appr_Character",
+      "documentation": null
+    },
+    "m_oAppearanceSettings": {
+      "type": "Bio_Appr_Character_Settings",
+      "documentation": null
+    },
+    "m_oMorphFace": {
+      "type": "BioMorphFace",
+      "documentation": null
+    },
+    "m_pSndSetFaceFXPkg": {
+      "type": "FaceFXAnimSet",
+      "documentation": null
+    },
+    "m_oRollingIdle": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "m_oRollingStartMoving": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "m_oMaterialOverrides": {
+      "type": "BioMaterialOverride",
+      "documentation": null
+    },
+    "m_fPowerUsePercent": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nMinAutoLODLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fPhysicsRecoverSpeedThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPhysicsSettleDownTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fDeathAnimationMagnitudeThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPhysicsThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPhysicsThresholdRegenerationRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "bIsFemale": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsArmorOverridden": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCanBeBumped": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bTerminateRagdollOnDeath": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCanBePhysicsImpacted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eDefaultAIBehaviour": {
+      "type": "eDefaultAIBehaviour",
+      "documentation": null
+    },
+    "m_eReportMethod": {
+      "type": "EBioBaseAppearanceReportMethod",
+      "documentation": null
+    },
+    "m_eDefaultClassification": {
+      "type": "EBioPawnClassification",
+      "documentation": null
+    },
+    "m_eUseRollingInPhysicsMode": {
+      "type": "EPhysics",
+      "documentation": null
+    },
+    "RaceType": {
+      "type": "ERaceType",
+      "documentation": null
+    },
+    "CharacterType": {
+      "type": "ECharacterType",
+      "documentation": null
+    },
+    "AffiliationType": {
+      "type": "EAffiliationType",
+      "documentation": null
+    },
+    "ChallengeType": {
+      "type": "EChallengeType",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

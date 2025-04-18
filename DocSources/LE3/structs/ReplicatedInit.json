@@ -1,23 +1,23 @@
 {
   "Members": {
     "Direction": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "location": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "Instigator": {
-      "type": null,
+      "type": "Pawn",
       "documentation": null
     },
     "Speed": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Trigger": {
-      "type": null,
+      "type": "byte",
       "documentation": null
     }
   },

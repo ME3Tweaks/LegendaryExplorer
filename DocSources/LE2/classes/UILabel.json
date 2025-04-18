@@ -1,0 +1,165 @@
+{
+  "parent": "UIObject",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIDataStoreSubscriber": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "VfTable_IUIStringRenderer": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "DataSource": {
+      "type": "UIDataStoreBinding",
+      "documentation": null
+    },
+    "StringRenderComponent": {
+      "type": "UIComp_DrawString",
+      "documentation": null
+    },
+    "LabelBackground": {
+      "type": "UIComp_DrawImage",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "IgnoreMarkup": {
+      "documentation": null,
+      "signature_members": {
+        "bShouldIgnoreMarkup": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "IgnoreMarkup(bool bShouldIgnoreMarkup)"
+    },
+    "GetValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetValue()"
+    },
+    "SetArrayValue": {
+      "documentation": null,
+      "signature_members": {
+        "ValueArray": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetArrayValue(array<string> ValueArray)"
+    },
+    "ClearBoundDataStores": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearBoundDataStores()"
+    },
+    "GetBoundDataStores": {
+      "documentation": null,
+      "signature_members": {
+        "out_BoundDataStores": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetBoundDataStores(out array<UIDataStore> out_BoundDataStores)"
+    },
+    "NotifyDataStoreValueUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "SourceDataStore": {
+          "type": null,
+          "documentation": null
+        },
+        "bValuesInvalidated": {
+          "type": null,
+          "documentation": null
+        },
+        "PropertyTag": {
+          "type": null,
+          "documentation": null
+        },
+        "SourceProvider": {
+          "type": null,
+          "documentation": null
+        },
+        "ArrayIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyDataStoreValueUpdated(UIDataStore SourceDataStore, bool bValuesInvalidated, Name PropertyTag, UIDataProvider SourceProvider, int ArrayIndex)"
+    },
+    "RefreshSubscriberValue": {
+      "documentation": null,
+      "signature_members": {
+        "BindingIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RefreshSubscriberValue(optional int BindingIndex)"
+    },
+    "GetDataStoreBinding": {
+      "documentation": null,
+      "signature_members": {
+        "BindingIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetDataStoreBinding(optional int BindingIndex)"
+    },
+    "SetDataStoreBinding": {
+      "documentation": null,
+      "signature_members": {
+        "MarkupText": {
+          "type": null,
+          "documentation": null
+        },
+        "BindingIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDataStoreBinding(string MarkupText, optional int BindingIndex)"
+    },
+    "SetTextAlignment": {
+      "documentation": null,
+      "signature_members": {
+        "Horizontal": {
+          "type": null,
+          "documentation": null
+        },
+        "Vertical": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTextAlignment(EUIAlignment Horizontal, EUIAlignment Vertical)"
+    },
+    "SetValue": {
+      "documentation": null,
+      "signature_members": {
+        "NewText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetValue(string NewText)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

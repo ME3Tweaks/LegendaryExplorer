@@ -1,75 +1,75 @@
 {
   "Members": {
     "ClassPath": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Stats": {
-      "type": null,
+      "type": "SFXWeaponModUIStat",
       "documentation": null
     },
     "ModLevelTokens": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "CookedPackage": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Meshes": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "className": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "SocketName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "Image": {
-      "type": null,
+      "type": "Texture2D",
       "documentation": null
     },
     "LargeImage": {
-      "type": null,
+      "type": "Texture2D",
       "documentation": null
     },
     "Name": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "ShortName": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Description": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Level": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "MaterialEmissiveChange": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "MaterialGripColorChange": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "MaterialBodyColorChange": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "Unlocked": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "ModCategory": {
-      "type": null,
+      "type": "EWeaponModCategory",
       "documentation": null
     }
   },

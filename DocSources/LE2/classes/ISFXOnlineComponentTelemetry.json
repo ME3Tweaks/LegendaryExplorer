@@ -1,0 +1,79 @@
+{
+  "parent": "ISFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "__OnAuthenticate__Delegate": {
+      "type": "OnAuthenticate",
+      "documentation": null
+    },
+    "__OnDisconnect__Delegate": {
+      "type": "OnDisconnect",
+      "documentation": null
+    },
+    "__CanCollect__Delegate": {
+      "type": "CanCollect",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Flush": {
+      "documentation": null,
+      "signature_members": {
+        "Channel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Flush(ETelemetryChannel Channel)"
+    },
+    "RegisterConnectionDelegates": {
+      "documentation": null,
+      "signature_members": {
+        "CollectDelegate": {
+          "type": null,
+          "documentation": null
+        },
+        "ConnectDelegate": {
+          "type": null,
+          "documentation": null
+        },
+        "DisconnectDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RegisterConnectionDelegates(delegate<CanCollect> CollectDelegate, delegate<OnAuthenticate> ConnectDelegate, delegate<OnDisconnect> DisconnectDelegate)"
+    },
+    "OnDisconnect": {
+      "documentation": null,
+      "signature_members": {
+        "Error": {
+          "type": null,
+          "documentation": null
+        },
+        "SessionId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDisconnect(int Error, const string SessionId)"
+    },
+    "OnAuthenticate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnAuthenticate()"
+    },
+    "CanCollect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanCollect()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

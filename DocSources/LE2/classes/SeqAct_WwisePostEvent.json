@@ -1,0 +1,32 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "WwiseAudio",
+  "variables": {
+    "VfTable_IWwiseComponentCallback": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "WwiseObject": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "CriticalSection": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ActiveComponents": {
+      "type": "WwiseAudioComponent",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

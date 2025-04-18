@@ -1,0 +1,101 @@
+{
+  "Members": {
+    "fGroundSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "fAirSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "fWaterSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "fClimbSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "fWalkSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "fSprintSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "fExploreSprintSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "fTacticalSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "fTacWalkSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "fTacCrouchSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "fTacCrouchWalkSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "fTurnSpeedHigh": {
+      "type": "float",
+      "documentation": null
+    },
+    "fTurnSpeedLow": {
+      "type": "float",
+      "documentation": null
+    },
+    "fTurnSpeedCombat": {
+      "type": "float",
+      "documentation": null
+    },
+    "fTurnSpeedCombatCrouch": {
+      "type": "float",
+      "documentation": null
+    },
+    "fTurnSpeedCombatSprint": {
+      "type": "float",
+      "documentation": null
+    },
+    "fStandardFriction": {
+      "type": "float",
+      "documentation": null
+    },
+    "fAccelRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "fMaxDSAccel": {
+      "type": "float",
+      "documentation": null
+    },
+    "fMaxDSDecel": {
+      "type": "float",
+      "documentation": null
+    },
+    "fMaxDSAccelTac": {
+      "type": "float",
+      "documentation": null
+    },
+    "fMaxDSDecelTac": {
+      "type": "float",
+      "documentation": null
+    },
+    "fMaxDSAccelTacCrouch": {
+      "type": "float",
+      "documentation": null
+    },
+    "fMaxDSDecelTacCrouch": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

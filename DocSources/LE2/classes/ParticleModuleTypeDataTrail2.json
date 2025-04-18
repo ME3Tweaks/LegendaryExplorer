@@ -1,0 +1,57 @@
+{
+  "parent": "ParticleModuleTypeDataBase",
+  "package": "Engine",
+  "variables": {
+    "TessellationFactor": {
+      "type": "int",
+      "documentation": null
+    },
+    "TessellationFactorDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "TessellationStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "TextureTile": {
+      "type": "int",
+      "documentation": null
+    },
+    "Sheets": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxTrailCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxParticleInTrailCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "bClipSourceSegement": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RenderGeometry": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RenderDirectLine": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RenderLines": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RenderTessellation": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

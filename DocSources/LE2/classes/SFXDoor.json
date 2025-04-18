@@ -1,0 +1,308 @@
+{
+  "parent": "SkeletalMeshActor",
+  "package": "SFXGame",
+  "variables": {
+    "m_aDoorMarker": {
+      "type": "SFXDoorMarker",
+      "documentation": null
+    },
+    "m_sVarName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sRefName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_aIconSocket": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_aCurrentIconVFX": {
+      "type": "BioVisualEffect",
+      "documentation": null
+    },
+    "MyGuid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "m_TransitionOpen": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_TransitionClose": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_IconTemplateClosed": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "m_IconTemplateHackable": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "m_IconTemplatePlotLocked": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "m_IconTemplateOpenTransition": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "m_Wwise_Transition_Open": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "m_Wwise_Transition_Close": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "m_Wwise_GUI_Success_Opening": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "m_Wwise_GUI_Failure_PlotLocked": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "m_Wwise_GUI_Failure_HackLocked": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "m_Wwise_GUI_Kismet_Locked": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "m_Wwise_GUI_Kismet_UnLocked": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "m_Wwise_GUI_Kismet_Enabled": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "m_Wwise_GUI_Kismet_Disabled": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "m_nIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nPrevRegionIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nPrevPlotIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_srTargetTipTextClosed": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srTargetTipTextHackLocked": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srTargetTipTextPlotLocked": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_bOpenWhenInteractedWhileUnlocked": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsTransitioning": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_ProcessPendingState": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSaveMe": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_CurrentDoorState": {
+      "type": "ESFXDoorState",
+      "documentation": null
+    },
+    "m_PreviousDoorState": {
+      "type": "ESFXDoorState",
+      "documentation": null
+    },
+    "m_DoorType": {
+      "type": "ESFXDoorType",
+      "documentation": null
+    },
+    "Region": {
+      "type": "EBioRegionAutoSet",
+      "documentation": null
+    },
+    "Plot": {
+      "type": "EBioPlotAutoSet",
+      "documentation": null
+    },
+    "Int": {
+      "type": "EBioAutoSet",
+      "documentation": null
+    },
+    "m_PendingDoorState": {
+      "type": "ESFXDoorState",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "RestoreDoorStates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RestoreDoorStates()"
+    },
+    "SaveDoorStates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SaveDoorStates()"
+    },
+    "PlayWiseEvent": {
+      "documentation": null,
+      "signature_members": {
+        "oWwiseEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayWiseEvent(WwiseEvent oWwiseEvent)"
+    },
+    "SetDoorMarkerState": {
+      "documentation": null,
+      "signature_members": {
+        "bOpen": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDoorMarkerState(bool bOpen)"
+    },
+    "OnTransitionEnd": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnTransitionEnd()"
+    },
+    "SetDoorIcon": {
+      "documentation": null,
+      "signature_members": {
+        "oVFXTemplate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDoorIcon(BioVFXTemplate oVFXTemplate)"
+    },
+    "TriggerInteraction": {
+      "documentation": null,
+      "signature_members": {
+        "EventInstigator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TriggerInteraction(Actor EventInstigator)"
+    },
+    "TriggerStateChange": {
+      "documentation": null,
+      "signature_members": {
+        "EventInstigator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TriggerStateChange(Actor EventInstigator)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "CloseDoor": {
+      "documentation": null,
+      "signature_members": {
+        "bInstant": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CloseDoor(optional bool bInstant)"
+    },
+    "OpenDoor": {
+      "documentation": null,
+      "signature_members": {
+        "bInstant": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OpenDoor(optional bool bInstant)"
+    },
+    "SetDoorState": {
+      "documentation": null,
+      "signature_members": {
+        "ToState": {
+          "type": null,
+          "documentation": null
+        },
+        "User": {
+          "type": null,
+          "documentation": null
+        },
+        "bInstantTransition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDoorState(ESFXDoorState ToState, optional Actor User, optional bool bInstantTransition)"
+    },
+    "PlayAnim": {
+      "documentation": null,
+      "signature_members": {
+        "InAnimSeqName": {
+          "type": null,
+          "documentation": null
+        },
+        "bSkipToEnd": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayAnim(Name InAnimSeqName, optional bool bSkipToEnd)"
+    },
+    "OnUse": {
+      "documentation": null,
+      "signature_members": {
+        "User": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUse(Actor User)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

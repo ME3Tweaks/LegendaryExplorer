@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Location": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "TimeStamp": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

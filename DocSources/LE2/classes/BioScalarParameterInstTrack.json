@@ -1,0 +1,13 @@
+{
+  "parent": "InterpTrackInst",
+  "package": "SFXGame",
+  "variables": {
+    "ResetFloat": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

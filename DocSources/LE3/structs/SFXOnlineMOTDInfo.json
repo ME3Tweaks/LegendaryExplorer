@@ -1,35 +1,35 @@
 {
   "Members": {
     "Message": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Title": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Image": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "TrackingID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Priority": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "BWEntId": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "offerId": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Type": {
-      "type": null,
+      "type": "SFXOnlineConnection_MessageType",
       "documentation": null
     }
   },

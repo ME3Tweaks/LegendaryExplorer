@@ -1,11 +1,11 @@
 {
   "Members": {
     "X": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Y": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

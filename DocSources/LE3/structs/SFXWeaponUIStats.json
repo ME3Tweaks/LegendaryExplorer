@@ -1,23 +1,23 @@
 {
   "Members": {
     "Accuracy": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Damage": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "FireRate": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Magazine": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Weight": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

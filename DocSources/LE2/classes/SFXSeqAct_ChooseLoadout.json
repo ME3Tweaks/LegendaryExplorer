@@ -1,0 +1,15 @@
+{
+  "parent": "SFXSeqAct_ChooseLoadoutBase",
+  "package": "SFXGameContent",
+  "variables": {},
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,15 +1,15 @@
 {
   "Members": {
     "Options": {
-      "type": null,
+      "type": "EGuiOptions",
       "documentation": null
     },
     "Label": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Story": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

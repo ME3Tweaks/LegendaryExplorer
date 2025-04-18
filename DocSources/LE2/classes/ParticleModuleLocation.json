@@ -1,0 +1,13 @@
+{
+  "parent": "ParticleModuleLocationBase",
+  "package": "Engine",
+  "variables": {
+    "StartLocationRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,292 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_sFooterText": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sFileName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sEditableRootName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sCameraRootName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sAnimNodeName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sNewLoadSaveNodeName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sStateNodeName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sActionMappingName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_oPropertyEditorNodes": {
+      "type": "BioPropertyEditorBaseNode",
+      "documentation": null
+    },
+    "m_fHUDRelativePropertyEditorOriginX": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fHUDRelativePropertyEditorOriginY": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPropertyEditorSizeX": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPropertyEditorSizeY": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPropertyEditorRelativeColumnOneX": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPropertyEditorRelativeColumnTwoX": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPropertyEditorRelativeColumnThreeX": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPropertyEditorRelativeColumnY": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fColumnHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bIsActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDebugBones": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSortByType": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSortByName": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "filterString": {
+      "documentation": null,
+      "signature_members": {
+        "Input": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string filterString(string Input)"
+    },
+    "DrawToHUD": {
+      "documentation": null,
+      "signature_members": {
+        "oHUD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawToHUD(BioHUD oHUD)"
+    },
+    "CreateCommand": {
+      "documentation": null,
+      "signature_members": {
+        "Parent": {
+          "type": null,
+          "documentation": null
+        },
+        "CmdName": {
+          "type": null,
+          "documentation": null
+        },
+        "Command": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateCommand(BioPropertyEditorBaseNode Parent, string CmdName, string Command)"
+    },
+    "CreateObjectNode": {
+      "documentation": null,
+      "signature_members": {
+        "Parent": {
+          "type": null,
+          "documentation": null
+        },
+        "O": {
+          "type": null,
+          "documentation": null
+        },
+        "ObjName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateObjectNode(BioPropertyEditorBaseNode Parent, Object O, string ObjName)"
+    },
+    "CreateGameplayNodes": {
+      "documentation": null,
+      "signature_members": {
+        "Parent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateGameplayNodes(BioPropertyEditorBaseNode Parent)"
+    },
+    "DrawBones": {
+      "documentation": null,
+      "signature_members": {
+        "oHUD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawBones(BioHUD oHUD)"
+    },
+    "PerformRightShoulderAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PerformRightShoulderAction()"
+    },
+    "PerformLeftShoulderAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PerformLeftShoulderAction()"
+    },
+    "PerformRightTriggerAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PerformRightTriggerAction()"
+    },
+    "PerformLeftTriggerAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PerformLeftTriggerAction()"
+    },
+    "ActivateMainMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ActivateMainMenu()"
+    },
+    "PerformLeftAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PerformLeftAction()"
+    },
+    "PerformRightAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PerformRightAction()"
+    },
+    "PerformDownAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PerformDownAction()"
+    },
+    "PerformUpAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PerformUpAction()"
+    },
+    "PerformDeactivateAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PerformDeactivateAction()"
+    },
+    "PerformActivateAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PerformActivateAction()"
+    },
+    "CreateNodeTestData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CreateNodeTestData()"
+    },
+    "WriteTreeDataToHUD": {
+      "documentation": null,
+      "signature_members": {
+        "oHUD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool WriteTreeDataToHUD(BioHUD oHUD)"
+    },
+    "UpdateSystem": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateSystem(float fDeltaTime)"
+    },
+    "DeactivateSystem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DeactivateSystem()"
+    },
+    "ActivateSystem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ActivateSystem()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool Initialize()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

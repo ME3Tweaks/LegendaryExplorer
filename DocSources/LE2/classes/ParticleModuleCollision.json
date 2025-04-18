@@ -1,0 +1,61 @@
+{
+  "parent": "ParticleModuleCollisionBase",
+  "package": "Engine",
+  "variables": {
+    "DampingFactorRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    },
+    "DampingFactorRotationRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    },
+    "MaxCollisions": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "ParticleMass": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "DelayAmount": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "DirScalar": {
+      "type": "float",
+      "documentation": null
+    },
+    "VerticalFudgeFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "bApplyPhysics": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCollidePawns": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPawnsDoNotDecrementCount": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOnlyVerticalNormalsDecrementCount": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDropDetail": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CollisionCompletionOption": {
+      "type": "EParticleCollisionComplete",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

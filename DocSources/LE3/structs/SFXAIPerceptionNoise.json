@@ -1,15 +1,15 @@
 {
   "Members": {
     "NoiseMaker": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "NoiseType": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "Loudness": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

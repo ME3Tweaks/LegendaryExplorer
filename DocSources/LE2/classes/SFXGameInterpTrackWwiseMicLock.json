@@ -1,0 +1,42 @@
+{
+  "parent": "SFXGameInterpTrack",
+  "package": "SFXGame",
+  "variables": {
+    "m_aMicLockKeys": {
+      "type": "BioMicLockData",
+      "documentation": null
+    },
+    "m_bUnlockAtEnd": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "KeyDataDisplayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataDisplayName()"
+    },
+    "KeyDataArrayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataArrayName()"
+    },
+    "NewKeyDefaultName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string NewKeyDefaultName()"
+    },
+    "AllowKeyNaming": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AllowKeyNaming()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

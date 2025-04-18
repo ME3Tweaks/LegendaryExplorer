@@ -1,23 +1,23 @@
 {
   "Members": {
     "pUniquePlayerId": {
-      "type": null,
+      "type": "UniqueNetId",
       "documentation": null
     },
     "Scope": {
-      "type": null,
+      "type": "LeaderboardStatScope",
       "documentation": null
     },
     "pJobId": {
-      "type": null,
+      "type": "Pointer",
       "documentation": null
     },
     "pExternalData": {
-      "type": null,
+      "type": "Pointer",
       "documentation": null
     },
     "nRequestedRecordsRange": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

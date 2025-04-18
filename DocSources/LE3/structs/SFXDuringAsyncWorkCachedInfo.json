@@ -1,19 +1,19 @@
 {
   "Members": {
     "LocalPlayerLocation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "LocalPlayer": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "LODfactor": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "TimeSeconds": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

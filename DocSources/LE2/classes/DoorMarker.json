@@ -1,0 +1,93 @@
+{
+  "parent": "NavigationPoint",
+  "package": "Engine",
+  "variables": {
+    "MyDoor": {
+      "type": "InterpActor",
+      "documentation": null
+    },
+    "DoorTrigger": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "bWaitUntilCompletelyOpened": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInitiallyClosed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBlockedWhenClosed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDoorOpen": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTempDisabledCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "DoorType": {
+      "type": "EDoorType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SuggestMovePreparation": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SuggestMovePreparation(Pawn Other)"
+    },
+    "ProceedWithMove": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ProceedWithMove(Pawn Other)"
+    },
+    "SpecialHandling": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor SpecialHandling(Pawn Other)"
+    },
+    "MoverClosed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MoverClosed()"
+    },
+    "MoverOpened": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MoverOpened()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

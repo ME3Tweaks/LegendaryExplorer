@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "nmFemale": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nmAsari": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nmTurian": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nmSalarian": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nmQuarian": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nmOther": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nmKrogan": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nmGeth": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nmOtherArtificial": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

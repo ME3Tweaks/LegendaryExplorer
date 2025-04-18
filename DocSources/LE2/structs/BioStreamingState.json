@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "StateDescription": {
+      "type": "string",
+      "documentation": null
+    },
+    "VisibleChunkNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "VisibleSoonChunkNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "LoadChunkNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "StateName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "InChunkName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "DesignFudget": {
+      "type": "float",
+      "documentation": null
+    },
+    "ArtFudget": {
+      "type": "float",
+      "documentation": null
+    },
+    "ColorChunks": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

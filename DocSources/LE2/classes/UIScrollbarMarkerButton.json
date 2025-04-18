@@ -1,0 +1,29 @@
+{
+  "parent": "UIScrollbarButton",
+  "package": "Engine",
+  "variables": {
+    "__OnButtonDragged__Delegate": {
+      "type": "OnButtonDragged",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnButtonDragged": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnButtonDragged(UIScrollbarMarkerButton Sender, int PlayerIndex)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

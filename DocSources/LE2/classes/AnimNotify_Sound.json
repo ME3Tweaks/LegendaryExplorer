@@ -1,0 +1,29 @@
+{
+  "parent": "AnimNotify",
+  "package": "Engine",
+  "variables": {
+    "SoundCue": {
+      "type": "SoundCue",
+      "documentation": null
+    },
+    "BoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "PercentToPlay": {
+      "type": "float",
+      "documentation": null
+    },
+    "bFollowActor": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreIfActorHidden": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

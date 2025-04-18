@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Trace": {
+      "type": "Name",
+      "documentation": null
+    },
+    "PrevRot": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "PostRot": {
+      "type": "Rotator",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

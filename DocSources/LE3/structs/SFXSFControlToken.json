@@ -1,43 +1,43 @@
 {
   "Members": {
     "TexturePath": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Resource": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Align": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "VAlign": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "token": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "Height": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Width": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "FontVScale": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "VSpace": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Cook": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

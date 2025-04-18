@@ -1,27 +1,27 @@
 {
   "Members": {
     "EffectorLocation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "JointTargetLocation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "EffectorSpaceBoneName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "JointTargetSpaceBoneName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "EffectorLocationSpace": {
-      "type": null,
+      "type": "EBoneControlSpace",
       "documentation": null
     },
     "JointTargetLocationSpace": {
-      "type": null,
+      "type": "EBoneControlSpace",
       "documentation": null
     }
   },

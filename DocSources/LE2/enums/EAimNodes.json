@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "AimNode_Cover": {
+      "value": 0,
+      "documentation": null
+    },
+    "AimNode_Head": {
+      "value": 1,
+      "documentation": null
+    },
+    "AimNode_LeftShoulder": {
+      "value": 2,
+      "documentation": null
+    },
+    "AimNode_RightShoulder": {
+      "value": 3,
+      "documentation": null
+    },
+    "AimNode_Chest": {
+      "value": 4,
+      "documentation": null
+    },
+    "AimNode_Groin": {
+      "value": 5,
+      "documentation": null
+    },
+    "AimNode_LeftKnee": {
+      "value": 6,
+      "documentation": null
+    },
+    "AimNode_RightKnee": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

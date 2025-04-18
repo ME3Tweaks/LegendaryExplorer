@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "MBW_SP_Map": {
+      "value": 0,
+      "documentation": null
+    },
+    "MBW_SP_Save": {
+      "value": 1,
+      "documentation": null
+    },
+    "MBW_SP_CharacterRecord": {
+      "value": 2,
+      "documentation": null
+    },
+    "MBW_SP_Load": {
+      "value": 3,
+      "documentation": null
+    },
+    "MBW_SP_Journal": {
+      "value": 4,
+      "documentation": null
+    },
+    "MBW_SP_DataPad": {
+      "value": 5,
+      "documentation": null
+    },
+    "MBW_SP_Options": {
+      "value": 6,
+      "documentation": null
+    },
+    "MBW_SP_ReturnToMainMenu": {
+      "value": 7,
+      "documentation": null
+    },
+    "MBW_SP_ExitGame": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

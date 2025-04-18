@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "m_oStaticMesh": {
+      "type": "StaticMesh",
+      "documentation": null
+    },
+    "m_nAttachlocation": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

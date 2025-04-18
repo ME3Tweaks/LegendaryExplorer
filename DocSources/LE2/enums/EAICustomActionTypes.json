@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "AI_DefaultCustomAction": {
+      "value": 0,
+      "documentation": null
+    },
+    "AI_DamageCustomAction": {
+      "value": 1,
+      "documentation": null
+    },
+    "AI_DeathCustomAction": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

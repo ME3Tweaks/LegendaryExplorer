@@ -1,23 +1,23 @@
 {
   "Members": {
     "VfTable": {
-      "type": null,
+      "type": "Pointer",
       "documentation": null
     },
     "lstTaskHistory": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nQuestAdded": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nActiveGoal": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bQuestUpdated": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

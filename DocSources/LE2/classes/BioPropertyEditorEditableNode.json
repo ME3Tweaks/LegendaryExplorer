@@ -1,0 +1,89 @@
+{
+  "parent": "BioPropertyEditorPropertyNode",
+  "package": "SFXGame",
+  "variables": {
+    "prop": {
+      "type": "Property",
+      "documentation": null
+    },
+    "m_arrayProperty": {
+      "type": "Property",
+      "documentation": null
+    },
+    "integerVal": {
+      "type": "int",
+      "documentation": null
+    },
+    "floatVal": {
+      "type": "float",
+      "documentation": null
+    },
+    "StepSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "boolVal": {
+      "type": "bool",
+      "documentation": null
+    },
+    "alreadyEdited": {
+      "type": "bool",
+      "documentation": null
+    },
+    "byteVal": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AcceptNewValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AcceptNewValue()"
+    },
+    "DoChange": {
+      "documentation": null,
+      "signature_members": {
+        "Delta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoChange(float Delta)"
+    },
+    "RightTriggerAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RightTriggerAction()"
+    },
+    "LeftTriggerAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LeftTriggerAction()"
+    },
+    "DecrementCurrentSelection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DecrementCurrentSelection()"
+    },
+    "IncrementCurrentSelection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IncrementCurrentSelection()"
+    },
+    "SelectionAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool SelectionAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

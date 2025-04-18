@@ -1,0 +1,13 @@
+{
+  "parent": "SeqVar_ObjectList",
+  "package": "SFXGame",
+  "variables": {
+    "m_sObjectTagToFind": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

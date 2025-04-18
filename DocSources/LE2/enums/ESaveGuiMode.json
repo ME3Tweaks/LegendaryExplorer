@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "SaveGuiMode_BrowserWheel": {
+      "value": 0,
+      "documentation": null
+    },
+    "SaveGuiMode_MainMenu": {
+      "value": 1,
+      "documentation": null
+    },
+    "SaveGuiMode_GameOver": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

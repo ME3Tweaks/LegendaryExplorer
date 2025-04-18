@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "MSS_Idle": {
+      "value": 0,
+      "documentation": null
+    },
+    "MSS_Walk": {
+      "value": 1,
+      "documentation": null
+    },
+    "MSS_Run": {
+      "value": 2,
+      "documentation": null
+    },
+    "MSS_Sprint": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,747 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "OldPosition": {
+      "type": "RwVector3",
+      "documentation": null
+    },
+    "PartSysVelocity": {
+      "type": "RwVector3",
+      "documentation": null
+    },
+    "EmitterInstances": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ViewMBInfoArray": {
+      "type": "ViewParticleEmitterInstanceMotionBlurInfo",
+      "documentation": null
+    },
+    "SMComponents": {
+      "type": "StaticMeshComponent",
+      "documentation": null
+    },
+    "SMMaterialInterfaces": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "InstanceParameters": {
+      "type": "ParticleSysParam",
+      "documentation": null
+    },
+    "CachedViewRelevanceFlags": {
+      "type": "MaterialViewRelevance",
+      "documentation": null
+    },
+    "ReplayClips": {
+      "type": "ParticleSystemReplay",
+      "documentation": null
+    },
+    "SpawnEvents": {
+      "type": "ParticleEventSpawnData",
+      "documentation": null
+    },
+    "DeathEvents": {
+      "type": "ParticleEventDeathData",
+      "documentation": null
+    },
+    "CollisionEvents": {
+      "type": "ParticleEventCollideData",
+      "documentation": null
+    },
+    "KismetEvents": {
+      "type": "ParticleEventKismetData",
+      "documentation": null
+    },
+    "__OnSystemFinished__Delegate": {
+      "type": "OnSystemFinished",
+      "documentation": null
+    },
+    "LightEnvironmentClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "ReleaseResourcesFence": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Template": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "WarmupTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "LODLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "SecondsBeforeInactive": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeSinceLastForceUpdateTransform": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxTimeBeforeForceUpdateTransform": {
+      "type": "float",
+      "documentation": null
+    },
+    "AccumTickTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ReplayClipIDNumber": {
+      "type": "int",
+      "documentation": null
+    },
+    "ReplayFrameIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "AccumLODDistanceCheckTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "CustomTimeDilation": {
+      "type": "float",
+      "documentation": null
+    },
+    "EmitterDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "bAutoActivate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWasCompleted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSuppressSpawning": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWasDeactivated": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bResetOnDetach": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUpdateOnDedicatedServer": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bJustAttached": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWarmingUp": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsCachedInPool": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOverrideLODMethod": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSkipUpdateDynamicDataDuringTick": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUpdateComponentInTick": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDeferredBeamUpdate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForcedInActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsWarmingUp": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsViewRelevanceDirty": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRecacheViewRelevance": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLODUpdatePending": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSkipSpawnCountCheck": {
+      "type": "bool",
+      "documentation": null
+    },
+    "LODMethod": {
+      "type": "ParticleSystemLODMethod",
+      "documentation": null
+    },
+    "ReplayState": {
+      "type": "ParticleReplayState",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetStopSpawning": {
+      "documentation": null,
+      "signature_members": {
+        "InEmitterIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bInStopSpawning": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetStopSpawning(int InEmitterIndex, bool bInStopSpawning)"
+    },
+    "ResetToDefaults": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetToDefaults()"
+    },
+    "SetActive": {
+      "documentation": null,
+      "signature_members": {
+        "bNowActive": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetActive(bool bNowActive)"
+    },
+    "SuppressSpawning": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SuppressSpawning()"
+    },
+    "ClearAllParameters": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearAllParameters()"
+    },
+    "ClearParameter": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "ParameterType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearParameter(Name ParameterName, optional EParticleSysParamType ParameterType)"
+    },
+    "GetMaterialParameter": {
+      "documentation": null,
+      "signature_members": {
+        "InName": {
+          "type": null,
+          "documentation": null
+        },
+        "OutMaterial": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetMaterialParameter(const Name InName, out MaterialInterface OutMaterial)"
+    },
+    "GetActorParameter": {
+      "documentation": null,
+      "signature_members": {
+        "InName": {
+          "type": null,
+          "documentation": null
+        },
+        "OutActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetActorParameter(const Name InName, out Actor OutActor)"
+    },
+    "GetColorParameter": {
+      "documentation": null,
+      "signature_members": {
+        "InName": {
+          "type": null,
+          "documentation": null
+        },
+        "OutColor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetColorParameter(const Name InName, out Color OutColor)"
+    },
+    "GetVectorParameter": {
+      "documentation": null,
+      "signature_members": {
+        "InName": {
+          "type": null,
+          "documentation": null
+        },
+        "OutVector": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetVectorParameter(const Name InName, out Vector OutVector)"
+    },
+    "GetFloatParameter": {
+      "documentation": null,
+      "signature_members": {
+        "InName": {
+          "type": null,
+          "documentation": null
+        },
+        "OutFloat": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFloatParameter(const Name InName, out float OutFloat)"
+    },
+    "SetMaterialParameter": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "Param": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMaterialParameter(Name ParameterName, MaterialInterface Param)"
+    },
+    "SetActorParameter": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "Param": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetActorParameter(Name ParameterName, Actor Param)"
+    },
+    "SetColorParameter": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "Param": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetColorParameter(Name ParameterName, Color Param)"
+    },
+    "SetVectorParameter": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "Param": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVectorParameter(Name ParameterName, Vector Param)"
+    },
+    "SetFloatParameter": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "Param": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFloatParameter(Name ParameterName, float Param)"
+    },
+    "GetEditorLODLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetEditorLODLevel()"
+    },
+    "GetLODLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetLODLevel()"
+    },
+    "SetEditorLODLevel": {
+      "documentation": null,
+      "signature_members": {
+        "InLODLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEditorLODLevel(int InLODLevel)"
+    },
+    "SetLODLevel": {
+      "documentation": null,
+      "signature_members": {
+        "InLODLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLODLevel(int InLODLevel)"
+    },
+    "DetermineLODLevelForLocation": {
+      "documentation": null,
+      "signature_members": {
+        "EffectLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int DetermineLODLevelForLocation(Vector EffectLocation)"
+    },
+    "SetBeamTargetStrength": {
+      "documentation": null,
+      "signature_members": {
+        "EmitterIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "NewTargetStrength": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBeamTargetStrength(int EmitterIndex, float NewTargetStrength, int TargetIndex)"
+    },
+    "SetBeamTargetTangent": {
+      "documentation": null,
+      "signature_members": {
+        "EmitterIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "NewTangentPoint": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBeamTargetTangent(int EmitterIndex, Vector NewTangentPoint, int TargetIndex)"
+    },
+    "SetBeamTargetPoint": {
+      "documentation": null,
+      "signature_members": {
+        "EmitterIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "NewTargetPoint": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBeamTargetPoint(int EmitterIndex, Vector NewTargetPoint, int TargetIndex)"
+    },
+    "SetBeamSourceStrength": {
+      "documentation": null,
+      "signature_members": {
+        "EmitterIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "NewSourceStrength": {
+          "type": null,
+          "documentation": null
+        },
+        "SourceIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBeamSourceStrength(int EmitterIndex, float NewSourceStrength, int SourceIndex)"
+    },
+    "SetBeamSourceTangent": {
+      "documentation": null,
+      "signature_members": {
+        "EmitterIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "NewTangentPoint": {
+          "type": null,
+          "documentation": null
+        },
+        "SourceIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBeamSourceTangent(int EmitterIndex, Vector NewTangentPoint, int SourceIndex)"
+    },
+    "SetBeamSourcePoint": {
+      "documentation": null,
+      "signature_members": {
+        "EmitterIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "NewSourcePoint": {
+          "type": null,
+          "documentation": null
+        },
+        "SourceIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBeamSourcePoint(int EmitterIndex, Vector NewSourcePoint, int SourceIndex)"
+    },
+    "SetBeamDistance": {
+      "documentation": null,
+      "signature_members": {
+        "EmitterIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "Distance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBeamDistance(int EmitterIndex, float Distance)"
+    },
+    "SetBeamEndPoint": {
+      "documentation": null,
+      "signature_members": {
+        "EmitterIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "NewEndPoint": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBeamEndPoint(int EmitterIndex, Vector NewEndPoint)"
+    },
+    "SetBeamTessellationFactor": {
+      "documentation": null,
+      "signature_members": {
+        "EmitterIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "NewFactor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBeamTessellationFactor(int EmitterIndex, float NewFactor)"
+    },
+    "SetBeamType": {
+      "documentation": null,
+      "signature_members": {
+        "EmitterIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "NewMethod": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBeamType(int EmitterIndex, int NewMethod)"
+    },
+    "RewindEmitterInstances": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RewindEmitterInstances()"
+    },
+    "RewindEmitterInstance": {
+      "documentation": null,
+      "signature_members": {
+        "EmitterIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RewindEmitterInstance(int EmitterIndex)"
+    },
+    "SetKillOnCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "EmitterIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bKill": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetKillOnCompleted(int EmitterIndex, bool bKill)"
+    },
+    "SetKillOnDeactivate": {
+      "documentation": null,
+      "signature_members": {
+        "EmitterIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bKill": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetKillOnDeactivate(int EmitterIndex, bool bKill)"
+    },
+    "GetSkipUpdateDynamicDataDuringTick": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetSkipUpdateDynamicDataDuringTick()"
+    },
+    "SetSkipUpdateDynamicDataDuringTick": {
+      "documentation": null,
+      "signature_members": {
+        "bInSkipUpdateDynamicDataDuringTick": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSkipUpdateDynamicDataDuringTick(bool bInSkipUpdateDynamicDataDuringTick)"
+    },
+    "KillParticlesForced": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "KillParticlesForced()"
+    },
+    "DeactivateSystem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DeactivateSystem()"
+    },
+    "ActivateSystem": {
+      "documentation": null,
+      "signature_members": {
+        "bFlagAsJustAttached": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivateSystem(optional bool bFlagAsJustAttached)"
+    },
+    "SetTemplate": {
+      "documentation": null,
+      "signature_members": {
+        "NewTemplate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTemplate(ParticleSystem NewTemplate)"
+    },
+    "OnSystemFinished": {
+      "documentation": null,
+      "signature_members": {
+        "PSystem": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSystemFinished(ParticleSystemComponent PSystem)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

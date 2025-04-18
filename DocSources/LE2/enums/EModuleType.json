@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "EPMT_General": {
+      "value": 0,
+      "documentation": null
+    },
+    "EPMT_TypeData": {
+      "value": 1,
+      "documentation": null
+    },
+    "EPMT_Beam": {
+      "value": 2,
+      "documentation": null
+    },
+    "EPMT_Trail": {
+      "value": 3,
+      "documentation": null
+    },
+    "EPMT_Spawn": {
+      "value": 4,
+      "documentation": null
+    },
+    "EPMT_Required": {
+      "value": 5,
+      "documentation": null
+    },
+    "EPMT_Event": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

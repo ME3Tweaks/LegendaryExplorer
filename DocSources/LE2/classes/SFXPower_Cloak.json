@@ -1,0 +1,17 @@
+{
+  "parent": "SFXPower",
+  "package": "SFXGameContent_Powers",
+  "variables": {
+    "DamageBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "bBreakCloakOnAttack": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,834 @@
+{
+  "parent": "SFXGameModeGalaxy",
+  "package": "SFXGame",
+  "variables": {
+    "TemporaryComponents": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "Shake": {
+      "type": "ScreenShakeStruct",
+      "documentation": null
+    },
+    "BigShake": {
+      "type": "ScreenShakeStruct",
+      "documentation": null
+    },
+    "ReticleRot": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "ReticleRotMaxClamp": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "ReticleRotMinClamp": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "ProbeLaunchLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "ProbeTargetLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "ProbeControlPtLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "ReticleEffect": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "ScanReticleEffect": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "ScanWipeEffect": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "ScanBlipEffect": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "ScanDirectionEffect": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "LaunchReticleEffect": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "ProbeExplosionEffect": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "ResourceFFWaveForm": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null
+    },
+    "AudioComponent": {
+      "type": "WwiseAudioComponent",
+      "documentation": null
+    },
+    "PlanetRotationSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "ScanPlanetRotationSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "ReticleMoveSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "ScanReticleMoveSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "GamepadPlanetRotationSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "GamepadScanPlanetRotationSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "GamepadReticleMoveSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "GamepadScanReticleMoveSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "RumbleScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "MoveDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "ProbeControlAxisOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "ProbeControlTargetOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "ScannerRotateSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "ProbeLaunchTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ProbeLaunchTimeMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "ScanDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "ReticleScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "Roll": {
+      "type": "float",
+      "documentation": null
+    },
+    "fRescaleTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fInitialScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "fNewScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "fMaxRescaleTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ImpactTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ImpactTimeMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "fSpectrographUpdateTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fSpectrographUpdateDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "fResourceRetrievalFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "fResourceTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "fReticleUpDown": {
+      "type": "float",
+      "documentation": null
+    },
+    "fReticleLeftRight": {
+      "type": "float",
+      "documentation": null
+    },
+    "fPlanetLeftRight": {
+      "type": "float",
+      "documentation": null
+    },
+    "Scanning": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ProbeActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRescaling": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bExiting": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ImpactActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "DrawProbeDebugLines": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMouseLock": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "setshakelfreq": {
+      "documentation": null,
+      "signature_members": {
+        "X": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        },
+        "Z": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "setshakelfreq(float X, float Y, float Z)"
+    },
+    "setshakelamp": {
+      "documentation": null,
+      "signature_members": {
+        "X": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        },
+        "Z": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "setshakelamp(float X, float Y, float Z)"
+    },
+    "setshakerfreq": {
+      "documentation": null,
+      "signature_members": {
+        "X": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        },
+        "Z": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "setshakerfreq(float X, float Y, float Z)"
+    },
+    "setshakeramp": {
+      "documentation": null,
+      "signature_members": {
+        "X": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        },
+        "Z": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "setshakeramp(float X, float Y, float Z)"
+    },
+    "setshaket": {
+      "documentation": null,
+      "signature_members": {
+        "T": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "setshaket(float T)"
+    },
+    "SetResourceRetrievalFactor": {
+      "documentation": null,
+      "signature_members": {
+        "F": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetResourceRetrievalFactor(float F)"
+    },
+    "ToggleProbeDebug": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleProbeDebug()"
+    },
+    "SetProbeTime": {
+      "documentation": null,
+      "signature_members": {
+        "T": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetProbeTime(float T)"
+    },
+    "SetProbeControl": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "T": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetProbeControl(float A, float T)"
+    },
+    "SetReticleScale": {
+      "documentation": null,
+      "signature_members": {
+        "Scale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetReticleScale(float Scale)"
+    },
+    "SetPlanetRotateSpeed": {
+      "documentation": null,
+      "signature_members": {
+        "Speed": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlanetRotateSpeed(float Speed)"
+    },
+    "SetScanRotateSpeed": {
+      "documentation": null,
+      "signature_members": {
+        "Speed": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetScanRotateSpeed(float Speed)"
+    },
+    "SetScanSpeed": {
+      "documentation": null,
+      "signature_members": {
+        "Speed": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetScanSpeed(float Speed)"
+    },
+    "SetReticleRotMaxClamp": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        },
+        "R": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetReticleRotMaxClamp(float P, float Y, float R)"
+    },
+    "SetReticleRotMinClamp": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        },
+        "R": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetReticleRotMinClamp(float P, float Y, float R)"
+    },
+    "SetScanDist": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetScanDist(float A)"
+    },
+    "GiveResource": {
+      "documentation": null,
+      "signature_members": {
+        "FeatureType": {
+          "type": null,
+          "documentation": null
+        },
+        "MineralType": {
+          "type": null,
+          "documentation": null
+        },
+        "Amount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GiveResource(EFeatureType FeatureType, EMineralType MineralType, int Amount)"
+    },
+    "RingReticleUpDown": {
+      "documentation": null,
+      "signature_members": {
+        "Axis": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RingReticleUpDown(float Axis)"
+    },
+    "RingReticleLeftRight": {
+      "documentation": null,
+      "signature_members": {
+        "Axis": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RingReticleLeftRight(float Axis)"
+    },
+    "GetScannerSpeedUpgradeFactor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetScannerSpeedUpgradeFactor()"
+    },
+    "UpdateReticle": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateReticle(float DeltaTime)"
+    },
+    "UpdatePlanetLeftRight": {
+      "documentation": null,
+      "signature_members": {
+        "Axis": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdatePlanetLeftRight(float Axis, float DeltaTime)"
+    },
+    "PlanetLeftRight": {
+      "documentation": null,
+      "signature_members": {
+        "Axis": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlanetLeftRight(float Axis)"
+    },
+    "GetPlanetRotationSpeed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetPlanetRotationSpeed()"
+    },
+    "GetReticleMoveSpeed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetReticleMoveSpeed()"
+    },
+    "UseGamepadModifier": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool UseGamepadModifier()"
+    },
+    "LaunchProbe": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LaunchProbe()"
+    },
+    "EndImpact": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndImpact()"
+    },
+    "ShowProbeImpactVFX": {
+      "documentation": null,
+      "signature_members": {
+        "PlanetData": {
+          "type": null,
+          "documentation": null
+        },
+        "pos": {
+          "type": null,
+          "documentation": null
+        },
+        "Planet": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowProbeImpactVFX(BioPlanet PlanetData, Vector pos, InterpActor Planet)"
+    },
+    "ProbeImpact": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProbeImpact()"
+    },
+    "StopScanning": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopScanning()"
+    },
+    "StartScanning": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartScanning()"
+    },
+    "SetButtonLabel": {
+      "documentation": null,
+      "signature_members": {
+        "sButton": {
+          "type": null,
+          "documentation": null
+        },
+        "nText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetButtonLabel(string sButton, stringref nText)"
+    },
+    "SetLTriggerLabelVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bShow": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLTriggerLabelVisible(bool bShow)"
+    },
+    "SetRTriggerLabelVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bShow": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRTriggerLabelVisible(bool bShow)"
+    },
+    "UpdateProbeHudElement": {
+      "documentation": null,
+      "signature_members": {
+        "nProbes": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateProbeHudElement(int nProbes)"
+    },
+    "ToggleMouseLock": {
+      "documentation": null,
+      "signature_members": {
+        "bNewMouseLock": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ToggleMouseLock(bool bNewMouseLock)"
+    },
+    "StopFeatureSounds": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopFeatureSounds()"
+    },
+    "StartFeatureSounds": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartFeatureSounds()"
+    },
+    "GetRelativeReticlePosition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetRelativeReticlePosition()"
+    },
+    "UpdateAnomalyIndicator": {
+      "documentation": null,
+      "signature_members": {
+        "toLanding": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "flashIndicator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateAnomalyIndicator(Vector toLanding, float DeltaTime, bool flashIndicator)"
+    },
+    "ShowHUDAnomalyIndicator": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowHUDAnomalyIndicator()"
+    },
+    "ScanResources": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ScanResources(float DeltaTime)"
+    },
+    "ScannedResourceAmount": {
+      "documentation": null,
+      "signature_members": {
+        "fDistTo": {
+          "type": null,
+          "documentation": null
+        },
+        "ResourceAmount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int ScannedResourceAmount(float fDistTo, int ResourceAmount)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float DeltaTime)"
+    },
+    "UpdatePlanetScale": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdatePlanetScale(float DeltaTime)"
+    },
+    "ResetProbe": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetProbe()"
+    },
+    "CanExit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanExit()"
+    },
+    "GetGameData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioSeqAct_OrbitalGame",
+      "signature": "BioSeqAct_OrbitalGame GetGameData()"
+    },
+    "BeginExitGalaxyMap": {
+      "documentation": null,
+      "signature_members": {
+        "resize": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BeginExitGalaxyMap(bool resize)"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "UpdatePlanetRichness": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdatePlanetRichness()"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "DoPatchDefaultPropertyUpdates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoPatchDefaultPropertyUpdates()"
+    },
+    "GetCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "OldCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "PreserveTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Transition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCameraMode(SFXCameraMode OldCameraMode, out int PreserveTarget, out float TransitionTime, out SFXCameraMode_Interpolate Transition)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

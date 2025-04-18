@@ -1,0 +1,143 @@
+{
+  "parent": "BioInteractiveActorType",
+  "package": "SFXGame",
+  "variables": {
+    "m_oApperance": {
+      "type": "BioBaseAppearancePlaceable",
+      "documentation": null
+    },
+    "m_nmDestroyedState": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmDamagedState": {
+      "type": "Name",
+      "documentation": null
+    },
+    "DefaultStartingState": {
+      "type": "Name",
+      "documentation": null
+    },
+    "OnUseSucceed": {
+      "type": "Name",
+      "documentation": null
+    },
+    "OnUseFail": {
+      "type": "Name",
+      "documentation": null
+    },
+    "DefaultInertState": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_RoleData": {
+      "type": "BioArtPlaceableRoles",
+      "documentation": null
+    },
+    "bPlayerOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPhysicsAffectable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPhysicsAffectableOnDestroyed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPhysicsFixedAnimated": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsContainer": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAllowRoleCustomization": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsStatic": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsMovable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsDeletable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eUseCase": {
+      "type": "eBioAPLUseCase",
+      "documentation": null
+    },
+    "m_StartingState": {
+      "type": "eArtPlaceableStates",
+      "documentation": null
+    },
+    "m_InertState": {
+      "type": "eArtPlaceableStates",
+      "documentation": null
+    },
+    "m_State0": {
+      "type": "eArtPlaceableStates",
+      "documentation": null
+    },
+    "m_State1": {
+      "type": "eArtPlaceableStates",
+      "documentation": null
+    },
+    "m_SkillDifficulty": {
+      "type": "EBioSkillGameDifficulty",
+      "documentation": null
+    },
+    "m_eRole": {
+      "type": "eArtPlaceableRole",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ApplyRoleToBehavior": {
+      "documentation": null,
+      "signature_members": {
+        "oBehave": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyRoleToBehavior(BioArtPlaceableBehavior oBehave)"
+    },
+    "AllowRoleCustomization": {
+      "documentation": null,
+      "signature_members": {
+        "bYes": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AllowRoleCustomization(bool bYes)"
+    },
+    "ApplyRole": {
+      "documentation": null,
+      "signature_members": {
+        "nNewRole": {
+          "type": null,
+          "documentation": null
+        },
+        "oBehave": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyRole(int nNewRole, optional BioArtPlaceableBehavior oBehave)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

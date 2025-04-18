@@ -1,0 +1,17 @@
+{
+  "parent": "Object",
+  "package": "GFxUI",
+  "variables": {
+    "GCReferences": {
+      "type": "GCReference",
+      "documentation": null
+    },
+    "RefCount": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

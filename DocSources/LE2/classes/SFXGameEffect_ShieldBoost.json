@@ -1,0 +1,32 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "IsShieldBoosted": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsShieldBoosted(BioPawn oPawn)"
+    },
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "OnApplied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnApplied()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

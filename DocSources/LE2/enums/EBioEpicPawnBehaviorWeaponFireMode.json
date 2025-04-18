@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BIO_EPIC_PAWN_BEHAVIOR_WEAPON_FIRE_MODE_NORMAL": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_EPIC_PAWN_BEHAVIOR_WEAPON_FIRE_MODE_ALWAYS_HIT": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_EPIC_PAWN_BEHAVIOR_WEAPON_FIRE_MODE_ALWAYS_MISS": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

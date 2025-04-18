@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "Location": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Normal": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Tangent": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Link": {
+      "type": "CoverLink",
+      "documentation": null
+    },
+    "LtSlotIdx": {
+      "type": "int",
+      "documentation": null
+    },
+    "RtSlotIdx": {
+      "type": "int",
+      "documentation": null
+    },
+    "LtToRtPct": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

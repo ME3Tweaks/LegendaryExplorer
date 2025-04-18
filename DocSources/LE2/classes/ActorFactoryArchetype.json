@@ -1,0 +1,13 @@
+{
+  "parent": "ActorFactory",
+  "package": "Engine",
+  "variables": {
+    "ArchetypeActor": {
+      "type": "Actor",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

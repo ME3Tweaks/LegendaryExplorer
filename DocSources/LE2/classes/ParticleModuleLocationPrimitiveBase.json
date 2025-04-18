@@ -1,0 +1,49 @@
+{
+  "parent": "ParticleModuleLocationBase",
+  "package": "Engine",
+  "variables": {
+    "StartLocationRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    },
+    "VelocityScale": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "Positive_X": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Positive_Y": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Positive_Z": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Negative_X": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Negative_Y": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Negative_Z": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SurfaceOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Velocity": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

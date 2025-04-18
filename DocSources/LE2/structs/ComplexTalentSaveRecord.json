@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "PrereqTalentIDArray": {
+      "type": "int",
+      "documentation": null
+    },
+    "PrereqTalentRankArray": {
+      "type": "int",
+      "documentation": null
+    },
+    "TalentID": {
+      "type": "int",
+      "documentation": null
+    },
+    "CurrentRank": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxRank": {
+      "type": "int",
+      "documentation": null
+    },
+    "LevelOffset": {
+      "type": "int",
+      "documentation": null
+    },
+    "LevelsPerRank": {
+      "type": "int",
+      "documentation": null
+    },
+    "VisualOrder": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

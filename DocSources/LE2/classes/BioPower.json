@@ -1,0 +1,439 @@
+{
+  "parent": "BioAttributes",
+  "package": "SFXGame",
+  "variables": {
+    "m_sRTPCName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_nmPower": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Script": {
+      "type": "BioPowerScript",
+      "documentation": null
+    },
+    "Instigator": {
+      "type": "Controller",
+      "documentation": null
+    },
+    "NewPower": {
+      "type": "SFXPower",
+      "documentation": null
+    },
+    "m_fTotalCooldownTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCooldownRemaining": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nSuppressedCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bFakePower": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisableVFX": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisableDamageAndEffects": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisableAnimation": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetDifficultyCooldownMultiplier": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDifficultyCooldownMultiplier()"
+    },
+    "ShouldDisplayInHUD": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldDisplayInHUD()"
+    },
+    "GetDescription": {
+      "documentation": null,
+      "signature_members": {
+        "sDescription": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetDescription(out string sDescription)"
+    },
+    "GetImpactText": {
+      "documentation": null,
+      "signature_members": {
+        "srImpactText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetImpactText(out stringref srImpactText)"
+    },
+    "GetDisplayName": {
+      "documentation": null,
+      "signature_members": {
+        "sDisplayName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetDisplayName(out string sDisplayName)"
+    },
+    "GetPowerIcon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetPowerIcon()"
+    },
+    "GetImpactNoise": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetImpactNoise()"
+    },
+    "GetReleaseNoise": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetReleaseNoise()"
+    },
+    "CancelPower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CancelPower()"
+    },
+    "IsActive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsActive()"
+    },
+    "CanCasterMoveDuringPower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanCasterMoveDuringPower()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float fDeltaTime)"
+    },
+    "SetTotalCooldownTime": {
+      "documentation": null,
+      "signature_members": {
+        "fTotalCooldown": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTotalCooldownTime(float fTotalCooldown)"
+    },
+    "GetTotalCooldownTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetTotalCooldownTime()"
+    },
+    "SetCooldownRemaining": {
+      "documentation": null,
+      "signature_members": {
+        "fCooldownRemaining": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCooldownRemaining(float fCooldownRemaining)"
+    },
+    "GetCooldownRemaining": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetCooldownRemaining()"
+    },
+    "IsSuppressed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsSuppressed()"
+    },
+    "SuppressPower": {
+      "documentation": null,
+      "signature_members": {
+        "bSuppress": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int SuppressPower(bool bSuppress)"
+    },
+    "IsEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsEnabled()"
+    },
+    "GetType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EBioPowerType",
+      "signature": "EBioPowerType GetType()"
+    },
+    "GetProjectileAttachPoint": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "vAttachPoint": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProjectileAttachPoint(Pawn pPawn, out Vector vAttachPoint)"
+    },
+    "GetAnimSet": {
+      "documentation": null,
+      "signature_members": {
+        "oAnimSet": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetAnimSet(out AnimSet oAnimSet)"
+    },
+    "DoImpactVFX": {
+      "documentation": null,
+      "signature_members": {
+        "ImpactType": {
+          "type": null,
+          "documentation": null
+        },
+        "oActor": {
+          "type": null,
+          "documentation": null
+        },
+        "vLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "vHitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "fCastingTimeRemaining": {
+          "type": null,
+          "documentation": null
+        },
+        "BoneName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoImpactVFX(EBioPowerResource ImpactType, Actor oActor, Vector vLocation, Vector vHitNormal, float fCastingTimeRemaining, optional Name BoneName)"
+    },
+    "GetVFXLifetime": {
+      "documentation": null,
+      "signature_members": {
+        "eResource": {
+          "type": null,
+          "documentation": null
+        },
+        "fCastingTimeRemaining": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetVFXLifetime(EBioPowerResource eResource, float fCastingTimeRemaining)"
+    },
+    "GetVFXTemplate": {
+      "documentation": null,
+      "signature_members": {
+        "eResource": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioVFXTemplate",
+      "signature": "BioVFXTemplate GetVFXTemplate(EBioPowerResource eResource)"
+    },
+    "EndVisualEffect": {
+      "documentation": null,
+      "signature_members": {
+        "eResource": {
+          "type": null,
+          "documentation": null
+        },
+        "bAllowVFXToFinish": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EndVisualEffect(EBioPowerResource eResource, optional bool bAllowVFXToFinish)"
+    },
+    "CreateVisualEffect": {
+      "documentation": null,
+      "signature_members": {
+        "eResource": {
+          "type": null,
+          "documentation": null
+        },
+        "pEffect": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CreateVisualEffect(EBioPowerResource eResource, out BioVisualEffect pEffect)"
+    },
+    "CreatePowerScript": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CreatePowerScript()"
+    },
+    "InitializePower": {
+      "documentation": null,
+      "signature_members": {
+        "nmPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializePower(Name nmPower)"
+    },
+    "GetDiscipline": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "byte",
+      "signature": "byte GetDiscipline()"
+    },
+    "GetCapabilityType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EBioCapabilityTypes",
+      "signature": "EBioCapabilityTypes GetCapabilityType()"
+    },
+    "GetStopOnFirstHit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetStopOnFirstHit()"
+    },
+    "GetBlockedByObjects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetBlockedByObjects()"
+    },
+    "GetConeHalfAngle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetConeHalfAngle()"
+    },
+    "GetVFXIntensity": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetVFXIntensity()"
+    },
+    "GetEffectDuration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetEffectDuration()"
+    },
+    "GetImpactRadius": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetImpactRadius()"
+    },
+    "GetMaximumRange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMaximumRange()"
+    },
+    "GetMinimumRange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMinimumRange()"
+    },
+    "GetProjectileRadius": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetProjectileRadius()"
+    },
+    "GetProjectileSpeed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetProjectileSpeed()"
+    },
+    "GetGlobalCooldown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetGlobalCooldown()"
+    },
+    "GetCooldownTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetCooldownTime()"
+    },
+    "GetReleaseAnimRate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetReleaseAnimRate()"
+    },
+    "GetCastingTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetCastingTime()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

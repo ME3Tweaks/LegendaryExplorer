@@ -1,11 +1,11 @@
 {
   "Members": {
     "VariableName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Category": {
-      "type": null,
+      "type": "EReinforcementGUICategory",
       "documentation": null
     }
   },

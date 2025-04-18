@@ -1,11 +1,11 @@
 {
   "Members": {
     "Archetype": {
-      "type": null,
+      "type": "Object",
       "documentation": null
     },
     "RemovedVersion": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

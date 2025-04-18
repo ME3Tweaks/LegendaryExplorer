@@ -1,91 +1,91 @@
 {
   "Members": {
     "Source": {
-      "type": null,
+      "type": "EDamageCalculationSource",
       "documentation": null
     },
     "TargetName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "DamageClassName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "BaseDamage": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Weapon_RangeMultiplier": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Weapon_PawnEffectsDamageMultiplier": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Weapon_PawnEffectsHeadshotDamageMultiplier": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Weapon_WeaponEffectsDamageMultiplier": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Weapon_StealthDamageMultiplier": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Weapon_HeadshotDamageMultiplier": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Weapon_RagdollDamageMultiplier": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Weapon_DamageTakenMultiplier": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Power_WeaponMeleeDamageMultiplier": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Power_DamageTakenMultiplier": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Global_DifficultyMultiplier": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Global_CoverMultiplier": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Global_PlayerPopupMultiplier": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Global_OutOfCoverMultiplier": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Global_DamageTakenMultiplier": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Global_HeadshotTakenMultiplier": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "ActualDamageDealt": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "ActualDamageApplied": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

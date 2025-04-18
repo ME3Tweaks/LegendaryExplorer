@@ -1,11 +1,11 @@
 {
   "Members": {
     "MissionName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "Value": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

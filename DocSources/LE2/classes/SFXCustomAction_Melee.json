@@ -1,0 +1,58 @@
+{
+  "parent": "BioCustomAction",
+  "package": "SFXGame",
+  "variables": {
+    "HitShake": {
+      "type": "ScreenShakeStruct",
+      "documentation": null
+    },
+    "BS_Swipe": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "AnimSet": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "HitForceFeedback": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null
+    },
+    "Damage": {
+      "type": "float",
+      "documentation": null
+    },
+    "Force": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Cleanup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Cleanup()"
+    },
+    "EndAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndAction()"
+    },
+    "Impact": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Impact()"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

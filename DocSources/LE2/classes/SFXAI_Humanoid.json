@@ -1,0 +1,67 @@
+{
+  "parent": "SFXAI_Core",
+  "package": "SFXGame",
+  "variables": {
+    "m_nInvalidatedCoverRetries": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCoverMoveCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_eCurrentBehaviour": {
+      "type": "EHumanoidBehaviours",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "NotifyUnderAttack": {
+      "documentation": null,
+      "signature_members": {
+        "bHit": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyUnderAttack(bool bHit)"
+    },
+    "SetDefaultBehaviour": {
+      "documentation": null,
+      "signature_members": {
+        "NewBehaviour": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetDefaultBehaviour(Name NewBehaviour)"
+    }
+  },
+  "states": {
+    "Combat_Defensive": {
+      "functions": {
+        "PoppedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Combat_Aggressive": {
+      "functions": {
+        "ReEvaluateCover": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

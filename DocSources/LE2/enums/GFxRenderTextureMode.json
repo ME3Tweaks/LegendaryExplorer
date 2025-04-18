@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "RTM_Opaque": {
+      "value": 0,
+      "documentation": null
+    },
+    "RTM_Alpha": {
+      "value": 1,
+      "documentation": null
+    },
+    "RTM_AlphaComposite": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

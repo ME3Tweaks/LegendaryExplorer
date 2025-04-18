@@ -1,0 +1,45 @@
+{
+  "parent": "BioCameraBehavior",
+  "package": "SFXGame",
+  "variables": {
+    "ZOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "SpeedYaw": {
+      "type": "float",
+      "documentation": null
+    },
+    "DesiredPitch": {
+      "type": "float",
+      "documentation": null
+    },
+    "SpeedPitch": {
+      "type": "float",
+      "documentation": null
+    },
+    "DesiredDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "SpeedDistance": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,7 +1,7 @@
 {
   "Members": {
     "LocalPriorities": {
-      "type": null,
+      "type": "TalkerPriority",
       "documentation": null
     }
   },

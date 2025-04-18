@@ -1,0 +1,29 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "SFXGame",
+  "variables": {
+    "LeftFootNormalizedRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendOut": {
+      "type": "BioAnimCheckBlendOut",
+      "documentation": null
+    },
+    "MovementSync": {
+      "type": "BioAnimMovementSync",
+      "documentation": null
+    },
+    "BlendOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bOverrideRootMotion": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

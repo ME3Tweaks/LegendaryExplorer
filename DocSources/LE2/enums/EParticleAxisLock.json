@@ -1,0 +1,45 @@
+{
+  "EnumValues": {
+    "EPAL_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "EPAL_X": {
+      "value": 1,
+      "documentation": null
+    },
+    "EPAL_Y": {
+      "value": 2,
+      "documentation": null
+    },
+    "EPAL_Z": {
+      "value": 3,
+      "documentation": null
+    },
+    "EPAL_NEGATIVE_X": {
+      "value": 4,
+      "documentation": null
+    },
+    "EPAL_NEGATIVE_Y": {
+      "value": 5,
+      "documentation": null
+    },
+    "EPAL_NEGATIVE_Z": {
+      "value": 6,
+      "documentation": null
+    },
+    "EPAL_ROTATE_X": {
+      "value": 7,
+      "documentation": null
+    },
+    "EPAL_ROTATE_Y": {
+      "value": 8,
+      "documentation": null
+    },
+    "EPAL_ROTATE_Z": {
+      "value": 9,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

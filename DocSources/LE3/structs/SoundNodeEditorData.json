@@ -1,11 +1,11 @@
 {
   "Members": {
     "NodePosX": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "NodePosY": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

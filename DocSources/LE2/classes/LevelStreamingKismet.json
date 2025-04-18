@@ -1,0 +1,13 @@
+{
+  "parent": "LevelStreaming",
+  "package": "Engine",
+  "variables": {
+    "bNeverAutoStreamOut": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

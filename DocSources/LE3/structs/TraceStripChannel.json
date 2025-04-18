@@ -1,43 +1,43 @@
 {
   "Members": {
     "Keys": {
-      "type": null,
+      "type": "TraceStripKey",
       "documentation": null
     },
     "DrawColor": {
-      "type": null,
+      "type": "LinearColor",
       "documentation": null
     },
     "nmButton": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "nmAxis": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "Owner": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "nmProperty": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "nmAnimnode": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "CachedProperty": {
-      "type": null,
+      "type": "Property",
       "documentation": null
     },
     "CachedAnimNode": {
-      "type": null,
+      "type": "AnimNodeBlendBase",
       "documentation": null
     },
     "fDynamicMax": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

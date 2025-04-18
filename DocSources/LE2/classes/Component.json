@@ -1,0 +1,17 @@
+{
+  "parent": "Object",
+  "package": "Core",
+  "variables": {
+    "TemplateOwnerClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "TemplateName": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

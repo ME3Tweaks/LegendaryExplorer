@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "nmFindActor": {
+      "type": "Name",
+      "documentation": null
+    },
+    "fDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "eFindActorMode": {
+      "type": "EActorTrackFindActorMode",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

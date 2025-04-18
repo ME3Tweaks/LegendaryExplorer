@@ -1,0 +1,65 @@
+{
+  "parent": "SFXWeapon",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "PlayLowAmmoVocalization": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayLowAmmoVocalization()"
+    },
+    "AddHeavyAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "Ammo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int AddHeavyAmmo(int Ammo)"
+    },
+    "ScaleWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "Level": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ScaleWeapon(int Level)"
+    },
+    "GetCurrentSpareAmmo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetCurrentSpareAmmo()"
+    },
+    "AddAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int AddAmmo(int Amount)"
+    },
+    "ConsumeAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "FireModeNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ConsumeAmmo(byte FireModeNum)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

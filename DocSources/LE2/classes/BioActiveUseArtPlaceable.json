@@ -1,0 +1,34 @@
+{
+  "parent": "BioActive",
+  "package": "SFXGame",
+  "variables": {
+    "Reactive": {
+      "type": "BioReactiveUseArtPlaceable",
+      "documentation": null
+    },
+    "m_fDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bDone": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetProgress": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetProgress()"
+    },
+    "InitializeInternal": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeInternal()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,447 @@
+{
+  "parent": "SequenceObject",
+  "package": "Engine",
+  "variables": {
+    "InputLinks": {
+      "type": "SeqOpInputLink",
+      "documentation": null
+    },
+    "OutputLinks": {
+      "type": "SeqOpOutputLink",
+      "documentation": null
+    },
+    "VariableLinks": {
+      "type": "SeqVarLink",
+      "documentation": null
+    },
+    "EventLinks": {
+      "type": "SeqEventLink",
+      "documentation": null
+    },
+    "PlayerIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "ActivateCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "SearchTag": {
+      "type": "int",
+      "documentation": null
+    },
+    "bActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLatentExecution": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bManualHandleOutputs": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAutoActivateOutputLinks": {
+      "type": "bool",
+      "documentation": null
+    },
+    "GamepadID": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ForceActivateInput": {
+      "documentation": null,
+      "signature_members": {
+        "InputIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ForceActivateInput(int InputIdx)"
+    },
+    "GetController": {
+      "documentation": null,
+      "signature_members": {
+        "TheActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Controller",
+      "signature": "Controller GetController(Actor TheActor)"
+    },
+    "GetPawn": {
+      "documentation": null,
+      "signature_members": {
+        "TheActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Pawn",
+      "signature": "Pawn GetPawn(Actor TheActor)"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "PublishLinkedVariableValues": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PublishLinkedVariableValues()"
+    },
+    "PopulateLinkedVariableValues": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PopulateLinkedVariableValues()"
+    },
+    "PreVersionUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "OldVersion": {
+          "type": null,
+          "documentation": null
+        },
+        "NewVersion": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PreVersionUpdated(int OldVersion, int NewVersion)"
+    },
+    "VersionUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "OldVersion": {
+          "type": null,
+          "documentation": null
+        },
+        "NewVersion": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "VersionUpdated(int OldVersion, int NewVersion)"
+    },
+    "SetStringRefVars": {
+      "documentation": null,
+      "signature_members": {
+        "sLink": {
+          "type": null,
+          "documentation": null
+        },
+        "srValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetStringRefVars(string sLink, stringref srValue)"
+    },
+    "SetNameVars": {
+      "documentation": null,
+      "signature_members": {
+        "sLink": {
+          "type": null,
+          "documentation": null
+        },
+        "sValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNameVars(string sLink, Name sValue)"
+    },
+    "SetObjectVars": {
+      "documentation": null,
+      "signature_members": {
+        "sLink": {
+          "type": null,
+          "documentation": null
+        },
+        "oValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetObjectVars(string sLink, Object oValue)"
+    },
+    "SetStringVars": {
+      "documentation": null,
+      "signature_members": {
+        "sLink": {
+          "type": null,
+          "documentation": null
+        },
+        "sValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetStringVars(string sLink, string sValue)"
+    },
+    "SetFloatVars": {
+      "documentation": null,
+      "signature_members": {
+        "sLink": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFloatVars(string sLink, float fValue)"
+    },
+    "SetIntVars": {
+      "documentation": null,
+      "signature_members": {
+        "sLink": {
+          "type": null,
+          "documentation": null
+        },
+        "nValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetIntVars(string sLink, int nValue)"
+    },
+    "SetBoolVars": {
+      "documentation": null,
+      "signature_members": {
+        "sLink": {
+          "type": null,
+          "documentation": null
+        },
+        "bValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBoolVars(string sLink, bool bValue)"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "ActivateNamedOutputLink": {
+      "documentation": null,
+      "signature_members": {
+        "LinkDesc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ActivateNamedOutputLink(string LinkDesc)"
+    },
+    "ActivateOutputLink": {
+      "documentation": null,
+      "signature_members": {
+        "OutputIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ActivateOutputLink(int OutputIdx)"
+    },
+    "GetStringRefVars": {
+      "documentation": null,
+      "signature_members": {
+        "aStringRef": {
+          "type": null,
+          "documentation": null
+        },
+        "sDescription": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetStringRefVars(out array<stringref> aStringRef, optional string sDescription)"
+    },
+    "GetNameVars": {
+      "documentation": null,
+      "signature_members": {
+        "nameVars": {
+          "type": null,
+          "documentation": null
+        },
+        "inDesc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetNameVars(out array<Name> nameVars, optional string inDesc)"
+    },
+    "GetStringVars": {
+      "documentation": null,
+      "signature_members": {
+        "strVars": {
+          "type": null,
+          "documentation": null
+        },
+        "inDesc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetStringVars(out array<string> strVars, optional string inDesc)"
+    },
+    "GetFloatVars": {
+      "documentation": null,
+      "signature_members": {
+        "floatVars": {
+          "type": null,
+          "documentation": null
+        },
+        "inDesc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetFloatVars(out array<float> floatVars, optional string inDesc)"
+    },
+    "GetIntVars": {
+      "documentation": null,
+      "signature_members": {
+        "intVars": {
+          "type": null,
+          "documentation": null
+        },
+        "inDesc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetIntVars(out array<int> intVars, optional string inDesc)"
+    },
+    "LinkedVariables": {
+      "documentation": null,
+      "signature_members": {
+        "VarClass": {
+          "type": null,
+          "documentation": null
+        },
+        "OutVariable": {
+          "type": null,
+          "documentation": null
+        },
+        "inDesc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LinkedVariables(Class<SequenceVariable> VarClass, out SequenceVariable OutVariable, optional string inDesc)"
+    },
+    "GetBoolVars": {
+      "documentation": null,
+      "signature_members": {
+        "boolVars": {
+          "type": null,
+          "documentation": null
+        },
+        "inDesc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetBoolVars(out array<byte> boolVars, optional string inDesc)"
+    },
+    "GetInterpDataVars": {
+      "documentation": null,
+      "signature_members": {
+        "outIData": {
+          "type": null,
+          "documentation": null
+        },
+        "inDesc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetInterpDataVars(out array<InterpData> outIData, optional string inDesc)"
+    },
+    "GetObjectVars": {
+      "documentation": null,
+      "signature_members": {
+        "objVars": {
+          "type": null,
+          "documentation": null
+        },
+        "inDesc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetObjectVars(out array<Object> objVars, optional string inDesc)"
+    },
+    "GetLinkedObjects": {
+      "documentation": null,
+      "signature_members": {
+        "out_Objects": {
+          "type": null,
+          "documentation": null
+        },
+        "ObjectType": {
+          "type": null,
+          "documentation": null
+        },
+        "bRecurse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetLinkedObjects(out array<SequenceObject> out_Objects, optional Class<SequenceObject> ObjectType, optional bool bRecurse)"
+    },
+    "HasLinkedOps": {
+      "documentation": null,
+      "signature_members": {
+        "bConsiderInputLinks": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasLinkedOps(optional bool bConsiderInputLinks)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

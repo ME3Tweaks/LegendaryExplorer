@@ -1,0 +1,164 @@
+{
+  "parent": "FracturedBaseComponent",
+  "package": "Engine",
+  "variables": {
+    "FragmentNeighborsVisible": {
+      "type": "byte",
+      "documentation": null
+    },
+    "VisibleBox": {
+      "type": "Box",
+      "documentation": null
+    },
+    "LoseChunkOutsideMaterialOverride": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "SkinnedComponent": {
+      "type": "FracturedSkinnedMeshComponent",
+      "documentation": null
+    },
+    "TopBottomFragmentDistThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "FragmentBoundsMaxZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "FragmentBoundsMinZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "bUseSkinnedRendering": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseVisibleVertsForBounds": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTopFragmentsRootNonDestroyable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBottomFragmentsRootNonDestroyable": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetFracturedMeshPhysMaterial": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "PhysicalMaterial",
+      "signature": "PhysicalMaterial GetFracturedMeshPhysMaterial()"
+    },
+    "RecreatePhysState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RecreatePhysState()"
+    },
+    "GetBoundaryHiddenFragments": {
+      "documentation": null,
+      "signature_members": {
+        "AdditionalVisibleFragments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "array<int> GetBoundaryHiddenFragments(array<int> AdditionalVisibleFragments)"
+    },
+    "GetFragmentGroups": {
+      "documentation": null,
+      "signature_members": {
+        "IgnoreFragments": {
+          "type": null,
+          "documentation": null
+        },
+        "MinConnectionArea": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "FragmentGroup",
+      "signature": "array<FragmentGroup> GetFragmentGroups(array<int> IgnoreFragments, float MinConnectionArea)"
+    },
+    "GetCoreFragmentIndex": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetCoreFragmentIndex()"
+    },
+    "GetFragmentAverageExteriorNormal": {
+      "documentation": null,
+      "signature_members": {
+        "FragmentIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetFragmentAverageExteriorNormal(int FragmentIndex)"
+    },
+    "GetFragmentBox": {
+      "documentation": null,
+      "signature_members": {
+        "FragmentIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Box",
+      "signature": "Box GetFragmentBox(int FragmentIndex)"
+    },
+    "IsNoPhysFragment": {
+      "documentation": null,
+      "signature_members": {
+        "FragmentIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsNoPhysFragment(int FragmentIndex)"
+    },
+    "IsRootFragment": {
+      "documentation": null,
+      "signature_members": {
+        "FragmentIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsRootFragment(int FragmentIndex)"
+    },
+    "IsFragmentDestroyable": {
+      "documentation": null,
+      "signature_members": {
+        "FragmentIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsFragmentDestroyable(int FragmentIndex)"
+    },
+    "SetVisibleFragments": {
+      "documentation": null,
+      "signature_members": {
+        "VisibilityFactors": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVisibleFragments(array<byte> VisibilityFactors)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

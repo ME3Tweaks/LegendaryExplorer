@@ -1,11 +1,11 @@
 {
   "Members": {
     "location": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "Sound": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     }
   },

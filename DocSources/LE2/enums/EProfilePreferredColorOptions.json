@@ -1,0 +1,53 @@
+{
+  "EnumValues": {
+    "PPCO_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "PPCO_Black": {
+      "value": 1,
+      "documentation": null
+    },
+    "PPCO_White": {
+      "value": 2,
+      "documentation": null
+    },
+    "PPCO_Yellow": {
+      "value": 3,
+      "documentation": null
+    },
+    "PPCO_Orange": {
+      "value": 4,
+      "documentation": null
+    },
+    "PPCO_Pink": {
+      "value": 5,
+      "documentation": null
+    },
+    "PPCO_Red": {
+      "value": 6,
+      "documentation": null
+    },
+    "PPCO_Purple": {
+      "value": 7,
+      "documentation": null
+    },
+    "PPCO_Blue": {
+      "value": 8,
+      "documentation": null
+    },
+    "PPCO_Green": {
+      "value": 9,
+      "documentation": null
+    },
+    "PPCO_Brown": {
+      "value": 10,
+      "documentation": null
+    },
+    "PPCO_Silver": {
+      "value": 11,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

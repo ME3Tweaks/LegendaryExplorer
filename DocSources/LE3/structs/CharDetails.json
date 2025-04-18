@@ -1,67 +1,67 @@
 {
   "Members": {
     "CharName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Face": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Abbrev": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Thumb": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "XP": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "PrettyLevel": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "ShieldTitle": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "CharClass": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "allocated": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Spendable": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Level": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "PctToLevel": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Health": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Shield": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Pgn": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Rng": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

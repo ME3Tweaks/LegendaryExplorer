@@ -1,0 +1,213 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "SelectionReticle": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "SelectionMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "PhysicsMomentumMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "PlayerMomentumCap": {
+      "type": "float",
+      "documentation": null
+    },
+    "PlayerCoverDamageMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "PlayerStormDamageMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "PlayerCoverLeanDamageMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "PawnInRagdollDamageMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "PlayerCoverRegenTimerMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "HeatDissipationRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "CoverAimBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxPlayerLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxPlayerExperience": {
+      "type": "int",
+      "documentation": null
+    },
+    "CreditsGlobal": {
+      "type": "int",
+      "documentation": null
+    },
+    "IridiumGlobal": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlatinumGlobal": {
+      "type": "int",
+      "documentation": null
+    },
+    "PalladiumGlobal": {
+      "type": "int",
+      "documentation": null
+    },
+    "EezoGlobal": {
+      "type": "int",
+      "documentation": null
+    },
+    "IdGlobal": {
+      "type": "int",
+      "documentation": null
+    },
+    "CreditsLocal": {
+      "type": "int",
+      "documentation": null
+    },
+    "EezoLocal": {
+      "type": "int",
+      "documentation": null
+    },
+    "IridiumLocal": {
+      "type": "int",
+      "documentation": null
+    },
+    "PalladiumLocal": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlatinumLocal": {
+      "type": "int",
+      "documentation": null
+    },
+    "IdLocal": {
+      "type": "int",
+      "documentation": null
+    },
+    "nLastDamage": {
+      "type": "int",
+      "documentation": null
+    },
+    "fLastDamageUpdate": {
+      "type": "float",
+      "documentation": null
+    },
+    "fAmmoPulseTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "fTmpShieldIndicator": {
+      "type": "float",
+      "documentation": null
+    },
+    "fTmpHealthIndicator": {
+      "type": "float",
+      "documentation": null
+    },
+    "fHealthInterpSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "WeaponsUseHeat": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOutOfAmmoWeaponSwap": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShieldsBlockPowers": {
+      "type": "bool",
+      "documentation": null
+    },
+    "UseSharedPowerCooldown": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseConsoleControls": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowScore": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReviveSquadOnUse": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsFullAmmo": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBudgetEnforced": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CanShootDeadBodies": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAimAssistEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLastDamageUpdate": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "RecordTreasure": {
+      "documentation": null,
+      "signature_members": {
+        "eType": {
+          "type": null,
+          "documentation": null
+        },
+        "Award": {
+          "type": null,
+          "documentation": null
+        },
+        "LevelId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int RecordTreasure(EInventoryResourceTypes eType, int Award, optional int LevelId)"
+    },
+    "GetGlobalBudget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "TreasureBudget",
+      "signature": "TreasureBudget GetGlobalBudget()"
+    },
+    "GetLevelBudget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "TreasureBudget",
+      "signature": "TreasureBudget GetLevelBudget()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

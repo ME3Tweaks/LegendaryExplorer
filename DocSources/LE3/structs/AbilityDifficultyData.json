@@ -1,15 +1,15 @@
 {
   "Members": {
     "StatName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "StatRange": {
-      "type": null,
+      "type": "Vector2D",
       "documentation": null
     },
     "bStatActive": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

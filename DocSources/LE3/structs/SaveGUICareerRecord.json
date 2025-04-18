@@ -1,39 +1,39 @@
 {
   "Members": {
     "CareerName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "firstName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "className": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "CareerSaves": {
-      "type": null,
+      "type": "SFXSavePair",
       "documentation": null
     },
     "CreationDate": {
-      "type": null,
+      "type": "SaveTimeStamp",
       "documentation": null
     },
     "DeviceID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bActiveCareer": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "Origin": {
-      "type": null,
+      "type": "EOriginType",
       "documentation": null
     },
     "Notoriety": {
-      "type": null,
+      "type": "ENotorietyType",
       "documentation": null
     }
   },

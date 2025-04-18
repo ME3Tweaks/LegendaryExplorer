@@ -1,0 +1,37 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "rDesiredRot": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "rPreviousPawnRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "oTurnActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "oTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "bForce": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStarted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFailedToStart": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

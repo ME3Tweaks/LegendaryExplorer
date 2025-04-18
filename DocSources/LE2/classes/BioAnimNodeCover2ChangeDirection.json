@@ -1,0 +1,29 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "SFXGame",
+  "variables": {
+    "IdleToTransitionBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "TransitionToIdleBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "bBlocking": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CurrentCoverDirection": {
+      "type": "ECoverDirection",
+      "documentation": null
+    },
+    "PendingCoverDirection": {
+      "type": "ECoverDirection",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

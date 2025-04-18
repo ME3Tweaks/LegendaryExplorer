@@ -1,0 +1,53 @@
+{
+  "parent": "ActorComponent",
+  "package": "Engine",
+  "variables": {
+    "Height": {
+      "type": "float",
+      "documentation": null
+    },
+    "Density": {
+      "type": "float",
+      "documentation": null
+    },
+    "LightBrightness": {
+      "type": "float",
+      "documentation": null
+    },
+    "LightColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "ExtinctionDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "StartDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "FalloffStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bSetEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEnabled(bool bSetEnabled)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

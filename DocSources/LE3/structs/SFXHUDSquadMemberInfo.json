@@ -1,127 +1,127 @@
 {
   "Members": {
     "sPath": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sIconImagePath": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sShieldPath": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sBioticPath": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sArmourPath": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sHealthPath": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sPowerPath": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Resistances": {
-      "type": null,
+      "type": "SFXHUDResistances",
       "documentation": null
     },
     "DisplayedResistances": {
-      "type": null,
+      "type": "SFXHUDResistances",
       "documentation": null
     },
     "pPawn": {
-      "type": null,
+      "type": "BioPawn",
       "documentation": null
     },
     "pIcon": {
-      "type": null,
+      "type": "Texture2D",
       "documentation": null
     },
     "pPowerIcon": {
-      "type": null,
+      "type": "SFXGUIValue_HUDPowerIcon",
       "documentation": null
     },
     "fCooldown": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "fElapsedFullResistTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bCooldownVisible": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bShieldVisible": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bBioticVisible": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bArmourVisible": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bHealthVisible": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bShieldDamage": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bBioticDamage": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bArmourDamage": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bHealthDamage": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bInvalidated": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bVisible": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bUpdateResistance": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bUpdateHealth": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bUpdatePower": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bUpdateIcon": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bDisplayVisible": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "ePortraitState": {
-      "type": null,
+      "type": "ESFXPortraitState",
       "documentation": null
     }
   },

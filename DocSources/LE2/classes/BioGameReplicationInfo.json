@@ -1,0 +1,13 @@
+{
+  "parent": "GameReplicationInfo",
+  "package": "SFXGame",
+  "variables": {
+    "Temp": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

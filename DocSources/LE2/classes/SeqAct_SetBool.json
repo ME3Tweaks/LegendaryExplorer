@@ -1,0 +1,17 @@
+{
+  "parent": "SeqAct_SetSequenceVariable",
+  "package": "Engine",
+  "variables": {
+    "Target": {
+      "type": "bool",
+      "documentation": null
+    },
+    "DefaultValue": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

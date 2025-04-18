@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Template": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "Effect": {
+      "type": "BioVisualEffect",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

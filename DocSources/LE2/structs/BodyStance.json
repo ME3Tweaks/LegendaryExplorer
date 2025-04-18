@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "AnimName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "StanceID": {
+      "type": "EBodyStance",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

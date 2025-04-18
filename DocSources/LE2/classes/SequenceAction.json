@@ -1,0 +1,21 @@
+{
+  "parent": "SequenceOp",
+  "package": "Engine",
+  "variables": {
+    "Targets": {
+      "type": "Object",
+      "documentation": null
+    },
+    "HandlerName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bCallHandler": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

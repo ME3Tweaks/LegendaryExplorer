@@ -1,0 +1,21 @@
+{
+  "parent": "AnimNotify",
+  "package": "WwiseAudio",
+  "variables": {
+    "AudioEvent": {
+      "type": "WwiseEventPair",
+      "documentation": null
+    },
+    "BoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bFollowActor": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "parent": "Bio2DA",
+  "package": "SFXGame",
+  "variables": {
+    "m_MasterRowNumberToArrayIndex": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "m_MasterNumberedRowIndex": {
+      "type": "Bio2daMasterRowIndexRec",
+      "documentation": null
+    },
+    "m_lstRowNumbers": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

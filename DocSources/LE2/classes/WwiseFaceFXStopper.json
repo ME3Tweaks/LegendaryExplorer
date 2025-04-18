@@ -1,0 +1,25 @@
+{
+  "parent": "Object",
+  "package": "WwiseAudio",
+  "variables": {
+    "VfTable_IWwiseComponentCallback": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "m_SkelMeshComp": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "m_WwiseAudioComp": {
+      "type": "WwiseAudioComponent",
+      "documentation": null
+    },
+    "m_WwiseAudioEvent": {
+      "type": "WwiseEvent",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

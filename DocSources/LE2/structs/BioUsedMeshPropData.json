@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "aEffects": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "pPropCmp": {
+      "type": "MeshComponent",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

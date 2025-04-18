@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BScMvAxisDir_X": {
+      "value": 0,
+      "documentation": null
+    },
+    "BScMvAxisDir_Y": {
+      "value": 1,
+      "documentation": null
+    },
+    "BScMvAxisDir_Z": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

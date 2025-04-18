@@ -1,0 +1,31 @@
+{
+  "parent": "BioSpectatorMode",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "ActivateOption": {
+      "documentation": null,
+      "signature_members": {
+        "WorldInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivateOption(BioWorldInfo WorldInfo)"
+    },
+    "InitializeOptions": {
+      "documentation": null,
+      "signature_members": {
+        "WorldInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeOptions(BioWorldInfo WorldInfo)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

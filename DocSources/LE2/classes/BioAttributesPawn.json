@@ -1,0 +1,17 @@
+{
+  "parent": "BioAttributesEpicPawn",
+  "package": "SFXGame",
+  "variables": {
+    "m_HazardLevel": {
+      "type": "BioComplexIntStructAttribute",
+      "documentation": null
+    },
+    "m_Race": {
+      "type": "EBioAttributePawnRace",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

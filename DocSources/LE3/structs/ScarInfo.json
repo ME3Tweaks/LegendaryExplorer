@@ -1,35 +1,35 @@
 {
   "Members": {
     "Threshold": {
-      "type": null,
+      "type": "Vector2D",
       "documentation": null
     },
     "Emissive": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Normal": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "EyeEmissive": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "FemaleEmissive": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "FemaleNormal": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "FemaleEyeEmissive": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Color": {
-      "type": null,
+      "type": "LinearColor",
       "documentation": null
     }
   },

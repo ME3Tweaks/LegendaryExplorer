@@ -1,0 +1,25 @@
+{
+  "parent": "BioAnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_aChildAnimsets": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_fTransEndTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fEndBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bTransitioning": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

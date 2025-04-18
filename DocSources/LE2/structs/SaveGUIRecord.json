@@ -1,0 +1,49 @@
+{
+  "Members": {
+    "SaveDescriptor": {
+      "type": "SFXSaveDescriptor",
+      "documentation": null
+    },
+    "FriendlyName": {
+      "type": "string",
+      "documentation": null
+    },
+    "ImagePath": {
+      "type": "string",
+      "documentation": null
+    },
+    "SaveGame": {
+      "type": "SFXSaveGame",
+      "documentation": null
+    },
+    "AreaImage": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "m_sec": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_Min": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_hr": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_day": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_mo": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_year": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

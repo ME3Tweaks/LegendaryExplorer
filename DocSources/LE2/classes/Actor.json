@@ -1,0 +1,4481 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Components": {
+      "type": "ActorComponent",
+      "documentation": null
+    },
+    "Modules": {
+      "type": "SFXModule",
+      "documentation": null
+    },
+    "AllComponents": {
+      "type": "ActorComponent",
+      "documentation": null
+    },
+    "PrimedTextures": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "Timers": {
+      "type": "TimerData",
+      "documentation": null
+    },
+    "Touching": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "Children": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "Attached": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "SupportedEvents": {
+      "type": "Class",
+      "documentation": null
+    },
+    "GeneratedEvents": {
+      "type": "SequenceEvent",
+      "documentation": null
+    },
+    "LatentActions": {
+      "type": "SeqAct_Latent",
+      "documentation": null
+    },
+    "MessageClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "Location": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Rotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "DrawScale3D": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PrePivot": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Velocity": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Acceleration": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "AngularVelocity": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "RelativeLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "RelativeRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "RotationRate": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "ActorType": {
+      "type": "BioBaseComponent",
+      "documentation": null
+    },
+    "Owner": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "Base": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "Instigator": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "WorldInfo": {
+      "type": "WorldInfo",
+      "documentation": null
+    },
+    "Tag": {
+      "type": "Name",
+      "documentation": null
+    },
+    "UniqueTag": {
+      "type": "Name",
+      "documentation": null
+    },
+    "InitialState": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Group": {
+      "type": "Name",
+      "documentation": null
+    },
+    "LatentSeqNode": {
+      "type": "AnimNodeSequence",
+      "documentation": null
+    },
+    "PhysicsVolume": {
+      "type": "PhysicsVolume",
+      "documentation": null
+    },
+    "BaseSkelComponent": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "BaseBoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "CollisionComponent": {
+      "type": "PrimitiveComponent",
+      "documentation": null
+    },
+    "PendingTouch": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "oBioComponent": {
+      "type": "BioBaseComponent",
+      "documentation": null
+    },
+    "DrawScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "DetachFence": {
+      "type": "RenderCommandFence",
+      "documentation": null
+    },
+    "CustomTimeDilation": {
+      "type": "float",
+      "documentation": null
+    },
+    "NetTag": {
+      "type": "int",
+      "documentation": null
+    },
+    "NetUpdateTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "NetUpdateFrequency": {
+      "type": "float",
+      "documentation": null
+    },
+    "NetPriority": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastNetUpdateTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeSinceLastTick": {
+      "type": "float",
+      "documentation": null
+    },
+    "TickFrequency": {
+      "type": "float",
+      "documentation": null
+    },
+    "TickFrequencyAtEndDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "TickFrequencyDecreaseDistanceStart": {
+      "type": "float",
+      "documentation": null
+    },
+    "TickFrequencyDecreaseDistanceEnd": {
+      "type": "float",
+      "documentation": null
+    },
+    "TickFrequencyLastSeenTimeBeforeForcingMaxTickFrequency": {
+      "type": "float",
+      "documentation": null
+    },
+    "LifeSpan": {
+      "type": "float",
+      "documentation": null
+    },
+    "CreationTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastRenderTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastRenderTimeInMasterView": {
+      "type": "float",
+      "documentation": null
+    },
+    "LatentFloat": {
+      "type": "float",
+      "documentation": null
+    },
+    "OverlapTag": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fGravityScaling": {
+      "type": "float",
+      "documentation": null
+    },
+    "DensityScaling": {
+      "type": "float",
+      "documentation": null
+    },
+    "ActorTickBreakGroup": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fPhysicsThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "AudioObstruction": {
+      "type": "float",
+      "documentation": null
+    },
+    "AudioOcclusion": {
+      "type": "float",
+      "documentation": null
+    },
+    "bStatic": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHidden": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoDelete": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDeleteMe": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTicked": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOnlyOwnerSee": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTickIsDisabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWorldGeometry": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreRigidBodyPawns": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOrientOnSlope": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreEncroachers": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPushedByEncroachers": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDestroyedByInterpActor": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRouteBeginPlayEvenIfStatic": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsMoving": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAlwaysEncroachCheck": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasAlternateTargetLocation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanStepUpOn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNetTemporary": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOnlyRelevantToOwner": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNetDirty": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAlwaysRelevant": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReplicateInstigator": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReplicateMovement": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSkipActorPropertyReplication": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUpdateSimulatedPosition": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTearOff": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOnlyDirtyReplication": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowFluidSurfaceInteraction": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDemoRecording": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDemoOwner": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceDemoRelevant": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNetInitialRotation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReplicateRigidBodyLocation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bKillDuringLevelTransition": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bExchangedRoles": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bConsiderAllStaticMeshComponentsForStreaming": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDebug": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPostRenderIfNotVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceNetUpdate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPendingNetUpdate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHardAttach": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreBaseRotation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShadowParented": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanBeAdheredTo": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanBeFrictionedTo": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBioSnapToBase": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bBioBoneDependsOnBaseSkel": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHurtEntry": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bGameRelevant": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMovable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDestroyInPainVolume": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanBeDamaged": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShouldBaseAtStartup": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPendingDelete": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanTeleport": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAlwaysTick": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBlocksNavigation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "BlockRigidBody": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCollideWhenPlacing": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCollideActors": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCollideWorld": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCollideComplex": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBlockActors": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bProjTarget": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBlocksTeleport": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMoveIgnoresDestruction": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoEncroachCheck": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCollideAsEncroacher": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPhysRigidBodyOutOfWorldCheck": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bComponentOutsideWorld": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRigidBodyWasAwake": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCallRigidBodyWakeEvents": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBounce": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bJustTeleported": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsChangingCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNetInitial": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNetOwner": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHiddenEd": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHiddenEdGroup": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHiddenEdCustom": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEdShouldSnap": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTempEditor": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPathColliding": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPathTemp": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bScriptInitialized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLockLocation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceAllowKismetModification": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTickDuringPlayersOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoTick": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bWasInVehicleTransition": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAlwaysCollide": {
+      "type": "bool",
+      "documentation": null
+    },
+    "OverridePhysMat": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Physics": {
+      "type": "EPhysics",
+      "documentation": null
+    },
+    "RemoteRole": {
+      "type": "ENetRole",
+      "documentation": null
+    },
+    "Role": {
+      "type": "ENetRole",
+      "documentation": null
+    },
+    "CollisionType": {
+      "type": "ECollisionType",
+      "documentation": null
+    },
+    "ReplicatedCollisionType": {
+      "type": "ECollisionType",
+      "documentation": null
+    },
+    "TickGroup": {
+      "type": "ETickingGroup",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "WillOverlap": {
+      "documentation": null,
+      "signature_members": {
+        "PosA": {
+          "type": null,
+          "documentation": null
+        },
+        "VelA": {
+          "type": null,
+          "documentation": null
+        },
+        "PosB": {
+          "type": null,
+          "documentation": null
+        },
+        "VelB": {
+          "type": null,
+          "documentation": null
+        },
+        "StepSize": {
+          "type": null,
+          "documentation": null
+        },
+        "Radius": {
+          "type": null,
+          "documentation": null
+        },
+        "Time": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool WillOverlap(Vector PosA, Vector VelA, Vector PosB, Vector VelB, float StepSize, float Radius, out float Time)"
+    },
+    "GetAvoidanceVector": {
+      "documentation": null,
+      "signature_members": {
+        "Obstacles": {
+          "type": null,
+          "documentation": null
+        },
+        "GoalLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "CollisionRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxSpeed": {
+          "type": null,
+          "documentation": null
+        },
+        "NumSamples": {
+          "type": null,
+          "documentation": null
+        },
+        "VelocityStepRate": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxTimeTilOverlap": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetAvoidanceVector(const out array<Actor> Obstacles, Vector GoalLocation, float CollisionRadius, float MaxSpeed, optional int NumSamples, optional float VelocityStepRate, optional float MaxTimeTilOverlap)"
+    },
+    "IsClient": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsClient()"
+    },
+    "IsServer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsServer()"
+    },
+    "IsOwningClient": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsOwningClient()"
+    },
+    "ReplicationEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReplicationEnded()"
+    },
+    "PostDemoRewind": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostDemoRewind()"
+    },
+    "AnimTreeUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "SkelMesh": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AnimTreeUpdated(SkeletalMeshComponent SkelMesh)"
+    },
+    "SupportsKismetModification": {
+      "documentation": null,
+      "signature_members": {
+        "AskingOp": {
+          "type": null,
+          "documentation": null
+        },
+        "Reason": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SupportsKismetModification(SequenceOp AskingOp, out string Reason)"
+    },
+    "TrailsNotifyEnd": {
+      "documentation": null,
+      "signature_members": {
+        "AnimNotifyData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TrailsNotifyEnd(const AnimNotify_Trails AnimNotifyData)"
+    },
+    "TrailsNotifyTick": {
+      "documentation": null,
+      "signature_members": {
+        "AnimNotifyData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TrailsNotifyTick(const AnimNotify_Trails AnimNotifyData)"
+    },
+    "TrailsNotify": {
+      "documentation": null,
+      "signature_members": {
+        "AnimNotifyData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TrailsNotify(const AnimNotify_Trails AnimNotifyData)"
+    },
+    "PlayParticleEffect": {
+      "documentation": null,
+      "signature_members": {
+        "AnimNotifyData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayParticleEffect(const AnimNotify_PlayParticleEffect AnimNotifyData)"
+    },
+    "GetAimAdhesionExtent": {
+      "documentation": null,
+      "signature_members": {
+        "Width": {
+          "type": null,
+          "documentation": null
+        },
+        "Height": {
+          "type": null,
+          "documentation": null
+        },
+        "Center": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAimAdhesionExtent(out float Width, out float Height, out Vector Center)"
+    },
+    "GetAimFrictionExtent": {
+      "documentation": null,
+      "signature_members": {
+        "Width": {
+          "type": null,
+          "documentation": null
+        },
+        "Height": {
+          "type": null,
+          "documentation": null
+        },
+        "Center": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAimFrictionExtent(out float Width, out float Height, out Vector Center)"
+    },
+    "IsInLevel": {
+      "documentation": null,
+      "signature_members": {
+        "TestLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsInLevel(const Level TestLevel)"
+    },
+    "IsInPersistentLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsInPersistentLevel()"
+    },
+    "SetActive": {
+      "documentation": null,
+      "signature_members": {
+        "bActive": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetActive(bool bActive)"
+    },
+    "GetModule": {
+      "documentation": null,
+      "signature_members": {
+        "ModuleClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXModule",
+      "signature": "coerce SFXModule GetModule(Class<SFXModule> ModuleClass)"
+    },
+    "ExceededPhysicsThreshold": {
+      "documentation": null,
+      "signature_members": {
+        "InstigatedBy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExceededPhysicsThreshold(Actor InstigatedBy)"
+    },
+    "OnRigidBodySpringOverextension": {
+      "documentation": null,
+      "signature_members": {
+        "BodyInstance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRigidBodySpringOverextension(RB_BodyInstance BodyInstance)"
+    },
+    "GetPackageGuid": {
+      "documentation": null,
+      "signature_members": {
+        "PackageName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Guid",
+      "signature": "Guid GetPackageGuid(Name PackageName)"
+    },
+    "PostInitAnimTree": {
+      "documentation": null,
+      "signature_members": {
+        "SkelComp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PostInitAnimTree(SkeletalMeshComponent SkelComp)"
+    },
+    "RootMotionExtracted": {
+      "documentation": null,
+      "signature_members": {
+        "SkelComp": {
+          "type": null,
+          "documentation": null
+        },
+        "ExtractedRootMotionDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RootMotionExtracted(SkeletalMeshComponent SkelComp, out BoneAtom ExtractedRootMotionDelta)"
+    },
+    "RootMotionModeChanged": {
+      "documentation": null,
+      "signature_members": {
+        "SkelComp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RootMotionModeChanged(SkeletalMeshComponent SkelComp)"
+    },
+    "PostRenderFor": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        },
+        "Canvas": {
+          "type": null,
+          "documentation": null
+        },
+        "CameraPosition": {
+          "type": null,
+          "documentation": null
+        },
+        "CameraDir": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PostRenderFor(PlayerController PC, Canvas Canvas, Vector CameraPosition, Vector CameraDir)"
+    },
+    "NativePostRenderFor": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        },
+        "Canvas": {
+          "type": null,
+          "documentation": null
+        },
+        "CameraPosition": {
+          "type": null,
+          "documentation": null
+        },
+        "CameraDir": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NativePostRenderFor(PlayerController PC, Canvas Canvas, Vector CameraPosition, Vector CameraDir)"
+    },
+    "SetHUDLocation": {
+      "documentation": null,
+      "signature_members": {
+        "NewHUDLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHUDLocation(Vector NewHUDLocation)"
+    },
+    "OnRanOver": {
+      "documentation": null,
+      "signature_members": {
+        "Vehicle": {
+          "type": null,
+          "documentation": null
+        },
+        "RunOverComponent": {
+          "type": null,
+          "documentation": null
+        },
+        "WheelIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRanOver(SVehicle Vehicle, PrimitiveComponent RunOverComponent, int WheelIndex)"
+    },
+    "RigidBodyCollision": {
+      "documentation": null,
+      "signature_members": {
+        "HitComponent": {
+          "type": null,
+          "documentation": null
+        },
+        "OtherComponent": {
+          "type": null,
+          "documentation": null
+        },
+        "RigidCollisionData": {
+          "type": null,
+          "documentation": null
+        },
+        "ContactIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RigidBodyCollision(PrimitiveComponent HitComponent, PrimitiveComponent OtherComponent, const out CollisionImpactData RigidCollisionData, int ContactIndex)"
+    },
+    "InterpolationChanged": {
+      "documentation": null,
+      "signature_members": {
+        "InterpAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InterpolationChanged(SeqAct_Interp InterpAction)"
+    },
+    "InterpolationFinished": {
+      "documentation": null,
+      "signature_members": {
+        "InterpAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InterpolationFinished(SeqAct_Interp InterpAction)"
+    },
+    "InterpolationStarted": {
+      "documentation": null,
+      "signature_members": {
+        "InterpAction": {
+          "type": null,
+          "documentation": null
+        },
+        "GroupInst": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InterpolationStarted(SeqAct_Interp InterpAction, InterpGroupInst GroupInst)"
+    },
+    "PickedUpBy": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PickedUpBy(Pawn P)"
+    },
+    "SpawnedByKismet": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SpawnedByKismet()"
+    },
+    "GetTargetLocation": {
+      "documentation": null,
+      "signature_members": {
+        "RequestedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "bRequestAlternateLoc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetTargetLocation(optional Actor RequestedBy, optional bool bRequestAlternateLoc)"
+    },
+    "FindGoodEndView": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        },
+        "GoodRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FindGoodEndView(PlayerController PC, out Rotator GoodRotation)"
+    },
+    "NotifyLocalPlayerTeamReceived": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyLocalPlayerTeamReceived()"
+    },
+    "GetLocationStringFor": {
+      "documentation": null,
+      "signature_members": {
+        "PRI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetLocationStringFor(PlayerReplicationInfo PRI)"
+    },
+    "ScriptGetTeamNum": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "byte",
+      "signature": "byte ScriptGetTeamNum()"
+    },
+    "GetTeamNum": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "byte",
+      "signature": "byte GetTeamNum()"
+    },
+    "PawnBaseDied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PawnBaseDied()"
+    },
+    "IsPlayerOwned": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsPlayerOwned()"
+    },
+    "GetActorEyesViewPoint": {
+      "documentation": null,
+      "signature_members": {
+        "out_Location": {
+          "type": null,
+          "documentation": null
+        },
+        "out_Rotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetActorEyesViewPoint(out Vector out_Location, out Rotator out_Rotation)"
+    },
+    "IsStationary": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsStationary()"
+    },
+    "GetActorFaceFXAsset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "FaceFXAsset",
+      "signature": "FaceFXAsset GetActorFaceFXAsset()"
+    },
+    "CanActorPlayFaceFXAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanActorPlayFaceFXAnim()"
+    },
+    "IsActorPlayingFaceFXAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsActorPlayingFaceFXAnim()"
+    },
+    "SetSkelControlScale": {
+      "documentation": null,
+      "signature_members": {
+        "SkelControlName": {
+          "type": null,
+          "documentation": null
+        },
+        "Scale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSkelControlScale(Name SkelControlName, float Scale)"
+    },
+    "SetMorphWeight": {
+      "documentation": null,
+      "signature_members": {
+        "MorphNodeName": {
+          "type": null,
+          "documentation": null
+        },
+        "MorphWeight": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMorphWeight(Name MorphNodeName, float MorphWeight)"
+    },
+    "StopActorFaceFXAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopActorFaceFXAnim()"
+    },
+    "PlayActorFaceFXAnim": {
+      "documentation": null,
+      "signature_members": {
+        "AnimSet": {
+          "type": null,
+          "documentation": null
+        },
+        "GroupName": {
+          "type": null,
+          "documentation": null
+        },
+        "SeqName": {
+          "type": null,
+          "documentation": null
+        },
+        "SoundCueToPlay": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PlayActorFaceFXAnim(FaceFXAnimSet AnimSet, string GroupName, string SeqName, SoundCue SoundCueToPlay)"
+    },
+    "FinishAnimControl": {
+      "documentation": null,
+      "signature_members": {
+        "InInterpGroup": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FinishAnimControl(InterpGroup InInterpGroup)"
+    },
+    "SetAnimPosition": {
+      "documentation": null,
+      "signature_members": {
+        "SlotName": {
+          "type": null,
+          "documentation": null
+        },
+        "ChannelIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "InAnimSeqName": {
+          "type": null,
+          "documentation": null
+        },
+        "InPosition": {
+          "type": null,
+          "documentation": null
+        },
+        "bFireNotifies": {
+          "type": null,
+          "documentation": null
+        },
+        "bLooping": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAnimPosition(Name SlotName, int ChannelIndex, Name InAnimSeqName, float InPosition, bool bFireNotifies, bool bLooping)"
+    },
+    "BeginAnimControl": {
+      "documentation": null,
+      "signature_members": {
+        "InInterpGroup": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BeginAnimControl(InterpGroup InInterpGroup)"
+    },
+    "OnAnimPlay": {
+      "documentation": null,
+      "signature_members": {
+        "SeqNode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnAnimPlay(AnimNodeSequence SeqNode)"
+    },
+    "OnAnimEnd": {
+      "documentation": null,
+      "signature_members": {
+        "SeqNode": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayedTime": {
+          "type": null,
+          "documentation": null
+        },
+        "ExcessTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnAnimEnd(AnimNodeSequence SeqNode, float PlayedTime, float ExcessTime)"
+    },
+    "DoKismetAttachment": {
+      "documentation": null,
+      "signature_members": {
+        "Attachment": {
+          "type": null,
+          "documentation": null
+        },
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoKismetAttachment(Actor Attachment, SeqAct_AttachToActor Action)"
+    },
+    "OnAttachToActor": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnAttachToActor(SeqAct_AttachToActor Action)"
+    },
+    "BioEnqueueDoKismetAttachment": {
+      "documentation": null,
+      "signature_members": {
+        "InAttachment": {
+          "type": null,
+          "documentation": null
+        },
+        "bInDetach": {
+          "type": null,
+          "documentation": null
+        },
+        "bInHardAttach": {
+          "type": null,
+          "documentation": null
+        },
+        "InBoneName": {
+          "type": null,
+          "documentation": null
+        },
+        "bInUseRelativeOffset": {
+          "type": null,
+          "documentation": null
+        },
+        "InRelativeOffset": {
+          "type": null,
+          "documentation": null
+        },
+        "bInUseRelativeRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "InRelativeRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BioEnqueueDoKismetAttachment(Actor InAttachment, bool bInDetach, bool bInHardAttach, Name InBoneName, bool bInUseRelativeOffset, Vector InRelativeOffset, bool bInUseRelativeRotation, Rotator InRelativeRotation)"
+    },
+    "BioDoKismetAttachment": {
+      "documentation": null,
+      "signature_members": {
+        "InAttachment": {
+          "type": null,
+          "documentation": null
+        },
+        "bInDetach": {
+          "type": null,
+          "documentation": null
+        },
+        "bInHardAttach": {
+          "type": null,
+          "documentation": null
+        },
+        "InBoneName": {
+          "type": null,
+          "documentation": null
+        },
+        "bInUseRelativeOffset": {
+          "type": null,
+          "documentation": null
+        },
+        "InRelativeOffset": {
+          "type": null,
+          "documentation": null
+        },
+        "bInUseRelativeRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "InRelativeRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BioDoKismetAttachment(Actor InAttachment, bool bInDetach, bool bInHardAttach, Name InBoneName, bool bInUseRelativeOffset, Vector InRelativeOffset, bool bInUseRelativeRotation, Rotator InRelativeRotation)"
+    },
+    "OnToggleHidden": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggleHidden(SeqAct_ToggleHidden Action)"
+    },
+    "OnChangeCollision": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnChangeCollision(SeqAct_ChangeCollision Action)"
+    },
+    "OnSetPhysics": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSetPhysics(SeqAct_SetPhysics Action)"
+    },
+    "OnSetBlockRigidBody": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSetBlockRigidBody(SeqAct_SetBlockRigidBody Action)"
+    },
+    "OnSetVelocity": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSetVelocity(SeqAct_SetVelocity Action)"
+    },
+    "OnTeleport": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTeleport(SeqAct_Teleport Action)"
+    },
+    "OnModifyHealth": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnModifyHealth(SeqAct_ModifyHealth Action)"
+    },
+    "PrestreamTextures": {
+      "documentation": null,
+      "signature_members": {
+        "Seconds": {
+          "type": null,
+          "documentation": null
+        },
+        "bEnableStreaming": {
+          "type": null,
+          "documentation": null
+        },
+        "CinematicTextureGroups": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrestreamTextures(float Seconds, bool bEnableStreaming, optional int CinematicTextureGroups)"
+    },
+    "ShutDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShutDown()"
+    },
+    "SetNetUpdateTime": {
+      "documentation": null,
+      "signature_members": {
+        "NewUpdateTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNetUpdateTime(float NewUpdateTime)"
+    },
+    "ForceNetRelevant": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ForceNetRelevant()"
+    },
+    "OnDestroy": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDestroy(SeqAct_Destroy Action)"
+    },
+    "ClearLatentAction": {
+      "documentation": null,
+      "signature_members": {
+        "actionClass": {
+          "type": null,
+          "documentation": null
+        },
+        "bAborted": {
+          "type": null,
+          "documentation": null
+        },
+        "exceptionAction": {
+          "type": null,
+          "documentation": null
+        },
+        "bCancelled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearLatentAction(Class<SeqAct_Latent> actionClass, optional bool bAborted, optional SeqAct_Latent exceptionAction, optional bool bCancelled)"
+    },
+    "FindEventsOfClass": {
+      "documentation": null,
+      "signature_members": {
+        "EventClass": {
+          "type": null,
+          "documentation": null
+        },
+        "out_EventList": {
+          "type": null,
+          "documentation": null
+        },
+        "bIncludeDisabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindEventsOfClass(Class<SequenceEvent> EventClass, optional out array<SequenceEvent> out_EventList, optional bool bIncludeDisabled)"
+    },
+    "ActivateEventClass": {
+      "documentation": null,
+      "signature_members": {
+        "InClass": {
+          "type": null,
+          "documentation": null
+        },
+        "InInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "EventList": {
+          "type": null,
+          "documentation": null
+        },
+        "ActivateIndices": {
+          "type": null,
+          "documentation": null
+        },
+        "bTest": {
+          "type": null,
+          "documentation": null
+        },
+        "ActivatedEvents": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ActivateEventClass(Class<SequenceEvent> InClass, Actor InInstigator, const out array<SequenceEvent> EventList, optional const out array<int> ActivateIndices, optional bool bTest, optional out array<SequenceEvent> ActivatedEvents)"
+    },
+    "TriggerGlobalEventClass": {
+      "documentation": null,
+      "signature_members": {
+        "InEventClass": {
+          "type": null,
+          "documentation": null
+        },
+        "InInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "ActivateIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TriggerGlobalEventClass(Class<SequenceEvent> InEventClass, Actor InInstigator, optional int ActivateIndex)"
+    },
+    "ReceivedNewEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Evt": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReceivedNewEvent(SequenceEvent Evt)"
+    },
+    "TriggerEventClass": {
+      "documentation": null,
+      "signature_members": {
+        "InEventClass": {
+          "type": null,
+          "documentation": null
+        },
+        "InInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "ActivateIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bTest": {
+          "type": null,
+          "documentation": null
+        },
+        "ActivatedEvents": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TriggerEventClass(Class<SequenceEvent> InEventClass, Actor InInstigator, optional int ActivateIndex, optional bool bTest, optional out array<SequenceEvent> ActivatedEvents)"
+    },
+    "EffectIsRelevant": {
+      "documentation": null,
+      "signature_members": {
+        "SpawnLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceDedicated": {
+          "type": null,
+          "documentation": null
+        },
+        "CullDistance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectIsRelevant(Vector SpawnLocation, bool bForceDedicated, optional float CullDistance)"
+    },
+    "CheckMaxEffectDistance": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        },
+        "SpawnLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "CullDistance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckMaxEffectDistance(PlayerController P, Vector SpawnLocation, optional float CullDistance)"
+    },
+    "ApplyFluidSurfaceImpact": {
+      "documentation": null,
+      "signature_members": {
+        "Fluid": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyFluidSurfaceImpact(FluidSurfaceActor Fluid, Vector HitLocation)"
+    },
+    "CanSplash": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanSplash()"
+    },
+    "PlayTeleportEffect": {
+      "documentation": null,
+      "signature_members": {
+        "bOut": {
+          "type": null,
+          "documentation": null
+        },
+        "bSound": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayTeleportEffect(bool bOut, bool bSound)"
+    },
+    "IsInPain": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsInPain()"
+    },
+    "IsInVolume": {
+      "documentation": null,
+      "signature_members": {
+        "aVolume": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsInVolume(Volume aVolume)"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "GetFaceFXAudioComponent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "AudioComponent",
+      "signature": "AudioComponent GetFaceFXAudioComponent()"
+    },
+    "ModifyHearSoundComponent": {
+      "documentation": null,
+      "signature_members": {
+        "AC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyHearSoundComponent(AudioComponent AC)"
+    },
+    "GetPhysicsName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetPhysicsName()"
+    },
+    "DisplayDebug": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        },
+        "out_YL": {
+          "type": null,
+          "documentation": null
+        },
+        "out_YPos": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayDebug(HUD HUD, out float out_YL, out float out_YPos)"
+    },
+    "GetDebugName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetDebugName()"
+    },
+    "MatchStarting": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MatchStarting()"
+    },
+    "GetLocalString": {
+      "documentation": null,
+      "signature_members": {
+        "Switch": {
+          "type": null,
+          "documentation": null
+        },
+        "RelatedPRI_1": {
+          "type": null,
+          "documentation": null
+        },
+        "RelatedPRI_2": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetLocalString(optional int Switch, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2)"
+    },
+    "ReplaceText": {
+      "documentation": null,
+      "signature_members": {
+        "Text": {
+          "type": null,
+          "documentation": null
+        },
+        "Replace": {
+          "type": null,
+          "documentation": null
+        },
+        "With": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplaceText(out string Text, string Replace, string With)"
+    },
+    "GetHumanReadableName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetHumanReadableName()"
+    },
+    "GetItemName": {
+      "documentation": null,
+      "signature_members": {
+        "FullName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetItemName(string FullName)"
+    },
+    "CalcCamera": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "out_CamLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "out_CamRot": {
+          "type": null,
+          "documentation": null
+        },
+        "out_FOV": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CalcCamera(float fDeltaTime, out Vector out_CamLoc, out Rotator out_CamRot, out float out_FOV)"
+    },
+    "EndViewTarget": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EndViewTarget(PlayerController PC)"
+    },
+    "BecomeViewTarget": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BecomeViewTarget(PlayerController PC)"
+    },
+    "CheckForErrors": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CheckForErrors()"
+    },
+    "DebugFreezeGame": {
+      "documentation": null,
+      "signature_members": {
+        "ActorToLookAt": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugFreezeGame(optional Actor ActorToLookAt)"
+    },
+    "GetGravityZ": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetGravityZ()"
+    },
+    "CheckHitInfo": {
+      "documentation": null,
+      "signature_members": {
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "FallBackComponent": {
+          "type": null,
+          "documentation": null
+        },
+        "Dir": {
+          "type": null,
+          "documentation": null
+        },
+        "out_HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CheckHitInfo(out TraceHitInfo HitInfo, PrimitiveComponent FallBackComponent, Vector Dir, out Vector out_HitLocation)"
+    },
+    "TakeRadiusDamage": {
+      "documentation": null,
+      "signature_members": {
+        "InstigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "BaseDamage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "HurtOrigin": {
+          "type": null,
+          "documentation": null
+        },
+        "bFullDamage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageFalloffExponent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TakeRadiusDamage(Controller InstigatedBy, float BaseDamage, float DamageRadius, Class<DamageType> DamageType, float Momentum, Vector HurtOrigin, bool bFullDamage, Actor DamageCauser, optional float DamageFalloffExponent)"
+    },
+    "HealDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": null,
+          "documentation": null
+        },
+        "Healer": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HealDamage(int Amount, Controller Healer, Class<DamageType> DamageType)"
+    },
+    "TakeDamage": {
+      "documentation": null,
+      "signature_members": {
+        "DamageAmount": {
+          "type": null,
+          "documentation": null
+        },
+        "EventInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TakeDamage(float DamageAmount, Controller EventInstigator, Vector HitLocation, Vector Momentum, Class<DamageType> DamageType, optional TraceHitInfo HitInfo, optional Actor DamageCauser)"
+    },
+    "KilledBy": {
+      "documentation": null,
+      "signature_members": {
+        "EventInstigator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "KilledBy(Pawn EventInstigator)"
+    },
+    "HurtRadius": {
+      "documentation": null,
+      "signature_members": {
+        "BaseDamage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "HurtOrigin": {
+          "type": null,
+          "documentation": null
+        },
+        "IgnoredActor": {
+          "type": null,
+          "documentation": null
+        },
+        "InstigatedByController": {
+          "type": null,
+          "documentation": null
+        },
+        "bDoFullDamage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HurtRadius(float BaseDamage, float DamageRadius, Class<DamageType> DamageType, float Momentum, Vector HurtOrigin, optional Actor IgnoredActor, optional Controller InstigatedByController, optional bool bDoFullDamage)"
+    },
+    "StopsProjectile": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StopsProjectile(Projectile P)"
+    },
+    "NotifySkelControlBeyondLimit": {
+      "documentation": null,
+      "signature_members": {
+        "LookAt": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifySkelControlBeyondLimit(SkelControlLookAt LookAt)"
+    },
+    "ConstraintBrokenNotify": {
+      "documentation": null,
+      "signature_members": {
+        "ConOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "ConSetup": {
+          "type": null,
+          "documentation": null
+        },
+        "ConInstance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ConstraintBrokenNotify(Actor ConOwner, RB_ConstraintSetup ConSetup, RB_ConstraintInstance ConInstance)"
+    },
+    "SetInitialState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetInitialState()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "BroadcastLocalizedTeamMessage": {
+      "documentation": null,
+      "signature_members": {
+        "TeamIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "InMessageClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Switch": {
+          "type": null,
+          "documentation": null
+        },
+        "RelatedPRI_1": {
+          "type": null,
+          "documentation": null
+        },
+        "RelatedPRI_2": {
+          "type": null,
+          "documentation": null
+        },
+        "OptionalObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BroadcastLocalizedTeamMessage(int TeamIndex, Class<LocalMessage> InMessageClass, optional int Switch, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2, optional Object OptionalObject)"
+    },
+    "BroadcastLocalizedMessage": {
+      "documentation": null,
+      "signature_members": {
+        "InMessageClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Switch": {
+          "type": null,
+          "documentation": null
+        },
+        "RelatedPRI_1": {
+          "type": null,
+          "documentation": null
+        },
+        "RelatedPRI_2": {
+          "type": null,
+          "documentation": null
+        },
+        "OptionalObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BroadcastLocalizedMessage(Class<LocalMessage> InMessageClass, optional int Switch, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2, optional Object OptionalObject)"
+    },
+    "PreBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreBeginPlay()"
+    },
+    "FindActorsOfClass": {
+      "documentation": null,
+      "signature_members": {
+        "ActorClass": {
+          "type": null,
+          "documentation": null
+        },
+        "out_Actors": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindActorsOfClass(Class<Actor> ActorClass, out array<Actor> out_Actors)"
+    },
+    "GetALocalPlayerController": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "PlayerController",
+      "signature": "PlayerController GetALocalPlayerController()"
+    },
+    "LocalPlayerControllers": {
+      "documentation": null,
+      "signature_members": {
+        "BaseClass": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LocalPlayerControllers(Class<PlayerController> BaseClass, out PlayerController PC)"
+    },
+    "AllOwnedComponents": {
+      "documentation": null,
+      "signature_members": {
+        "BaseClass": {
+          "type": null,
+          "documentation": null
+        },
+        "OutComponent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AllOwnedComponents(Class<Component> BaseClass, out ActorComponent OutComponent)"
+    },
+    "ComponentList": {
+      "documentation": null,
+      "signature_members": {
+        "BaseClass": {
+          "type": null,
+          "documentation": null
+        },
+        "out_Component": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ComponentList(Class<ActorComponent> BaseClass, out ActorComponent out_Component)"
+    },
+    "OverlappingActors": {
+      "documentation": null,
+      "signature_members": {
+        "BaseClass": {
+          "type": null,
+          "documentation": null
+        },
+        "out_Actor": {
+          "type": null,
+          "documentation": null
+        },
+        "Radius": {
+          "type": null,
+          "documentation": null
+        },
+        "Loc": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnoreHidden": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OverlappingActors(Class<Actor> BaseClass, out Actor out_Actor, float Radius, optional Vector Loc, optional bool bIgnoreHidden)"
+    },
+    "CollidingActors": {
+      "documentation": null,
+      "signature_members": {
+        "BaseClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Actor": {
+          "type": null,
+          "documentation": null
+        },
+        "Radius": {
+          "type": null,
+          "documentation": null
+        },
+        "Loc": {
+          "type": null,
+          "documentation": null
+        },
+        "bUseOverlapCheck": {
+          "type": null,
+          "documentation": null
+        },
+        "InterfaceClass": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CollidingActors(Class<Actor> BaseClass, out Actor Actor, float Radius, optional Vector Loc, optional bool bUseOverlapCheck, optional Class<Interface> InterfaceClass, optional out TraceHitInfo HitInfo)"
+    },
+    "VisibleCollidingActors": {
+      "documentation": null,
+      "signature_members": {
+        "BaseClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Actor": {
+          "type": null,
+          "documentation": null
+        },
+        "Radius": {
+          "type": null,
+          "documentation": null
+        },
+        "Loc": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnoreHidden": {
+          "type": null,
+          "documentation": null
+        },
+        "Extent": {
+          "type": null,
+          "documentation": null
+        },
+        "bTraceActors": {
+          "type": null,
+          "documentation": null
+        },
+        "InterfaceClass": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "VisibleCollidingActors(Class<Actor> BaseClass, out Actor Actor, float Radius, optional Vector Loc, optional bool bIgnoreHidden, optional Vector Extent, optional bool bTraceActors, optional Class<Interface> InterfaceClass, optional out TraceHitInfo HitInfo)"
+    },
+    "VisibleActors": {
+      "documentation": null,
+      "signature_members": {
+        "BaseClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Actor": {
+          "type": null,
+          "documentation": null
+        },
+        "Radius": {
+          "type": null,
+          "documentation": null
+        },
+        "Loc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "VisibleActors(Class<Actor> BaseClass, out Actor Actor, optional float Radius, optional Vector Loc)"
+    },
+    "TraceActors": {
+      "documentation": null,
+      "signature_members": {
+        "BaseClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Actor": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNorm": {
+          "type": null,
+          "documentation": null
+        },
+        "End": {
+          "type": null,
+          "documentation": null
+        },
+        "Start": {
+          "type": null,
+          "documentation": null
+        },
+        "Extent": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "ExtraTraceFlags": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TraceActors(Class<Actor> BaseClass, out Actor Actor, out Vector HitLoc, out Vector HitNorm, Vector End, optional Vector Start, optional Vector Extent, optional out TraceHitInfo HitInfo, optional int ExtraTraceFlags)"
+    },
+    "TouchingActors": {
+      "documentation": null,
+      "signature_members": {
+        "BaseClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Actor": {
+          "type": null,
+          "documentation": null
+        },
+        "bReverse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TouchingActors(Class<Actor> BaseClass, out Actor Actor, optional bool bReverse)"
+    },
+    "BasedActors": {
+      "documentation": null,
+      "signature_members": {
+        "BaseClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Actor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BasedActors(Class<Actor> BaseClass, out Actor Actor)"
+    },
+    "ChildActors": {
+      "documentation": null,
+      "signature_members": {
+        "BaseClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Actor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ChildActors(Class<Actor> BaseClass, out Actor Actor)"
+    },
+    "DynamicActors": {
+      "documentation": null,
+      "signature_members": {
+        "BaseClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Actor": {
+          "type": null,
+          "documentation": null
+        },
+        "InterfaceClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DynamicActors(Class<Actor> BaseClass, out Actor Actor, optional Class<Interface> InterfaceClass)"
+    },
+    "AllActors": {
+      "documentation": null,
+      "signature_members": {
+        "BaseClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Actor": {
+          "type": null,
+          "documentation": null
+        },
+        "InterfaceClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AllActors(Class<Actor> BaseClass, out Actor Actor, optional Class<Interface> InterfaceClass)"
+    },
+    "GetURLMap": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetURLMap()"
+    },
+    "PostTeleport": {
+      "documentation": null,
+      "signature_members": {
+        "OutTeleporter": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PostTeleport(Teleporter OutTeleporter)"
+    },
+    "PreTeleport": {
+      "documentation": null,
+      "signature_members": {
+        "InTeleporter": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PreTeleport(Teleporter InTeleporter)"
+    },
+    "GetDestination": {
+      "documentation": null,
+      "signature_members": {
+        "C": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetDestination(Controller C)"
+    },
+    "SuggestTossVelocity": {
+      "documentation": null,
+      "signature_members": {
+        "TossVelocity": {
+          "type": null,
+          "documentation": null
+        },
+        "Destination": {
+          "type": null,
+          "documentation": null
+        },
+        "Start": {
+          "type": null,
+          "documentation": null
+        },
+        "TossSpeed": {
+          "type": null,
+          "documentation": null
+        },
+        "BaseTossZ": {
+          "type": null,
+          "documentation": null
+        },
+        "DesiredZPct": {
+          "type": null,
+          "documentation": null
+        },
+        "CollisionSize": {
+          "type": null,
+          "documentation": null
+        },
+        "TerminalVelocity": {
+          "type": null,
+          "documentation": null
+        },
+        "OverrideGravityZ": {
+          "type": null,
+          "documentation": null
+        },
+        "bOnlyTraceUp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SuggestTossVelocity(out Vector TossVelocity, Vector Destination, Vector Start, float TossSpeed, optional float BaseTossZ, optional float DesiredZPct, optional Vector CollisionSize, optional float TerminalVelocity, optional float OverrideGravityZ, optional bool bOnlyTraceUp)"
+    },
+    "PlayerCanSeeMe": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PlayerCanSeeMe()"
+    },
+    "MakeNoise": {
+      "documentation": null,
+      "signature_members": {
+        "Loudness": {
+          "type": null,
+          "documentation": null
+        },
+        "NoiseType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MakeNoise(float Loudness, optional Name NoiseType)"
+    },
+    "StopSound": {
+      "documentation": null,
+      "signature_members": {
+        "InSoundEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StopSound(WwiseBaseSoundObject InSoundEvent)"
+    },
+    "PlaySound": {
+      "documentation": null,
+      "signature_members": {
+        "InSoundCue": {
+          "type": null,
+          "documentation": null
+        },
+        "bNotReplicated": {
+          "type": null,
+          "documentation": null
+        },
+        "bNoRepToOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "bStopWhenOwnerDestroyed": {
+          "type": null,
+          "documentation": null
+        },
+        "SoundLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "bNoRepToRelevant": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlaySound(WwiseBaseSoundObject InSoundCue, optional bool bNotReplicated, optional bool bNoRepToOwner, optional bool bStopWhenOwnerDestroyed, optional Vector SoundLocation, optional bool bNoRepToRelevant)"
+    },
+    "CreateAudioComponent": {
+      "documentation": null,
+      "signature_members": {
+        "InSoundCue": {
+          "type": null,
+          "documentation": null
+        },
+        "bPlay": {
+          "type": null,
+          "documentation": null
+        },
+        "bStopWhenOwnerDestroyed": {
+          "type": null,
+          "documentation": null
+        },
+        "bUseLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "SourceLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "bAttachToSelf": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "AudioComponent",
+      "signature": "AudioComponent CreateAudioComponent(SoundCue InSoundCue, optional bool bPlay, optional bool bStopWhenOwnerDestroyed, optional bool bUseLocation, optional Vector SourceLocation, optional bool bAttachToSelf)"
+    },
+    "ResetTimerTimeDilation": {
+      "documentation": null,
+      "signature_members": {
+        "TimerName": {
+          "type": null,
+          "documentation": null
+        },
+        "inObj": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetTimerTimeDilation(const Name TimerName, optional Object inObj)"
+    },
+    "ModifyTimerTimeDilation": {
+      "documentation": null,
+      "signature_members": {
+        "TimerName": {
+          "type": null,
+          "documentation": null
+        },
+        "InTimerTimeDilation": {
+          "type": null,
+          "documentation": null
+        },
+        "inObj": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyTimerTimeDilation(const Name TimerName, const float InTimerTimeDilation, optional Object inObj)"
+    },
+    "GetRemainingTimeForTimer": {
+      "documentation": null,
+      "signature_members": {
+        "TimerFuncName": {
+          "type": null,
+          "documentation": null
+        },
+        "inObj": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetRemainingTimeForTimer(optional Name TimerFuncName, optional Object inObj)"
+    },
+    "GetTimerRate": {
+      "documentation": null,
+      "signature_members": {
+        "TimerFuncName": {
+          "type": null,
+          "documentation": null
+        },
+        "inObj": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetTimerRate(optional Name TimerFuncName, optional Object inObj)"
+    },
+    "GetTimerCount": {
+      "documentation": null,
+      "signature_members": {
+        "inTimerFunc": {
+          "type": null,
+          "documentation": null
+        },
+        "inObj": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetTimerCount(optional Name inTimerFunc, optional Object inObj)"
+    },
+    "IsTimerActive": {
+      "documentation": null,
+      "signature_members": {
+        "inTimerFunc": {
+          "type": null,
+          "documentation": null
+        },
+        "inObj": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsTimerActive(optional Name inTimerFunc, optional Object inObj)"
+    },
+    "PauseTimer": {
+      "documentation": null,
+      "signature_members": {
+        "bPause": {
+          "type": null,
+          "documentation": null
+        },
+        "inTimerFunc": {
+          "type": null,
+          "documentation": null
+        },
+        "inObj": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PauseTimer(bool bPause, optional Name inTimerFunc, optional Object inObj)"
+    },
+    "ClearAllTimers": {
+      "documentation": null,
+      "signature_members": {
+        "inObj": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearAllTimers(optional Object inObj)"
+    },
+    "ClearTimer": {
+      "documentation": null,
+      "signature_members": {
+        "inTimerFunc": {
+          "type": null,
+          "documentation": null
+        },
+        "inObj": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearTimer(optional Name inTimerFunc, optional Object inObj)"
+    },
+    "SetTimer": {
+      "documentation": null,
+      "signature_members": {
+        "InRate": {
+          "type": null,
+          "documentation": null
+        },
+        "inbLoop": {
+          "type": null,
+          "documentation": null
+        },
+        "inTimerFunc": {
+          "type": null,
+          "documentation": null
+        },
+        "inObj": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTimer(float InRate, optional bool inbLoop, optional Name inTimerFunc, optional Object inObj)"
+    },
+    "TornOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TornOff()"
+    },
+    "Destroy": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool Destroy()"
+    },
+    "Spawn": {
+      "documentation": null,
+      "signature_members": {
+        "SpawnClass": {
+          "type": null,
+          "documentation": null
+        },
+        "SpawnOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "SpawnTag": {
+          "type": null,
+          "documentation": null
+        },
+        "SpawnLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "SpawnRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "ActorTemplate": {
+          "type": null,
+          "documentation": null
+        },
+        "pActorType": {
+          "type": null,
+          "documentation": null
+        },
+        "bNoCollisionFail": {
+          "type": null,
+          "documentation": null
+        },
+        "bFindSafeLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Actor",
+      "signature": "coerce Actor Spawn(Class<Actor> SpawnClass, optional Actor SpawnOwner, optional Name SpawnTag, optional Vector SpawnLocation, optional Rotator SpawnRotation, optional Actor ActorTemplate, optional Object pActorType, optional bool bNoCollisionFail, optional bool bFindSafeLocation)"
+    },
+    "GetBoundingCylinder": {
+      "documentation": null,
+      "signature_members": {
+        "CollisionRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "CollisionHeight": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetBoundingCylinder(out float CollisionRadius, out float CollisionHeight)"
+    },
+    "GetComponentsBoundingBox": {
+      "documentation": null,
+      "signature_members": {
+        "ActorBox": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetComponentsBoundingBox(out Box ActorBox)"
+    },
+    "IsOverlapping": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsOverlapping(Actor A)"
+    },
+    "ContainsPoint": {
+      "documentation": null,
+      "signature_members": {
+        "Spot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ContainsPoint(Vector Spot)"
+    },
+    "FindSpot": {
+      "documentation": null,
+      "signature_members": {
+        "BoxExtent": {
+          "type": null,
+          "documentation": null
+        },
+        "SpotLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindSpot(Vector BoxExtent, out Vector SpotLocation)"
+    },
+    "TraceAllPhysicsAssetInteractions": {
+      "documentation": null,
+      "signature_members": {
+        "SkelMeshComp": {
+          "type": null,
+          "documentation": null
+        },
+        "EndTrace": {
+          "type": null,
+          "documentation": null
+        },
+        "StartTrace": {
+          "type": null,
+          "documentation": null
+        },
+        "out_Hits": {
+          "type": null,
+          "documentation": null
+        },
+        "Extent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TraceAllPhysicsAssetInteractions(SkeletalMeshComponent SkelMeshComp, Vector EndTrace, Vector StartTrace, out array<ImpactInfo> out_Hits, optional Vector Extent)"
+    },
+    "FastTrace": {
+      "documentation": null,
+      "signature_members": {
+        "TraceEnd": {
+          "type": null,
+          "documentation": null
+        },
+        "TraceStart": {
+          "type": null,
+          "documentation": null
+        },
+        "BoxExtent": {
+          "type": null,
+          "documentation": null
+        },
+        "bTraceBullet": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FastTrace(Vector TraceEnd, optional Vector TraceStart, optional Vector BoxExtent, optional bool bTraceBullet)"
+    },
+    "PointCheckComponent": {
+      "documentation": null,
+      "signature_members": {
+        "InComponent": {
+          "type": null,
+          "documentation": null
+        },
+        "PointLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "PointExtent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PointCheckComponent(PrimitiveComponent InComponent, Vector PointLocation, Vector PointExtent)"
+    },
+    "TraceComponent": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "InComponent": {
+          "type": null,
+          "documentation": null
+        },
+        "TraceEnd": {
+          "type": null,
+          "documentation": null
+        },
+        "TraceStart": {
+          "type": null,
+          "documentation": null
+        },
+        "Extent": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "bComplexCollision": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TraceComponent(out Vector HitLocation, out Vector HitNormal, PrimitiveComponent InComponent, Vector TraceEnd, optional Vector TraceStart, optional Vector Extent, optional out TraceHitInfo HitInfo, optional bool bComplexCollision)"
+    },
+    "Trace": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "TraceEnd": {
+          "type": null,
+          "documentation": null
+        },
+        "TraceStart": {
+          "type": null,
+          "documentation": null
+        },
+        "bTraceActors": {
+          "type": null,
+          "documentation": null
+        },
+        "Extent": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "ExtraTraceFlags": {
+          "type": null,
+          "documentation": null
+        },
+        "ExtraProgrammerFlags": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor Trace(out Vector HitLocation, out Vector HitNormal, Vector TraceEnd, optional Vector TraceStart, optional bool bTraceActors, optional Vector Extent, optional out TraceHitInfo HitInfo, optional int ExtraTraceFlags, optional int ExtraProgrammerFlags)"
+    },
+    "VolumeBasedDestroy": {
+      "documentation": null,
+      "signature_members": {
+        "PV": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "VolumeBasedDestroy(PhysicsVolume PV)"
+    },
+    "OutsideWorldBounds": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OutsideWorldBounds()"
+    },
+    "FellOutOfWorld": {
+      "documentation": null,
+      "signature_members": {
+        "dmgType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FellOutOfWorld(Class<DamageType> dmgType)"
+    },
+    "UsedBy": {
+      "documentation": null,
+      "signature_members": {
+        "User": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UsedBy(Pawn User)"
+    },
+    "OverRotated": {
+      "documentation": null,
+      "signature_members": {
+        "out_Desired": {
+          "type": null,
+          "documentation": null
+        },
+        "out_Actual": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OverRotated(out Rotator out_Desired, out Rotator out_Actual)"
+    },
+    "ClampRotation": {
+      "documentation": null,
+      "signature_members": {
+        "out_Rot": {
+          "type": null,
+          "documentation": null
+        },
+        "rBase": {
+          "type": null,
+          "documentation": null
+        },
+        "rUpperLimits": {
+          "type": null,
+          "documentation": null
+        },
+        "rLowerLimits": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ClampRotation(out Rotator out_Rot, Rotator rBase, Rotator rUpperLimits, Rotator rLowerLimits)"
+    },
+    "OnSleepRBPhysics": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnSleepRBPhysics()"
+    },
+    "OnWakeRBPhysics": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnWakeRBPhysics()"
+    },
+    "RanInto": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RanInto(Actor Other)"
+    },
+    "EncroachedBy": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EncroachedBy(Actor Other)"
+    },
+    "EncroachingOn": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EncroachingOn(Actor Other)"
+    },
+    "CollisionChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CollisionChanged()"
+    },
+    "SpecialHandling": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor SpecialHandling(Pawn Other)"
+    },
+    "Detach": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Detach(Actor Other)"
+    },
+    "Attach": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Attach(Actor Other)"
+    },
+    "BaseChange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BaseChange()"
+    },
+    "Bump": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        },
+        "OtherComp": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Bump(Actor Other, PrimitiveComponent OtherComp, Vector HitNormal)"
+    },
+    "UnTouch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnTouch(Actor Other)"
+    },
+    "PostTouch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PostTouch(Actor Other)"
+    },
+    "Touch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        },
+        "OtherComp": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Touch(Actor Other, PrimitiveComponent OtherComp, Vector HitLocation, Vector HitNormal)"
+    },
+    "PhysicsVolumeChange": {
+      "documentation": null,
+      "signature_members": {
+        "NewVolume": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PhysicsVolumeChange(PhysicsVolume NewVolume)"
+    },
+    "Landed": {
+      "documentation": null,
+      "signature_members": {
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "FloorActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Landed(Vector HitNormal, Actor FloorActor)"
+    },
+    "Falling": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Falling()"
+    },
+    "HitWall": {
+      "documentation": null,
+      "signature_members": {
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "Wall": {
+          "type": null,
+          "documentation": null
+        },
+        "WallComp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HitWall(Vector HitNormal, Actor Wall, PrimitiveComponent WallComp)"
+    },
+    "Timer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Timer()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "LostChild": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LostChild(Actor Other)"
+    },
+    "GainedChild": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GainedChild(Actor Other)"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "GetWasInVehicleTransitionStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetWasInVehicleTransitionStatus()"
+    },
+    "SetWasInVehicleTransitionStatus": {
+      "documentation": null,
+      "signature_members": {
+        "bStatus": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWasInVehicleTransitionStatus(bool bStatus)"
+    },
+    "SetTickIsDisabled": {
+      "documentation": null,
+      "signature_members": {
+        "bInDisabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTickIsDisabled(bool bInDisabled)"
+    },
+    "SetTickGroup": {
+      "documentation": null,
+      "signature_members": {
+        "NewTickGroup": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTickGroup(ETickingGroup NewTickGroup)"
+    },
+    "ReattachComponent": {
+      "documentation": null,
+      "signature_members": {
+        "ComponentToReattach": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReattachComponent(ActorComponent ComponentToReattach)"
+    },
+    "DetachComponent": {
+      "documentation": null,
+      "signature_members": {
+        "ExComponent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DetachComponent(ActorComponent ExComponent)"
+    },
+    "AttachComponent": {
+      "documentation": null,
+      "signature_members": {
+        "NewComponent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AttachComponent(ActorComponent NewComponent)"
+    },
+    "UnClock": {
+      "documentation": null,
+      "signature_members": {
+        "Time": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnClock(out float Time)"
+    },
+    "Clock": {
+      "documentation": null,
+      "signature_members": {
+        "Time": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Clock(out float Time)"
+    },
+    "SetPhysics": {
+      "documentation": null,
+      "signature_members": {
+        "newPhysics": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPhysics(EPhysics newPhysics)"
+    },
+    "SetOnlyOwnerSee": {
+      "documentation": null,
+      "signature_members": {
+        "bNewOnlyOwnerSee": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOnlyOwnerSee(bool bNewOnlyOwnerSee)"
+    },
+    "DrawDebugMarker": {
+      "documentation": null,
+      "signature_members": {
+        "LineStart": {
+          "type": null,
+          "documentation": null
+        },
+        "Scale": {
+          "type": null,
+          "documentation": null
+        },
+        "R": {
+          "type": null,
+          "documentation": null
+        },
+        "G": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsPersistent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawDebugMarker(Vector LineStart, int Scale, byte R, byte G, byte B, optional bool bIsPersistent)"
+    },
+    "SetHidden": {
+      "documentation": null,
+      "signature_members": {
+        "bNewHidden": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHidden(bool bNewHidden)"
+    },
+    "ChartData": {
+      "documentation": null,
+      "signature_members": {
+        "DataName": {
+          "type": null,
+          "documentation": null
+        },
+        "DataValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ChartData(string DataName, float DataValue)"
+    },
+    "FlushDebugStrings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FlushDebugStrings()"
+    },
+    "DrawDebugFrustrum": {
+      "documentation": null,
+      "signature_members": {
+        "FrustumToWorld": {
+          "type": null,
+          "documentation": null
+        },
+        "R": {
+          "type": null,
+          "documentation": null
+        },
+        "G": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "bPersistentLines": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawDebugFrustrum(const out Matrix FrustumToWorld, byte R, byte G, byte B, optional bool bPersistentLines)"
+    },
+    "DrawDebugString": {
+      "documentation": null,
+      "signature_members": {
+        "TextLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Text": {
+          "type": null,
+          "documentation": null
+        },
+        "TestBaseActor": {
+          "type": null,
+          "documentation": null
+        },
+        "TextColor": {
+          "type": null,
+          "documentation": null
+        },
+        "Duration": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawDebugString(Vector TextLocation, coerce string Text, optional Actor TestBaseActor, optional Color TextColor, optional float Duration)"
+    },
+    "DrawDebugCone": {
+      "documentation": null,
+      "signature_members": {
+        "Origin": {
+          "type": null,
+          "documentation": null
+        },
+        "Direction": {
+          "type": null,
+          "documentation": null
+        },
+        "Length": {
+          "type": null,
+          "documentation": null
+        },
+        "AngleWidth": {
+          "type": null,
+          "documentation": null
+        },
+        "AngleHeight": {
+          "type": null,
+          "documentation": null
+        },
+        "NumSides": {
+          "type": null,
+          "documentation": null
+        },
+        "DrawColor": {
+          "type": null,
+          "documentation": null
+        },
+        "bPersistentLines": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawDebugCone(Vector Origin, Vector Direction, float Length, float AngleWidth, float AngleHeight, int NumSides, Color DrawColor, optional bool bPersistentLines)"
+    },
+    "DrawDebugCylinder": {
+      "documentation": null,
+      "signature_members": {
+        "Start": {
+          "type": null,
+          "documentation": null
+        },
+        "End": {
+          "type": null,
+          "documentation": null
+        },
+        "Radius": {
+          "type": null,
+          "documentation": null
+        },
+        "Segments": {
+          "type": null,
+          "documentation": null
+        },
+        "R": {
+          "type": null,
+          "documentation": null
+        },
+        "G": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "bPersistentLines": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawDebugCylinder(Vector Start, Vector End, float Radius, int Segments, byte R, byte G, byte B, optional bool bPersistentLines)"
+    },
+    "DrawDebugSphere": {
+      "documentation": null,
+      "signature_members": {
+        "Center": {
+          "type": null,
+          "documentation": null
+        },
+        "Radius": {
+          "type": null,
+          "documentation": null
+        },
+        "Segments": {
+          "type": null,
+          "documentation": null
+        },
+        "R": {
+          "type": null,
+          "documentation": null
+        },
+        "G": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "bPersistentLines": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawDebugSphere(Vector Center, float Radius, int Segments, byte R, byte G, byte B, optional bool bPersistentLines)"
+    },
+    "DrawDebugCoordinateSystem": {
+      "documentation": null,
+      "signature_members": {
+        "AxisLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "AxisRot": {
+          "type": null,
+          "documentation": null
+        },
+        "Scale": {
+          "type": null,
+          "documentation": null
+        },
+        "bPersistentLines": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawDebugCoordinateSystem(Vector AxisLoc, Rotator AxisRot, float Scale, optional bool bPersistentLines)"
+    },
+    "DrawDebugStar": {
+      "documentation": null,
+      "signature_members": {
+        "Position": {
+          "type": null,
+          "documentation": null
+        },
+        "Size": {
+          "type": null,
+          "documentation": null
+        },
+        "R": {
+          "type": null,
+          "documentation": null
+        },
+        "G": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "bPersistentLines": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawDebugStar(Vector Position, float Size, byte R, byte G, byte B, optional bool bPersistentLines)"
+    },
+    "DrawDebugBox": {
+      "documentation": null,
+      "signature_members": {
+        "Center": {
+          "type": null,
+          "documentation": null
+        },
+        "Extent": {
+          "type": null,
+          "documentation": null
+        },
+        "R": {
+          "type": null,
+          "documentation": null
+        },
+        "G": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "bPersistentLines": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawDebugBox(Vector Center, Vector Extent, byte R, byte G, byte B, optional bool bPersistentLines)"
+    },
+    "DrawDebugPoint": {
+      "documentation": null,
+      "signature_members": {
+        "Position": {
+          "type": null,
+          "documentation": null
+        },
+        "Size": {
+          "type": null,
+          "documentation": null
+        },
+        "PointColor": {
+          "type": null,
+          "documentation": null
+        },
+        "bPersistentLines": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawDebugPoint(Vector Position, float Size, LinearColor PointColor, optional bool bPersistentLines)"
+    },
+    "DrawDebugLine": {
+      "documentation": null,
+      "signature_members": {
+        "LineStart": {
+          "type": null,
+          "documentation": null
+        },
+        "LineEnd": {
+          "type": null,
+          "documentation": null
+        },
+        "R": {
+          "type": null,
+          "documentation": null
+        },
+        "G": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "bPersistentLines": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawDebugLine(Vector LineStart, Vector LineEnd, byte R, byte G, byte B, optional bool bPersistentLines)"
+    },
+    "FlushPersistentDebugLines": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FlushPersistentDebugLines()"
+    },
+    "GetBasedPosition": {
+      "documentation": null,
+      "signature_members": {
+        "BP": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetBasedPosition(BasedPosition BP)"
+    },
+    "SetBasedPosition": {
+      "documentation": null,
+      "signature_members": {
+        "BP": {
+          "type": null,
+          "documentation": null
+        },
+        "pos": {
+          "type": null,
+          "documentation": null
+        },
+        "ForcedBase": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBasedPosition(out BasedPosition BP, Vector pos, optional Actor ForcedBase)"
+    },
+    "BP2Vect": {
+      "documentation": null,
+      "signature_members": {
+        "BP": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector BP2Vect(BasedPosition BP)"
+    },
+    "Vect2BP": {
+      "documentation": null,
+      "signature_members": {
+        "BP": {
+          "type": null,
+          "documentation": null
+        },
+        "pos": {
+          "type": null,
+          "documentation": null
+        },
+        "ForcedBase": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Vect2BP(out BasedPosition BP, Vector pos, optional Actor ForcedBase)"
+    },
+    "SetForcedInitialReplicatedProperty": {
+      "documentation": null,
+      "signature_members": {
+        "PropToReplicate": {
+          "type": null,
+          "documentation": null
+        },
+        "bAdd": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetForcedInitialReplicatedProperty(Property PropToReplicate, bool bAdd)"
+    },
+    "ReplicatedDataBinding": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedDataBinding(Name VarName)"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "IsOwnedBy": {
+      "documentation": null,
+      "signature_members": {
+        "TestActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsOwnedBy(Actor TestActor)"
+    },
+    "GetBaseMost": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Actor",
+      "signature": "Actor GetBaseMost()"
+    },
+    "IsBasedOn": {
+      "documentation": null,
+      "signature_members": {
+        "TestActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsBasedOn(Actor TestActor)"
+    },
+    "FindBase": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FindBase()"
+    },
+    "SetOwner": {
+      "documentation": null,
+      "signature_members": {
+        "NewOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOwner(Actor NewOwner)"
+    },
+    "SetBase": {
+      "documentation": null,
+      "signature_members": {
+        "NewBase": {
+          "type": null,
+          "documentation": null
+        },
+        "NewFloor": {
+          "type": null,
+          "documentation": null
+        },
+        "SkelComp": {
+          "type": null,
+          "documentation": null
+        },
+        "AttachName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBase(Actor NewBase, optional Vector NewFloor, optional SkeletalMeshComponent SkelComp, optional Name AttachName)"
+    },
+    "GetTerminalVelocity": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetTerminalVelocity()"
+    },
+    "AutonomousPhysics": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaSeconds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AutonomousPhysics(float DeltaSeconds)"
+    },
+    "MoveSmooth": {
+      "documentation": null,
+      "signature_members": {
+        "Delta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool MoveSmooth(Vector Delta)"
+    },
+    "fixedTurn": {
+      "documentation": null,
+      "signature_members": {
+        "Current": {
+          "type": null,
+          "documentation": null
+        },
+        "Desired": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaRate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int fixedTurn(int Current, int Desired, int DeltaRate)"
+    },
+    "SetHardAttach": {
+      "documentation": null,
+      "signature_members": {
+        "bNewHardAttach": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHardAttach(optional bool bNewHardAttach)"
+    },
+    "SetRelativeLocation": {
+      "documentation": null,
+      "signature_members": {
+        "NewLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetRelativeLocation(Vector NewLocation)"
+    },
+    "SetRelativeRotation": {
+      "documentation": null,
+      "signature_members": {
+        "NewRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetRelativeRotation(Rotator NewRotation)"
+    },
+    "SetZone": {
+      "documentation": null,
+      "signature_members": {
+        "bForceRefresh": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetZone(bool bForceRefresh)"
+    },
+    "MovingWhichWay": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EMoveDir",
+      "signature": "EMoveDir MovingWhichWay(out float Amount)"
+    },
+    "SetRotation": {
+      "documentation": null,
+      "signature_members": {
+        "NewRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetRotation(Rotator NewRotation)"
+    },
+    "SetLocation": {
+      "documentation": null,
+      "signature_members": {
+        "NewLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetLocation(Vector NewLocation)"
+    },
+    "Move": {
+      "documentation": null,
+      "signature_members": {
+        "Delta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Move(Vector Delta)"
+    },
+    "SetDrawScale3D": {
+      "documentation": null,
+      "signature_members": {
+        "NewScale3D": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDrawScale3D(Vector NewScale3D)"
+    },
+    "SetDrawScale": {
+      "documentation": null,
+      "signature_members": {
+        "NewScale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDrawScale(float NewScale)"
+    },
+    "SetCollisionType": {
+      "documentation": null,
+      "signature_members": {
+        "NewCollisionType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCollisionType(ECollisionType NewCollisionType)"
+    },
+    "SetCollisionSize": {
+      "documentation": null,
+      "signature_members": {
+        "NewRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "NewHeight": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCollisionSize(float NewRadius, float NewHeight)"
+    },
+    "SetCollision": {
+      "documentation": null,
+      "signature_members": {
+        "bNewColActors": {
+          "type": null,
+          "documentation": null
+        },
+        "bNewBlockActors": {
+          "type": null,
+          "documentation": null
+        },
+        "bNewIgnoreEncroachers": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCollision(optional bool bNewColActors, optional bool bNewBlockActors, optional bool bNewIgnoreEncroachers)"
+    },
+    "FinishAnim": {
+      "documentation": null,
+      "signature_members": {
+        "SeqNode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FinishAnim(AnimNodeSequence SeqNode)"
+    },
+    "Sleep": {
+      "documentation": null,
+      "signature_members": {
+        "Seconds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Sleep(float Seconds)"
+    },
+    "ConsoleCommand": {
+      "documentation": null,
+      "signature_members": {
+        "Command": {
+          "type": null,
+          "documentation": null
+        },
+        "bWriteToLog": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string ConsoleCommand(string Command, optional bool bWriteToLog)"
+    },
+    "ForceUpdateComponents": {
+      "documentation": null,
+      "signature_members": {
+        "bCollisionUpdate": {
+          "type": null,
+          "documentation": null
+        },
+        "bTransformOnly": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ForceUpdateComponents(optional bool bCollisionUpdate, optional bool bTransformOnly)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

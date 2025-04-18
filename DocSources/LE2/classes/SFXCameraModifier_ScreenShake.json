@@ -1,0 +1,176 @@
+{
+  "parent": "CameraModifier",
+  "package": "SFXGame",
+  "variables": {
+    "Shakes": {
+      "type": "ScreenShakeStruct",
+      "documentation": null
+    },
+    "TestShake": {
+      "type": "ScreenShakeStruct",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ModifyCamera": {
+      "documentation": null,
+      "signature_members": {
+        "Camera": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "OutPOV": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ModifyCamera(Camera Camera, float DeltaTime, out TPOV OutPOV)"
+    },
+    "UpdateScreenShake": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Shake": {
+          "type": null,
+          "documentation": null
+        },
+        "OutPOV": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateScreenShake(float DeltaTime, out ScreenShakeStruct Shake, out TPOV OutPOV)"
+    },
+    "StartNewShake": {
+      "documentation": null,
+      "signature_members": {
+        "Duration": {
+          "type": null,
+          "documentation": null
+        },
+        "newRotAmplitude": {
+          "type": null,
+          "documentation": null
+        },
+        "newRotFrequency": {
+          "type": null,
+          "documentation": null
+        },
+        "newLocAmplitude": {
+          "type": null,
+          "documentation": null
+        },
+        "newLocFrequency": {
+          "type": null,
+          "documentation": null
+        },
+        "newFOVAmplitude": {
+          "type": null,
+          "documentation": null
+        },
+        "newFOVFrequency": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StartNewShake(float Duration, Vector newRotAmplitude, Vector newRotFrequency, Vector newLocAmplitude, Vector newLocFrequency, float newFOVAmplitude, float newFOVFrequency)"
+    },
+    "ComposeNewShake": {
+      "documentation": null,
+      "signature_members": {
+        "Duration": {
+          "type": null,
+          "documentation": null
+        },
+        "newRotAmplitude": {
+          "type": null,
+          "documentation": null
+        },
+        "newRotFrequency": {
+          "type": null,
+          "documentation": null
+        },
+        "newLocAmplitude": {
+          "type": null,
+          "documentation": null
+        },
+        "newLocFrequency": {
+          "type": null,
+          "documentation": null
+        },
+        "newFOVAmplitude": {
+          "type": null,
+          "documentation": null
+        },
+        "newFOVFrequency": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ScreenShakeStruct",
+      "signature": "ScreenShakeStruct ComposeNewShake(float Duration, Vector newRotAmplitude, Vector newRotFrequency, Vector newLocAmplitude, Vector newLocFrequency, float newFOVAmplitude, float newFOVFrequency)"
+    },
+    "InitializeOffset": {
+      "documentation": null,
+      "signature_members": {
+        "Param": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float InitializeOffset(EShakeParam Param)"
+    },
+    "InitializeShake": {
+      "documentation": null,
+      "signature_members": {
+        "NewShake": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ScreenShakeStruct",
+      "signature": "ScreenShakeStruct InitializeShake(ScreenShakeStruct NewShake)"
+    },
+    "AddScreenShake": {
+      "documentation": null,
+      "signature_members": {
+        "NewShake": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddScreenShake(const out ScreenShakeStruct NewShake)"
+    },
+    "RemoveScreenShake": {
+      "documentation": null,
+      "signature_members": {
+        "ShakeName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveScreenShake(Name ShakeName)"
+    },
+    "RemoveAllScreenShakes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveAllScreenShakes()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "parent": "InterpTrackInst",
+  "package": "Engine",
+  "variables": {
+    "ModifiedTextures": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "LastUpdatePosition": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

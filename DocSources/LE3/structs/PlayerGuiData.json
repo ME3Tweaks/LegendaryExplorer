@@ -1,7 +1,7 @@
 {
   "Members": {
     "aMessageBoxQueue": {
-      "type": null,
+      "type": "BioMessageBoxData",
       "documentation": null
     }
   },

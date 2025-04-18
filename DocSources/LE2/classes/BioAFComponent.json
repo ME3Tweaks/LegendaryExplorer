@@ -1,0 +1,17 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "Owner": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "Instigator": {
+      "type": "Actor",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

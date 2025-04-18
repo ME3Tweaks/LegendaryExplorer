@@ -1,0 +1,42 @@
+{
+  "parent": "SFXGalaxyMapObject",
+  "package": "SFXGame",
+  "variables": {
+    "Clusters": {
+      "type": "SFXCluster",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetChildren": {
+      "documentation": null,
+      "signature_members": {
+        "Children": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetChildren(out array<SFXGalaxyMapObject> Children)"
+    },
+    "RemoveChild": {
+      "documentation": null,
+      "signature_members": {
+        "Child": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveChild(SFXGalaxyMapObject Child)"
+    },
+    "AddChild": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXGalaxyMapObject",
+      "signature": "SFXGalaxyMapObject AddChild()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

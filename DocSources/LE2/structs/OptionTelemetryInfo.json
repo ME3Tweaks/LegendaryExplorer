@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Id": {
+      "type": "int",
+      "documentation": null
+    },
+    "Value_Initial": {
+      "type": "int",
+      "documentation": null
+    },
+    "Value_ToSend": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

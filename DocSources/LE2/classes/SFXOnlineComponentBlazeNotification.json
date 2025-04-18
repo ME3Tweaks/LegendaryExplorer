@@ -1,0 +1,193 @@
+{
+  "parent": "SFXOnlineComponentBlaze",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "VfTable_IISFXOnlineComponentNotification": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "m_pBlazeUtil": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "m_aDLCInfo": {
+      "type": "SFXOnlineDLCInfo",
+      "documentation": null
+    },
+    "m_aEntitlementGroups": {
+      "type": "SFXOnlineEntitlementGroupInfo",
+      "documentation": null
+    },
+    "m_aMOTDInfo": {
+      "type": "SFXOnlineMOTDInfo",
+      "documentation": null
+    },
+    "CerberusOfferInfo": {
+      "type": "SFXOnlineTargetOfferInfo",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetTargetOfferInfo": {
+      "documentation": null,
+      "signature_members": {
+        "nSource": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineTargetOfferInfo",
+      "signature": "SFXOnlineTargetOfferInfo GetTargetOfferInfo(SFXOnlinePurchaseSource nSource)"
+    },
+    "GetEntitlementGroups": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineEntitlementGroupInfo",
+      "signature": "array<SFXOnlineEntitlementGroupInfo> GetEntitlementGroups()"
+    },
+    "HasUserPurchasedAnOffer": {
+      "documentation": null,
+      "signature_members": {
+        "aOfferId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineNotificationOfferPurchaseStatus",
+      "signature": "SFXOnlineNotificationOfferPurchaseStatus HasUserPurchasedAnOffer(SFXOnline_OfferID aOfferId)"
+    },
+    "DownloadOffers": {
+      "documentation": null,
+      "signature_members": {
+        "aOfferIds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DownloadOffers(array<SFXOnline_OfferID> aOfferIds)"
+    },
+    "GetOfferKeyIfEntitled": {
+      "documentation": null,
+      "signature_members": {
+        "internalId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetOfferKeyIfEntitled(int internalId)"
+    },
+    "GetGrantingOffers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOfferDescriptor",
+      "signature": "array<SFXOfferDescriptor> GetGrantingOffers()"
+    },
+    "GetEntitledDLCInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOfferDescriptor",
+      "signature": "array<SFXOfferDescriptor> GetEntitledDLCInfo()"
+    },
+    "RefreshEntitlementFlags": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RefreshEntitlementFlags()"
+    },
+    "SetDaysSinceCerberusRegistration": {
+      "documentation": null,
+      "signature_members": {
+        "nDays": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDaysSinceCerberusRegistration(int nDays)"
+    },
+    "GetDaysSinceCerberusRegistration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetDaysSinceCerberusRegistration()"
+    },
+    "IsCalendarUnlockEarned": {
+      "documentation": null,
+      "signature_members": {
+        "nDay": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsCalendarUnlockEarned(int nDay)"
+    },
+    "RequestEntitlementGroupInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RequestEntitlementGroupInfo()"
+    },
+    "RequestDLCInfo": {
+      "documentation": null,
+      "signature_members": {
+        "sNextSection": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RequestDLCInfo(optional string sNextSection)"
+    },
+    "RequestServerInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RequestServerInfo()"
+    },
+    "RequestData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RequestData()"
+    },
+    "GetAPIName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetAPIName()"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "OnInitialize": {
+      "documentation": null,
+      "signature_members": {
+        "oOnlineSubsystem": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnInitialize(SFXOnlineSubsystem oOnlineSubsystem)"
+    },
+    "OnTick": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTick(SFXOnlineEvent oEvent)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,89 @@
+{
+  "parent": "SFXGameModeBase",
+  "package": "SFXGame",
+  "variables": {
+    "ConversationCam": {
+      "type": "BioCameraBehaviorConversation",
+      "documentation": null
+    },
+    "InstantTransition": {
+      "type": "SFXCameraTransition_GalaxyMap",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HighlightDefaultResponse": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HighlightDefaultResponse()"
+    },
+    "SkipConversation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SkipConversation()"
+    },
+    "SelectResponse": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SelectResponse()"
+    },
+    "InterruptParagon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InterruptParagon()"
+    },
+    "InterruptRenegade": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InterruptRenegade()"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "HACK_GetCameraMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode HACK_GetCameraMode()"
+    },
+    "GetCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "OldCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "PreserveTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Transition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCameraMode(SFXCameraMode OldCameraMode, out int PreserveTarget, out float TransitionTime, out SFXCameraMode_Interpolate Transition)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

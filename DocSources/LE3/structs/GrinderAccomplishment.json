@@ -1,31 +1,31 @@
 {
   "Members": {
     "AccomplishmentName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "AccomplishmentProgressName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "Goal": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Interval": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Title": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Description": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "MPDescription": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

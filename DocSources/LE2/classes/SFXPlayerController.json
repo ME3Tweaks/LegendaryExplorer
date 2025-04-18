@@ -1,0 +1,177 @@
+{
+  "parent": "BioPlayerController",
+  "package": "SFXGame",
+  "variables": {
+    "CurrentCustomAction": {
+      "type": "EAICustomAction",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ServerBecomeActivePlayer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ServerBecomeActivePlayer()"
+    },
+    "MantleCover": {
+      "documentation": null,
+      "signature_members": {
+        "CovInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MantleCover(CovPosInfo CovInfo)"
+    },
+    "ClimbCover": {
+      "documentation": null,
+      "signature_members": {
+        "CovInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClimbCover(CovPosInfo CovInfo)"
+    },
+    "TryClimbOrMantleCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool TryClimbOrMantleCover()"
+    },
+    "GetCurrentCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "pAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCurrentCustomAction(out BioCustomAction pAction)"
+    },
+    "CustomActionEnded": {
+      "documentation": null,
+      "signature_members": {
+        "PrevAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CustomActionEnded(EAICustomAction PrevAction)"
+    },
+    "CustomActionStarted": {
+      "documentation": null,
+      "signature_members": {
+        "NewAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CustomActionStarted(EAICustomAction NewAction)"
+    },
+    "VerifyCAHasBeenInstanced": {
+      "documentation": null,
+      "signature_members": {
+        "CAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool VerifyCAHasBeenInstanced(EAICustomAction CAction)"
+    },
+    "CanDoCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "CAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanDoCustomAction(EAICustomAction CAction)"
+    },
+    "EndCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndCustomAction()"
+    },
+    "DoCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "NewAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoCustomAction(EAICustomAction NewAction)"
+    },
+    "NotifyHitWall": {
+      "documentation": null,
+      "signature_members": {
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "Wall": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotifyHitWall(Vector HitNormal, Actor Wall)"
+    },
+    "NotifyBump": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotifyBump(Actor Other, Vector HitNormal)"
+    },
+    "CheckNearMiss": {
+      "documentation": null,
+      "signature_members": {
+        "Shooter": {
+          "type": null,
+          "documentation": null
+        },
+        "W": {
+          "type": null,
+          "documentation": null
+        },
+        "WeapLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "LineDir": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CheckNearMiss(Pawn Shooter, Weapon W, Vector WeapLoc, Vector LineDir, Vector HitLocation)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

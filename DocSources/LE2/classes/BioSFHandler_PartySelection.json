@@ -1,0 +1,213 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "lstMemberInfo": {
+      "type": "PartySelectMemberInfo",
+      "documentation": null
+    },
+    "lstAppearances": {
+      "type": "AdditionalAppearanceInfo",
+      "documentation": null
+    },
+    "lstDynamicInfo": {
+      "type": "PartySelectDynamicInfo",
+      "documentation": null
+    },
+    "__ExternalCallback_OnComplete__Delegate": {
+      "type": "ExternalCallback_OnComplete",
+      "documentation": null
+    },
+    "nmFireTeamLeaderLabel": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nmSpecialistLabel": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmMorinthPlotState": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nmForcedHenchman": {
+      "type": "Name",
+      "documentation": null
+    },
+    "srPartyConfirm": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srPartyCancel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srPartyQuestion": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_nStrMorinthName": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nPartyMember1": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nPartyMember2": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bNoSelectMode": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSFScreenInitialized": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ExitScreen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExitScreen()"
+    },
+    "FinalizeParty": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FinalizeParty(bool bAPressed, int nContext)"
+    },
+    "ConfirmParty": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ConfirmParty()"
+    },
+    "DoInitialization": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoInitialization()"
+    },
+    "SendInfo": {
+      "documentation": null,
+      "signature_members": {
+        "nChar": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendInfo(int nChar)"
+    },
+    "SetInfo": {
+      "documentation": null,
+      "signature_members": {
+        "nmTag": {
+          "type": null,
+          "documentation": null
+        },
+        "oLoadout": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInfo(Name nmTag, SFXPlayerSquadLoadoutData oLoadout)"
+    },
+    "PlayConflict": {
+      "documentation": null,
+      "signature_members": {
+        "nChar1": {
+          "type": null,
+          "documentation": null
+        },
+        "nChar2": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayConflict(int nChar1, int nChar2)"
+    },
+    "SetCharacterAppearance": {
+      "documentation": null,
+      "signature_members": {
+        "nChar": {
+          "type": null,
+          "documentation": null
+        },
+        "nAppearance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCharacterAppearance(int nChar, int nAppearance)"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": null,
+          "documentation": null
+        },
+        "lstArguments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "ClearDelegates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearDelegates()"
+    },
+    "SetExternalCallback_OnComplete": {
+      "documentation": null,
+      "signature_members": {
+        "pDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetExternalCallback_OnComplete(delegate<ExternalCallback_OnComplete> pDelegate)"
+    },
+    "ExternalCallback_OnComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExternalCallback_OnComplete()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

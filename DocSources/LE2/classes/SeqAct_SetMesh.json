@@ -1,0 +1,29 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "NewSkeletalMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null
+    },
+    "NewStaticMesh": {
+      "type": "StaticMesh",
+      "documentation": null
+    },
+    "bIsAllowedToMove": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowDecalsToReattach": {
+      "type": "bool",
+      "documentation": null
+    },
+    "MeshType": {
+      "type": "EMeshType",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

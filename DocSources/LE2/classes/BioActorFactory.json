@@ -1,0 +1,45 @@
+{
+  "parent": "ActorFactory",
+  "package": "SFXGame",
+  "variables": {
+    "ActorResourceCollection": {
+      "type": "Object",
+      "documentation": null
+    },
+    "InitialVelocity": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "ActorType": {
+      "type": "BioActorType",
+      "documentation": null
+    },
+    "AdditionalVelocity": {
+      "type": "DistributionVector",
+      "documentation": null
+    },
+    "InitialAngularVelocity": {
+      "type": "DistributionVector",
+      "documentation": null
+    },
+    "bEnableInitialVelocity": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLocalSpaceInitialVelocity": {
+      "type": "bool",
+      "documentation": null
+    },
+    "BakeActorResources": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RBChannel": {
+      "type": "ERBCollisionChannel",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

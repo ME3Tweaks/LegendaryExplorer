@@ -1,27 +1,27 @@
 {
   "Members": {
     "PowerClassName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "oChoiceImage": {
-      "type": null,
+      "type": "Texture2D",
       "documentation": null
     },
     "BonusPowerID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "srChoiceName": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "srChoiceTitle": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "srChoiceDescription": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

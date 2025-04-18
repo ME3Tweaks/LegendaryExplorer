@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "cSubtitleColour": {
+      "type": "Color",
+      "documentation": null
+    },
+    "bSuppressSubtitlesIfVO": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAlert": {
+      "type": "bool",
+      "documentation": null
+    },
+    "nSubtitleMode": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

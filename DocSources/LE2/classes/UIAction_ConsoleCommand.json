@@ -1,0 +1,13 @@
+{
+  "parent": "UIAction",
+  "package": "Engine",
+  "variables": {
+    "Command": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

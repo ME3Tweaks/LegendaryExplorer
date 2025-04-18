@@ -1,0 +1,61 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "WalkSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "GroundSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "TurnSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "CombatWalkSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "CombatGroundSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "DeathCrawlSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "CoverGroundSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "CoverCrouchGroundSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "CrouchGroundSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "StormSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "StormTurnSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "AirSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "AccelRate": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

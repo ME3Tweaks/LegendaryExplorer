@@ -1,0 +1,49 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "CollisionHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "CollisionRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "CylinderColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "bDrawBoundingBox": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDrawNonColliding": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAlwaysRenderIfSelected": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetCylinderSize": {
+      "documentation": null,
+      "signature_members": {
+        "NewRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "NewHeight": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCylinderSize(float NewRadius, float NewHeight)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

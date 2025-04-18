@@ -1,11 +1,11 @@
 {
   "Members": {
     "Source": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "Target": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     }
   },

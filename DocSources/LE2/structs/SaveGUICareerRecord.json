@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "CareerName": {
+      "type": "string",
+      "documentation": null
+    },
+    "FirstName": {
+      "type": "string",
+      "documentation": null
+    },
+    "ClassName": {
+      "type": "string",
+      "documentation": null
+    },
+    "CreationDate": {
+      "type": "SaveTimeStamp",
+      "documentation": null
+    },
+    "DeviceID": {
+      "type": "int",
+      "documentation": null
+    },
+    "bActiveCareer": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Origin": {
+      "type": "EOriginType",
+      "documentation": null
+    },
+    "Notoriety": {
+      "type": "ENotorietyType",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

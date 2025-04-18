@@ -1,0 +1,36 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGameContent",
+  "variables": {
+    "Position": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "BoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Instigator": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "MomentumScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "bVelChange": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

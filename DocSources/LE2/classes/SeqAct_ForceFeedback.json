@@ -1,0 +1,17 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "PredefinedWaveForm": {
+      "type": "Class",
+      "documentation": null
+    },
+    "FFWaveform": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

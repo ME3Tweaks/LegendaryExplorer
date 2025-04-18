@@ -1,0 +1,29 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "oPlaceable": {
+      "type": "BioArtPlaceable",
+      "documentation": null
+    },
+    "nmNewState": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nmNamedTransiton": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bChangeImmediately": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFail": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

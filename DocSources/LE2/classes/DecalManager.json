@@ -1,0 +1,240 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "PoolDecals": {
+      "type": "DecalComponent",
+      "documentation": null
+    },
+    "ActiveDecals": {
+      "type": "ActiveDecalInfo",
+      "documentation": null
+    },
+    "DecalTemplate": {
+      "type": "DecalComponent",
+      "documentation": null
+    },
+    "DecalBlendRange": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "MaxActiveDecals": {
+      "type": "int",
+      "documentation": null
+    },
+    "DecalLifeSpan": {
+      "type": "float",
+      "documentation": null
+    },
+    "DecalDepthBias": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SpawnDecal": {
+      "documentation": null,
+      "signature_members": {
+        "DecalMaterial": {
+          "type": null,
+          "documentation": null
+        },
+        "DecalLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "DecalOrientation": {
+          "type": null,
+          "documentation": null
+        },
+        "Width": {
+          "type": null,
+          "documentation": null
+        },
+        "Height": {
+          "type": null,
+          "documentation": null
+        },
+        "Thickness": {
+          "type": null,
+          "documentation": null
+        },
+        "bNoClip": {
+          "type": null,
+          "documentation": null
+        },
+        "DecalRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitComponent": {
+          "type": null,
+          "documentation": null
+        },
+        "bProjectOnTerrain": {
+          "type": null,
+          "documentation": null
+        },
+        "bProjectOnSkeletalMeshes": {
+          "type": null,
+          "documentation": null
+        },
+        "HitBone": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNodeIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLevelIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "InDecalLifeSpan": {
+          "type": null,
+          "documentation": null
+        },
+        "InFracturedStaticMeshComponentIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "InDepthBias": {
+          "type": null,
+          "documentation": null
+        },
+        "InBlendRange": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "DecalComponent",
+      "signature": "DecalComponent SpawnDecal(MaterialInterface DecalMaterial, Vector DecalLocation, Rotator DecalOrientation, float Width, float Height, float Thickness, bool bNoClip, optional float DecalRotation, optional PrimitiveComponent HitComponent, optional bool bProjectOnTerrain, optional bool bProjectOnSkeletalMeshes, optional Name HitBone, optional int HitNodeIndex, optional int HitLevelIndex, optional float InDecalLifeSpan, optional int InFracturedStaticMeshComponentIndex, optional float InDepthBias, optional Vector2D InBlendRange)"
+    },
+    "GetPooledComponent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "DecalComponent",
+      "signature": "DecalComponent GetPooledComponent()"
+    },
+    "SetDecalParameters": {
+      "documentation": null,
+      "signature_members": {
+        "TheDecal": {
+          "type": null,
+          "documentation": null
+        },
+        "DecalMaterial": {
+          "type": null,
+          "documentation": null
+        },
+        "DecalLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "DecalOrientation": {
+          "type": null,
+          "documentation": null
+        },
+        "Width": {
+          "type": null,
+          "documentation": null
+        },
+        "Height": {
+          "type": null,
+          "documentation": null
+        },
+        "Thickness": {
+          "type": null,
+          "documentation": null
+        },
+        "bNoClip": {
+          "type": null,
+          "documentation": null
+        },
+        "DecalRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitComponent": {
+          "type": null,
+          "documentation": null
+        },
+        "bProjectOnTerrain": {
+          "type": null,
+          "documentation": null
+        },
+        "bProjectOnSkeletalMeshes": {
+          "type": null,
+          "documentation": null
+        },
+        "HitBone": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNodeIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLevelIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "InFracturedStaticMeshComponentIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "DepthBias": {
+          "type": null,
+          "documentation": null
+        },
+        "BlendRange": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDecalParameters(DecalComponent TheDecal, MaterialInterface DecalMaterial, Vector DecalLocation, Rotator DecalOrientation, float Width, float Height, float Thickness, bool bNoClip, float DecalRotation, PrimitiveComponent HitComponent, bool bProjectOnTerrain, bool bProjectOnSkeletalMeshes, Name HitBone, int HitNodeIndex, int HitLevelIndex, int InFracturedStaticMeshComponentIndex, float DepthBias, Vector2D BlendRange)"
+    },
+    "CanSpawnDecals": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanSpawnDecals()"
+    },
+    "AttachDecal": {
+      "documentation": null,
+      "signature_members": {
+        "InDecalComponent": {
+          "type": null,
+          "documentation": null
+        },
+        "InDecalLifeSpan": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AttachDecal(DecalComponent InDecalComponent, float InDecalLifeSpan)"
+    },
+    "DecalFinished": {
+      "documentation": null,
+      "signature_members": {
+        "Decal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DecalFinished(DecalComponent Decal)"
+    },
+    "AreDynamicDecalsEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AreDynamicDecalsEnabled()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

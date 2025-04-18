@@ -1,0 +1,9 @@
+{
+  "Members": {
+    "GameOptions": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

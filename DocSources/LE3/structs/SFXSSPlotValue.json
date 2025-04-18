@@ -1,11 +1,11 @@
 {
   "Members": {
     "sPinName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "fValue": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

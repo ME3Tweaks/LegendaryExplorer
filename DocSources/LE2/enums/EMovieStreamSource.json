@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "MovieStream_File": {
+      "value": 0,
+      "documentation": null
+    },
+    "MovieStream_Memory": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "oPossessedPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PossessPawn": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PossessPawn(BioPawn oPawn)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

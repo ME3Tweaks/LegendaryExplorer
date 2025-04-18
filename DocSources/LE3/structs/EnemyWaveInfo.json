@@ -1,19 +1,19 @@
 {
   "Members": {
     "EnemyType": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "MinCount": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "MaxCount": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "MaxPerWave": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

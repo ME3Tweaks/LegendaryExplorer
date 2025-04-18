@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Effect": {
+      "type": "string",
+      "documentation": null
+    },
+    "Name": {
+      "type": "Name",
+      "documentation": null
+    },
+    "AchievementId": {
+      "type": "EAchievementID",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

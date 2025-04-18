@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "PMIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "AchievementId": {
+      "type": "int",
+      "documentation": null
+    },
+    "UnlockedAt": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

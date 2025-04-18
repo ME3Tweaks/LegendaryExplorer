@@ -1,15 +1,15 @@
 {
   "Members": {
     "MapPackageNames": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "ModuleID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "PrettyName": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

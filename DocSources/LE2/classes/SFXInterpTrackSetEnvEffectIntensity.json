@@ -1,0 +1,42 @@
+{
+  "parent": "SFXGameInterpTrackCustom",
+  "package": "SFXGame",
+  "variables": {
+    "m_aEnvEffIntKeyData": {
+      "type": "SFXEnvEffectIntensityTrackData",
+      "documentation": null
+    },
+    "m_EnvEffIntensitySeq": {
+      "type": "BioSeqAct_SetEnvironmentEffectIntensity",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "KeyDataDisplayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataDisplayName()"
+    },
+    "KeyDataArrayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataArrayName()"
+    },
+    "NewKeyDefaultName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string NewKeyDefaultName()"
+    },
+    "AllowKeyNaming": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AllowKeyNaming()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

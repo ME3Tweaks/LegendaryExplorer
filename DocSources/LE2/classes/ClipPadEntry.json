@@ -1,0 +1,17 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Title": {
+      "type": "string",
+      "documentation": null
+    },
+    "Text": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "parent": "ParticleModuleEventBase",
+  "package": "Engine",
+  "variables": {
+    "Events": {
+      "type": "ParticleEvent_GenerateInfo",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,141 @@
+{
+  "EnumValues": {
+    "Profile_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "Profile_AI": {
+      "value": 1,
+      "documentation": null
+    },
+    "Profile_Camera": {
+      "value": 2,
+      "documentation": null
+    },
+    "Profile_Combat": {
+      "value": 3,
+      "documentation": null
+    },
+    "Profile_SysDesign": {
+      "value": 4,
+      "documentation": null
+    },
+    "Profile_CombatStats": {
+      "value": 5,
+      "documentation": null
+    },
+    "Profile_Difficulty": {
+      "value": 6,
+      "documentation": null
+    },
+    "Profile_Angst": {
+      "value": 7,
+      "documentation": null
+    },
+    "Profile_Cooldown": {
+      "value": 8,
+      "documentation": null
+    },
+    "Profile_Damage": {
+      "value": 9,
+      "documentation": null
+    },
+    "Profile_Pawn": {
+      "value": 10,
+      "documentation": null
+    },
+    "Profile_Power": {
+      "value": 11,
+      "documentation": null
+    },
+    "Profile_Tech": {
+      "value": 12,
+      "documentation": null
+    },
+    "Profile_Treasure": {
+      "value": 13,
+      "documentation": null
+    },
+    "Profile_Locomotion": {
+      "value": 14,
+      "documentation": null
+    },
+    "Profile_AnimTree": {
+      "value": 15,
+      "documentation": null
+    },
+    "Profile_Ticket": {
+      "value": 16,
+      "documentation": null
+    },
+    "Profile_Vehicle": {
+      "value": 17,
+      "documentation": null
+    },
+    "Profile_Henchmen": {
+      "value": 18,
+      "documentation": null
+    },
+    "Profile_Settings": {
+      "value": 19,
+      "documentation": null
+    },
+    "Profile_Effects": {
+      "value": 20,
+      "documentation": null
+    },
+    "Profile_Scaleform": {
+      "value": 21,
+      "documentation": null
+    },
+    "Profile_ME1Import": {
+      "value": 22,
+      "documentation": null
+    },
+    "Profile_Trilogy": {
+      "value": 23,
+      "documentation": null
+    },
+    "Profile_Anim": {
+      "value": 24,
+      "documentation": null
+    },
+    "Profile_Cover": {
+      "value": 25,
+      "documentation": null
+    },
+    "Profile_Door": {
+      "value": 26,
+      "documentation": null
+    },
+    "Profile_Conversation": {
+      "value": 27,
+      "documentation": null
+    },
+    "Profile_ConversationBug": {
+      "value": 28,
+      "documentation": null
+    },
+    "Profile_Gestures": {
+      "value": 29,
+      "documentation": null
+    },
+    "Profile_DesignBudgetGeneral": {
+      "value": 30,
+      "documentation": null
+    },
+    "Profile_Bonuses": {
+      "value": 31,
+      "documentation": null
+    },
+    "Profile_Multipliers": {
+      "value": 32,
+      "documentation": null
+    },
+    "Profile_LookAt": {
+      "value": 33,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

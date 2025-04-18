@@ -1,0 +1,39 @@
+{
+  "parent": "BioAFComponent",
+  "package": "SFXGame",
+  "variables": {
+    "m_bActivated": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDataInitialized": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "oOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "oInstigator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(Actor oOwner, Actor oInstigator)"
+    },
+    "InitializeInternal": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeInternal()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

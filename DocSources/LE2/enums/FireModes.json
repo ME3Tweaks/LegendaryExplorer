@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "FireMode_Firing": {
+      "value": 0,
+      "documentation": null
+    },
+    "FireMode_Reload": {
+      "value": 1,
+      "documentation": null
+    },
+    "FireMode_Failed": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

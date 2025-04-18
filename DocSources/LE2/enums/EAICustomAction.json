@@ -1,0 +1,401 @@
+{
+  "EnumValues": {
+    "AI_CustomAction_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "AI_CustomAction_CollectorDeath": {
+      "value": 1,
+      "documentation": null
+    },
+    "AI_CustomAction_PraetorianDeath": {
+      "value": 2,
+      "documentation": null
+    },
+    "AI_CustomAction_DeathCrawl": {
+      "value": 3,
+      "documentation": null
+    },
+    "AI_CustomAction_Frozen": {
+      "value": 4,
+      "documentation": null
+    },
+    "AI_CustomAction_Ragdoll": {
+      "value": 5,
+      "documentation": null
+    },
+    "AI_CustomAction_BovineFortitude": {
+      "value": 6,
+      "documentation": null
+    },
+    "AI_CustomAction_Charge": {
+      "value": 7,
+      "documentation": null
+    },
+    "AI_CustomAction_CombatActivate": {
+      "value": 8,
+      "documentation": null
+    },
+    "AI_CustomAction_CoverClimb": {
+      "value": 9,
+      "documentation": null
+    },
+    "AI_CustomAction_CoverMantle": {
+      "value": 10,
+      "documentation": null
+    },
+    "AI_CustomAction_WaypointAnim": {
+      "value": 11,
+      "documentation": null
+    },
+    "AI_CustomAction_Freezing": {
+      "value": 12,
+      "documentation": null
+    },
+    "AI_CustomAction_Possessed": {
+      "value": 13,
+      "documentation": null
+    },
+    "AI_CustomAction_Knockback": {
+      "value": 14,
+      "documentation": null
+    },
+    "AI_CustomAction_HeadShot": {
+      "value": 15,
+      "documentation": null
+    },
+    "AI_CustomAction_GreatPain": {
+      "value": 16,
+      "documentation": null
+    },
+    "AI_CustomAction_Staggering": {
+      "value": 17,
+      "documentation": null
+    },
+    "AI_CustomAction_Reave": {
+      "value": 18,
+      "documentation": null
+    },
+    "AI_CustomAction_ScionHeadless": {
+      "value": 19,
+      "documentation": null
+    },
+    "AI_CustomAction_HitLeftLeg": {
+      "value": 20,
+      "documentation": null
+    },
+    "AI_CustomAction_HitRightLeg": {
+      "value": 21,
+      "documentation": null
+    },
+    "AI_CustomAction_CorkscrewDeath": {
+      "value": 22,
+      "documentation": null
+    },
+    "AI_CustomAction_ExplosionDeath": {
+      "value": 23,
+      "documentation": null
+    },
+    "AI_CustomAction_LeftArmDeath": {
+      "value": 24,
+      "documentation": null
+    },
+    "AI_CustomAction_RightArmDeath": {
+      "value": 25,
+      "documentation": null
+    },
+    "AI_CustomAction_StomachDeath": {
+      "value": 26,
+      "documentation": null
+    },
+    "AI_CustomAction_DeathKnockback": {
+      "value": 27,
+      "documentation": null
+    },
+    "AI_CustomAction_OnFire": {
+      "value": 28,
+      "documentation": null
+    },
+    "AI_CustomAction_TakeAKnee": {
+      "value": 29,
+      "documentation": null
+    },
+    "AI_CustomAction_StaggerImpact": {
+      "value": 30,
+      "documentation": null
+    },
+    "AI_CustomAction_StandardImpact": {
+      "value": 31,
+      "documentation": null
+    },
+    "AI_CustomAction_ZombieTakeAKnee": {
+      "value": 32,
+      "documentation": null
+    },
+    "AI_CustomAction_ScionImpact": {
+      "value": 33,
+      "documentation": null
+    },
+    "AI_CustomAction_HuskImpact": {
+      "value": 34,
+      "documentation": null
+    },
+    "AI_CustomAction_ShieldKnockback": {
+      "value": 35,
+      "documentation": null
+    },
+    "AI_CustomAction_ShieldStaggerImpact": {
+      "value": 36,
+      "documentation": null
+    },
+    "AI_CustomAction_ShieldStandardImpact": {
+      "value": 37,
+      "documentation": null
+    },
+    "AI_CustomAction_GlobalDeath": {
+      "value": 38,
+      "documentation": null
+    },
+    "AI_CustomAction_TentacleDeath": {
+      "value": 39,
+      "documentation": null
+    },
+    "AI_CustomAction_OculusDeath": {
+      "value": 40,
+      "documentation": null
+    },
+    "AI_CustomAction_NeuralShock": {
+      "value": 41,
+      "documentation": null
+    },
+    "AI_CustomAction_BioticCharge": {
+      "value": 42,
+      "documentation": null
+    },
+    "AI_CustomAction_HeavyPunch": {
+      "value": 43,
+      "documentation": null
+    },
+    "AI_CustomAction_Swipe": {
+      "value": 44,
+      "documentation": null
+    },
+    "AI_CustomAction_PraetorianTeleportStart": {
+      "value": 45,
+      "documentation": null
+    },
+    "AI_CustomAction_PraetorianTeleportEnd": {
+      "value": 46,
+      "documentation": null
+    },
+    "AI_CustomAction_PlayerStagger": {
+      "value": 47,
+      "documentation": null
+    },
+    "AI_CustomAction_PlayerMeleed": {
+      "value": 48,
+      "documentation": null
+    },
+    "AI_CustomAction_PlayerMeleedII": {
+      "value": 49,
+      "documentation": null
+    },
+    "AI_CustomAction_PlayerMeleedNoRotate": {
+      "value": 50,
+      "documentation": null
+    },
+    "AI_CustomAction_PlayerStandardImpact": {
+      "value": 51,
+      "documentation": null
+    },
+    "AI_CustomAction_PlayerKnockback": {
+      "value": 52,
+      "documentation": null
+    },
+    "AI_CustomAction_Maelstrom": {
+      "value": 53,
+      "documentation": null
+    },
+    "AI_CustomAction_Melee": {
+      "value": 54,
+      "documentation": null
+    },
+    "AI_CustomAction_Explosion_Level1": {
+      "value": 55,
+      "documentation": null
+    },
+    "AI_CustomAction_Explosion_Level2": {
+      "value": 56,
+      "documentation": null
+    },
+    "AI_CustomAction_Explosion_Level3": {
+      "value": 57,
+      "documentation": null
+    },
+    "AI_CustomAction_Meleed": {
+      "value": 58,
+      "documentation": null
+    },
+    "AI_CustomAction_Meleed_Twice": {
+      "value": 59,
+      "documentation": null
+    },
+    "AI_CustomAction_MawDeath": {
+      "value": 60,
+      "documentation": null
+    },
+    "AI_CustomAction_MawBurrow": {
+      "value": 61,
+      "documentation": null
+    },
+    "AI_CustomAction_Spider": {
+      "value": 62,
+      "documentation": null
+    },
+    "AI_CustomAction_BloodyPlayerStandardImpact": {
+      "value": 63,
+      "documentation": null
+    },
+    "AI_CustomAction_PlayerOnFire": {
+      "value": 64,
+      "documentation": null
+    },
+    "AI_CustomAction_BloodLust": {
+      "value": 65,
+      "documentation": null
+    },
+    "AI_CustomAction_OnFireShort": {
+      "value": 66,
+      "documentation": null
+    },
+    "AI_CustomAction_PlayerShortStagger": {
+      "value": 67,
+      "documentation": null
+    },
+    "AI_CustomAction_StumbleForward": {
+      "value": 68,
+      "documentation": null
+    },
+    "AI_CustomAction_MechDogIdle": {
+      "value": 69,
+      "documentation": null
+    },
+    "AI_CustomAction_MechDogBite": {
+      "value": 70,
+      "documentation": null
+    },
+    "AI_CustomAction_ElectricStandardImpact": {
+      "value": 71,
+      "documentation": null
+    },
+    "AI_CustomAction_RoboticImpact": {
+      "value": 72,
+      "documentation": null
+    },
+    "AI_CustomAction_GreatPainII": {
+      "value": 73,
+      "documentation": null
+    },
+    "AI_CustomAction_KnockbackII": {
+      "value": 74,
+      "documentation": null
+    },
+    "AI_CustomAction_MeleedII": {
+      "value": 75,
+      "documentation": null
+    },
+    "AI_CustomAction_HeavyMeleed": {
+      "value": 76,
+      "documentation": null
+    },
+    "AI_CustomAction_Utilize": {
+      "value": 77,
+      "documentation": null
+    },
+    "AI_CustomAction_PunchDeathKnockback": {
+      "value": 78,
+      "documentation": null
+    },
+    "AI_CustomAction_GreatPainII_Death": {
+      "value": 79,
+      "documentation": null
+    },
+    "AI_CustomAction_PlayerStumbleForward": {
+      "value": 80,
+      "documentation": null
+    },
+    "AI_CustomAction_VarrenImpact": {
+      "value": 81,
+      "documentation": null
+    },
+    "AI_CustomAction_SpiderImpact": {
+      "value": 82,
+      "documentation": null
+    },
+    "AI_CustomAction_Exploration_Comm": {
+      "value": 83,
+      "documentation": null
+    },
+    "AI_CustomAction_VarrenBite": {
+      "value": 84,
+      "documentation": null
+    },
+    "AI_CustomAction_ExplosiveKnockback": {
+      "value": 85,
+      "documentation": null
+    },
+    "AI_CustomAction_Power_Standard": {
+      "value": 86,
+      "documentation": null
+    },
+    "AI_CustomAction_Power_StandardVariant": {
+      "value": 87,
+      "documentation": null
+    },
+    "AI_CustomAction_Power_Stagger": {
+      "value": 88,
+      "documentation": null
+    },
+    "AI_CustomAction_Power_StaggerVariant": {
+      "value": 89,
+      "documentation": null
+    },
+    "AI_CustomAction_Power_Knockback": {
+      "value": 90,
+      "documentation": null
+    },
+    "AI_CustomAction_Power_KnockbackVariant": {
+      "value": 91,
+      "documentation": null
+    },
+    "AI_CustomAction_Power_StandardForward": {
+      "value": 92,
+      "documentation": null
+    },
+    "AI_CustomAction_Power_StaggerForward": {
+      "value": 93,
+      "documentation": null
+    },
+    "AI_CustomAction_Power_OnFireShort": {
+      "value": 94,
+      "documentation": null
+    },
+    "AI_CustomAction_Power_OnFireLong": {
+      "value": 95,
+      "documentation": null
+    },
+    "AI_CustomAction_Power_OnFireVariant": {
+      "value": 96,
+      "documentation": null
+    },
+    "AI_CustomAction_Power_NeuralShock": {
+      "value": 97,
+      "documentation": null
+    },
+    "AI_CustomAction_Power_Reave": {
+      "value": 98,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

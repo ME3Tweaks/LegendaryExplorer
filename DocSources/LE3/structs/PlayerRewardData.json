@@ -1,11 +1,11 @@
 {
   "Members": {
     "fOriginalExperience": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "fNewExperience": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

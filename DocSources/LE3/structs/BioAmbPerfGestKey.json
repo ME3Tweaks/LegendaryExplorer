@@ -1,11 +1,11 @@
 {
   "Members": {
     "nmPerfName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "nmPoseName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     }
   },

@@ -1,11 +1,11 @@
 {
   "Members": {
     "nmSpeakerTag": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "pSpeakerActor": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     }
   },

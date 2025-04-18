@@ -1,0 +1,187 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "MineralStartEvents": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "MineralStopEvents": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "MineralRTPCNames": {
+      "type": "string",
+      "documentation": null
+    },
+    "LandingSiteIndicator_RTPCName": {
+      "type": "string",
+      "documentation": null
+    },
+    "AnomalyDetectedVO": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "ProbeLaunchedVO": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "ReticleRotStart": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "ReticleRotMaxClamp": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "ReticleRotMinClamp": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "Planet": {
+      "type": "InterpActor",
+      "documentation": null
+    },
+    "Clouds": {
+      "type": "InterpActor",
+      "documentation": null
+    },
+    "Probe": {
+      "type": "InterpActor",
+      "documentation": null
+    },
+    "Ring": {
+      "type": "InterpActor",
+      "documentation": null
+    },
+    "ScanSphere": {
+      "type": "InterpActor",
+      "documentation": null
+    },
+    "ProbeTrail": {
+      "type": "Emitter",
+      "documentation": null
+    },
+    "LandingSiteMarker": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "Reticle": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "ScanReticle": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "LaunchReticle": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "ScanWipe": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "ScanDirection": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "ScanBlip": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "ProbeImpact": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "ProbeLocationMarker": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "ProbeImpactSound": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "MineralRecoverySound_None": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "MineralRecoverySound_Small": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "MineralRecoverySound_Medium": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "MineralRecoverySound_Large": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "ProbeLaunchSound_NoProbes": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "LandingSiteIndicator": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "AnomalyStaticStart": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "AnomalyStaticStop": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "CurrentPlanet": {
+      "type": "BioPlanet",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetGalaxyCamera": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioCameraBehaviorGalaxy",
+      "signature": "BioCameraBehaviorGalaxy GetGalaxyCamera()"
+    },
+    "SignalProbeImpact": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SignalProbeImpact()"
+    },
+    "SignalProbeLaunch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SignalProbeLaunch()"
+    },
+    "EndAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndAction()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Update(float DeltaTime)"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

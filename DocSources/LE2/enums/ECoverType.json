@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "CT_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "CT_Standing": {
+      "value": 1,
+      "documentation": null
+    },
+    "CT_MidLevel": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

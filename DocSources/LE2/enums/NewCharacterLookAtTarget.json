@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "NCLAT_Ahead": {
+      "value": 0,
+      "documentation": null
+    },
+    "NCLAT_Left": {
+      "value": 1,
+      "documentation": null
+    },
+    "NCLAT_Right": {
+      "value": 2,
+      "documentation": null
+    },
+    "NCLAT_Up": {
+      "value": 3,
+      "documentation": null
+    },
+    "NCLAT_Down": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,15 +1,15 @@
 {
   "Members": {
     "KeyScope": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "StartKeyScopeValue": {
-      "type": null,
+      "type": "QWord",
       "documentation": null
     },
     "EndKeyScopeValue": {
-      "type": null,
+      "type": "QWord",
       "documentation": null
     }
   },

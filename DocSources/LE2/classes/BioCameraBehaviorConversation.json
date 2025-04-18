@@ -1,0 +1,216 @@
+{
+  "parent": "BioCameraBehavior",
+  "package": "SFXGame",
+  "variables": {
+    "pProceduralCamera": {
+      "type": "Class",
+      "documentation": null
+    },
+    "m_vFixedCamPosition": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_rFixedCamRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "m_vProceduralCamPosition": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_rProceduralCamRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "m_tDOFData": {
+      "type": "BioStageDOFData",
+      "documentation": null
+    },
+    "m_rRotationOffset": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "m_vPrevFixedCamPos": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_rPrevFixedCamRot": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "m_tPrevDOFData": {
+      "type": "BioStageDOFData",
+      "documentation": null
+    },
+    "ViewSource": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "Target": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_pIdleCamAnimSet": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "m_nProceduralCameraClass": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_fNearPlane": {
+      "type": "float",
+      "documentation": null
+    },
+    "CAMERA_FOV": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLateralOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPrevCamFOV": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPrevNearPlane": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fIdleCamTimeIndex": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_idleCamAnimIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bDOFSettingDisabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSavedData": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIdleCamEnabled": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ModifyPostProcessSettings": {
+      "documentation": null,
+      "signature_members": {
+        "PPSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyPostProcessSettings(out PostProcessSettings PPSettings)"
+    },
+    "InternalModifyPostProcessSettings": {
+      "documentation": null,
+      "signature_members": {
+        "PPSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InternalModifyPostProcessSettings(out PostProcessSettings PPSettings)"
+    },
+    "DrawHUD": {
+      "documentation": null,
+      "signature_members": {
+        "M": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawHUD(BioCheatManager M)"
+    },
+    "GetProceduralCam": {
+      "documentation": null,
+      "signature_members": {
+        "vCamLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "rCamRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "bInvert": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetProceduralCam(out Vector vCamLocation, out Rotator rCamRotation, bool bInvert)"
+    },
+    "BlendIdleCameraAnimation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BlendIdleCameraAnimation()"
+    },
+    "InitProceduralCameraClass": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitProceduralCameraClass()"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "MakeInactive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MakeInactive()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "NewOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(BioPlayerController NewOwner)"
+    },
+    "ForcePOV": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ForcePOV()"
+    },
+    "ShutDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShutDown()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

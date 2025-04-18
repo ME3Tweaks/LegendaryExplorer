@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "eBioAnimDeath_Head": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimDeath_Stomach": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimDeath_ArmLeft": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioAnimDeath_ArmRight": {
+      "value": 3,
+      "documentation": null
+    },
+    "eBioAnimDeath_LegLeft": {
+      "value": 4,
+      "documentation": null
+    },
+    "eBioAnimDeath_LegRight": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

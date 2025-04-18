@@ -1,0 +1,33 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "RawFaceFXAnimSetBytes": {
+      "type": "byte",
+      "documentation": null
+    },
+    "RawFaceFXMiniSessionBytes": {
+      "type": "byte",
+      "documentation": null
+    },
+    "ReferencedSoundCues": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "InternalFaceFXAnimSet": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "NumLoadErrors": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bBioSoundCuesFixedUp": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "DT_AI": {
+      "value": 0,
+      "documentation": null
+    },
+    "DT_Power": {
+      "value": 1,
+      "documentation": null
+    },
+    "DT_Offensive": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

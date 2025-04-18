@@ -1,11 +1,11 @@
 {
   "Members": {
     "AbilityName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "TimeStamp": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

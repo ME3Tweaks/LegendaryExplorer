@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "RIF_Constant": {
+      "value": 0,
+      "documentation": null
+    },
+    "RIF_Linear": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

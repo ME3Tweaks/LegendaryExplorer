@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "myPosition": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "myRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "headBaseBonePosition": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "headBonePosition": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "vCameraFocusPoint": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "vProceduralCameraPosition": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "rProceduralCameraRotation": {
+      "type": "Rotator",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

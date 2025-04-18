@@ -1,11 +1,11 @@
 {
   "Members": {
     "sText": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "srStrRef": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

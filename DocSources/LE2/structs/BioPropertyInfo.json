@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "PropertyName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ActualPropertyName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bDisplayProperty": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOldDisplayProperty": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ePropertyType": {
+      "type": "EBioPropertyType",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

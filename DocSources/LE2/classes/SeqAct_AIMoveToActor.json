@@ -1,0 +1,51 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "Engine",
+  "variables": {
+    "Destination": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "LookAt": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "MovementSpeedModifier": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastDestinationChoice": {
+      "type": "int",
+      "documentation": null
+    },
+    "bInterruptable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPickClosest": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PickDestination": {
+      "documentation": null,
+      "signature_members": {
+        "Requestor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor PickDestination(Actor Requestor)"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

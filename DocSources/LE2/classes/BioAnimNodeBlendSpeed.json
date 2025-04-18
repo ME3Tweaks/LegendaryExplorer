@@ -1,0 +1,61 @@
+{
+  "parent": "BioAnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "BlendTimeToIdle": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendTimeFromIdle": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendTimeMoving": {
+      "type": "float",
+      "documentation": null
+    },
+    "WalkSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "RunSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "WalkRateScaled": {
+      "type": "float",
+      "documentation": null
+    },
+    "RunRateScaled": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fStartSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCurrentSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fStartCheckTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bIsStarting": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsStarted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SpeedType": {
+      "type": "EBioAnim_SpeedType",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

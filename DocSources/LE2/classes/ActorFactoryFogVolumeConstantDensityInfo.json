@@ -1,0 +1,17 @@
+{
+  "parent": "ActorFactory",
+  "package": "Engine",
+  "variables": {
+    "SelectedMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "bNothingSelected": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

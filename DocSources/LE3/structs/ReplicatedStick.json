@@ -1,27 +1,27 @@
 {
   "Members": {
     "HitLocation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "HitNormal": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "StuckActor": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "BoneIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Reaction": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Trigger": {
-      "type": null,
+      "type": "byte",
       "documentation": null
     }
   },

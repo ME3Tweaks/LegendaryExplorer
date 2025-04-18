@@ -1,0 +1,13 @@
+{
+  "parent": "BioBaseActivity",
+  "package": "SFXGame",
+  "variables": {
+    "m_aTwitchAnims": {
+      "type": "TwitchRec",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

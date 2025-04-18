@@ -1,0 +1,13 @@
+{
+  "parent": "UIObject",
+  "package": "Engine",
+  "variables": {
+    "AutoAlignment": {
+      "type": "UIComp_AutoAlignment",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

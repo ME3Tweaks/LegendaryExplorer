@@ -1,0 +1,32 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_oTarget": {
+      "type": "Object",
+      "documentation": null
+    },
+    "m_oGoal": {
+      "type": "SFXNav_GoalPoint",
+      "documentation": null
+    },
+    "m_nSetPriority": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bResetPriorityToDefault": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

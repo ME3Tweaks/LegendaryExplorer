@@ -1,0 +1,290 @@
+{
+  "parent": "SFXModule_DamageBase",
+  "package": "SFXGame",
+  "variables": {
+    "MaxHealth": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "DamageMultiplier": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "m_RTPCHandler": {
+      "type": "WwiseRTPCForActorHandler",
+      "documentation": null
+    },
+    "DamageParts": {
+      "type": "DamagePart",
+      "documentation": null
+    },
+    "CurrentHealth": {
+      "type": "float",
+      "documentation": null
+    },
+    "DamageScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLastHealthPct": {
+      "type": "float",
+      "documentation": null
+    },
+    "NOTICEABLE_RTPC_CHANGE_AMOUNT": {
+      "type": "float",
+      "documentation": null
+    },
+    "bShowImmunityOnGUI": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bGoreActorEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPartBasedDamageEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsDead": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta)"
+    },
+    "DestroyConstraint": {
+      "documentation": null,
+      "signature_members": {
+        "Group": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DestroyConstraint(EBioPartGroup Group)"
+    },
+    "GetConstraints": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EBioPartGroup",
+      "signature": "array<EBioPartGroup> GetConstraints()"
+    },
+    "PlayHitEffects": {
+      "documentation": null,
+      "signature_members": {
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayHitEffects(out TraceHitInfo HitInfo, out Vector HitLocation, Actor DamageCauser)"
+    },
+    "GetBodyFromHit": {
+      "documentation": null,
+      "signature_members": {
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "RB_BodySetup",
+      "signature": "RB_BodySetup GetBodyFromHit(out TraceHitInfo HitInfo)"
+    },
+    "SFXTakeRadiusDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "bFullDamage": {
+          "type": null,
+          "documentation": null
+        },
+        "HurtOrigin": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "InstigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SFXTakeRadiusDamage(float Damage, float DamageRadius, bool bFullDamage, Vector HurtOrigin, float Momentum, Class<DamageType> DamageType, Controller InstigatedBy, Actor DamageCauser)"
+    },
+    "ProcessHit": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "InstigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        },
+        "HeadShot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessHit(float Damage, out TraceHitInfo HitInfo, Vector HitLocation, Vector Momentum, Class<SFXDamageType> DamageType, Controller InstigatedBy, Actor DamageCauser, bool HeadShot)"
+    },
+    "DetachLimb": {
+      "documentation": null,
+      "signature_members": {
+        "HitBody": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DetachLimb(RB_BodySetup HitBody)"
+    },
+    "CreateGoreActor": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        },
+        "BoneName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateGoreActor(Pawn Pawn, Name BoneName)"
+    },
+    "ApplyDamageToHealth": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "InstigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyDamageToHealth(float Damage, Controller InstigatedBy, Class<SFXDamageType> DamageType, out Vector HitLocation)"
+    },
+    "SFXTakeDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "InstigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SFXTakeDamage(float Damage, out TraceHitInfo HitInfo, out Vector HitLocation, out Vector Momentum, Class<DamageType> DamageType, Controller InstigatedBy, optional Actor DamageCauser)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "ScaleHealth": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ScaleHealth()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,15 @@
+{
+  "parent": "SFXGameEffect_AIHacking",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "TransitionToState": {
+      "type": "Name",
+      "documentation": null
+    },
+    "TransitionOptionalName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "AnimationName": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

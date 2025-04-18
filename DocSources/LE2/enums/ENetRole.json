@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "ROLE_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "ROLE_SimulatedProxy": {
+      "value": 1,
+      "documentation": null
+    },
+    "ROLE_AutonomousProxy": {
+      "value": 2,
+      "documentation": null
+    },
+    "ROLE_Authority": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

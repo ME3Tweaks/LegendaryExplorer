@@ -1,39 +1,39 @@
 {
   "Members": {
     "sSubtitle": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "pRefObject": {
-      "type": null,
+      "type": "Object",
       "documentation": null
     },
     "pActor": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "colFontColor": {
-      "type": null,
+      "type": "Color",
       "documentation": null
     },
     "fTimeRemaining": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "fDelayStarting": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bAlert": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bHasPriority": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "eRenderMode": {
-      "type": null,
+      "type": "ESubtitlesRenderMode",
       "documentation": null
     }
   },

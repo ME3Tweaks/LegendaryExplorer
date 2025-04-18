@@ -1,11 +1,11 @@
 {
   "Members": {
     "CurrentPriority": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "LastPriority": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

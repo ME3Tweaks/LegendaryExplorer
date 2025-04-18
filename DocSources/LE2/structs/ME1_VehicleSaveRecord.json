@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "FirstName": {
+      "type": "string",
+      "documentation": null
+    },
+    "LastName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "HealthCurrent": {
+      "type": "float",
+      "documentation": null
+    },
+    "ShieldCurrent": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "parent": "InterpTrackMove",
+  "package": "SFXGame",
+  "variables": {
+    "FacingController": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

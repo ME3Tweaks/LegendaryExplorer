@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "POWER_RANK_STATE_LOCKED": {
+      "value": 0,
+      "documentation": null
+    },
+    "POWER_RANK_STATE_BUYABLE": {
+      "value": 1,
+      "documentation": null
+    },
+    "POWER_RANK_STATE_BOUGHT": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

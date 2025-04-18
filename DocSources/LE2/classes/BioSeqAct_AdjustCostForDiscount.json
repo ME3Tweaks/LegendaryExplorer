@@ -1,0 +1,46 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "nmLevel": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nPrice": {
+      "type": "int",
+      "documentation": null
+    },
+    "nState": {
+      "type": "int",
+      "documentation": null
+    },
+    "nDiscountedPrice": {
+      "type": "int",
+      "documentation": null
+    },
+    "bDiscount": {
+      "type": "bool",
+      "documentation": null
+    },
+    "TreasureType": {
+      "type": "ETreasureType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

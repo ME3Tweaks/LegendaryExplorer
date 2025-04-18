@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "vPosition": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "rRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "fFov": {
+      "type": "float",
+      "documentation": null
+    },
+    "fNearPlane": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

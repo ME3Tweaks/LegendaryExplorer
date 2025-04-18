@@ -1,11 +1,11 @@
 {
   "Members": {
     "childClass": {
-      "type": null,
+      "type": "Class",
       "documentation": null
     },
     "Value": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

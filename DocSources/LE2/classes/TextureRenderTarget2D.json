@@ -1,0 +1,65 @@
+{
+  "parent": "TextureRenderTarget",
+  "package": "Engine",
+  "variables": {
+    "ClearColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "SizeX": {
+      "type": "int",
+      "documentation": null
+    },
+    "SizeY": {
+      "type": "int",
+      "documentation": null
+    },
+    "bForceLinearGamma": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Format": {
+      "type": "EPixelFormat",
+      "documentation": null
+    },
+    "AddressX": {
+      "type": "TextureAddress",
+      "documentation": null
+    },
+    "AddressY": {
+      "type": "TextureAddress",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Create": {
+      "documentation": null,
+      "signature_members": {
+        "InSizeX": {
+          "type": null,
+          "documentation": null
+        },
+        "InSizeY": {
+          "type": null,
+          "documentation": null
+        },
+        "InFormat": {
+          "type": null,
+          "documentation": null
+        },
+        "InClearColor": {
+          "type": null,
+          "documentation": null
+        },
+        "bOnlyRenderOnce": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "TextureRenderTarget2D",
+      "signature": "TextureRenderTarget2D Create(int InSizeX, int InSizeY, optional EPixelFormat InFormat, optional LinearColor InClearColor, optional bool bOnlyRenderOnce)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

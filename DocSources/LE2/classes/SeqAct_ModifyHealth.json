@@ -1,0 +1,48 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "DamageType": {
+      "type": "Class",
+      "documentation": null
+    },
+    "Instigator": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "Momentum": {
+      "type": "float",
+      "documentation": null
+    },
+    "Amount": {
+      "type": "float",
+      "documentation": null
+    },
+    "Radius": {
+      "type": "float",
+      "documentation": null
+    },
+    "bHeal": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRadial": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFalloff": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

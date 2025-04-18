@@ -1,0 +1,39 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "fTimeExpired": {
+      "type": "float",
+      "documentation": null
+    },
+    "fTimeDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_eBlackScreenAction": {
+      "type": "BlackScreenActionSet",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "UpdateOp": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateOp(float fDeltaT)"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

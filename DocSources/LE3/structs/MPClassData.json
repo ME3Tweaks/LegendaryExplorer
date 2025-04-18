@@ -1,15 +1,15 @@
 {
   "Members": {
     "className": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "srDisplayName": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "srDescription": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

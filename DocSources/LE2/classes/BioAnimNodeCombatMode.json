@@ -1,0 +1,33 @@
+{
+  "parent": "BioAnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_blendIntoTransitionDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_blendOutOfTransitionDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_blendFromNonCombatToCombatDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_blendFromCombatToNonCombatDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_isInitialStateDetermined": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_currentState": {
+      "type": "EBioAnimNodeCombatModeState",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

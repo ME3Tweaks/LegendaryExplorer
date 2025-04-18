@@ -1,0 +1,25 @@
+{
+  "parent": "UberPostProcessEffect",
+  "package": "Engine",
+  "variables": {
+    "FilmGrainTexture": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "EnableFilmicResponse": {
+      "type": "bool",
+      "documentation": null
+    },
+    "EnableVignette": {
+      "type": "bool",
+      "documentation": null
+    },
+    "EnableFilmgrain": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

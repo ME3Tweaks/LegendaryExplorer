@@ -1,23 +1,23 @@
 {
   "Members": {
     "DynamicBonuses": {
-      "type": null,
+      "type": "SFXGameEffect",
       "documentation": null
     },
     "RankBonuses": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "BaseValue": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "CurrentValue": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Formula": {
-      "type": null,
+      "type": "EPowerDataFormula",
       "documentation": null
     }
   },

@@ -1,23 +1,23 @@
 {
   "Members": {
     "nmFindActor": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "bEnabled": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bInstantTransition": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bLockedToTarget": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "eFindActorMode": {
-      "type": null,
+      "type": "ESFXFindByTagTypes",
       "documentation": null
     }
   },

@@ -1,0 +1,29 @@
+{
+  "parent": "UIContainer",
+  "package": "Engine",
+  "variables": {
+    "RegionPercentages": {
+      "type": "float",
+      "documentation": null
+    },
+    "bForce4x3AspectRatio": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseFullRegionIn4x3": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPrimarySafeRegion": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RegionType": {
+      "type": "ESafeRegionType",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,108 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_sSFPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sFlashLinkageIdentifier": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_pHandler": {
+      "type": "SFXSFHandler_Reticle",
+      "documentation": null
+    },
+    "m_pTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_vHUDLocation": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "m_nFlashLayerModifier": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bFirstUpdate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bHasInTransition": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bHasOutTransition": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInTransitionOut": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "UpdateReticleDisplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateReticleDisplay()"
+    },
+    "IsUpdateRequired": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsUpdateRequired(float fDeltaT)"
+    },
+    "PlayVisibleTransition": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayVisibleTransition(bool bVisible)"
+    },
+    "ClearReticle": {
+      "documentation": null,
+      "signature_members": {
+        "bTransition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearReticle(optional bool bTransition)"
+    },
+    "SetVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        },
+        "bTransition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVisible(bool bVisible, optional bool bTransition)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

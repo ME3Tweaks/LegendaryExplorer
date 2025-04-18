@@ -1,0 +1,45 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {
+    "m_modes": {
+      "type": "BioSpectatorMode",
+      "documentation": null
+    },
+    "m_WorldInfo": {
+      "type": "BioWorldInfo",
+      "documentation": null
+    },
+    "m_nSelectedMode": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "NextMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NextMode()"
+    },
+    "PrevMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PrevMode()"
+    },
+    "InitializeModes": {
+      "documentation": null,
+      "signature_members": {
+        "WorldInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeModes(BioWorldInfo WorldInfo)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

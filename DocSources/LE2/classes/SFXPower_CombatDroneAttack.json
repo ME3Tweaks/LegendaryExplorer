@@ -1,0 +1,21 @@
+{
+  "parent": "SFXPower",
+  "package": "SFXGameContent_Powers",
+  "variables": {
+    "AnimatedReactions": {
+      "type": "EAICustomAction",
+      "documentation": null
+    },
+    "DamageClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "bPlayAnimatedReaction": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

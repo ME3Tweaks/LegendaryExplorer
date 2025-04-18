@@ -1,15 +1,15 @@
 {
   "Members": {
     "Text": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Disabled": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "Action": {
-      "type": null,
+      "type": "ESFXGalaxyMapUIAction",
       "documentation": null
     }
   },

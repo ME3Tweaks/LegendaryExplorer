@@ -1,0 +1,519 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_ImpactedActors": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_vWorldImpactLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_vWorldImpactNormal": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_vProjectileVelocity": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_vProjectileLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_vLocationToAimAt": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_ImpactWaveForm": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null
+    },
+    "m_oTargetToAimAt": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "Recommended_TargetVulnerable": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NotRecommended_TargetOrganic": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NotRecommended_TargetMachine": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NotRecommended_TargetHasShields": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NotRecommended_TargetHasBiotics": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NotRecommended_TargetHasArmor": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NotRecommended_NoMedigel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NotRecommended_NoSquadMemberDead": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NotRecommended_NoSquadMemberInjured": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NotRecommended_WeaponPowerAlreadyOn": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NotRecommended_TargetImmune": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_bWeaponModePower": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShouldTick": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPlayerOrderedPowerUse": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DebugDraw_Power": {
+      "documentation": null,
+      "signature_members": {
+        "H": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_Power(BioHUD H)"
+    },
+    "GetHUDWheelIconInfo": {
+      "documentation": null,
+      "signature_members": {
+        "OwnerPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetHUDWheelIconInfo(BioPawn OwnerPawn)"
+    },
+    "ReloadAmmoPower": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReloadAmmoPower(BioPawn Target, SFXWeapon Weapon)"
+    },
+    "OnOwnerDied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnOwnerDied()"
+    },
+    "OnSquadMemberAdded": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSquadMemberAdded(Pawn Pawn)"
+    },
+    "OnPowersLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPowersLoaded()"
+    },
+    "OnPowerRankIncreased": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPowerRankIncreased()"
+    },
+    "OnPowerAdded": {
+      "documentation": null,
+      "signature_members": {
+        "Power": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnPowerAdded(SFXPower Power)"
+    },
+    "GetCurrentShields": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXShield_Base",
+      "signature": "SFXShield_Base GetCurrentShields(BioPawn Target)"
+    },
+    "ShouldUsePowerOnShields": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "sOptionalInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldUsePowerOnShields(BioPawn Target, Class<SFXDamageType> DamageType, out string sOptionalInfo)"
+    },
+    "ShouldUsePower": {
+      "documentation": null,
+      "signature_members": {
+        "Caster": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "sOptionalInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldUsePower(Actor Caster, Actor Target, out string sOptionalInfo)"
+    },
+    "GetDuration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDuration()"
+    },
+    "GetElapsedTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetElapsedTime()"
+    },
+    "PlayForceFeedback": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": null,
+          "documentation": null
+        },
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PlayForceFeedback(Actor oCaster, Actor oImpacted)"
+    },
+    "PlayGuiSound": {
+      "documentation": null,
+      "signature_members": {
+        "nmSound": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PlayGuiSound(Name nmSound)"
+    },
+    "GetFloorLocation": {
+      "documentation": null,
+      "signature_members": {
+        "vStartLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "vFloorLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFloorLocation(Vector vStartLocation, out Vector vFloorLocation)"
+    },
+    "GetCooldownResearchBonus": {
+      "documentation": null,
+      "signature_members": {
+        "fStaticResearchBonus": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetCooldownResearchBonus(out float fStaticResearchBonus)"
+    },
+    "AdjustCooldown": {
+      "documentation": null,
+      "signature_members": {
+        "fCoolDownTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AdjustCooldown(out float fCoolDownTime)"
+    },
+    "EffectUnapply": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": null,
+          "documentation": null
+        },
+        "fCasterStability": {
+          "type": null,
+          "documentation": null
+        },
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        },
+        "nPreviouslyImpacted": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectUnapply(Actor oCaster, float fCasterStability, Actor oImpacted, int nPreviouslyImpacted)"
+    },
+    "OnImpact": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": null,
+          "documentation": null
+        },
+        "fCasterStability": {
+          "type": null,
+          "documentation": null
+        },
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        },
+        "nPreviouslyImpacted": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnImpact(Actor oCaster, float fCasterStability, Actor oImpacted, int nPreviouslyImpacted)"
+    },
+    "PowerSharesCooldown": {
+      "documentation": null,
+      "signature_members": {
+        "Power": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PowerSharesCooldown(BioPower Power)"
+    },
+    "SetPowerCooldowns": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        },
+        "Cooldown": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPowerCooldowns(BioPawn Pawn, float Cooldown)"
+    },
+    "GetPowerCooldown": {
+      "documentation": null,
+      "signature_members": {
+        "Cooldown": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPowerCooldown(out float Cooldown)"
+    },
+    "EndPhase": {
+      "documentation": null,
+      "signature_members": {
+        "ePhase": {
+          "type": null,
+          "documentation": null
+        },
+        "oCaster": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EndPhase(EBioPowerState ePhase, Actor oCaster)"
+    },
+    "StartPhase": {
+      "documentation": null,
+      "signature_members": {
+        "ePhase": {
+          "type": null,
+          "documentation": null
+        },
+        "oCaster": {
+          "type": null,
+          "documentation": null
+        },
+        "fDuration": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartPhase(EBioPowerState ePhase, Actor oCaster, float fDuration)"
+    },
+    "CanStartPower": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanStartPower(Actor oCaster)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "OnProjectileExploded": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "Velocity": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnProjectileExploded(Actor oCaster, Vector HitLocation, Vector HitNormal, Vector Velocity)"
+    },
+    "OnWeaponReload": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        },
+        "QuickReload": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnWeaponReload(SFXWeapon Weapon, bool QuickReload)"
+    },
+    "OnWeaponUnequip": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnWeaponUnequip(SFXWeapon Weapon)"
+    },
+    "OnWeaponEquip": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnWeaponEquip(SFXWeapon Weapon)"
+    },
+    "OnWeaponImpact": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        },
+        "Impact": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnWeaponImpact(SFXWeapon Weapon, ImpactInfo Impact)"
+    },
+    "InitializePowerScript": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializePowerScript()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

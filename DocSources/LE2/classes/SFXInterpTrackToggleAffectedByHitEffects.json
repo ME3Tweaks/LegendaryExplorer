@@ -1,0 +1,46 @@
+{
+  "parent": "SFXInterpTrackToggleBase",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "TriggerKey": {
+      "documentation": null,
+      "signature_members": {
+        "pTrackInst": {
+          "type": null,
+          "documentation": null
+        },
+        "bToggle": {
+          "type": null,
+          "documentation": null
+        },
+        "bEnable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TriggerKey(BioInterpTrackInst pTrackInst, bool bToggle, bool bEnable)"
+    },
+    "KeyDataDisplayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataDisplayName()"
+    },
+    "NewKeyDefaultName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string NewKeyDefaultName()"
+    },
+    "AllowKeyNaming": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AllowKeyNaming()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

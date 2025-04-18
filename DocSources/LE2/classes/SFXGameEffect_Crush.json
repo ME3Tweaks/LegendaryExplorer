@@ -1,0 +1,57 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "BoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "SlamPS": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "Caster": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "UpwardForce": {
+      "type": "float",
+      "documentation": null
+    },
+    "SlamDownForce": {
+      "type": "float",
+      "documentation": null
+    },
+    "minHeightForBodyFallSound": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "OnUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaSeconds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUpdate(float DeltaSeconds)"
+    },
+    "OnApplied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnApplied()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

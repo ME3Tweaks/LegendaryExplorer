@@ -1,19 +1,19 @@
 {
   "Members": {
     "Tag": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "oHandler": {
-      "type": null,
+      "type": "SFXGUIMovie",
       "documentation": null
     },
     "srLabel": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Type": {
-      "type": null,
+      "type": "MEBrowserWheelSubPages",
       "documentation": null
     }
   },

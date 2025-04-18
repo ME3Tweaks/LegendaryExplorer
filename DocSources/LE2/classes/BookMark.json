@@ -1,0 +1,17 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Location": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Rotation": {
+      "type": "Rotator",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

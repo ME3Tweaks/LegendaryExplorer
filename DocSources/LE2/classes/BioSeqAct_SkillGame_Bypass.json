@@ -1,0 +1,45 @@
+{
+  "parent": "BioSeqAct_SkillGame_Base",
+  "package": "SFXGame",
+  "variables": {
+    "m_nNumToSpawn": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nPCBurnDown": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nConsoleBurnDown": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "OnFailure": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnFailure()"
+    },
+    "OnSuccess": {
+      "documentation": null,
+      "signature_members": {
+        "nRemainingResources": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSuccess(int nRemainingResources)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

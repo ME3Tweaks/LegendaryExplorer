@@ -1,0 +1,81 @@
+{
+  "parent": "ParticleModuleTypeDataBase",
+  "package": "Engine",
+  "variables": {
+    "Distance": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "TaperFactor": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "TaperScale": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "BranchParentName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "TextureTile": {
+      "type": "int",
+      "documentation": null
+    },
+    "TextureTileDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "Sheets": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxBeamCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "Speed": {
+      "type": "float",
+      "documentation": null
+    },
+    "InterpolationPoints": {
+      "type": "int",
+      "documentation": null
+    },
+    "UpVectorStepSize": {
+      "type": "int",
+      "documentation": null
+    },
+    "bAlwaysOn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RenderGeometry": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RenderDirectLine": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RenderLines": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RenderTessellation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "BeamMethod": {
+      "type": "EBeam2Method",
+      "documentation": null
+    },
+    "TaperMethod": {
+      "type": "EBeamTaperMethod",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

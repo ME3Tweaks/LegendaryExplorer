@@ -1,11 +1,11 @@
 {
   "Members": {
     "Callback": {
-      "type": null,
+      "type": "OnAsyncGroupLoaded",
       "documentation": null
     },
     "AsyncLoadGroup": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     }
   },

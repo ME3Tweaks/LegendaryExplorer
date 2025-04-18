@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "ObjectName": {
+      "type": "string",
+      "documentation": null
+    },
+    "SeekFreePackageName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "CachedObjectHandle": {
+      "type": "Object",
+      "documentation": null
+    },
+    "LoadedLinkerRoot": {
+      "type": "Object",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

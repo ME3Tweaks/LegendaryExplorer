@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Item": {
+      "type": "ME1_ItemSaveRecord",
+      "documentation": null
+    },
+    "Slot": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

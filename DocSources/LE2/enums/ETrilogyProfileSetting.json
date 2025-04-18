@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "TrilogySetting_TotalKills": {
+      "value": 0,
+      "documentation": null
+    },
+    "TrilogySetting_TotalMeleeKills": {
+      "value": 1,
+      "documentation": null
+    },
+    "TrilogySetting_InsanityME1": {
+      "value": 2,
+      "documentation": null
+    },
+    "TrilogySetting_InsanityME2": {
+      "value": 3,
+      "documentation": null
+    },
+    "TrilogySetting_InsanityME3": {
+      "value": 4,
+      "documentation": null
+    },
+    "TrilogySetting_RomancedME1": {
+      "value": 5,
+      "documentation": null
+    },
+    "TrilogySetting_RomancedME2": {
+      "value": 6,
+      "documentation": null
+    },
+    "TrilogySetting_RomancedME3": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

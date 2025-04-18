@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "WwiseAudio",
+  "variables": {
+    "PlatformData": {
+      "type": "WwisePlatformData",
+      "documentation": null
+    },
+    "Id": {
+      "type": "int",
+      "documentation": null
+    },
+    "IsRegistered": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

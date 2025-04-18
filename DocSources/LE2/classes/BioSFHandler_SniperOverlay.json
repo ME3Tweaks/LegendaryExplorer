@@ -1,0 +1,20 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "SetDistance": {
+      "documentation": null,
+      "signature_members": {
+        "nDistance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDistance(int nDistance)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

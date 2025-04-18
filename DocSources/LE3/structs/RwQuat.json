@@ -1,19 +1,19 @@
 {
   "Members": {
     "X": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Y": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Z": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "W": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

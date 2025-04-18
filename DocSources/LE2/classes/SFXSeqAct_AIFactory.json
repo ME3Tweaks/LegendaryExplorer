@@ -1,0 +1,64 @@
+{
+  "parent": "SeqAct_ActorFactory",
+  "package": "SFXGame",
+  "variables": {
+    "Squad": {
+      "type": "BioBaseSquad",
+      "documentation": null
+    },
+    "VisibilitySource": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "nmTag": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bAutoAcquireEnemy": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAutoNotify": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTestSpawnVisibility": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAbortOnFailSpawn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPlayCustomActivationAnim": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAbortSpawns": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

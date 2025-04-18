@@ -1,31 +1,31 @@
 {
   "Members": {
     "VfTable": {
-      "type": null,
+      "type": "Pointer",
       "documentation": null
     },
     "lstSiblingIndices": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nGlobalBool": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nParentIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bNewState": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bUseParam": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bParentTypeOr": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "HENCHMAN_ORDER_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "HENCHMAN_ORDER_USE_POWER": {
+      "value": 1,
+      "documentation": null
+    },
+    "HENCHMAN_ORDER_SWITCH_WEAPON": {
+      "value": 2,
+      "documentation": null
+    },
+    "HENCHMAN_ORDER_ATTACK_TARGET": {
+      "value": 3,
+      "documentation": null
+    },
+    "HENCHMAN_ORDER_FOLLOW": {
+      "value": 4,
+      "documentation": null
+    },
+    "HENCHMAN_ORDER_HOLD_POSITION": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

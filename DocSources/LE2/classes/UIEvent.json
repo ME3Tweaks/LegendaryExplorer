@@ -1,0 +1,187 @@
+{
+  "parent": "SequenceEvent",
+  "package": "Engine",
+  "variables": {
+    "Description": {
+      "type": "string",
+      "documentation": null
+    },
+    "__AllowEventActivation__Delegate": {
+      "type": "AllowEventActivation",
+      "documentation": null
+    },
+    "EventOwner": {
+      "type": "UIScreenObject",
+      "documentation": null
+    },
+    "EventActivator": {
+      "type": "Object",
+      "documentation": null
+    },
+    "SubobjectVersionModifier": {
+      "type": "int",
+      "documentation": null
+    },
+    "bShouldRegisterEvent": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPropagateEvent": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "ShouldAlwaysInstance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldAlwaysInstance()"
+    },
+    "IsValidUISequenceObject": {
+      "documentation": null,
+      "signature_members": {
+        "TargetObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidUISequenceObject(optional UIScreenObject TargetObject)"
+    },
+    "IsValidLevelSequenceObject": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsValidLevelSequenceObject()"
+    },
+    "ActivateUIEvent": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "InEventOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "InEventActivator": {
+          "type": null,
+          "documentation": null
+        },
+        "bActivateImmediately": {
+          "type": null,
+          "documentation": null
+        },
+        "IndicesToActivate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ActivateUIEvent(int ControllerIndex, UIScreenObject InEventOwner, optional Object InEventActivator, optional bool bActivateImmediately, optional const out array<int> IndicesToActivate)"
+    },
+    "ConditionalActivateUIEvent": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "InEventOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "InEventActivator": {
+          "type": null,
+          "documentation": null
+        },
+        "bActivateImmediately": {
+          "type": null,
+          "documentation": null
+        },
+        "IndicesToActivate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ConditionalActivateUIEvent(int ControllerIndex, UIScreenObject InEventOwner, optional Object InEventActivator, optional bool bActivateImmediately, optional const out array<int> IndicesToActivate)"
+    },
+    "CanBeActivated": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "InEventOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "InEventActivator": {
+          "type": null,
+          "documentation": null
+        },
+        "bActivateImmediately": {
+          "type": null,
+          "documentation": null
+        },
+        "IndicesToActivate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanBeActivated(int ControllerIndex, UIScreenObject InEventOwner, optional Object InEventActivator, optional bool bActivateImmediately, optional const out array<int> IndicesToActivate)"
+    },
+    "GetOwnerScene": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UIScene",
+      "signature": "UIScene GetOwnerScene()"
+    },
+    "GetOwner": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UIScreenObject",
+      "signature": "UIScreenObject GetOwner()"
+    },
+    "AllowEventActivation": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "InEventOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "InEventActivator": {
+          "type": null,
+          "documentation": null
+        },
+        "bActivateImmediately": {
+          "type": null,
+          "documentation": null
+        },
+        "IndicesToActivate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AllowEventActivation(int ControllerIndex, UIScreenObject InEventOwner, Object InEventActivator, bool bActivateImmediately, const out array<int> IndicesToActivate)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

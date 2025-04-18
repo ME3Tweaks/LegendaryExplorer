@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "WT_PlayerOnly": {
+      "value": 0,
+      "documentation": null
+    },
+    "WT_PlayerAndSquad": {
+      "value": 1,
+      "documentation": null
+    },
+    "WT_Everyone": {
+      "value": 2,
+      "documentation": null
+    },
+    "WT_TagList": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

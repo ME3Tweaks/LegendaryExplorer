@@ -1,27 +1,27 @@
 {
   "Members": {
     "TotalDamage": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "DamageScoreBudget": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "TotalAssist": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "AssistBudget": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "EnvironmentalDamage": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "LastDamageSource": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

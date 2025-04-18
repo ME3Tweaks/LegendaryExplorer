@@ -1,0 +1,21 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "ParticleSystem": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "m_fFadeInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fTimePassed": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

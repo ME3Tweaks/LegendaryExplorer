@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Comment": {
+      "type": "string",
+      "documentation": null
+    },
+    "Location": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Rotation": {
+      "type": "Rotator",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

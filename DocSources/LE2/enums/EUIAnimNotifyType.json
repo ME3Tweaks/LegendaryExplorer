@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "EANT_WidgetFunction": {
+      "value": 0,
+      "documentation": null
+    },
+    "EANT_SceneFunction": {
+      "value": 1,
+      "documentation": null
+    },
+    "EANT_KismetEvent": {
+      "value": 2,
+      "documentation": null
+    },
+    "EANT_Sound": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

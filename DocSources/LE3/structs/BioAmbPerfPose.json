@@ -1,31 +1,31 @@
 {
   "Members": {
     "aTransData": {
-      "type": null,
+      "type": "BioAmbPerfPoseTransData",
       "documentation": null
     },
     "nmStartTrans": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "nPoseChangeChance": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nPlayGestureChance": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "fChoiceTimeDelay": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bStartHere": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bEnterTransDoneEvent": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

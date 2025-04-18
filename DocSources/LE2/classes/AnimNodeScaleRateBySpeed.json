@@ -1,0 +1,13 @@
+{
+  "parent": "AnimNodeScalePlayRate",
+  "package": "Engine",
+  "variables": {
+    "BaseSpeed": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

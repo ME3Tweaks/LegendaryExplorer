@@ -1,15 +1,15 @@
 {
   "Members": {
     "Data": {
-      "type": null,
+      "type": "Pointer",
       "documentation": null
     },
     "ArrayNum": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "ArrayMax": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

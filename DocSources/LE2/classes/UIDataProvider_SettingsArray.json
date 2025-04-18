@@ -1,0 +1,37 @@
+{
+  "parent": "UIDataProvider",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementProvider": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "VfTable_IUIListElementCellProvider": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Settings": {
+      "type": "Settings",
+      "documentation": null
+    },
+    "SettingsId": {
+      "type": "int",
+      "documentation": null
+    },
+    "SettingsName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ColumnHeaderText": {
+      "type": "string",
+      "documentation": null
+    },
+    "Values": {
+      "type": "IdToStringMapping",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

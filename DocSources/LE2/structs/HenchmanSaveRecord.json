@@ -1,0 +1,133 @@
+{
+  "Members": {
+    "Powers": {
+      "type": "PowerSaveRecord",
+      "documentation": null
+    },
+    "simpleTalents": {
+      "type": "ME1_SimpleTalentSaveRecord",
+      "documentation": null
+    },
+    "complexTalents": {
+      "type": "ComplexTalentSaveRecord",
+      "documentation": null
+    },
+    "Equipment": {
+      "type": "ME1_ItemSaveRecord",
+      "documentation": null
+    },
+    "Weapons": {
+      "type": "ME1_ItemSaveRecord",
+      "documentation": null
+    },
+    "LoadoutWeapons": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Tag": {
+      "type": "Name",
+      "documentation": null
+    },
+    "MappedPower": {
+      "type": "Name",
+      "documentation": null
+    },
+    "CharacterLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "TalentPoints": {
+      "type": "int",
+      "documentation": null
+    },
+    "TalentPoolPoints": {
+      "type": "int",
+      "documentation": null
+    },
+    "AutoLevelUpTemplateID": {
+      "type": "int",
+      "documentation": null
+    },
+    "LastName": {
+      "type": "int",
+      "documentation": null
+    },
+    "ClassName": {
+      "type": "int",
+      "documentation": null
+    },
+    "HealthPerLevel": {
+      "type": "float",
+      "documentation": null
+    },
+    "StabilityCurrent": {
+      "type": "float",
+      "documentation": null
+    },
+    "ToxicCurrent": {
+      "type": "float",
+      "documentation": null
+    },
+    "Stamina": {
+      "type": "int",
+      "documentation": null
+    },
+    "Focus": {
+      "type": "int",
+      "documentation": null
+    },
+    "Precision": {
+      "type": "int",
+      "documentation": null
+    },
+    "Coordination": {
+      "type": "int",
+      "documentation": null
+    },
+    "HealthCurrent": {
+      "type": "float",
+      "documentation": null
+    },
+    "ShieldCurrent": {
+      "type": "float",
+      "documentation": null
+    },
+    "HealthMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "XPLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "HelmetShown": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ClassBase": {
+      "type": "byte",
+      "documentation": null
+    },
+    "gender": {
+      "type": "byte",
+      "documentation": null
+    },
+    "Race": {
+      "type": "byte",
+      "documentation": null
+    },
+    "AttributePrimary": {
+      "type": "byte",
+      "documentation": null
+    },
+    "AttributeSecondary": {
+      "type": "byte",
+      "documentation": null
+    },
+    "CurrentQuickSlot": {
+      "type": "EBioItemWeaponRangedType",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

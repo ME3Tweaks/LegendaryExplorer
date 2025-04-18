@@ -1,0 +1,13 @@
+{
+  "parent": "Component",
+  "package": "SFXGame",
+  "variables": {
+    "m_bIsShowingMissingResources": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

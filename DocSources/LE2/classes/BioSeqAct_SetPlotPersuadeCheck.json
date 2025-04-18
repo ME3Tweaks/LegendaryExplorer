@@ -1,0 +1,26 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGameContent",
+  "variables": {
+    "CharmPersuadeDefs": {
+      "type": "LevelCompletionData",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "getWorld": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioWorldInfo",
+      "signature": "BioWorldInfo getWorld()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

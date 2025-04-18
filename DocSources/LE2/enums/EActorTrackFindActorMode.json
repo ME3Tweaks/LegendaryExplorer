@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "ActorTrack_FindActorByTag": {
+      "value": 0,
+      "documentation": null
+    },
+    "ActorTrack_UseObjectPinForActor": {
+      "value": 1,
+      "documentation": null
+    },
+    "ActorTrack_FindActorByNode": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

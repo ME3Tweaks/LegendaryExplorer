@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "LogoutStatus_Normal": {
+      "value": 0,
+      "documentation": null
+    },
+    "LogoutStatus_Error": {
+      "value": 1,
+      "documentation": null
+    },
+    "LogoutStatus_OptOutTelemetry": {
+      "value": 2,
+      "documentation": null
+    },
+    "LogoutStatus_Unknown": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

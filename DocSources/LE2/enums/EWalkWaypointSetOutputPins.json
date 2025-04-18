@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "WWS_Success": {
+      "value": 0,
+      "documentation": null
+    },
+    "WWS_Failed": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "LocalizedName": {
+      "type": "int",
+      "documentation": null
+    },
+    "LocalizedDesc": {
+      "type": "int",
+      "documentation": null
+    },
+    "ExportID": {
+      "type": "int",
+      "documentation": null
+    },
+    "basePrice": {
+      "type": "int",
+      "documentation": null
+    },
+    "ShopGUIImageID": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlotConditional": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

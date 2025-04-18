@@ -1,0 +1,51 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "ShieldClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "NewShield": {
+      "type": "SFXShield_Base",
+      "documentation": null
+    },
+    "bForceNewShield": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "CreateShield": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CreateShield()"
+    },
+    "OnApplied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnApplied()"
+    },
+    "ComputeEffectValue": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ComputeEffectValue(out float Value)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

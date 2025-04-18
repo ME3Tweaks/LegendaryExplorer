@@ -1,75 +1,75 @@
 {
   "Members": {
     "BuyFuelSound_PctFullRTPCName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "ShipHalfFuelVO": {
-      "type": null,
+      "type": "WwiseBaseSoundObject",
       "documentation": null
     },
     "ShipNoFuelClusterVO": {
-      "type": null,
+      "type": "WwiseBaseSoundObject",
       "documentation": null
     },
     "ShipNoFuelClusterReturnVO": {
-      "type": null,
+      "type": "WwiseBaseSoundObject",
       "documentation": null
     },
     "ShipNoFuelSystemVO": {
-      "type": null,
+      "type": "WwiseBaseSoundObject",
       "documentation": null
     },
     "ShipTravelSound_SpeedRTPCName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "ShipTravelSound_ThrustRTPCName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "ShipTravelSound_FuelQtyRTPCName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "ShipTravelSound_SystemClusterRTPCName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "ErrorSound": {
-      "type": null,
+      "type": "WwiseBaseSoundObject",
       "documentation": null
     },
     "BuyFuelSound": {
-      "type": null,
+      "type": "WwiseBaseSoundObject",
       "documentation": null
     },
     "BuyFuelSoundStop": {
-      "type": null,
+      "type": "WwiseBaseSoundObject",
       "documentation": null
     },
     "BuyFuelSound_Full": {
-      "type": null,
+      "type": "WwiseBaseSoundObject",
       "documentation": null
     },
     "ShipOutOfFuel_Start": {
-      "type": null,
+      "type": "WwiseBaseSoundObject",
       "documentation": null
     },
     "ShipOutOfFuel_Stop": {
-      "type": null,
+      "type": "WwiseBaseSoundObject",
       "documentation": null
     },
     "BuyProbeSound": {
-      "type": null,
+      "type": "WwiseBaseSoundObject",
       "documentation": null
     },
     "ShipTravelSound_Start": {
-      "type": null,
+      "type": "WwiseBaseSoundObject",
       "documentation": null
     },
     "ShipTravelSound_Stop": {
-      "type": null,
+      "type": "WwiseBaseSoundObject",
       "documentation": null
     }
   },

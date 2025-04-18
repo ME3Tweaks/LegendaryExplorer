@@ -1,0 +1,28 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "Henchmen": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "ActorToDefend": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "MaxDistanceFromActor": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "Message": {
+      "type": "string",
+      "documentation": null
+    },
+    "Title": {
+      "type": "string",
+      "documentation": null
+    },
+    "Image": {
+      "type": "string",
+      "documentation": null
+    },
+    "OfferId": {
+      "type": "string",
+      "documentation": null
+    },
+    "offerType": {
+      "type": "string",
+      "documentation": null
+    },
+    "Type": {
+      "type": "int",
+      "documentation": null
+    },
+    "Priority": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

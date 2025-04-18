@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "EPBM_Instant": {
+      "value": 0,
+      "documentation": null
+    },
+    "EPBM_Interpolated": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

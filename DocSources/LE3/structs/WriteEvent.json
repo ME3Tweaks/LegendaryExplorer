@@ -1,15 +1,15 @@
 {
   "Members": {
     "DelayedWriteDelegates": {
-      "type": null,
+      "type": "OnlinePlayerInterface.OnWritePlayerStorageComplete",
       "documentation": null
     },
     "LocalUserNum": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "LastWriteTimestamp": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

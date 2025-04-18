@@ -1,0 +1,143 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "lstChoices": {
+      "type": "SFXChoiceEntry",
+      "documentation": null
+    },
+    "m_srTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srSubTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srAText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srBText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srOptionalPaneTitleText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srOptionalPaneItemValuePrefixText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_ShowOptionalPane": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eOptionalPaneResourceType": {
+      "type": "EInventoryResourceTypes",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "RemoveTokenMapping": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        },
+        "nTokenID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveTokenMapping(out SFXChoiceEntry Data, int nTokenID)"
+    },
+    "SetTokenMapping": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        },
+        "nTokenID": {
+          "type": null,
+          "documentation": null
+        },
+        "sValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTokenMapping(out SFXChoiceEntry Data, int nTokenID, string sValue)"
+    },
+    "ClearChoiceList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearChoiceList()"
+    },
+    "AddChoice": {
+      "documentation": null,
+      "signature_members": {
+        "Params": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddChoice(SFXChoiceEntry Params)"
+    },
+    "SetupOptionalPane": {
+      "documentation": null,
+      "signature_members": {
+        "bShowOptionalPane": {
+          "type": null,
+          "documentation": null
+        },
+        "srOptionalPaneTitleText": {
+          "type": null,
+          "documentation": null
+        },
+        "srOptionalPaneItemValuePrefixText": {
+          "type": null,
+          "documentation": null
+        },
+        "srOptionalPaneValuePrefixText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetupOptionalPane(bool bShowOptionalPane, optional stringref srOptionalPaneTitleText, optional stringref srOptionalPaneItemValuePrefixText, optional stringref srOptionalPaneValuePrefixText)"
+    },
+    "SetDisplayText": {
+      "documentation": null,
+      "signature_members": {
+        "srTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "srSubTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "srAText": {
+          "type": null,
+          "documentation": null
+        },
+        "srBText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDisplayText(stringref srTitle, stringref srSubTitle, stringref srAText, stringref srBText)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

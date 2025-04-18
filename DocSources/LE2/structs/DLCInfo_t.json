@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "sImageResource": {
+      "type": "string",
+      "documentation": null
+    },
+    "sImageResourceFrame": {
+      "type": "string",
+      "documentation": null
+    },
+    "sCreditsSection": {
+      "type": "string",
+      "documentation": null
+    },
+    "sDisplayName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "sDescription": {
+      "type": "stringref",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

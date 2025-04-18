@@ -1,111 +1,111 @@
 {
   "Members": {
     "KitTextureRef": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "LockedKitTextureRef": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "SmallKitTextureRef": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "ArchetypeRef": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "PowerIconResource": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "RequiredDLCModuleIDs": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "KitName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "BaseMPClassName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "srDisplayName": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "srDefaultName": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "PowerIconIndex1": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "PowerIconIndex2": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "PowerIconIndex3": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "srPowerName1": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "srPowerName2": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "srPowerName3": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "MaxNewUnlockLevel": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bLockedByDefault": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bPermanentlyLocked": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bUsePrimaryColor": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bUseSecondaryColor": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bUsePattern": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bUsePatternColor": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bUsePhong": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bUseEmissive": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bUseSkinTone": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bHideIfLocked": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

@@ -1,0 +1,21 @@
+{
+  "parent": "Keypoint",
+  "package": "Engine",
+  "variables": {
+    "AudioComponent": {
+      "type": "AudioComponent",
+      "documentation": null
+    },
+    "bAutoPlay": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsPlaying": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

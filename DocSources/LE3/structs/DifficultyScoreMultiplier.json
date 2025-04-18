@@ -1,11 +1,11 @@
 {
   "Members": {
     "Multiplier": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Difficulty": {
-      "type": null,
+      "type": "EDifficultyOptions",
       "documentation": null
     }
   },

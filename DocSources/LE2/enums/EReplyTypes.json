@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "REPLY_STANDARD": {
+      "value": 0,
+      "documentation": null
+    },
+    "REPLY_AUTOCONTINUE": {
+      "value": 1,
+      "documentation": null
+    },
+    "REPLY_DIALOGEND": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

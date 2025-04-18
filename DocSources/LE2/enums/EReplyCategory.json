@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "REPLY_CATEGORY_DEFAULT": {
+      "value": 0,
+      "documentation": null
+    },
+    "REPLY_CATEGORY_AGREE": {
+      "value": 1,
+      "documentation": null
+    },
+    "REPLY_CATEGORY_DISAGREE": {
+      "value": 2,
+      "documentation": null
+    },
+    "REPLY_CATEGORY_FRIENDLY": {
+      "value": 3,
+      "documentation": null
+    },
+    "REPLY_CATEGORY_HOSTILE": {
+      "value": 4,
+      "documentation": null
+    },
+    "REPLY_CATEGORY_INVESTIGATE": {
+      "value": 5,
+      "documentation": null
+    },
+    "REPLY_CATEGORY_RENEGADE_INTERRUPT": {
+      "value": 6,
+      "documentation": null
+    },
+    "REPLY_CATEGORY_PARAGON_INTERRUPT": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

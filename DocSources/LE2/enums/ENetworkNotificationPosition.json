@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "NNP_TopLeft": {
+      "value": 0,
+      "documentation": null
+    },
+    "NNP_TopCenter": {
+      "value": 1,
+      "documentation": null
+    },
+    "NNP_TopRight": {
+      "value": 2,
+      "documentation": null
+    },
+    "NNP_CenterLeft": {
+      "value": 3,
+      "documentation": null
+    },
+    "NNP_Center": {
+      "value": 4,
+      "documentation": null
+    },
+    "NNP_CenterRight": {
+      "value": 5,
+      "documentation": null
+    },
+    "NNP_BottomLeft": {
+      "value": 6,
+      "documentation": null
+    },
+    "NNP_BottomCenter": {
+      "value": 7,
+      "documentation": null
+    },
+    "NNP_BottomRight": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

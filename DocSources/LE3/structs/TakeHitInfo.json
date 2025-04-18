@@ -1,35 +1,35 @@
 {
   "Members": {
     "DamageType": {
-      "type": null,
+      "type": "Class",
       "documentation": null
     },
     "HitLocation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "Momentum": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "RadialDamageOrigin": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "instigatedBy": {
-      "type": null,
+      "type": "Pawn",
       "documentation": null
     },
     "PhysicalMaterial": {
-      "type": null,
+      "type": "PhysicalMaterial",
       "documentation": null
     },
     "Damage": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "HitBoneIndex": {
-      "type": null,
+      "type": "byte",
       "documentation": null
     }
   },

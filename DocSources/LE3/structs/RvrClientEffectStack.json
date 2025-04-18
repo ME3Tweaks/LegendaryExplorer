@@ -1,7 +1,7 @@
 {
   "Members": {
     "Elements": {
-      "type": null,
+      "type": "RvrClientEffectComponent",
       "documentation": null
     }
   },

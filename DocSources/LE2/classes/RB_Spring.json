@@ -1,0 +1,111 @@
+{
+  "parent": "ActorComponent",
+  "package": "Engine",
+  "variables": {
+    "SpringMaxForceTimeScale": {
+      "type": "InterpCurveFloat",
+      "documentation": null
+    },
+    "SpringData": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Component1": {
+      "type": "PrimitiveComponent",
+      "documentation": null
+    },
+    "BoneName1": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Component2": {
+      "type": "PrimitiveComponent",
+      "documentation": null
+    },
+    "BoneName2": {
+      "type": "Name",
+      "documentation": null
+    },
+    "SceneIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "TimeSinceActivation": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinBodyMass": {
+      "type": "float",
+      "documentation": null
+    },
+    "SpringSaturateDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "SpringMaxForce": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxForceMassRatio": {
+      "type": "float",
+      "documentation": null
+    },
+    "DampSaturateVel": {
+      "type": "float",
+      "documentation": null
+    },
+    "DampMaxForce": {
+      "type": "float",
+      "documentation": null
+    },
+    "bInHardware": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableForceMassRatio": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Clear": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Clear()"
+    },
+    "SetComponents": {
+      "documentation": null,
+      "signature_members": {
+        "InComponent1": {
+          "type": null,
+          "documentation": null
+        },
+        "InBoneName1": {
+          "type": null,
+          "documentation": null
+        },
+        "Position1": {
+          "type": null,
+          "documentation": null
+        },
+        "InComponent2": {
+          "type": null,
+          "documentation": null
+        },
+        "InBoneName2": {
+          "type": null,
+          "documentation": null
+        },
+        "Position2": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetComponents(PrimitiveComponent InComponent1, Name InBoneName1, Vector Position1, PrimitiveComponent InComponent2, Name InBoneName2, Vector Position2)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

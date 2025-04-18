@@ -1,27 +1,27 @@
 {
   "Members": {
     "Data": {
-      "type": null,
+      "type": "PowerData",
       "documentation": null
     },
     "EvolvedBonuses": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "BarLength": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "srDisplayTotalToken": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "srStatBarDisplayTitle": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Formula": {
-      "type": null,
+      "type": "EPowerStatBarFormula",
       "documentation": null
     }
   },

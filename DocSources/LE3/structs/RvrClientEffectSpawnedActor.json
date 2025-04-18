@@ -1,31 +1,31 @@
 {
   "Members": {
     "MaterialInstances": {
-      "type": null,
+      "type": "MaterialInstance",
       "documentation": null
     },
     "Offset": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "Rotation": {
-      "type": null,
+      "type": "Rotator",
       "documentation": null
     },
     "Actor": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "SpawnTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Lifetime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "CopyDelay": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

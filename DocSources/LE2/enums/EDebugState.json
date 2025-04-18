@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "DEBUGSTATE_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "DEBUGSTATE_IsolateDryAudio": {
+      "value": 1,
+      "documentation": null
+    },
+    "DEBUGSTATE_IsolateReverb": {
+      "value": 2,
+      "documentation": null
+    },
+    "DEBUGSTATE_TestLPF": {
+      "value": 3,
+      "documentation": null
+    },
+    "DEBUGSTATE_TestStereoBleed": {
+      "value": 4,
+      "documentation": null
+    },
+    "DEBUGSTATE_TestLFEBleed": {
+      "value": 5,
+      "documentation": null
+    },
+    "DEBUGSTATE_DisableLPF": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

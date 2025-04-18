@@ -1,39 +1,39 @@
 {
   "Members": {
     "firstName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "faceCode": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "CharacterClass": {
-      "type": null,
+      "type": "Class",
       "documentation": null
     },
     "CharacterGUID": {
-      "type": null,
+      "type": "Guid",
       "documentation": null
     },
     "MorphHead": {
-      "type": null,
+      "type": "BioMorphFace",
       "documentation": null
     },
     "BonusTalentClass": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "bIsFemale": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "Origin": {
-      "type": null,
+      "type": "EOriginType",
       "documentation": null
     },
     "Notoriety": {
-      "type": null,
+      "type": "ENotorietyType",
       "documentation": null
     }
   },

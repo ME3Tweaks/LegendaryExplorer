@@ -1,19 +1,19 @@
 {
   "Members": {
     "AssetName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "AssetStrength": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "AssetID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bIsNewItem": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

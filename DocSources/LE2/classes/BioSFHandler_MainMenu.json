@@ -1,0 +1,727 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "CheckingDataStartTime": {
+      "type": "Double",
+      "documentation": null
+    },
+    "m_BlazeUI": {
+      "type": "SFXOnlineComponentUI",
+      "documentation": null
+    },
+    "m_PCRStore": {
+      "type": "SFXSFHandler_PRCShop",
+      "documentation": null
+    },
+    "m_oMainMenuGuiMessageBoxHandler": {
+      "type": "BioSFHandler_MessageBox",
+      "documentation": null
+    },
+    "srPRCAvailableMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "fPCRMessageDispTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "CheckingDataMessageDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "CheckingDataMessageMinimum": {
+      "type": "float",
+      "documentation": null
+    },
+    "CheckingDLCMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CheckingSaveDataMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NoLoginStart": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ConfirmNoLoginStart": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CancelNoLoginStart": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "LostNetworkConnection": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ConfirmNetworkLoss": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "Calander_Title": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "MOTD_Title": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "UPCOMING_DLC_Title": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "AVAIL_DLC_Title": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "UPCOMING_CERB_DLC_Title": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "AVAIL_CERB_DLC_Title": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srCerb_ActivateCerb": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srCerb_ConnectTo": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srCerb_ConnectingToCerb": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srCerb_ConnectedToCerb": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srPRCStore_DescFormat": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srPRCStore_PurchasedYes": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srPRCStore_PurchasedNo": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srPRCStore_Title": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srPRCStore_Subtitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srPRCStore_ABtn": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srPRCStore_BBtn": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srExitConfirm": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srConfirm": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srCancel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ConfirmImportME1": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srNoSpaceForCareer": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srContinueWithoutSaving": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srCancelNewCareer": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "bDisplayForNewContentOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseCerberusBackGroundForSubScreens": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsConnecting": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasSaves": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasNewGamePlusSaves": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCurrentCareerHasSaves": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPendingCharacterIsFemale": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWaitingForDLC": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWaitingForSaves": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCheckingDataComplete": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCheckingDataMessageVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "nSelectedEntry": {
+      "type": "MainMenuEntries",
+      "documentation": null
+    },
+    "nCurrent3DState": {
+      "type": "Cerberus3DState",
+      "documentation": null
+    },
+    "m_CerbConnectState": {
+      "type": "SFXOnlineUIState",
+      "documentation": null
+    },
+    "PendingCommand": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "UpdateCheckingDataMessage": {
+      "documentation": null,
+      "signature_members": {
+        "Message": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateCheckingDataMessage(stringref Message)"
+    },
+    "ShowGameManual": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowGameManual()"
+    },
+    "GetLocalizedNewsItemCount": {
+      "documentation": null,
+      "signature_members": {
+        "nCurrent": {
+          "type": null,
+          "documentation": null
+        },
+        "nTotal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetLocalizedNewsItemCount(int nCurrent, int nTotal)"
+    },
+    "OnInputFocusRecieved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnInputFocusRecieved()"
+    },
+    "RefreshCerberusState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RefreshCerberusState()"
+    },
+    "PRCStoreGUIInputPressed": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PRCStoreGUIInputPressed(bool bAPressed, int nContext)"
+    },
+    "AddPRCChoices": {
+      "documentation": null,
+      "signature_members": {
+        "oData": {
+          "type": null,
+          "documentation": null
+        },
+        "aOffers": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddPRCChoices(SFXGameChoiceGUIData_PRCShop oData, array<SFXOfferDescriptor> aOffers)"
+    },
+    "OpenMarketplaceGui": {
+      "documentation": null,
+      "signature_members": {
+        "aOffers": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OpenMarketplaceGui(array<SFXOfferDescriptor> aOffers)"
+    },
+    "Buy": {
+      "documentation": null,
+      "signature_members": {
+        "nSource": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Buy(SFXOnlinePurchaseSource nSource)"
+    },
+    "OnExecuteOpenMarketPlace": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnExecuteOpenMarketPlace()"
+    },
+    "OnExecuteCerberusDLCAvailable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnExecuteCerberusDLCAvailable()"
+    },
+    "OnExecuteShowLiveContent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnExecuteShowLiveContent()"
+    },
+    "HasCerberusDLC": {
+      "documentation": null,
+      "signature_members": {
+        "bVal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HasCerberusDLC(bool bVal)"
+    },
+    "CerberusScreenStateChange": {
+      "documentation": null,
+      "signature_members": {
+        "eNewState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CerberusScreenStateChange(Cerberus3DState eNewState)"
+    },
+    "SetCerberusConnectState": {
+      "documentation": null,
+      "signature_members": {
+        "bHasAction": {
+          "type": null,
+          "documentation": null
+        },
+        "sMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "bAltView": {
+          "type": null,
+          "documentation": null
+        },
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCerberusConnectState(bool bHasAction, string sMessage, optional bool bAltView, optional bool bVisible)"
+    },
+    "CerberusConnect": {
+      "documentation": null,
+      "signature_members": {
+        "connectMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CerberusConnect(SFXOnlineConnectMode connectMode)"
+    },
+    "SetOnlineState": {
+      "documentation": null,
+      "signature_members": {
+        "eState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOnlineState(SFXOnlineUIState eState)"
+    },
+    "SetMarqueeRepeatText": {
+      "documentation": null,
+      "signature_members": {
+        "MessageData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMarqueeRepeatText(string MessageData)"
+    },
+    "OnDisplayNotification": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "MessageData": {
+          "type": null,
+          "documentation": null
+        },
+        "Title": {
+          "type": null,
+          "documentation": null
+        },
+        "Image": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDisplayNotification(SFXOnlineConnection_MessageType Type, string MessageData, string Title, string Image)"
+    },
+    "CloseEANetworking": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseEANetworking()"
+    },
+    "ClearNotifications": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearNotifications()"
+    },
+    "AddCerberusItem": {
+      "documentation": null,
+      "signature_members": {
+        "i_sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "i_sInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "i_sImage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddCerberusItem(string i_sTitle, string i_sInfo, string i_sImage)"
+    },
+    "PrevCerberusItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PrevCerberusItem()"
+    },
+    "NextCerberusItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NextCerberusItem()"
+    },
+    "InitCerberus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitCerberus()"
+    },
+    "SetupMainMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetupMainMenu()"
+    },
+    "CanShowGameManual": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanShowGameManual()"
+    },
+    "EndEnumerateCareers": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EndEnumerateCareers(SFXSaveGameCommandEventArgs Args)"
+    },
+    "BeginEnumerateCareers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BeginEnumerateCareers()"
+    },
+    "BeginInitDownloadableContent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BeginInitDownloadableContent()"
+    },
+    "NotifyLinkStatusChange": {
+      "documentation": null,
+      "signature_members": {
+        "bIsConnected": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyLinkStatusChange(bool bIsConnected)"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "SetEnabledAndVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bVal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEnabledAndVisible(bool bVal)"
+    },
+    "MoveToLoadGui": {
+      "documentation": null,
+      "signature_members": {
+        "LoadMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MoveToLoadGui(ELoadGuiMode LoadMode)"
+    },
+    "CheckLogin": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CheckLogin()"
+    },
+    "IsReadyForLegacyImport": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsReadyForLegacyImport()"
+    },
+    "Callback_NoLoginStart": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_NoLoginStart(bool bAPressed, int context)"
+    },
+    "ReturnToLauncher": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReturnToLauncher()"
+    },
+    "ExitConfirm": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExitConfirm(bool bAPressed, int nContext)"
+    },
+    "ResumeGameCallback": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResumeGameCallback(bool bWasSuccessful)"
+    },
+    "StartNewGameInternal": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartNewGameInternal()"
+    },
+    "InsufficientSpaceCallback": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InsufficientSpaceCallback(bool bAPressed, int context)"
+    },
+    "DisplayInsufficientSpaceMessage": {
+      "documentation": null,
+      "signature_members": {
+        "AdditionalBytesNeeded": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayInsufficientSpaceMessage(int AdditionalBytesNeeded)"
+    },
+    "StartNewGameFreeSpaceCallback": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StartNewGameFreeSpaceCallback(SFXSaveGameCommandEventArgs Args)"
+    },
+    "BeginNewGame": {
+      "documentation": null,
+      "signature_members": {
+        "bFemale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BeginNewGame(bool bFemale)"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": null,
+          "documentation": null
+        },
+        "lstArguments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    },
+    "GetEngine": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXEngine",
+      "signature": "SFXEngine GetEngine()"
+    },
+    "DismissCareerLimitMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DismissCareerLimitMessage()"
+    },
+    "CheckCareersMaxedOut": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CheckCareersMaxedOut()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

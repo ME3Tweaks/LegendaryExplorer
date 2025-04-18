@@ -1,15 +1,15 @@
 {
   "Members": {
     "uidEntity": {
-      "type": null,
+      "type": "UniqueNetId",
       "documentation": null
     },
     "sRecordData": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "nRank": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

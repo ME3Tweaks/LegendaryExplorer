@@ -1,11 +1,11 @@
 {
   "Members": {
     "Player": {
-      "type": null,
+      "type": "SFXPawn_Player",
       "documentation": null
     },
     "CreditsRewarded": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

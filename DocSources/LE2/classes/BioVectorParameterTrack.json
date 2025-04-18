@@ -1,0 +1,21 @@
+{
+  "parent": "InterpTrackVectorBase",
+  "package": "SFXGame",
+  "variables": {
+    "InterpValue": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PropertyName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_pParentEffect": {
+      "type": "BioVisualEffect",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

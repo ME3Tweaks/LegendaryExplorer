@@ -1,0 +1,28 @@
+{
+  "parent": "Object",
+  "package": "GFxUI",
+  "variables": {},
+  "functions": {
+    "FSCommand": {
+      "documentation": null,
+      "signature_members": {
+        "Movie": {
+          "type": null,
+          "documentation": null
+        },
+        "Cmd": {
+          "type": null,
+          "documentation": null
+        },
+        "arg": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FSCommand(GFxMovie Movie, string Cmd, string arg)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

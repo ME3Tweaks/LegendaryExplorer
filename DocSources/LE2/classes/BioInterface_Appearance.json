@@ -1,0 +1,31 @@
+{
+  "parent": "BioBaseInterface",
+  "package": "SFXGame",
+  "variables": {
+    "pActor": {
+      "type": "Actor",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ResetToDefaults": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetToDefaults()"
+    },
+    "UpdateAppearance": {
+      "documentation": null,
+      "signature_members": {
+        "bForceUpdate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateAppearance(optional bool bForceUpdate)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

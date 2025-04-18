@@ -1,71 +1,71 @@
 {
   "Members": {
     "ImpactCallback": {
-      "type": null,
+      "type": "OnActorImpacted",
       "documentation": null
     },
     "DamageType": {
-      "type": null,
+      "type": "Class",
       "documentation": null
     },
     "MaxRagdollDmgTypeOverride": {
-      "type": null,
+      "type": "Class",
       "documentation": null
     },
     "Params": {
-      "type": null,
+      "type": "AreaEffectParameters",
       "documentation": null
     },
     "HitLocation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "HitNormal": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "Power": {
-      "type": null,
+      "type": "SFXPowerCustomActionBase",
       "documentation": null
     },
     "Target": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "Projectile": {
-      "type": null,
+      "type": "SFXProjectile_PowerCustomAction",
       "documentation": null
     },
     "Damage": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "MaxRagdollOverride": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Force": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "ImpactCount": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "FrameCount": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bAreaExplosion": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bReplicateCustomAction": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bFirstTarget": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

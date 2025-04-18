@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "DPM_Normal": {
+      "value": 0,
+      "documentation": null
+    },
+    "DPM_Abs": {
+      "value": 1,
+      "documentation": null
+    },
+    "DPM_Direct": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "ProfileSettingId": {
+      "type": "int",
+      "documentation": null
+    },
+    "Goal": {
+      "type": "int",
+      "documentation": null
+    },
+    "interval": {
+      "type": "int",
+      "documentation": null
+    },
+    "Title": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "Description": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "AchievementId": {
+      "type": "EAchievementID",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

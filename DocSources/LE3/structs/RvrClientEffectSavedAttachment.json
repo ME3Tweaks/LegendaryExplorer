@@ -1,15 +1,15 @@
 {
   "Members": {
     "Atoms": {
-      "type": null,
+      "type": "BoneAtom",
       "documentation": null
     },
     "Attachment": {
-      "type": null,
+      "type": "Attachment",
       "documentation": null
     },
     "LOD": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

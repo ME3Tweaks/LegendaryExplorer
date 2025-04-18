@@ -1,0 +1,266 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "StartLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "StartRelativeLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "StartVelocity": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "StartFloor": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "SavedLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "SavedVelocity": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "SavedRelativeLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "RMVelocity": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Acceleration": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Rotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "RootMotionInterpCurveLastValue": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "NextMove": {
+      "type": "SavedMove",
+      "documentation": null
+    },
+    "StartBase": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "EndBase": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "TimeStamp": {
+      "type": "float",
+      "documentation": null
+    },
+    "Delta": {
+      "type": "float",
+      "documentation": null
+    },
+    "CustomTimeDilation": {
+      "type": "float",
+      "documentation": null
+    },
+    "AccelDotThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "RootMotionInterpCurrentTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bRun": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDuck": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPressedJump": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDoubleJump": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPreciseDestination": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceRMVelocity": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceMaxAccel": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRootMotionFromInterpCurve": {
+      "type": "bool",
+      "documentation": null
+    },
+    "DoubleClickMove": {
+      "type": "EDoubleClickDir",
+      "documentation": null
+    },
+    "SavedPhysics": {
+      "type": "EPhysics",
+      "documentation": null
+    },
+    "RootMotionMode": {
+      "type": "ERootMotionMode",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetDebugString": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetDebugString()"
+    },
+    "SetFlags": {
+      "documentation": null,
+      "signature_members": {
+        "Flags": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EDoubleClickDir",
+      "signature": "EDoubleClickDir SetFlags(byte Flags, PlayerController PC)"
+    },
+    "CompressedFlags": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "byte",
+      "signature": "byte CompressedFlags()"
+    },
+    "ResetMoveFor": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetMoveFor(Pawn P)"
+    },
+    "PrepMoveFor": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrepMoveFor(Pawn P)"
+    },
+    "SetMoveFor": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "newAccel": {
+          "type": null,
+          "documentation": null
+        },
+        "InDoubleClick": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMoveFor(PlayerController P, float DeltaTime, Vector newAccel, EDoubleClickDir InDoubleClick)"
+    },
+    "CanCombineWith": {
+      "documentation": null,
+      "signature_members": {
+        "NewMove": {
+          "type": null,
+          "documentation": null
+        },
+        "inPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanCombineWith(SavedMove NewMove, Pawn inPawn, float MaxDelta)"
+    },
+    "SetInitialPosition": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInitialPosition(Pawn P)"
+    },
+    "GetStartLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetStartLocation()"
+    },
+    "IsImportantMove": {
+      "documentation": null,
+      "signature_members": {
+        "CompareAccel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsImportantMove(Vector CompareAccel)"
+    },
+    "PostUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PostUpdate(PlayerController P)"
+    },
+    "Clear": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Clear()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

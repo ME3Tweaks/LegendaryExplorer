@@ -1,0 +1,25 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "ChildClassNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "EditorData": {
+      "type": "Object",
+      "documentation": null
+    },
+    "Properties": {
+      "type": "SoundClassProperties",
+      "documentation": null
+    },
+    "bIsChild": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

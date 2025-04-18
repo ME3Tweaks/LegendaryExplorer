@@ -1,0 +1,9 @@
+{
+  "Members": {
+    "m_aMaterials": {
+      "type": "MaterialInterface",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

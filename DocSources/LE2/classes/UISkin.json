@@ -1,0 +1,216 @@
+{
+  "parent": "UIDataStore",
+  "package": "Engine",
+  "variables": {
+    "Styles": {
+      "type": "UIStyle",
+      "documentation": null
+    },
+    "StyleGroups": {
+      "type": "string",
+      "documentation": null
+    },
+    "SoundCues": {
+      "type": "UISoundCue",
+      "documentation": null
+    },
+    "StyleGroupMap": {
+      "type": "string",
+      "documentation": null
+    },
+    "StyleLookupTable": {
+      "type": "Object",
+      "documentation": null
+    },
+    "StyleNameMap": {
+      "type": "Object",
+      "documentation": null
+    },
+    "CursorMap": {
+      "type": "Object",
+      "documentation": null
+    },
+    "SoundCueMap": {
+      "type": "Object",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SubscriberDetached": {
+      "documentation": null,
+      "signature_members": {
+        "Subscriber": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SubscriberDetached(UIDataStoreSubscriber Subscriber)"
+    },
+    "SubscriberAttached": {
+      "documentation": null,
+      "signature_members": {
+        "Subscriber": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SubscriberAttached(UIDataStoreSubscriber Subscriber)"
+    },
+    "GetStyleGroups": {
+      "documentation": null,
+      "signature_members": {
+        "StyleGroupArray": {
+          "type": null,
+          "documentation": null
+        },
+        "bIncludeInheritedGroups": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetStyleGroups(out array<string> StyleGroupArray, optional bool bIncludeInheritedGroups)"
+    },
+    "FindStyleGroupIndex": {
+      "documentation": null,
+      "signature_members": {
+        "StyleGroupName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindStyleGroupIndex(string StyleGroupName)"
+    },
+    "RenameStyleGroup": {
+      "documentation": null,
+      "signature_members": {
+        "OldStyleGroupName": {
+          "type": null,
+          "documentation": null
+        },
+        "NewStyleGroupName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RenameStyleGroup(string OldStyleGroupName, string NewStyleGroupName)"
+    },
+    "RemoveStyleGroupName": {
+      "documentation": null,
+      "signature_members": {
+        "StyleGroupName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveStyleGroupName(string StyleGroupName)"
+    },
+    "AddStyleGroupName": {
+      "documentation": null,
+      "signature_members": {
+        "StyleGroupName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddStyleGroupName(string StyleGroupName)"
+    },
+    "IsInheritedGroupName": {
+      "documentation": null,
+      "signature_members": {
+        "StyleGroupName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsInheritedGroupName(string StyleGroupName)"
+    },
+    "GetSkinSoundCues": {
+      "documentation": null,
+      "signature_members": {
+        "out_SoundCues": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetSkinSoundCues(out array<UISoundCue> out_SoundCues)"
+    },
+    "GetUISoundCue": {
+      "documentation": null,
+      "signature_members": {
+        "SoundCueName": {
+          "type": null,
+          "documentation": null
+        },
+        "out_UISoundCue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetUISoundCue(Name SoundCueName, out SoundCue out_UISoundCue)"
+    },
+    "RemoveUISoundCue": {
+      "documentation": null,
+      "signature_members": {
+        "SoundCueName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveUISoundCue(Name SoundCueName)"
+    },
+    "AddUISoundCue": {
+      "documentation": null,
+      "signature_members": {
+        "SoundCueName": {
+          "type": null,
+          "documentation": null
+        },
+        "SoundToPlay": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddUISoundCue(Name SoundCueName, SoundCue SoundToPlay)"
+    },
+    "GetCursorResource": {
+      "documentation": null,
+      "signature_members": {
+        "CursorName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "UITexture",
+      "signature": "UITexture GetCursorResource(Name CursorName)"
+    },
+    "GetAvailableStyles": {
+      "documentation": null,
+      "signature_members": {
+        "out_Styles": {
+          "type": null,
+          "documentation": null
+        },
+        "bIncludeInheritedStyles": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAvailableStyles(out array<UIStyle> out_Styles, optional bool bIncludeInheritedStyles)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

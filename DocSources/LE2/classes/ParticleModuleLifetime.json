@@ -1,0 +1,13 @@
+{
+  "parent": "ParticleModuleLifetimeBase",
+  "package": "Engine",
+  "variables": {
+    "Lifetime": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

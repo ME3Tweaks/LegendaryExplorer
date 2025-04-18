@@ -1,15 +1,15 @@
 {
   "Members": {
     "MissionName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "ObjectiveXP": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "CombatXP": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

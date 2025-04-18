@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "SFXRigidBodyMode_Animated": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXRigidBodyMode_Motorized": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXRigidBodyMode_Full": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

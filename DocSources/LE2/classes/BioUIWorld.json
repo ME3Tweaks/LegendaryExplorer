@@ -1,0 +1,410 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_CurrentPostProcessSettings": {
+      "type": "PostProcessSettings",
+      "documentation": null
+    },
+    "m_aCommandQueue": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "m_aoInitialActors": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_sMapFile": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_AppliedVFX": {
+      "type": "AppliedVFXPair",
+      "documentation": null
+    },
+    "m_pWorld": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "m_pCriticalSection": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "m_mSpawnedPawnMap": {
+      "type": "Object",
+      "documentation": null
+    },
+    "m_CustomLightingData": {
+      "type": "BioConvLightingData",
+      "documentation": null
+    },
+    "m_fnCameraActorName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_pCameraActor": {
+      "type": "CameraActor",
+      "documentation": null
+    },
+    "m_pFullBioticEffectTemplate": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "m_pHalfBioticEffectTemplate": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "m_pTechToolEffectTemplate": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "m_pFullBioticEffect": {
+      "type": "BioVisualEffect",
+      "documentation": null
+    },
+    "m_pHalfBioticEffect": {
+      "type": "BioVisualEffect",
+      "documentation": null
+    },
+    "m_pTechToolEffect": {
+      "type": "BioVisualEffect",
+      "documentation": null
+    },
+    "m_oNCHandler": {
+      "type": "BioSFHandler_NewCharacter",
+      "documentation": null
+    },
+    "m_PostProcessChain": {
+      "type": "PostProcessChain",
+      "documentation": null
+    },
+    "m_bEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bLoaded": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ClearScarFromPawn": {
+      "documentation": null,
+      "signature_members": {
+        "PawnToClear": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearScarFromPawn(BioPawn PawnToClear)"
+    },
+    "RotatePawn": {
+      "documentation": null,
+      "signature_members": {
+        "a_pOriginalPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "a_newRot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RotatePawn(BioPawn a_pOriginalPawn, Rotator a_newRot)"
+    },
+    "GetSpawnedPawn": {
+      "documentation": null,
+      "signature_members": {
+        "a_pOriginalPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioPawn",
+      "signature": "BioPawn GetSpawnedPawn(BioPawn a_pOriginalPawn)"
+    },
+    "FlushPendingCommands": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FlushPendingCommands()"
+    },
+    "HidePawn": {
+      "documentation": null,
+      "signature_members": {
+        "a_pOriginalPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bHidden": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HidePawn(BioPawn a_pOriginalPawn, optional bool bHidden)"
+    },
+    "SetAnimSet": {
+      "documentation": null,
+      "signature_members": {
+        "SourcePawn": {
+          "type": null,
+          "documentation": null
+        },
+        "AnimSet": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAnimSet(BioPawn SourcePawn, AnimSet AnimSet)"
+    },
+    "ClearVFX": {
+      "documentation": null,
+      "signature_members": {
+        "SourcePawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearVFX(BioPawn SourcePawn)"
+    },
+    "ApplyVFXTemplate": {
+      "documentation": null,
+      "signature_members": {
+        "SourcePawn": {
+          "type": null,
+          "documentation": null
+        },
+        "Template": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyVFXTemplate(BioPawn SourcePawn, BioVFXTemplate Template)"
+    },
+    "AttachOmnitool": {
+      "documentation": null,
+      "signature_members": {
+        "a_pSourcePawn": {
+          "type": null,
+          "documentation": null
+        },
+        "a_fnClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AttachOmnitool(BioPawn a_pSourcePawn, bool a_fnClassName)"
+    },
+    "PrimeTextures": {
+      "documentation": null,
+      "signature_members": {
+        "a_pSourcePawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrimeTextures(BioPawn a_pSourcePawn)"
+    },
+    "AttachBioticsAndTech": {
+      "documentation": null,
+      "signature_members": {
+        "a_pSourcePawn": {
+          "type": null,
+          "documentation": null
+        },
+        "a_fnClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AttachBioticsAndTech(BioPawn a_pSourcePawn, Name a_fnClassName)"
+    },
+    "MovePawn": {
+      "documentation": null,
+      "signature_members": {
+        "a_pOriginalPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "a_fnNewLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MovePawn(BioPawn a_pOriginalPawn, Name a_fnNewLocation)"
+    },
+    "SwapPawn": {
+      "documentation": null,
+      "signature_members": {
+        "a_pSourcePawn": {
+          "type": null,
+          "documentation": null
+        },
+        "a_fnSourceVarName": {
+          "type": null,
+          "documentation": null
+        },
+        "a_pOtherPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "a_fnOtherVarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SwapPawn(BioPawn a_pSourcePawn, Name a_fnSourceVarName, BioPawn a_pOtherPawn, Name a_fnOtherVarName)"
+    },
+    "ResetActors": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetActors()"
+    },
+    "SetBoolVariable": {
+      "documentation": null,
+      "signature_members": {
+        "a_fnVariableName": {
+          "type": null,
+          "documentation": null
+        },
+        "a_bValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBoolVariable(Name a_fnVariableName, bool a_bValue)"
+    },
+    "SetNameVariable": {
+      "documentation": null,
+      "signature_members": {
+        "a_fnVariableName": {
+          "type": null,
+          "documentation": null
+        },
+        "a_nmValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNameVariable(Name a_fnVariableName, Name a_nmValue)"
+    },
+    "SetObjectVariable": {
+      "documentation": null,
+      "signature_members": {
+        "a_fnVariableName": {
+          "type": null,
+          "documentation": null
+        },
+        "a_pValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetObjectVariable(Name a_fnVariableName, Object a_pValue)"
+    },
+    "UpdateHeadGearVisibility": {
+      "documentation": null,
+      "signature_members": {
+        "pOriginalPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateHeadGearVisibility(BioPawn pOriginalPawn)"
+    },
+    "UpdateAppearance": {
+      "documentation": null,
+      "signature_members": {
+        "a_pOriginalPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "a_AnimSet": {
+          "type": null,
+          "documentation": null
+        },
+        "a_Flags": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateAppearance(BioPawn a_pOriginalPawn, optional AnimSet a_AnimSet, optional int a_Flags)"
+    },
+    "DestroyPawn": {
+      "documentation": null,
+      "signature_members": {
+        "a_pOriginalPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DestroyPawn(BioPawn a_pOriginalPawn)"
+    },
+    "SpawnPawn": {
+      "documentation": null,
+      "signature_members": {
+        "a_pOriginalPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "a_fnSpawnLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "a_fnSpawnVariable": {
+          "type": null,
+          "documentation": null
+        },
+        "InAnimSet": {
+          "type": null,
+          "documentation": null
+        },
+        "a_fnRemoteEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "a_Flags": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnPawn(BioPawn a_pOriginalPawn, Name a_fnSpawnLocation, Name a_fnSpawnVariable, optional AnimSet InAnimSet, optional Name a_fnRemoteEvent, optional int a_Flags)"
+    },
+    "TriggerEvent": {
+      "documentation": null,
+      "signature_members": {
+        "a_fnEventName": {
+          "type": null,
+          "documentation": null
+        },
+        "a_pCaller": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TriggerEvent(Name a_fnEventName, Actor a_pCaller)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

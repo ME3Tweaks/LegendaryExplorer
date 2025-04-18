@@ -1,23 +1,23 @@
 {
   "Members": {
     "MarkerOwnerPath": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "MarkerOffset": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "BoneToAttachTo": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "MarkerLabel": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "MarkerIconType": {
-      "type": null,
+      "type": "EObjectiveMarkerIconType",
       "documentation": null
     }
   },

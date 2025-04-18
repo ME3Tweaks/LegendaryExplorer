@@ -1,0 +1,13 @@
+{
+  "parent": "ParticleModule",
+  "package": "Engine",
+  "variables": {
+    "RequiredModules": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

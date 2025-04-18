@@ -1,0 +1,101 @@
+{
+  "parent": "SFXPhysicalMaterialBase",
+  "package": "SFXGame",
+  "variables": {
+    "HHWalkingSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "HHRunningSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "WalkingSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "RunningSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "HLWalkingSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "HLRunningSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "RHWalkingSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "RHRunningSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "RMWalkingSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "RMRunningSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "RLWalkingSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "RLRunningSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "HuskWalkingSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "HuskRunningSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "CollectorWalkingSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "CollectorRunningSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "OtherWalkingSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "OtherRunningSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "Landing": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "Leaping": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "FootstepWalk": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "FootstepRun": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "TireSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

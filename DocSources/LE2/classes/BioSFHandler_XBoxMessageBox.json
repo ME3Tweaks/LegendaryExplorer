@@ -1,0 +1,45 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "nSelectedButton": {
+      "type": "int",
+      "documentation": null
+    },
+    "bMessageBoxVisible": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DisplayMessageBox": {
+      "documentation": null,
+      "signature_members": {
+        "srTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "srMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "srButtons": {
+          "type": null,
+          "documentation": null
+        },
+        "nIcon": {
+          "type": null,
+          "documentation": null
+        },
+        "nDefaultButton": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayMessageBox(stringref srTitle, stringref srMessage, const out array<stringref> srButtons, optional MessageBoxIcon nIcon, optional int nDefaultButton)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

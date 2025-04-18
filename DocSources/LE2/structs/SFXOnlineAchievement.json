@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "AchievementName": {
+      "type": "string",
+      "documentation": null
+    },
+    "Xbox360Id": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

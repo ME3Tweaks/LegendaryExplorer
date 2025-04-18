@@ -1,0 +1,120 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "m_fScrollValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLeftStickX": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLeftStickY": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bClosingPlanet": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bClosingScan": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bWaitingForMsgBox": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "BuyProbes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BuyProbes()"
+    },
+    "EndRefuel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndRefuel()"
+    },
+    "RepeatBuyFuel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RepeatBuyFuel()"
+    },
+    "BuyFuel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BuyFuel()"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents nEvent, optional float fValue)"
+    },
+    "CloseGalaxyMap": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseGalaxyMap()"
+    },
+    "UpdateInventoryDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "nResourceIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "nAmount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateInventoryDisplay(int nResourceIndex, int nAmount)"
+    },
+    "UpdateScanResources": {
+      "documentation": null,
+      "signature_members": {
+        "Resources": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateScanResources(array<float> Resources)"
+    },
+    "TravelConfirm": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TravelConfirm(bool bAPressed, int nContext)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

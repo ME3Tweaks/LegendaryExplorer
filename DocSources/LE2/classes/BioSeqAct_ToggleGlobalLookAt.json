@@ -1,0 +1,21 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "ForceState": {
+      "type": "bool",
+      "documentation": null
+    },
+    "State": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Instant": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

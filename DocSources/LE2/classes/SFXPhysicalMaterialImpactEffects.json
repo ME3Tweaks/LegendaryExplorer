@@ -1,0 +1,65 @@
+{
+  "parent": "SFXPhysicalMaterialBase",
+  "package": "SFXGame",
+  "variables": {
+    "HeavyPistol": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "AutoPistol": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "HandCannon": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "SMG": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "Shotgun": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "HeavyShotgun": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "FlakGun": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "AssaultRifle": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "Needler": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "Machinegun": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "SniperRifle": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "AntiMatRifle": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "MassCannon": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "ParticleBeam": {
+      "type": "ParticleSystem",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

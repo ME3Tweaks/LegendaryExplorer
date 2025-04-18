@@ -1,0 +1,44 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "oImage": {
+      "type": "Texture",
+      "documentation": null
+    },
+    "nRemoteEvent": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Priority": {
+      "type": "int",
+      "documentation": null
+    },
+    "sTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "sSubtitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "sBody": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "fDisplayTime": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

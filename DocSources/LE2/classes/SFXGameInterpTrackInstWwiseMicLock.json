@@ -1,0 +1,13 @@
+{
+  "parent": "SFXGameInterpTrackInst",
+  "package": "SFXGame",
+  "variables": {
+    "m_mapCachedActors": {
+      "type": "Map_Mirror",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

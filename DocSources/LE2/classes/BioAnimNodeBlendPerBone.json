@@ -1,0 +1,41 @@
+{
+  "parent": "AnimNodeBlendPerBone",
+  "package": "SFXGame",
+  "variables": {
+    "BioBranchStartBoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "BlendName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "OverblendFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadeInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadeOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bNotifiedBlendComplete": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bBoneSwitchOn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "BoneBlendType": {
+      "type": "EBoneBlendType",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

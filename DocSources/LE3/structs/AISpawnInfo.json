@@ -1,107 +1,107 @@
 {
   "Members": {
     "Types": {
-      "type": null,
+      "type": "Pawn",
       "documentation": null
     },
     "WatchList": {
-      "type": null,
+      "type": "AISpawnClusterTracker",
       "documentation": null
     },
     "SpawnPoints": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "VarLinkDescs": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "AutoDebugText": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "ObscuredSpawnProjectileClass": {
-      "type": null,
+      "type": "Class",
       "documentation": null
     },
     "ObscuredSpawnOffset": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "Squad": {
-      "type": null,
+      "type": "BioBaseSquad",
       "documentation": null
     },
     "ActorTag": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "ClusterVisibilityDelay": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "CurrentCluster": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "SpawnTotal": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "MaxAlive": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "SpawnedCount": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "SpawnPointIdx": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "MaxSpawnDelay": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "MinSpawnDelay": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "CurrentDelay": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "TeamIdx": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bAutoAcquireEnemy": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bAutoNotifyEnemy": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bDisableFriendlyNotifications": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bDisableAI": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bCanDropAmmo": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bDisableShadowCasting": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "ShadowMode": {
-      "type": null,
+      "type": "ELightShadowMode",
       "documentation": null
     }
   },

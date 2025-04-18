@@ -1,11 +1,11 @@
 {
   "Members": {
     "TheMaterial": {
-      "type": null,
+      "type": "MaterialInterface",
       "documentation": null
     },
     "MaterialIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

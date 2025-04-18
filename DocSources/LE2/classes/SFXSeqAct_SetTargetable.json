@@ -1,0 +1,47 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "bTargetable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTargetableOverride": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCombatTargetable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCombatTargetableOverride": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "ResetToDefault": {
+      "documentation": null,
+      "signature_members": {
+        "Instance": {
+          "type": null,
+          "documentation": null
+        },
+        "bCombat": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetToDefault(Object Instance, optional bool bCombat)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

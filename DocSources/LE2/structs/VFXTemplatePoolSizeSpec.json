@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Template": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "MaxPoolSize": {
+      "type": "int",
+      "documentation": null
+    },
+    "MinPoolSize": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

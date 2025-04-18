@@ -1,0 +1,31 @@
+{
+  "parent": "GFxGameViewportClient",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "CreateInitialPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "OutError": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CreateInitialPlayer(out string OutError)"
+    },
+    "CreateInitialPlayerWithLauncherOverride": {
+      "documentation": null,
+      "signature_members": {
+        "OutError": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CreateInitialPlayerWithLauncherOverride(out string OutError)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

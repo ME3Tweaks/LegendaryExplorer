@@ -1,0 +1,33 @@
+{
+  "parent": "PBRuleNodeBase",
+  "package": "Engine",
+  "variables": {
+    "Material": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "RepeatMaxSizeX": {
+      "type": "float",
+      "documentation": null
+    },
+    "RepeatMaxSizeZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "QuadLightmapRes": {
+      "type": "int",
+      "documentation": null
+    },
+    "YOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "bDisableMaterialRepeat": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

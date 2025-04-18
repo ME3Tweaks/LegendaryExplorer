@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "FWFT_Log": {
+      "value": 0,
+      "documentation": null
+    },
+    "FWFT_Stats": {
+      "value": 1,
+      "documentation": null
+    },
+    "FWFT_HTML": {
+      "value": 2,
+      "documentation": null
+    },
+    "FWFT_User": {
+      "value": 3,
+      "documentation": null
+    },
+    "FWFT_Debug": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,123 @@
+{
+  "parent": "ActorComponent",
+  "package": "Engine",
+  "variables": {
+    "LocalToWorld": {
+      "type": "Matrix",
+      "documentation": null
+    },
+    "Material": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "BlurScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlurFalloffExponent": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlurOpacity": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxCullDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "DistanceFalloffExponent": {
+      "type": "float",
+      "documentation": null
+    },
+    "bRenderAsVelocity": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "DepthPriorityGroup": {
+      "type": "ESceneDepthPriorityGroup",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnUpdatePropertyBlurOpacity": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUpdatePropertyBlurOpacity()"
+    },
+    "OnUpdatePropertyBlurFalloffExponent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUpdatePropertyBlurFalloffExponent()"
+    },
+    "OnUpdatePropertyBlurScale": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUpdatePropertyBlurScale()"
+    },
+    "SetEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bInEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEnabled(bool bInEnabled)"
+    },
+    "SetBlurOpacity": {
+      "documentation": null,
+      "signature_members": {
+        "InBlurOpacity": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBlurOpacity(float InBlurOpacity)"
+    },
+    "SetBlurFalloffExponent": {
+      "documentation": null,
+      "signature_members": {
+        "InBlurFalloffExponent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBlurFalloffExponent(float InBlurFalloffExponent)"
+    },
+    "SetBlurScale": {
+      "documentation": null,
+      "signature_members": {
+        "InBlurScale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBlurScale(float InBlurScale)"
+    },
+    "SetMaterial": {
+      "documentation": null,
+      "signature_members": {
+        "InMaterial": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMaterial(MaterialInterface InMaterial)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

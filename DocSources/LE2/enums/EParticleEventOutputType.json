@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "ePARTICLEOUT_Spawn": {
+      "value": 0,
+      "documentation": null
+    },
+    "ePARTICLEOUT_Death": {
+      "value": 1,
+      "documentation": null
+    },
+    "ePARTICLEOUT_Collision": {
+      "value": 2,
+      "documentation": null
+    },
+    "ePARTICLEOUT_Kismet": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "TFBM_UL_ROW": {
+      "value": 0,
+      "documentation": null
+    },
+    "TFBM_UL_COL": {
+      "value": 1,
+      "documentation": null
+    },
+    "TFBM_UR_ROW": {
+      "value": 2,
+      "documentation": null
+    },
+    "TFBM_UR_COL": {
+      "value": 3,
+      "documentation": null
+    },
+    "TFBM_LL_ROW": {
+      "value": 4,
+      "documentation": null
+    },
+    "TFBM_LL_COL": {
+      "value": 5,
+      "documentation": null
+    },
+    "TFBM_LR_ROW": {
+      "value": 6,
+      "documentation": null
+    },
+    "TFBM_LR_COL": {
+      "value": 7,
+      "documentation": null
+    },
+    "TFBM_RANDOM": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

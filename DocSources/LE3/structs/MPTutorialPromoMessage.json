@@ -1,23 +1,23 @@
 {
   "Members": {
     "ImageURL": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "TrackingID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "offerId": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "MessageTitle": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "MessageText": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

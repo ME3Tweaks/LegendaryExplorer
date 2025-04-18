@@ -1,0 +1,59 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGameContent_Powers",
+  "variables": {
+    "Pawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "Weapon": {
+      "type": "SFXWeapon",
+      "documentation": null
+    },
+    "OverheatPSCO": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "OverheatFrequency": {
+      "type": "float",
+      "documentation": null
+    },
+    "OverheatTimer": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "OverheatWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OverheatWeapon()"
+    },
+    "OnUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaSeconds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUpdate(float DeltaSeconds)"
+    },
+    "OnApplied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnApplied()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

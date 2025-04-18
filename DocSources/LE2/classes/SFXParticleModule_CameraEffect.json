@@ -1,0 +1,45 @@
+{
+  "parent": "ParticleModule",
+  "package": "SFXGame",
+  "variables": {
+    "RawIntensityVsDistanceDistribution": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "ProgrammaticShake": {
+      "type": "ScreenShakeStruct",
+      "documentation": null
+    },
+    "FramebufferEffect": {
+      "type": "PostProcessChain",
+      "documentation": null
+    },
+    "AnimatedShake": {
+      "type": "BioCameraShake",
+      "documentation": null
+    },
+    "MaxRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "Duration": {
+      "type": "float",
+      "documentation": null
+    },
+    "bPlayerImpact": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseIntensityCurve": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPlayProgrammaticShake": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,72 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "CamOverridePostProcess": {
+      "type": "PostProcessSettings",
+      "documentation": null
+    },
+    "DrawFrustum": {
+      "type": "DrawFrustumComponent",
+      "documentation": null
+    },
+    "MeshComp": {
+      "type": "StaticMeshComponent",
+      "documentation": null
+    },
+    "AspectRatio": {
+      "type": "float",
+      "documentation": null
+    },
+    "FOVAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "CamOverridePostProcessAlpha": {
+      "type": "float",
+      "documentation": null
+    },
+    "bConstrainAspectRatio": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DisplayDebug": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        },
+        "out_YL": {
+          "type": null,
+          "documentation": null
+        },
+        "out_YPos": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayDebug(HUD HUD, out float out_YL, out float out_YPos)"
+    },
+    "GetCameraView": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "OutPOV": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetCameraView(float DeltaTime, out TPOV OutPOV)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

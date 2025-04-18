@@ -1,0 +1,240 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "m_aIgnorePawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "EventProperties": {
+      "type": "SFXVocalizationEventProperties",
+      "documentation": null
+    },
+    "QueuedEvents": {
+      "type": "SFXVocalizationEvent",
+      "documentation": null
+    },
+    "OverridesAllIfSet": {
+      "type": "SFXVocalizationBank",
+      "documentation": null
+    },
+    "DebugCounter": {
+      "type": "int",
+      "documentation": null
+    },
+    "bDebugging": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAlwaysPlay": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "TickEvents": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TickEvents(float DeltaTime)"
+    },
+    "DebugOutput": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string DebugOutput(int Type, int Value)"
+    },
+    "SpecificNameMatches": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SpecificNameMatches(ESFXVocalizationName Type, BioPawn Pawn)"
+    },
+    "SpecificChallengeMatches": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SpecificChallengeMatches(EChallengeType Type, BioPawn Pawn)"
+    },
+    "SpecificWeaponMatches": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SpecificWeaponMatches(ESFXVocalizationWeapon Type, BioPawn Pawn)"
+    },
+    "SpecificGenderMatches": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SpecificGenderMatches(ESFXVocalizationGender Type, BioPawn Pawn)"
+    },
+    "SpecificAffiliationMatches": {
+      "documentation": null,
+      "signature_members": {
+        "Idx": {
+          "type": null,
+          "documentation": null
+        },
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SpecificAffiliationMatches(int Idx, BioPawn Pawn)"
+    },
+    "SpecificCharacterTypeMatches": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SpecificCharacterTypeMatches(ECharacterType Type, BioPawn Pawn)"
+    },
+    "SpecificLocationMatches": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "BP": {
+          "type": null,
+          "documentation": null
+        },
+        "Speaker": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SpecificLocationMatches(ESFXVocalizationLocation Type, BioPawn BP, BioPawn Speaker)"
+    },
+    "HandleSFXVocalizationEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleSFXVocalizationEvent(const out SFXVocalizationEvent Event)"
+    },
+    "RemoveFromIgnoreList": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveFromIgnoreList(BioPawn oPawn)"
+    },
+    "AddToIgnoreList": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddToIgnoreList(BioPawn oPawn)"
+    },
+    "GetPawnVocalizationBank": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXVocalizationBank",
+      "signature": "SFXVocalizationBank GetPawnVocalizationBank(BioPawn P)"
+    },
+    "PlaySFXVocalizationSLineInternal": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "LineToPlay": {
+          "type": null,
+          "documentation": null
+        },
+        "Speaker": {
+          "type": null,
+          "documentation": null
+        },
+        "DelaySec": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PlaySFXVocalizationSLineInternal(const out SFXVocalizationEvent Event, const out SFXVocalizationLine LineToPlay, BioPawn Speaker, optional float DelaySec)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

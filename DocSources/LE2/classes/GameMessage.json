@@ -1,0 +1,129 @@
+{
+  "parent": "LocalMessage",
+  "package": "Engine",
+  "variables": {
+    "SwitchLevelMessage": {
+      "type": "string",
+      "documentation": null
+    },
+    "LeftMessage": {
+      "type": "string",
+      "documentation": null
+    },
+    "FailedTeamMessage": {
+      "type": "string",
+      "documentation": null
+    },
+    "FailedPlaceMessage": {
+      "type": "string",
+      "documentation": null
+    },
+    "FailedSpawnMessage": {
+      "type": "string",
+      "documentation": null
+    },
+    "EnteredMessage": {
+      "type": "string",
+      "documentation": null
+    },
+    "MaxedOutMessage": {
+      "type": "string",
+      "documentation": null
+    },
+    "ArbitrationMessage": {
+      "type": "string",
+      "documentation": null
+    },
+    "OvertimeMessage": {
+      "type": "string",
+      "documentation": null
+    },
+    "GlobalNameChange": {
+      "type": "string",
+      "documentation": null
+    },
+    "NewTeamMessage": {
+      "type": "string",
+      "documentation": null
+    },
+    "NewTeamMessageTrailer": {
+      "type": "string",
+      "documentation": null
+    },
+    "NoNameChange": {
+      "type": "string",
+      "documentation": null
+    },
+    "VoteStarted": {
+      "type": "string",
+      "documentation": null
+    },
+    "VotePassed": {
+      "type": "string",
+      "documentation": null
+    },
+    "MustHaveStats": {
+      "type": "string",
+      "documentation": null
+    },
+    "CantBeSpectator": {
+      "type": "string",
+      "documentation": null
+    },
+    "CantBePlayer": {
+      "type": "string",
+      "documentation": null
+    },
+    "BecameSpectator": {
+      "type": "string",
+      "documentation": null
+    },
+    "NewPlayerMessage": {
+      "type": "string",
+      "documentation": null
+    },
+    "KickWarning": {
+      "type": "string",
+      "documentation": null
+    },
+    "NewSpecMessage": {
+      "type": "string",
+      "documentation": null
+    },
+    "SpecEnteredMessage": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetString": {
+      "documentation": null,
+      "signature_members": {
+        "Switch": {
+          "type": null,
+          "documentation": null
+        },
+        "bPRI1HUD": {
+          "type": null,
+          "documentation": null
+        },
+        "RelatedPRI_1": {
+          "type": null,
+          "documentation": null
+        },
+        "RelatedPRI_2": {
+          "type": null,
+          "documentation": null
+        },
+        "OptionalObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetString(optional int Switch, optional bool bPRI1HUD, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2, optional Object OptionalObject)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,123 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_Pawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "m_TargetNav": {
+      "type": "NavigationPoint",
+      "documentation": null
+    },
+    "m_TargetNavAtInvalidation": {
+      "type": "NavigationPoint",
+      "documentation": null
+    },
+    "m_fTimeOut": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fInvalidateRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_TimeRemaining": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_UpdateTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bInvalidateOnFlank": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInstanceLogging": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bArrivedPinFired": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bTargetInvalidated": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ScriptPreActorHandle": {
+      "documentation": null,
+      "signature_members": {
+        "inActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ScriptPreActorHandle(Actor inActor)"
+    },
+    "TryInvalidateTargetFlank": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool TryInvalidateTargetFlank()"
+    },
+    "TryInvalidateTargetRange": {
+      "documentation": null,
+      "signature_members": {
+        "fRangeToTargetInUU": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TryInvalidateTargetRange(float fRangeToTargetInUU)"
+    },
+    "ResetUpdateTimer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetUpdateTimer()"
+    },
+    "ClearGoHereTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearGoHereTarget()"
+    },
+    "InvalidateGoHereTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InvalidateGoHereTarget()"
+    },
+    "UpdateOp": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateOp(float DeltaTime)"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

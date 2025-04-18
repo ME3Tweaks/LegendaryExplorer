@@ -1,0 +1,57 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "AnimatedReactions": {
+      "type": "EAICustomAction",
+      "documentation": null
+    },
+    "DeathEffect": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "CrustTemplate": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "FreezingSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "CrustEffect": {
+      "type": "BioVisualEffect",
+      "documentation": null
+    },
+    "bReactionPlayed": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "OnUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaSeconds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUpdate(float DeltaSeconds)"
+    },
+    "OnApplied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnApplied()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,57 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "VfTable_FExec": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Actor": {
+      "type": "PlayerController",
+      "documentation": null
+    },
+    "CurrentNetSpeed": {
+      "type": "int",
+      "documentation": null
+    },
+    "ConfiguredInternetSpeed": {
+      "type": "int",
+      "documentation": null
+    },
+    "ConfiguredLanSpeed": {
+      "type": "int",
+      "documentation": null
+    },
+    "PP_DesaturationMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "PP_HighlightsMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "PP_MidTonesMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "PP_ShadowsMultiplier": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SwitchController": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SwitchController(PlayerController PC)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

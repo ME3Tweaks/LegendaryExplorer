@@ -1,0 +1,59 @@
+{
+  "parent": "Emitter",
+  "package": "SFXGame",
+  "variables": {
+    "bPooled": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetLifeTime": {
+      "documentation": null,
+      "signature_members": {
+        "Seconds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLifeTime(float Seconds)"
+    },
+    "OnParticleSystemFinished": {
+      "documentation": null,
+      "signature_members": {
+        "FinishedComponent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnParticleSystemFinished(ParticleSystemComponent FinishedComponent)"
+    },
+    "Reuse": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reuse()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "Template": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(ParticleSystem Template)"
+    },
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

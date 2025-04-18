@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "AM_Biop_twrhub": {
+      "value": 0,
+      "documentation": null
+    },
+    "AM_Biop_cithub": {
+      "value": 1,
+      "documentation": null
+    },
+    "AM_Biop_omghub": {
+      "value": 2,
+      "documentation": null
+    },
+    "AM_Biop_krohub": {
+      "value": 3,
+      "documentation": null
+    },
+    "AM_Biop_nor_1": {
+      "value": 4,
+      "documentation": null
+    },
+    "AM_Biop_nor_2": {
+      "value": 5,
+      "documentation": null
+    },
+    "AM_Biop_nor_3": {
+      "value": 6,
+      "documentation": null
+    },
+    "AM_Biop_nor_4": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

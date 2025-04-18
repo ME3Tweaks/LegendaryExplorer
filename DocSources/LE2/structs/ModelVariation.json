@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "NumVariations": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaterialsPerVariation": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bHasHeadGear": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "m_Effect": {
+      "type": "BioVisualEffect",
+      "documentation": null
+    },
+    "Time": {
+      "type": "float",
+      "documentation": null
+    },
+    "Duration": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

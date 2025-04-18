@@ -1,31 +1,31 @@
 {
   "Members": {
     "Instigator": {
-      "type": null,
+      "type": "BioPawn",
       "documentation": null
     },
     "PowerType": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "CustomActionReactionType": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "PowerComboTypeUniqueID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "TriggerCounter": {
-      "type": null,
+      "type": "byte",
       "documentation": null
     },
     "PowerRank": {
-      "type": null,
+      "type": "byte",
       "documentation": null
     },
     "MiscFlags": {
-      "type": null,
+      "type": "byte",
       "documentation": null
     }
   },

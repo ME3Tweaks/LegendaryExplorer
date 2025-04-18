@@ -1,0 +1,31 @@
+{
+  "parent": "Sequence",
+  "package": "Engine",
+  "variables": {
+    "OwnerPrefab": {
+      "type": "PrefabInstance",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetOwnerPrefab": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "PrefabInstance",
+      "signature": "PrefabInstance GetOwnerPrefab()"
+    },
+    "SetOwnerPrefab": {
+      "documentation": null,
+      "signature_members": {
+        "InOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOwnerPrefab(PrefabInstance InOwner)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

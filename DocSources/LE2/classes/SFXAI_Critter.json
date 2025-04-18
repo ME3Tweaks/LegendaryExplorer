@@ -1,0 +1,175 @@
+{
+  "parent": "SFXAI_Core",
+  "package": "SFXGame",
+  "variables": {
+    "m_vRepulsor": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_vCurrentSteeringDirection": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_bUnderAttack": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    }
+  },
+  "states": {
+    "MovingToLocation": {
+      "functions": {
+        "NotifyNearMiss": {
+          "documentation": null,
+          "signature_members": {
+            "HitLocation": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "NotifyTakeHit": {
+          "documentation": null,
+          "signature_members": {
+            "InstigatedBy": {
+              "type": null,
+              "documentation": null
+            },
+            "HitLocation": {
+              "type": null,
+              "documentation": null
+            },
+            "Damage": {
+              "type": null,
+              "documentation": null
+            },
+            "DamageType": {
+              "type": null,
+              "documentation": null
+            },
+            "Momentum": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "WanderingCritter": {
+      "functions": {
+        "AdjustSteeringSpeed": {
+          "documentation": null,
+          "signature_members": {
+            "vSteering": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "GetSteeringDirection": {
+          "documentation": null,
+          "signature_members": {
+            "vSteering": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "NotifyNearMiss": {
+          "documentation": null,
+          "signature_members": {
+            "HitLocation": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "NotifyTakeHit": {
+          "documentation": null,
+          "signature_members": {
+            "InstigatedBy": {
+              "type": null,
+              "documentation": null
+            },
+            "HitLocation": {
+              "type": null,
+              "documentation": null
+            },
+            "Damage": {
+              "type": null,
+              "documentation": null
+            },
+            "DamageType": {
+              "type": null,
+              "documentation": null
+            },
+            "Momentum": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "PoppedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextState": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "PushedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PrevState": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Idle": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

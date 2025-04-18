@@ -1,0 +1,263 @@
+{
+  "parent": "ReplicationInfo",
+  "package": "Engine",
+  "variables": {
+    "Teams": {
+      "type": "TeamInfo",
+      "documentation": null
+    },
+    "ServerName": {
+      "type": "string",
+      "documentation": null
+    },
+    "MessageOfTheDay": {
+      "type": "string",
+      "documentation": null
+    },
+    "PRIArray": {
+      "type": "PlayerReplicationInfo",
+      "documentation": null
+    },
+    "InactivePRIArray": {
+      "type": "PlayerReplicationInfo",
+      "documentation": null
+    },
+    "GameClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "CurrentGameData": {
+      "type": "CurrentGameDataStore",
+      "documentation": null
+    },
+    "Winner": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "RemainingTime": {
+      "type": "int",
+      "documentation": null
+    },
+    "ElapsedTime": {
+      "type": "int",
+      "documentation": null
+    },
+    "RemainingMinute": {
+      "type": "int",
+      "documentation": null
+    },
+    "GoalScore": {
+      "type": "int",
+      "documentation": null
+    },
+    "TimeLimit": {
+      "type": "int",
+      "documentation": null
+    },
+    "bStopCountDown": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMatchHasBegun": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMatchIsOver": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ShouldShowGore": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldShowGore()"
+    },
+    "IsCoopMultiplayerGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsCoopMultiplayerGame()"
+    },
+    "IsMultiplayerGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsMultiplayerGame()"
+    },
+    "EndGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndGame()"
+    },
+    "StartMatch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartMatch()"
+    },
+    "CleanupGameDataStore": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CleanupGameDataStore()"
+    },
+    "InitializeGameDataStore": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeGameDataStore()"
+    },
+    "ReplicatedDataBinding": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedDataBinding(Name VarName)"
+    },
+    "SortPRIArray": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SortPRIArray()"
+    },
+    "InOrder": {
+      "documentation": null,
+      "signature_members": {
+        "P1": {
+          "type": null,
+          "documentation": null
+        },
+        "P2": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InOrder(PlayerReplicationInfo P1, PlayerReplicationInfo P2)"
+    },
+    "GetPRIArray": {
+      "documentation": null,
+      "signature_members": {
+        "pris": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetPRIArray(out array<PlayerReplicationInfo> pris)"
+    },
+    "SetTeam": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "TI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTeam(int Index, TeamInfo TI)"
+    },
+    "RemovePRI": {
+      "documentation": null,
+      "signature_members": {
+        "PRI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemovePRI(PlayerReplicationInfo PRI)"
+    },
+    "AddPRI": {
+      "documentation": null,
+      "signature_members": {
+        "PRI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddPRI(PlayerReplicationInfo PRI)"
+    },
+    "FindPlayerByID": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "PlayerReplicationInfo",
+      "signature": "PlayerReplicationInfo FindPlayerByID(int PlayerID)"
+    },
+    "OnSameTeam": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnSameTeam(Actor A, Actor B)"
+    },
+    "Timer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Timer()"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "ReceivedGameClass": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReceivedGameClass()"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

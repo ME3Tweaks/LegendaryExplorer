@@ -1,0 +1,9 @@
+{
+  "Members": {
+    "sFeatureName": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,419 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "TracerPool": {
+      "type": "SFXObjectPoolTracers",
+      "documentation": null
+    },
+    "ProjectilePool": {
+      "type": "SFXObjectPoolProjectiles",
+      "documentation": null
+    },
+    "DroppedPool": {
+      "type": "SFXObjectPoolDroppedAmmos",
+      "documentation": null
+    },
+    "ImpactPSCPool": {
+      "type": "SFXObjectPoolImpactPSCs",
+      "documentation": null
+    },
+    "GenericPSCPool": {
+      "type": "SFXObjectPoolPSCs",
+      "documentation": null
+    },
+    "EmitterPool": {
+      "type": "SFXObjectPoolEmitters",
+      "documentation": null
+    },
+    "PathConstraintCache": {
+      "type": "SFXObjectPoolPathConstraintCaches",
+      "documentation": null
+    },
+    "PathGoalEvaluatorCache": {
+      "type": "PathGoalEvaluator",
+      "documentation": null
+    },
+    "WwiseACPool": {
+      "type": "WwiseAudioComponent",
+      "documentation": null
+    },
+    "WwiseNextIdx": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DumpPools": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DumpPools()"
+    },
+    "GetPathGoalEvaluatorFromCache": {
+      "documentation": null,
+      "signature_members": {
+        "GoalEvalClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Requestor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "PathGoalEvaluator",
+      "signature": "PathGoalEvaluator GetPathGoalEvaluatorFromCache(Class<PathGoalEvaluator> GoalEvalClass, Pawn Requestor)"
+    },
+    "GetPathConstraintFromCache": {
+      "documentation": null,
+      "signature_members": {
+        "ConstraintClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Requestor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "PathConstraint",
+      "signature": "PathConstraint GetPathConstraintFromCache(Class<PathConstraint> ConstraintClass, Pawn Requestor)"
+    },
+    "CleanupPathConstraints": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CleanupPathConstraints()"
+    },
+    "CreatePathConstraintCache": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CreatePathConstraintCache()"
+    },
+    "GetWwiseAudioComponent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "WwiseAudioComponent",
+      "signature": "WwiseAudioComponent GetWwiseAudioComponent()"
+    },
+    "GetImpactEmitter": {
+      "documentation": null,
+      "signature_members": {
+        "Template": {
+          "type": null,
+          "documentation": null
+        },
+        "SpawnLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "SpawnRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Emitter",
+      "signature": "Emitter GetImpactEmitter(ParticleSystem Template, Vector SpawnLocation, Rotator SpawnRotation)"
+    },
+    "PrecacheImpactEmitter": {
+      "documentation": null,
+      "signature_members": {
+        "Template": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrecacheImpactEmitter(ParticleSystem Template)"
+    },
+    "ReusePooledEmitter": {
+      "documentation": null,
+      "signature_members": {
+        "Emit": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReusePooledEmitter(Emitter Emit)"
+    },
+    "CreatePooledEmitter": {
+      "documentation": null,
+      "signature_members": {
+        "Template": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Emitter",
+      "signature": "Emitter CreatePooledEmitter(ParticleSystem Template)"
+    },
+    "GetGenericParticleSystemComponent": {
+      "documentation": null,
+      "signature_members": {
+        "Template": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ParticleSystemComponent",
+      "signature": "ParticleSystemComponent GetGenericParticleSystemComponent(ParticleSystem Template)"
+    },
+    "PrecacheGenericParticleSystemComponent": {
+      "documentation": null,
+      "signature_members": {
+        "Template": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrecacheGenericParticleSystemComponent(ParticleSystem Template)"
+    },
+    "GetImpactParticleSystemComponent": {
+      "documentation": null,
+      "signature_members": {
+        "Template": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ParticleSystemComponent",
+      "signature": "ParticleSystemComponent GetImpactParticleSystemComponent(ParticleSystem Template)"
+    },
+    "PrecacheImpactParticleSystemComponent": {
+      "documentation": null,
+      "signature_members": {
+        "Template": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrecacheImpactParticleSystemComponent(ParticleSystem Template)"
+    },
+    "GetDroppedAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "DroppedAmmoClass": {
+          "type": null,
+          "documentation": null
+        },
+        "SpawnLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "DroppedPickup",
+      "signature": "DroppedPickup GetDroppedAmmo(Class<DroppedPickup> DroppedAmmoClass, Vector SpawnLocation)"
+    },
+    "ReusePooledDroppedAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "Dropped": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReusePooledDroppedAmmo(DroppedPickup Dropped)"
+    },
+    "CreatePooledDroppedAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "DroppedAmmoClass": {
+          "type": null,
+          "documentation": null
+        },
+        "SpawnLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "DroppedPickup",
+      "signature": "DroppedPickup CreatePooledDroppedAmmo(Class<DroppedPickup> DroppedAmmoClass, Vector SpawnLocation)"
+    },
+    "GetProjectile": {
+      "documentation": null,
+      "signature_members": {
+        "ProjectileClass": {
+          "type": null,
+          "documentation": null
+        },
+        "ProjOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "ProjInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "ProjLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "ProjRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Projectile",
+      "signature": "Projectile GetProjectile(Class<Projectile> ProjectileClass, Actor ProjOwner, Pawn ProjInstigator, Vector ProjLocation, Rotator ProjRotation)"
+    },
+    "ReusePooledProjectile": {
+      "documentation": null,
+      "signature_members": {
+        "Proj": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReusePooledProjectile(Projectile Proj)"
+    },
+    "CreatePooledProjectile": {
+      "documentation": null,
+      "signature_members": {
+        "ProjClass": {
+          "type": null,
+          "documentation": null
+        },
+        "SpawnLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Projectile",
+      "signature": "Projectile CreatePooledProjectile(Class<Projectile> ProjClass, Vector SpawnLocation)"
+    },
+    "GetTracer": {
+      "documentation": null,
+      "signature_members": {
+        "Mesh": {
+          "type": null,
+          "documentation": null
+        },
+        "Template": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Projectile",
+      "signature": "Projectile GetTracer(StaticMesh Mesh, ParticleSystem Template)"
+    },
+    "PrecacheTracer": {
+      "documentation": null,
+      "signature_members": {
+        "Mesh": {
+          "type": null,
+          "documentation": null
+        },
+        "Template": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrecacheTracer(StaticMesh Mesh, ParticleSystem Template)"
+    },
+    "ReusePooledTracer": {
+      "documentation": null,
+      "signature_members": {
+        "Proj": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReusePooledTracer(Projectile Proj)"
+    },
+    "CreatePooledTracer": {
+      "documentation": null,
+      "signature_members": {
+        "Mesh": {
+          "type": null,
+          "documentation": null
+        },
+        "Template": {
+          "type": null,
+          "documentation": null
+        },
+        "SpawnLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Projectile",
+      "signature": "Projectile CreatePooledTracer(StaticMesh Mesh, ParticleSystem Template, Vector SpawnLocation)"
+    },
+    "ApplyBloodColor": {
+      "documentation": null,
+      "signature_members": {
+        "PSC": {
+          "type": null,
+          "documentation": null
+        },
+        "HitActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyBloodColor(ParticleSystemComponent PSC, Actor HitActor)"
+    },
+    "ApplyLODLevel": {
+      "documentation": null,
+      "signature_members": {
+        "PSC": {
+          "type": null,
+          "documentation": null
+        },
+        "EffectLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyLODLevel(ParticleSystemComponent PSC, Vector EffectLocation)"
+    },
+    "AttachParticleSystemComponent": {
+      "documentation": null,
+      "signature_members": {
+        "PSC": {
+          "type": null,
+          "documentation": null
+        },
+        "HitActor": {
+          "type": null,
+          "documentation": null
+        },
+        "HitComponent": {
+          "type": null,
+          "documentation": null
+        },
+        "HitBone": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "bStaticLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AttachParticleSystemComponent(ParticleSystemComponent PSC, Actor HitActor, PrimitiveComponent HitComponent, Name HitBone, Vector HitLocation, Vector HitNormal, bool bStaticLocation)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

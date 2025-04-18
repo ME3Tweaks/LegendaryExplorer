@@ -1,0 +1,72 @@
+{
+  "parent": "AnimNodeSequenceBlendBase",
+  "package": "Engine",
+  "variables": {
+    "Aim": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "PreviousAim": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "HorizontalRange": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "VerticalRange": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "AngleOffset": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "AnimName_LU": {
+      "type": "Name",
+      "documentation": null
+    },
+    "AnimName_LC": {
+      "type": "Name",
+      "documentation": null
+    },
+    "AnimName_LD": {
+      "type": "Name",
+      "documentation": null
+    },
+    "AnimName_CU": {
+      "type": "Name",
+      "documentation": null
+    },
+    "AnimName_CC": {
+      "type": "Name",
+      "documentation": null
+    },
+    "AnimName_CD": {
+      "type": "Name",
+      "documentation": null
+    },
+    "AnimName_RU": {
+      "type": "Name",
+      "documentation": null
+    },
+    "AnimName_RC": {
+      "type": "Name",
+      "documentation": null
+    },
+    "AnimName_RD": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CheckAnimsUpToDate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckAnimsUpToDate()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

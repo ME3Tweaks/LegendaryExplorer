@@ -1,0 +1,50 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_oActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_oSquadLeader": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "m_nSquadCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nHackedCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nHazardLevelMax": {
+      "type": "int",
+      "documentation": null
+    },
+    "bIncludeDeadInCount": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsEmpty": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

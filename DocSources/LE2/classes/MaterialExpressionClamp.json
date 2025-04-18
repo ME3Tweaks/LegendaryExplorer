@@ -1,0 +1,21 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "Input": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "Min": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "Max": {
+      "type": "ExpressionInput",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

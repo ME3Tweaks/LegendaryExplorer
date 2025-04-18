@@ -1,0 +1,112 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {
+    "m_desc": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_options": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_subOptions": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_nCurrentLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nSelectedOption": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nSelectedSubOption": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "NextOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NextOption()"
+    },
+    "PrevOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PrevOption()"
+    },
+    "GetBelowOptionText": {
+      "documentation": null,
+      "signature_members": {
+        "Level": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetBelowOptionText(int Level)"
+    },
+    "GetSelectedOptionText": {
+      "documentation": null,
+      "signature_members": {
+        "Level": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetSelectedOptionText(int Level)"
+    },
+    "GetAboveOptionText": {
+      "documentation": null,
+      "signature_members": {
+        "Level": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetAboveOptionText(int Level)"
+    },
+    "DeactivateOption": {
+      "documentation": null,
+      "signature_members": {
+        "WorldInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DeactivateOption(BioWorldInfo WorldInfo)"
+    },
+    "ActivateOption": {
+      "documentation": null,
+      "signature_members": {
+        "WorldInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivateOption(BioWorldInfo WorldInfo)"
+    },
+    "InitializeOptions": {
+      "documentation": null,
+      "signature_members": {
+        "WorldInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeOptions(BioWorldInfo WorldInfo)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,92 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "RefPoint1_Image_Px": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "RefPoint1_Unreal_UU": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "RefPoint2_Image_Px": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "RefPoint2_Unreal_UU": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "UUCoorAtPxOrigin": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "MapAsset": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "PxPerUU": {
+      "type": "float",
+      "documentation": null
+    },
+    "MapLayout": {
+      "type": "SFXAreaMapLayout",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetPixelCoordinates": {
+      "documentation": null,
+      "signature_members": {
+        "UU_X": {
+          "type": null,
+          "documentation": null
+        },
+        "UU_Y": {
+          "type": null,
+          "documentation": null
+        },
+        "Px": {
+          "type": null,
+          "documentation": null
+        },
+        "Py": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetPixelCoordinates(float UU_X, float UU_Y, out float Px, out float Py)"
+    },
+    "ReCalculate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReCalculate()"
+    },
+    "GetUUCordAtPxOrigin": {
+      "documentation": null,
+      "signature_members": {
+        "UU_X": {
+          "type": null,
+          "documentation": null
+        },
+        "UU_Y": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetUUCordAtPxOrigin(out float UU_X, out float UU_Y)"
+    },
+    "GetPxPerUU": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetPxPerUU()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

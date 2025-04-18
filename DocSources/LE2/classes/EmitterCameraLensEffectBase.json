@@ -1,0 +1,88 @@
+{
+  "parent": "Emitter",
+  "package": "Engine",
+  "variables": {
+    "PS_CameraEffect": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "PS_CameraEffectNonExtremeContent": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "BaseCamera": {
+      "type": "Camera",
+      "documentation": null
+    },
+    "BaseFOV": {
+      "type": "float",
+      "documentation": null
+    },
+    "DistFromCamera": {
+      "type": "float",
+      "documentation": null
+    },
+    "bAllowMultipleInstances": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "UpdateLocation": {
+      "documentation": null,
+      "signature_members": {
+        "CamLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "CamRot": {
+          "type": null,
+          "documentation": null
+        },
+        "CamFOVDeg": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateLocation(const out Vector CamLoc, const out Rotator CamRot, float CamFOVDeg)"
+    },
+    "ActivateLensEffect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ActivateLensEffect()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "NotifyRetriggered": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyRetriggered()"
+    },
+    "RegisterCamera": {
+      "documentation": null,
+      "signature_members": {
+        "C": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RegisterCamera(Camera C)"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

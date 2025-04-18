@@ -1,0 +1,37 @@
+{
+  "parent": "NavigationPoint",
+  "package": "SFXGame",
+  "variables": {
+    "m_fDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMoveOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bPrecisionMovement": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bMaintainVelocity": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnPawnReachedWayPoint": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnPawnReachedWayPoint(Pawn oPawn)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

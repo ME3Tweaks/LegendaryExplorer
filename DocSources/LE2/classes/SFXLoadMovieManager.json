@@ -1,0 +1,141 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "LoadingMovieName": {
+      "type": "string",
+      "documentation": null
+    },
+    "MovieSound": {
+      "type": "WwiseEventPairObject",
+      "documentation": null
+    },
+    "DefaultLoadingMovie": {
+      "type": "BioLoadingMovie",
+      "documentation": null
+    },
+    "WWiseGlobalEvent_LoadMute": {
+      "type": "Name",
+      "documentation": null
+    },
+    "WWiseGlobalEvent_LoadUnMute": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_oSFResources": {
+      "type": "BioSFResources",
+      "documentation": null
+    },
+    "nLoopBackFrame": {
+      "type": "int",
+      "documentation": null
+    },
+    "srLevelLoadTipStrRef": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "nCurrentTipIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "bPlayToCompletion": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRequireExplicitStop": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bResetToDefaultOnPlayLoadMovie": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowLevelLoadTip": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStreamFromDisc": {
+      "type": "bool",
+      "documentation": null
+    },
+    "PlaybackState": {
+      "type": "LoadingMovieState",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "IsLoadingMoviePlaying": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsLoadingMoviePlaying()"
+    },
+    "StopLoadingMovie": {
+      "documentation": null,
+      "signature_members": {
+        "bDelayStopUntilGameHasRendered": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StopLoadingMovie(optional bool bDelayStopUntilGameHasRendered)"
+    },
+    "PlayLoadingMovie": {
+      "documentation": null,
+      "signature_members": {
+        "LevelName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PlayLoadingMovie(string LevelName)"
+    },
+    "InitLoadScreenTip": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitLoadScreenTip()"
+    },
+    "SetupLoadingMovie": {
+      "documentation": null,
+      "signature_members": {
+        "Movie": {
+          "type": null,
+          "documentation": null
+        },
+        "ScreenTip": {
+          "type": null,
+          "documentation": null
+        },
+        "HideLoadingTip": {
+          "type": null,
+          "documentation": null
+        },
+        "RequiresExplicitStop": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayToCompletion": {
+          "type": null,
+          "documentation": null
+        },
+        "StreamFromDisc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetupLoadingMovie(BioLoadingMovie Movie, BioSFScreenTip ScreenTip, bool HideLoadingTip, bool RequiresExplicitStop, bool PlayToCompletion, bool StreamFromDisc)"
+    },
+    "ResetToDefaultLoadMovie": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetToDefaultLoadMovie()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

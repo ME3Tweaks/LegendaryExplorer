@@ -1,0 +1,81 @@
+{
+  "parent": "BioPowerScriptDesign",
+  "package": "SFXGameContent_Powers",
+  "variables": {
+    "m_oPower": {
+      "type": "SFXPower_DefensiveShieldBase",
+      "documentation": null
+    },
+    "ShieldVFX": {
+      "type": "BioVisualEffect",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ShouldUsePower": {
+      "documentation": null,
+      "signature_members": {
+        "Caster": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "sOptionalInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldUsePower(Actor Caster, Actor Target, out string sOptionalInfo)"
+    },
+    "OnImpact": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": null,
+          "documentation": null
+        },
+        "fCasterStability": {
+          "type": null,
+          "documentation": null
+        },
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        },
+        "nPreviouslyImpacted": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnImpact(Actor oCaster, float fCasterStability, Actor oImpacted, int nPreviouslyImpacted)"
+    },
+    "OnShieldDestroyed": {
+      "documentation": null,
+      "signature_members": {
+        "ShieldActor": {
+          "type": null,
+          "documentation": null
+        },
+        "Shield": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnShieldDestroyed(Actor ShieldActor, SFXShield_Base Shield)"
+    },
+    "InitializePowerScript": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializePowerScript()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

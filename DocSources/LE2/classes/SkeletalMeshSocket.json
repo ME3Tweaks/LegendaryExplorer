@@ -1,0 +1,33 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "RelativeLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "RelativeRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "RelativeScale": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "SocketName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "BoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "SupermodelName": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

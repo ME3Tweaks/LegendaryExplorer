@@ -1,0 +1,52 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "aObjectProperties": {
+      "type": "BioPropertyMap",
+      "documentation": null
+    },
+    "aObjectFunctions": {
+      "type": "BioPropertyMap",
+      "documentation": null
+    },
+    "aBehaviorProperties": {
+      "type": "BioPropertyMap",
+      "documentation": null
+    },
+    "aBehaviorFunctions": {
+      "type": "BioPropertyMap",
+      "documentation": null
+    },
+    "aSelectionProperties": {
+      "type": "BioPropertyMap",
+      "documentation": null
+    },
+    "Properties": {
+      "type": "BioPropertyInfo",
+      "documentation": null
+    },
+    "cObjectType": {
+      "type": "Class",
+      "documentation": null
+    },
+    "cBehaviorType": {
+      "type": "Class",
+      "documentation": null
+    },
+    "cSelectionType": {
+      "type": "Class",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

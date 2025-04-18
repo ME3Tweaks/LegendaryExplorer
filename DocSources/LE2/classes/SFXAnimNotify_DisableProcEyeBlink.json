@@ -1,0 +1,24 @@
+{
+  "parent": "AnimNotify_Scripted",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "Notify": {
+      "documentation": null,
+      "signature_members": {
+        "Owner": {
+          "type": null,
+          "documentation": null
+        },
+        "Sequence": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Notify(Actor Owner, AnimNodeSequence Sequence)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

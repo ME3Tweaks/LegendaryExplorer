@@ -1,23 +1,23 @@
 {
   "Members": {
     "VfTable": {
-      "type": null,
+      "type": "Pointer",
       "documentation": null
     },
     "nGlobalFloat": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "fNewValue": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bUseParam": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bIncrement": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

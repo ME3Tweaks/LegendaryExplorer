@@ -1,0 +1,153 @@
+{
+  "parent": "BioSFHandler_MainMenu",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "ShowMarketPlace": {
+      "documentation": null,
+      "signature_members": {
+        "bCheckForSignIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowMarketPlace(bool bCheckForSignIn)"
+    },
+    "OnExecuteOpenMarketPlace": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnExecuteOpenMarketPlace()"
+    },
+    "OnExecuteCerberusDLCAvailable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnExecuteCerberusDLCAvailable()"
+    },
+    "OnExecuteShowLiveContent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnExecuteShowLiveContent()"
+    },
+    "OnSignInComplete_ShowMarketPlace": {
+      "documentation": null,
+      "signature_members": {
+        "bSignedIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSignInComplete_ShowMarketPlace(bool bSignedIn)"
+    },
+    "SetOnlineState": {
+      "documentation": null,
+      "signature_members": {
+        "eState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOnlineState(SFXOnlineUIState eState)"
+    },
+    "CerberusScreenStateChange": {
+      "documentation": null,
+      "signature_members": {
+        "eNewState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CerberusScreenStateChange(Cerberus3DState eNewState)"
+    },
+    "HasCerberusDLC": {
+      "documentation": null,
+      "signature_members": {
+        "bVal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HasCerberusDLC(bool bVal)"
+    },
+    "SetMarqueeRepeatText": {
+      "documentation": null,
+      "signature_members": {
+        "MessageData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMarqueeRepeatText(string MessageData)"
+    },
+    "OnDisplayNotification": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "MessageData": {
+          "type": null,
+          "documentation": null
+        },
+        "Title": {
+          "type": null,
+          "documentation": null
+        },
+        "Image": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDisplayNotification(SFXOnlineConnection_MessageType Type, string MessageData, string Title, string Image)"
+    },
+    "ClearNotifications": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearNotifications()"
+    },
+    "AddCerberusItem": {
+      "documentation": null,
+      "signature_members": {
+        "i_sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "i_sInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "i_sImage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddCerberusItem(string i_sTitle, string i_sInfo, string i_sImage)"
+    },
+    "PrevCerberusItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PrevCerberusItem()"
+    },
+    "NextCerberusItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NextCerberusItem()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

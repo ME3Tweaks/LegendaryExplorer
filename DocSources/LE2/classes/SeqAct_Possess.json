@@ -1,0 +1,21 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "PawnToPossess": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "bKillOldPawn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTryToLeaveVehicle": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

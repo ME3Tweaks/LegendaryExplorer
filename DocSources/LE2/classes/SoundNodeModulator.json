@@ -1,0 +1,25 @@
+{
+  "parent": "SoundNode",
+  "package": "Engine",
+  "variables": {
+    "PitchMin": {
+      "type": "float",
+      "documentation": null
+    },
+    "PitchMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "VolumeMin": {
+      "type": "float",
+      "documentation": null
+    },
+    "VolumeMax": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

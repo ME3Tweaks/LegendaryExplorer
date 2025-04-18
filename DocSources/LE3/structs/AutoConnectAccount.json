@@ -1,11 +1,11 @@
 {
   "Members": {
     "email": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Password": {
-      "type": null,
+      "type": "string",
       "documentation": null
     }
   },

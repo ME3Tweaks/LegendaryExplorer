@@ -1,0 +1,57 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "Engine",
+  "variables": {
+    "PropertyName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "CachedPropertyName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "CachedProperty": {
+      "type": "Property",
+      "documentation": null
+    },
+    "CachedOwner": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "BlendTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "FloatPropMin": {
+      "type": "float",
+      "documentation": null
+    },
+    "FloatPropMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendToChild1Time": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendToChild2Time": {
+      "type": "float",
+      "documentation": null
+    },
+    "bUseOwnersBase": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseSpecificBlendTimes": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSynchronizeNodesInEditor": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

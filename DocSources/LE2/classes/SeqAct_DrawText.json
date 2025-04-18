@@ -1,0 +1,28 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "DrawTextInfo": {
+      "type": "KismetDrawTextInfo",
+      "documentation": null
+    },
+    "DisplayTimeSeconds": {
+      "type": "float",
+      "documentation": null
+    },
+    "bDisplayOnObject": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,105 @@
+{
+  "parent": "SFXWeapon_Shotgun_Base",
+  "package": "SFXGameContent_Inventory",
+  "variables": {
+    "PelletSpread": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "fZoomAccuracyBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "StartTraceAdjustDist": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetWeaponSpecificImpactSound": {
+      "documentation": null,
+      "signature_members": {
+        "ImpactSounds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "WwiseEvent",
+      "signature": "WwiseEvent GetWeaponSpecificImpactSound(SFXPhysicalMaterialImpactSounds ImpactSounds)"
+    },
+    "GetWeaponSpecificImpactEffect": {
+      "documentation": null,
+      "signature_members": {
+        "ImpactEffects": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ParticleSystem",
+      "signature": "ParticleSystem GetWeaponSpecificImpactEffect(SFXPhysicalMaterialImpactEffects ImpactEffects)"
+    },
+    "GetWeaponSpecificDecalData": {
+      "documentation": null,
+      "signature_members": {
+        "DecalEffects": {
+          "type": null,
+          "documentation": null
+        },
+        "FadeTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "DecalComponent",
+      "signature": "DecalComponent GetWeaponSpecificDecalData(SFXPhysicalMaterialDecals DecalEffects, out float FadeTime)"
+    },
+    "FirePellets": {
+      "documentation": null,
+      "signature_members": {
+        "StartLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "AimRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "FireMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FirePellets(Vector StartLocation, Rotator AimRotation, byte FireMode)"
+    },
+    "DrawDebugShotgunCone": {
+      "documentation": null,
+      "signature_members": {
+        "StartLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "AimRot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawDebugShotgunCone(Vector StartLocation, Rotator AimRot)"
+    },
+    "CustomFire": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CustomFire()"
+    },
+    "ShouldSpawnTracerFX": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldSpawnTracerFX()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

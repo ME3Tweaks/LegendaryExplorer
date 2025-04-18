@@ -1,0 +1,40 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "sVariableLines": {
+      "type": "string",
+      "documentation": null
+    },
+    "sMessageLines": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_font": {
+      "type": "Font",
+      "documentation": null
+    },
+    "m_colorForeground": {
+      "type": "Color",
+      "documentation": null
+    },
+    "m_colorBackground": {
+      "type": "Color",
+      "documentation": null
+    },
+    "m_isActivated": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

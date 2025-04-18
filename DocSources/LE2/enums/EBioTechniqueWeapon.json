@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "BioWepTech_Pistol": {
+      "value": 0,
+      "documentation": null
+    },
+    "BioWepTech_Blaster": {
+      "value": 1,
+      "documentation": null
+    },
+    "BioWepTech_Assault": {
+      "value": 2,
+      "documentation": null
+    },
+    "BioWepTech_Sniper": {
+      "value": 3,
+      "documentation": null
+    },
+    "BioWepTech_Grenade": {
+      "value": 4,
+      "documentation": null
+    },
+    "BioWepTech_Melee": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,48 @@
+{
+  "parent": "SequenceCondition",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "RemoveValueEntry": {
+      "documentation": null,
+      "signature_members": {
+        "RemoveIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveValueEntry(int RemoveIndex)"
+    },
+    "InsertValueEntry": {
+      "documentation": null,
+      "signature_members": {
+        "InsertIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InsertValueEntry(int InsertIndex)"
+    },
+    "IsFallThruEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "ValueIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsFallThruEnabled(int ValueIndex)"
+    },
+    "VerifyDefaultCaseValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "VerifyDefaultCaseValue()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

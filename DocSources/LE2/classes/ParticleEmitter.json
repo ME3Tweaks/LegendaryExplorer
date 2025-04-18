@@ -1,0 +1,49 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "SpawnRateModules": {
+      "type": "ParticleModule",
+      "documentation": null
+    },
+    "LODLevels": {
+      "type": "ParticleLODLevel",
+      "documentation": null
+    },
+    "EmitterName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "SubUVDataOffset": {
+      "type": "int",
+      "documentation": null
+    },
+    "PeakActiveParticles": {
+      "type": "int",
+      "documentation": null
+    },
+    "InitialAllocationCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "ConvertedModules": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsSoloing": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCookedOut": {
+      "type": "bool",
+      "documentation": null
+    },
+    "EmitterRenderMode": {
+      "type": "EEmitterRenderMode",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

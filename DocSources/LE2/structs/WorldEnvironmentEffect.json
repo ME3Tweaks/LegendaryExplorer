@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "m_vOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_Effect": {
+      "type": "BioVisualEffect",
+      "documentation": null
+    },
+    "m_TargetController": {
+      "type": "Controller",
+      "documentation": null
+    },
+    "m_fBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fBlendTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fDesiredIntensity": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCurrentIntensity": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bAttachToCamera": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

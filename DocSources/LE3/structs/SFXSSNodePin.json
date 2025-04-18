@@ -1,11 +1,11 @@
 {
   "Members": {
     "sLinkName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "aLinks": {
-      "type": null,
+      "type": "SFXSSNodePinLink",
       "documentation": null
     }
   },

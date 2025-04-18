@@ -1,0 +1,57 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "sTitle": {
+      "type": "string",
+      "documentation": null
+    },
+    "sDescription": {
+      "type": "string",
+      "documentation": null
+    },
+    "sInputValue": {
+      "type": "string",
+      "documentation": null
+    },
+    "bKeyboardVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bKeyboardEntrySucceeded": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DisplayKeyboard": {
+      "documentation": null,
+      "signature_members": {
+        "srTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "srDescription": {
+          "type": null,
+          "documentation": null
+        },
+        "nOptions": {
+          "type": null,
+          "documentation": null
+        },
+        "nMaxLength": {
+          "type": null,
+          "documentation": null
+        },
+        "sDefault": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayKeyboard(stringref srTitle, stringref srDescription, Keyboard_Options nOptions, int nMaxLength, optional string sDefault)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,301 @@
+{
+  "parent": "BioBaseAppearance",
+  "package": "SFXGame",
+  "variables": {
+    "Armor": {
+      "type": "ArmorTypes",
+      "documentation": null
+    },
+    "AppearancePrefix": {
+      "type": "string",
+      "documentation": null
+    },
+    "AnimSets": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "WeaponAnimSpecs": {
+      "type": "WeaponAnimSpec",
+      "documentation": null
+    },
+    "AnimTreeTemplates": {
+      "type": "OverrideAnimTreeTemplate",
+      "documentation": null
+    },
+    "m_oMaterialVariationTranslationTable": {
+      "type": "Bio2DA",
+      "documentation": null
+    },
+    "m_oHeadGearAppearance": {
+      "type": "Bio_Appr_Character_HeadGear",
+      "documentation": null
+    },
+    "m_oSettings": {
+      "type": "Bio_Appr_Character_Body_Settings",
+      "documentation": null
+    },
+    "RagdollRecoverBone": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RagdollRecoverDirSwapBone": {
+      "type": "Name",
+      "documentation": null
+    },
+    "CollisionHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "CollisionRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "CollisionCrouchHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "CollisionReadyHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "Scale": {
+      "type": "float",
+      "documentation": null
+    },
+    "InclineUpMoveMod": {
+      "type": "float",
+      "documentation": null
+    },
+    "InclineDownMoveMod": {
+      "type": "float",
+      "documentation": null
+    },
+    "SkidTurnThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "PawnMoveStopDecelTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "LookAtRotationMinHoldTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "LookAtRotationMaxHoldTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "LookAtRotationMaxHoldAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "LookAtSpeedDEBUG": {
+      "type": "float",
+      "documentation": null
+    },
+    "RagdollRecoverPhysBlendTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "MeshAdjRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "ManualMeshAdj": {
+      "type": "float",
+      "documentation": null
+    },
+    "bEnableStartAnims": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableSkidAnims": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableStopAnims": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowStartAnimInCombat": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowSkidAnimInCombat": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowStopAnimInCombat": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableMountRootMotion": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableStartRootMotion": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableStopRootMotion": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableLookAtTargeting": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseWallSlideSpeedAdjust": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableRagdollRecovery": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInvertRagdollRecoverBoneAxis": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRecoverDirSwap": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInvertRagdollRecoverDirSwapBoneAxis": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableMeshAdj": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseManualAdj": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCanPortArms": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCanCrouch": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCanWalk": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCanFly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCanLand": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSuppressPitch": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RagdollRecoverBoneAxis": {
+      "type": "EAxis",
+      "documentation": null
+    },
+    "RagdollRecoverDirSwapBoneAxis": {
+      "type": "EAxis",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetMaterial": {
+      "documentation": null,
+      "signature_members": {
+        "ArmorType": {
+          "type": null,
+          "documentation": null
+        },
+        "ModelVar": {
+          "type": null,
+          "documentation": null
+        },
+        "MaterialVar": {
+          "type": null,
+          "documentation": null
+        },
+        "Materials": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetMaterial(int ArmorType, int ModelVar, int MaterialVar, out array<MaterialInterface> Materials)"
+    },
+    "IsValidVariation": {
+      "documentation": null,
+      "signature_members": {
+        "ArmorType": {
+          "type": null,
+          "documentation": null
+        },
+        "ModelVar": {
+          "type": null,
+          "documentation": null
+        },
+        "MaterialVar": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidVariation(int ArmorType, int ModelVar, int MaterialVar)"
+    },
+    "GetPhysics": {
+      "documentation": null,
+      "signature_members": {
+        "ArmorType": {
+          "type": null,
+          "documentation": null
+        },
+        "ModelVar": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "PhysicsAsset",
+      "signature": "PhysicsAsset GetPhysics(int ArmorType, int ModelVar)"
+    },
+    "GetPhysics_Name": {
+      "documentation": null,
+      "signature_members": {
+        "ArmorType": {
+          "type": null,
+          "documentation": null
+        },
+        "ModelVar": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetPhysics_Name(int ArmorType, int ModelVar)"
+    },
+    "GetModel": {
+      "documentation": null,
+      "signature_members": {
+        "ArmorType": {
+          "type": null,
+          "documentation": null
+        },
+        "ModelVar": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SkeletalMesh",
+      "signature": "SkeletalMesh GetModel(int ArmorType, int ModelVar)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

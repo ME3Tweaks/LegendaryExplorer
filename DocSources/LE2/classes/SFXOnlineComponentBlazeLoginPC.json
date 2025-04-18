@@ -1,0 +1,76 @@
+{
+  "parent": "SFXOnlineComponentBlazeLogin",
+  "package": "SFXOnlineFoundation",
+  "variables": {},
+  "functions": {
+    "HasInternetConnection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasInternetConnection()"
+    },
+    "HasAccountFor3rdPartyOnlineService": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasAccountFor3rdPartyOnlineService()"
+    },
+    "Connect": {
+      "documentation": null,
+      "signature_members": {
+        "connectMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Connect(SFXOnlineConnectMode connectMode)"
+    },
+    "Buy": {
+      "documentation": null,
+      "signature_members": {
+        "nPurchaseSource": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Buy(SFXOnlinePurchaseSource nPurchaseSource)"
+    },
+    "PostCompleteLoginProcess": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostCompleteLoginProcess()"
+    },
+    "StartCerberusLogin": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCerberusLogin()"
+    },
+    "SubmitRedeemCode": {
+      "documentation": null,
+      "signature_members": {
+        "bContinue": {
+          "type": null,
+          "documentation": null
+        },
+        "i_sCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SubmitRedeemCode(bool bContinue, string i_sCode)"
+    },
+    "GetUIState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineUIState",
+      "signature": "SFXOnlineUIState GetUIState()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

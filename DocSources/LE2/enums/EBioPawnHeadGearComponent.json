@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BIO_PAWN_HEAD_GEAR_COMPONENT_VISOR": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_PAWN_HEAD_GEAR_COMPONENT_FACE_PLATE": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_PAWN_HEAD_GEAR_COMPONENT_HELMET": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

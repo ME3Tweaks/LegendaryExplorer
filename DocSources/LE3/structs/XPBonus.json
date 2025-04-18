@@ -1,15 +1,15 @@
 {
   "Members": {
     "Id": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "XPBonus": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "CreditBonus": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

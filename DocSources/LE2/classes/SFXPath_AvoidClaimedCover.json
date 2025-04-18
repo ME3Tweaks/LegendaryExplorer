@@ -1,0 +1,20 @@
+{
+  "parent": "PathConstraint",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "AvoidClaimedCover": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AvoidClaimedCover(BioPawn P)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

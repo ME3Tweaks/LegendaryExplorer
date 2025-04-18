@@ -1,0 +1,17 @@
+{
+  "parent": "PhysicsVolume",
+  "package": "Engine",
+  "variables": {
+    "GravityZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "RBPhysicsGravityScaling": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

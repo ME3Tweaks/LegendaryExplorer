@@ -1,23 +1,23 @@
 {
   "Members": {
     "DamageType": {
-      "type": null,
+      "type": "Class",
       "documentation": null
     },
     "KillerPawn": {
-      "type": null,
+      "type": "Pawn",
       "documentation": null
     },
     "LastDamageSource": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "bHeadShot": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bHeadGib": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

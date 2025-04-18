@@ -1,15 +1,15 @@
 {
   "Members": {
     "Path": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Value": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "movie": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     }
   },

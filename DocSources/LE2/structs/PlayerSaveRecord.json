@@ -1,0 +1,289 @@
+{
+  "Members": {
+    "Appearance": {
+      "type": "AppearanceSaveRecord",
+      "documentation": null
+    },
+    "FirstName": {
+      "type": "string",
+      "documentation": null
+    },
+    "Items": {
+      "type": "ME1_ItemSaveRecord",
+      "documentation": null
+    },
+    "BuybackItems": {
+      "type": "ME1_ItemSaveRecord",
+      "documentation": null
+    },
+    "simpleTalents": {
+      "type": "ME1_SimpleTalentSaveRecord",
+      "documentation": null
+    },
+    "complexTalents": {
+      "type": "ComplexTalentSaveRecord",
+      "documentation": null
+    },
+    "Powers": {
+      "type": "PowerSaveRecord",
+      "documentation": null
+    },
+    "Equipment": {
+      "type": "ME1_ItemSaveRecord",
+      "documentation": null
+    },
+    "IWeapons": {
+      "type": "ME1_ItemSaveRecord",
+      "documentation": null
+    },
+    "Weapons": {
+      "type": "WeaponSaveRecord",
+      "documentation": null
+    },
+    "HotKeys": {
+      "type": "HotKeySaveRecord",
+      "documentation": null
+    },
+    "legacyHotKeys": {
+      "type": "ME1_HotKeySaveRecord",
+      "documentation": null
+    },
+    "FaceCode": {
+      "type": "string",
+      "documentation": null
+    },
+    "GameOptions": {
+      "type": "ME1_GameOptionsSaveRecord",
+      "documentation": null
+    },
+    "PlayerClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "LoadoutWeapons": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ME1ImportBonuses": {
+      "type": "ME1ImportBonusSaveRecord",
+      "documentation": null
+    },
+    "PlayerClassName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "MappedTalent": {
+      "type": "Name",
+      "documentation": null
+    },
+    "MappedPower1": {
+      "type": "Name",
+      "documentation": null
+    },
+    "MappedPower2": {
+      "type": "Name",
+      "documentation": null
+    },
+    "MappedPower3": {
+      "type": "Name",
+      "documentation": null
+    },
+    "PrimaryWeapon": {
+      "type": "Name",
+      "documentation": null
+    },
+    "SecondaryWeapon": {
+      "type": "Name",
+      "documentation": null
+    },
+    "LastPower": {
+      "type": "Name",
+      "documentation": null
+    },
+    "LegacyPlayerClassName": {
+      "type": "int",
+      "documentation": null
+    },
+    "srClassFriendlyName": {
+      "type": "int",
+      "documentation": null
+    },
+    "Level": {
+      "type": "int",
+      "documentation": null
+    },
+    "CurrentXP": {
+      "type": "float",
+      "documentation": null
+    },
+    "XPLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "LastName": {
+      "type": "int",
+      "documentation": null
+    },
+    "TalentPoints": {
+      "type": "int",
+      "documentation": null
+    },
+    "TalentPoolPoints": {
+      "type": "int",
+      "documentation": null
+    },
+    "Credits": {
+      "type": "int",
+      "documentation": null
+    },
+    "Medigel": {
+      "type": "int",
+      "documentation": null
+    },
+    "Grenades": {
+      "type": "float",
+      "documentation": null
+    },
+    "OmniGel": {
+      "type": "float",
+      "documentation": null
+    },
+    "Eezo": {
+      "type": "int",
+      "documentation": null
+    },
+    "Iridium": {
+      "type": "int",
+      "documentation": null
+    },
+    "Palladium": {
+      "type": "int",
+      "documentation": null
+    },
+    "Platinum": {
+      "type": "int",
+      "documentation": null
+    },
+    "Probes": {
+      "type": "int",
+      "documentation": null
+    },
+    "CurrentFuel": {
+      "type": "float",
+      "documentation": null
+    },
+    "SpecializationBonusID": {
+      "type": "int",
+      "documentation": null
+    },
+    "AutoLevelUpTemplateID": {
+      "type": "int",
+      "documentation": null
+    },
+    "HealthPerLevel": {
+      "type": "float",
+      "documentation": null
+    },
+    "StabilityCurrent": {
+      "type": "float",
+      "documentation": null
+    },
+    "ToxicCurrent": {
+      "type": "float",
+      "documentation": null
+    },
+    "Stamina": {
+      "type": "int",
+      "documentation": null
+    },
+    "Focus": {
+      "type": "int",
+      "documentation": null
+    },
+    "Precision": {
+      "type": "int",
+      "documentation": null
+    },
+    "Coordination": {
+      "type": "int",
+      "documentation": null
+    },
+    "SkillCharm": {
+      "type": "float",
+      "documentation": null
+    },
+    "SkillIntimidate": {
+      "type": "float",
+      "documentation": null
+    },
+    "SkillHaggle": {
+      "type": "float",
+      "documentation": null
+    },
+    "HealthCurrent": {
+      "type": "float",
+      "documentation": null
+    },
+    "ShieldCurrent": {
+      "type": "float",
+      "documentation": null
+    },
+    "HealthMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastQuickSlot": {
+      "type": "int",
+      "documentation": null
+    },
+    "bIsFemale": {
+      "type": "bool",
+      "documentation": null
+    },
+    "isDriving": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ArmorOverridden": {
+      "type": "bool",
+      "documentation": null
+    },
+    "HelmetShown": {
+      "type": "bool",
+      "documentation": null
+    },
+    "LegacyPlayerClass": {
+      "type": "byte",
+      "documentation": null
+    },
+    "Origin": {
+      "type": "EOriginType",
+      "documentation": null
+    },
+    "Notoriety": {
+      "type": "ENotorietyType",
+      "documentation": null
+    },
+    "SpectreRank": {
+      "type": "byte",
+      "documentation": null
+    },
+    "Race": {
+      "type": "byte",
+      "documentation": null
+    },
+    "AttributePrimary": {
+      "type": "byte",
+      "documentation": null
+    },
+    "AttributeSecondary": {
+      "type": "byte",
+      "documentation": null
+    },
+    "CurrentQuickSlot": {
+      "type": "EBioItemWeaponRangedType",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

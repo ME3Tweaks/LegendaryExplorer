@@ -1,39 +1,39 @@
 {
   "Members": {
     "LargeImage": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "SmallImage": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "DestId": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "DestTitle": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "DestSubTitle": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "DestDesc": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "PlotUnlockID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "AButtonText": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "BButtonText": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

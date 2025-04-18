@@ -1,23 +1,23 @@
 {
   "Members": {
     "RequiredPowerClass": {
-      "type": null,
+      "type": "Class",
       "documentation": null
     },
     "PowerClass": {
-      "type": null,
+      "type": "Class",
       "documentation": null
     },
     "Rank": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "RequiredLevel": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "CustomUnlockText": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

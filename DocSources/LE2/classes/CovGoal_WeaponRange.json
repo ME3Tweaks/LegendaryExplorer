@@ -1,0 +1,45 @@
+{
+  "parent": "CoverGoalConstraint",
+  "package": "SFXGame",
+  "variables": {
+    "fClosePenalty": {
+      "type": "float",
+      "documentation": null
+    },
+    "fFarPenalty": {
+      "type": "float",
+      "documentation": null
+    },
+    "fIdealWeaponRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "fLongWeaponRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "fShortWeaponRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "bHardConstraint": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Init": {
+      "documentation": null,
+      "signature_members": {
+        "GoalEvaluator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Init(Goal_AtCover GoalEvaluator)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

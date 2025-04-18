@@ -1,0 +1,139 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "lstPages": {
+      "type": "BWPageStruct",
+      "documentation": null
+    },
+    "vInput": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_Helper": {
+      "type": "SFXPowerLevelUpHelper",
+      "documentation": null
+    },
+    "fLastRadius": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "ExitGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExitGame()"
+    },
+    "MainMenuConfirm": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MainMenuConfirm(bool bAPressed, int nContext)"
+    },
+    "SetResourceValues": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetResourceValues()"
+    },
+    "InitializeBrowser": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeBrowser()"
+    },
+    "DetermineJournalCodexUpdateStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DetermineJournalCodexUpdateStatus()"
+    },
+    "DetermineSquadUpdateStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DetermineSquadUpdateStatus()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": null,
+          "documentation": null
+        },
+        "lstArguments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    },
+    "ShowSelectedPanel": {
+      "documentation": null,
+      "signature_members": {
+        "nPanel": {
+          "type": null,
+          "documentation": null
+        },
+        "oManager": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowSelectedPanel(int nPanel, optional BioSFManager oManager)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

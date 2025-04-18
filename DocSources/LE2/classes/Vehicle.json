@@ -1,0 +1,802 @@
+{
+  "parent": "Pawn",
+  "package": "Engine",
+  "variables": {
+    "ExitPositions": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "CrushedDamageType": {
+      "type": "Class",
+      "documentation": null
+    },
+    "ExitOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "TargetLocationAdjustment": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Driver": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "ExitRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "Steering": {
+      "type": "float",
+      "documentation": null
+    },
+    "Throttle": {
+      "type": "float",
+      "documentation": null
+    },
+    "Rise": {
+      "type": "float",
+      "documentation": null
+    },
+    "DriverDamageMult": {
+      "type": "float",
+      "documentation": null
+    },
+    "MomentumMult": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinCrushSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "ForceCrushPenetration": {
+      "type": "float",
+      "documentation": null
+    },
+    "ThrottleTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "StuckTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "OldSteering": {
+      "type": "float",
+      "documentation": null
+    },
+    "OnlySteeringStartTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "OldThrottle": {
+      "type": "float",
+      "documentation": null
+    },
+    "AIMoveCheckTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "VehicleMovingTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "TurnTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bDriving": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDriverIsVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAttachDriver": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTurnInPlace": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSeparateTurretFocus": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFollowLookDir": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasHandbrake": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bScriptedRise": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDuckObstacles": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAvoidReversing": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRetryPathfindingWithDriver": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreStallZ": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDoExtraNetRelevancyTraces": {
+      "type": "bool",
+      "documentation": null
+    },
+    "StuckCount": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ZeroMovementVariables": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ZeroMovementVariables()"
+    },
+    "NotifyDriverTakeHit": {
+      "documentation": null,
+      "signature_members": {
+        "InstigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyDriverTakeHit(Controller InstigatedBy, Vector HitLocation, int Damage, Class<DamageType> DamageType, Vector Momentum)"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "DrivingStatusChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DrivingStatusChanged()"
+    },
+    "HandleDeadVehicleDriver": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandleDeadVehicleDriver()"
+    },
+    "SetDriving": {
+      "documentation": null,
+      "signature_members": {
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDriving(bool B)"
+    },
+    "GetEntryLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetEntryLocation()"
+    },
+    "CrushedBy": {
+      "documentation": null,
+      "signature_members": {
+        "OtherPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CrushedBy(Pawn OtherPawn)"
+    },
+    "PancakeOther": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PancakeOther(Pawn Other)"
+    },
+    "EncroachingOn": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EncroachingOn(Actor Other)"
+    },
+    "GetCollisionDamageInstigator": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Controller",
+      "signature": "Controller GetCollisionDamageInstigator()"
+    },
+    "EncroachedBy": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EncroachedBy(Actor Other)"
+    },
+    "FaceRotation": {
+      "documentation": null,
+      "signature_members": {
+        "NewRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FaceRotation(Rotator NewRotation, float DeltaTime)"
+    },
+    "GetDefaultCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "RequestedBy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetDefaultCameraMode(PlayerController RequestedBy)"
+    },
+    "PlayDying": {
+      "documentation": null,
+      "signature_members": {
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLoc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayDying(Class<DamageType> DamageType, Vector HitLoc)"
+    },
+    "DriverDied": {
+      "documentation": null,
+      "signature_members": {
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DriverDied(Class<DamageType> DamageType)"
+    },
+    "Died": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Died(Controller Killer, Class<DamageType> DamageType, Vector HitLocation)"
+    },
+    "ThrowActiveWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ThrowActiveWeapon()"
+    },
+    "AdjustDriverDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "InstigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AdjustDriverDamage(out float Damage, Controller InstigatedBy, Vector HitLocation, out Vector Momentum, Class<DamageType> DamageType)"
+    },
+    "TakeDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "EventInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TakeDamage(float Damage, Controller EventInstigator, Vector HitLocation, Vector Momentum, Class<DamageType> DamageType, optional TraceHitInfo HitInfo, optional Actor DamageCauser)"
+    },
+    "SetKillInstigator": {
+      "documentation": null,
+      "signature_members": {
+        "InstigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Controller",
+      "signature": "Controller SetKillInstigator(Controller InstigatedBy, Class<DamageType> DamageType)"
+    },
+    "UnPossessed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnPossessed()"
+    },
+    "TryExitPos": {
+      "documentation": null,
+      "signature_members": {
+        "ExitingDriver": {
+          "type": null,
+          "documentation": null
+        },
+        "ExitPos": {
+          "type": null,
+          "documentation": null
+        },
+        "bMustFindGround": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TryExitPos(Pawn ExitingDriver, Vector ExitPos, bool bMustFindGround)"
+    },
+    "FindAutoExit": {
+      "documentation": null,
+      "signature_members": {
+        "ExitingDriver": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindAutoExit(Pawn ExitingDriver)"
+    },
+    "PlaceExitingDriver": {
+      "documentation": null,
+      "signature_members": {
+        "ExitingDriver": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PlaceExitingDriver(optional Pawn ExitingDriver)"
+    },
+    "DriverLeft": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DriverLeft()"
+    },
+    "SetInputs": {
+      "documentation": null,
+      "signature_members": {
+        "InForward": {
+          "type": null,
+          "documentation": null
+        },
+        "InStrafe": {
+          "type": null,
+          "documentation": null
+        },
+        "InUp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInputs(float InForward, float InStrafe, float InUp)"
+    },
+    "DriverLeave": {
+      "documentation": null,
+      "signature_members": {
+        "bForceLeave": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DriverLeave(bool bForceLeave)"
+    },
+    "GetExitRotation": {
+      "documentation": null,
+      "signature_members": {
+        "C": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator GetExitRotation(Controller C)"
+    },
+    "ContinueOnFoot": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ContinueOnFoot()"
+    },
+    "DetachDriver": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DetachDriver(Pawn P)"
+    },
+    "AttachDriver": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AttachDriver(Pawn P)"
+    },
+    "EntryAnnouncement": {
+      "documentation": null,
+      "signature_members": {
+        "C": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EntryAnnouncement(Controller C)"
+    },
+    "PossessedBy": {
+      "documentation": null,
+      "signature_members": {
+        "C": {
+          "type": null,
+          "documentation": null
+        },
+        "bVehicleTransition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PossessedBy(Controller C, bool bVehicleTransition)"
+    },
+    "ReattachAllPrimitiveComponents": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReattachAllPrimitiveComponents()"
+    },
+    "DriverEnter": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DriverEnter(Pawn P)"
+    },
+    "TryToDrive": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TryToDrive(Pawn P)"
+    },
+    "AnySeatAvailable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AnySeatAvailable()"
+    },
+    "CanEnterVehicle": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanEnterVehicle(Pawn P)"
+    },
+    "Destroyed_HandleDriver": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed_HandleDriver()"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "CheatFly": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CheatFly()"
+    },
+    "CheatGhost": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CheatGhost()"
+    },
+    "CheatWalk": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CheatWalk()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "SetBaseEyeheight": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetBaseEyeheight()"
+    },
+    "PlayerChangedTeam": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayerChangedTeam()"
+    },
+    "DriverRadiusDamage": {
+      "documentation": null,
+      "signature_members": {
+        "DamageAmount": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "EventInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageFalloffExponent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DriverRadiusDamage(float DamageAmount, float DamageRadius, Controller EventInstigator, Class<DamageType> DamageType, float Momentum, Vector HitLocation, Actor DamageCauser, optional float DamageFalloffExponent)"
+    },
+    "TakeRadiusDamage": {
+      "documentation": null,
+      "signature_members": {
+        "InstigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "BaseDamage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "HurtOrigin": {
+          "type": null,
+          "documentation": null
+        },
+        "bFullDamage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageFalloffExponent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TakeRadiusDamage(Controller InstigatedBy, float BaseDamage, float DamageRadius, Class<DamageType> DamageType, float Momentum, Vector HurtOrigin, bool bFullDamage, Actor DamageCauser, optional float DamageFalloffExponent)"
+    },
+    "GetTargetLocation": {
+      "documentation": null,
+      "signature_members": {
+        "RequestedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "bRequestAlternateLoc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetTargetLocation(optional Actor RequestedBy, optional bool bRequestAlternateLoc)"
+    },
+    "GetMaxRiseForce": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMaxRiseForce()"
+    },
+    "Suicide": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Suicide()"
+    },
+    "DisplayDebug": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        },
+        "out_YL": {
+          "type": null,
+          "documentation": null
+        },
+        "out_YPos": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayDebug(HUD HUD, out float out_YL, out float out_YPos)"
+    },
+    "NotifyTeamChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyTeamChanged()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

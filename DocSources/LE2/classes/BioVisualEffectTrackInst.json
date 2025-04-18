@@ -1,0 +1,29 @@
+{
+  "parent": "InterpTrackInst",
+  "package": "SFXGame",
+  "variables": {
+    "m_VFX": {
+      "type": "BioVisualEffect",
+      "documentation": null
+    },
+    "LastUpdatePosition": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Create": {
+      "documentation": null,
+      "signature_members": {
+        "Base": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Create(BioVisualEffect Base)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "parent": "ParticleModuleColorBase",
+  "package": "Engine",
+  "variables": {
+    "StartColorRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    },
+    "StartAlpha": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "bClampAlpha": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

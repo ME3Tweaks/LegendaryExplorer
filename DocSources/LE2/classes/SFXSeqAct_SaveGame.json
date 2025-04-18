@@ -1,0 +1,83 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGameContent",
+  "variables": {
+    "CachedEngine": {
+      "type": "SFXEngine",
+      "documentation": null
+    },
+    "ElapsedTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bFiredOutPin": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceAutoSave": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "BeginSave": {
+      "documentation": null,
+      "signature_members": {
+        "Descriptor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BeginSave(SFXSaveDescriptor Descriptor)"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Update(float DeltaTime)"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "GetBioPlayerController": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioPlayerController",
+      "signature": "BioPlayerController GetBioPlayerController()"
+    },
+    "CanSave": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanSave(BioPlayerController PC)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

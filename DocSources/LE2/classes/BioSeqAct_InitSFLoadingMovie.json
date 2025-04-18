@@ -1,0 +1,29 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "LoadingMovie": {
+      "type": "GFxMovieInfo",
+      "documentation": null
+    },
+    "Play": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "Stop": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "ScreenTip": {
+      "type": "BioSFScreenTip",
+      "documentation": null
+    },
+    "OverrideScreenTip": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

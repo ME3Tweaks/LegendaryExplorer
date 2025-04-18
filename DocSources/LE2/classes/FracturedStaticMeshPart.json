@@ -1,0 +1,156 @@
+{
+  "parent": "FracturedStaticMeshActor",
+  "package": "Engine",
+  "variables": {
+    "OldVelocity": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "BaseFracturedMeshActor": {
+      "type": "FracturedStaticMeshActor",
+      "documentation": null
+    },
+    "DestroyPartRadiusFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastSpawnTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "PartPoolIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "FracPartGravScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentVibrationLevel": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastImpactSoundTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bHasBeenRecycled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bChangeRBChannelWhenAsleep": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCompositeThatExplodesOnImpact": {
+      "type": "bool",
+      "documentation": null
+    },
+    "AsleepRBChannel": {
+      "type": "ERBCollisionChannel",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "BreakOffPartsInRadius": {
+      "documentation": null,
+      "signature_members": {
+        "Origin": {
+          "type": null,
+          "documentation": null
+        },
+        "Radius": {
+          "type": null,
+          "documentation": null
+        },
+        "RBStrength": {
+          "type": null,
+          "documentation": null
+        },
+        "bWantPhysChunksAndParticles": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BreakOffPartsInRadius(Vector Origin, float Radius, float RBStrength, bool bWantPhysChunksAndParticles)"
+    },
+    "Explode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Explode()"
+    },
+    "FellOutOfWorld": {
+      "documentation": null,
+      "signature_members": {
+        "dmgType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FellOutOfWorld(Class<DamageType> dmgType)"
+    },
+    "TryToCleanUp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TryToCleanUp()"
+    },
+    "TakeDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "EventInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TakeDamage(float Damage, Controller EventInstigator, Vector HitLocation, Vector Momentum, Class<DamageType> DamageType, optional TraceHitInfo HitInfo, optional Actor DamageCauser)"
+    },
+    "RecyclePart": {
+      "documentation": null,
+      "signature_members": {
+        "bAddToFreePool": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RecyclePart(bool bAddToFreePool)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

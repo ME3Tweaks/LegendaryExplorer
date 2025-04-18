@@ -1,11 +1,11 @@
 {
   "Members": {
     "A": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "B": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

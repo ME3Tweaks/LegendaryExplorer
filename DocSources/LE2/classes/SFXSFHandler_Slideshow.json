@@ -1,0 +1,202 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "m_CurrentSlide": {
+      "type": "SFXSlideshowEntry",
+      "documentation": null
+    },
+    "m_ShowParams": {
+      "type": "SFXSlideshowParams",
+      "documentation": null
+    },
+    "__SlideshowFinished__Delegate": {
+      "type": "SlideshowFinished",
+      "documentation": null
+    },
+    "m_fCurrentSlideElapsedTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nCurrentSlideIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nAdjacentPreloadCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bWaitingForInit": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bBeginWhenDoneInit": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCanGoNext": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCanGoPrev": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCanExit": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "TryExitShow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TryExitShow()"
+    },
+    "TryAdvanceShow": {
+      "documentation": null,
+      "signature_members": {
+        "bForward": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TryAdvanceShow(bool bForward)"
+    },
+    "ExInt_OnInitializationComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExInt_OnInitializationComplete()"
+    },
+    "ExInt_OnTransitionComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExInt_OnTransitionComplete()"
+    },
+    "EndSlideshow": {
+      "documentation": null,
+      "signature_members": {
+        "bFadeToBlack": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EndSlideshow(bool bFadeToBlack)"
+    },
+    "BeginSlideshow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BeginSlideshow()"
+    },
+    "PreloadAdjacentSlides": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreloadAdjacentSlides()"
+    },
+    "AdvanceShow": {
+      "documentation": null,
+      "signature_members": {
+        "bForward": {
+          "type": null,
+          "documentation": null
+        },
+        "bAutoAdvanced": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AdvanceShow(bool bForward, optional bool bAutoAdvanced)"
+    },
+    "UpdateNavButtonDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "bCanGoNext": {
+          "type": null,
+          "documentation": null
+        },
+        "bCanGoPrev": {
+          "type": null,
+          "documentation": null
+        },
+        "bCanExit": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateNavButtonDisplay(bool bCanGoNext, bool bCanGoPrev, bool bCanExit)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "SetTransitionOptions": {
+      "documentation": null,
+      "signature_members": {
+        "bFadeIn": {
+          "type": null,
+          "documentation": null
+        },
+        "bFadeOut": {
+          "type": null,
+          "documentation": null
+        },
+        "fFadeScalar": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTransitionOptions(bool bFadeIn, bool bFadeOut, float fFadeScalar)"
+    },
+    "PlaySlideshow": {
+      "documentation": null,
+      "signature_members": {
+        "oParams": {
+          "type": null,
+          "documentation": null
+        },
+        "onFinished": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlaySlideshow(const out SFXSlideshowParams oParams, delegate<SlideshowFinished> onFinished)"
+    },
+    "SlideshowFinished": {
+      "documentation": null,
+      "signature_members": {
+        "slideshow": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SlideshowFinished(SFXSFHandler_Slideshow slideshow)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

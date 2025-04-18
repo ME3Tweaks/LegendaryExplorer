@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "Telem_Setting_MouseDampening": {
+      "value": 0,
+      "documentation": null
+    },
+    "Telem_Setting_MouseSensitivity": {
+      "value": 1,
+      "documentation": null
+    },
+    "Telem_Setting_CameraSensitivity": {
+      "value": 2,
+      "documentation": null
+    },
+    "Telem_Setting_Resolution": {
+      "value": 3,
+      "documentation": null
+    },
+    "Telem_Setting_WindowedMode": {
+      "value": 4,
+      "documentation": null
+    },
+    "Telem_Setting_EnableHighQualityBloom": {
+      "value": 5,
+      "documentation": null
+    },
+    "Telem_Setting_EnableDynamicShadows": {
+      "value": 6,
+      "documentation": null
+    },
+    "Telem_Setting_LightEnvironmentShadows": {
+      "value": 7,
+      "documentation": null
+    },
+    "Telem_Setting_VSync": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "BioTCS_NvTT_NoCuda": {
+      "value": 0,
+      "documentation": null
+    },
+    "BioTCS_NvTT_Cuda": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

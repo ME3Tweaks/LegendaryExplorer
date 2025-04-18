@@ -1,11 +1,11 @@
 {
   "Members": {
     "CategoryData": {
-      "type": null,
+      "type": "AbilityDifficultyData",
       "documentation": null
     },
     "Category": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     }
   },

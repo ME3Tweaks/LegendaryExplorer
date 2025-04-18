@@ -1,0 +1,102 @@
+{
+  "parent": "SequenceEvent",
+  "package": "Engine",
+  "variables": {
+    "DamageTypes": {
+      "type": "Class",
+      "documentation": null
+    },
+    "IgnoreDamageTypes": {
+      "type": "Class",
+      "documentation": null
+    },
+    "vHitLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "oDamagedActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "MinDamageAmount": {
+      "type": "float",
+      "documentation": null
+    },
+    "DamageThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentDamage": {
+      "type": "float",
+      "documentation": null
+    },
+    "bResetDamageOnToggle": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Toggled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Toggled()"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "HandleDamage": {
+      "documentation": null,
+      "signature_members": {
+        "InOriginator": {
+          "type": null,
+          "documentation": null
+        },
+        "InInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "inDamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "inAmount": {
+          "type": null,
+          "documentation": null
+        },
+        "inHitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleDamage(Actor InOriginator, Actor InInstigator, Class<DamageType> inDamageType, float inAmount, optional Vector inHitLocation, optional Actor DamageCauser)"
+    },
+    "IsValidDamageType": {
+      "documentation": null,
+      "signature_members": {
+        "inDamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidDamageType(Class<DamageType> inDamageType)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

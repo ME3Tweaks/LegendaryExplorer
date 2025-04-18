@@ -1,0 +1,15 @@
+{
+  "parent": "SFXGameEffect_DamageOverTime",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "GetDamageType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Class",
+      "signature": "Class<SFXDamageType> GetDamageType()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,77 @@
+{
+  "parent": "SFXCustomAction_DamageReaction",
+  "package": "SFXGame",
+  "variables": {
+    "bWelded": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CheckEndRecovery": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckEndRecovery()"
+    },
+    "CheckBeginRecovery": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckBeginRecovery()"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    },
+    "StartRagdollPhase": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartRagdollPhase()"
+    },
+    "UnWeldPhysicsAssetInstance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnWeldPhysicsAssetInstance()"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "Init": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "bPlayImpact": {
+          "type": null,
+          "documentation": null
+        },
+        "Inst": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Init(Vector HitLocation, Vector HitNormal, TraceHitInfo HitInfo, bool bPlayImpact, optional Controller Inst)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

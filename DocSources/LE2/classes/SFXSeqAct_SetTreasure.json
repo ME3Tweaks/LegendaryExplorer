@@ -1,0 +1,42 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "ResourcePercent": {
+      "type": "int",
+      "documentation": null
+    },
+    "bTargetable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOverrideResource": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTreasureTypeOverride": {
+      "type": "bool",
+      "documentation": null
+    },
+    "TreasureType": {
+      "type": "ETreasureType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

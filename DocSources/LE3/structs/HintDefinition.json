@@ -1,63 +1,63 @@
 {
   "Members": {
     "HintName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "ClearEvent": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "ClearContext": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "HintFunction": {
-      "type": null,
+      "type": "function",
       "documentation": null
     },
     "DefaultText": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "PS3Text": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "PCText": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "DisplayDuration": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "CooldownTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "UpdateTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "TimeRemaining": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "MaxDifficulty": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Enabled": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "ImmediatelyRelevant": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "HintPosition": {
-      "type": null,
+      "type": "SFXHintPosition",
       "documentation": null
     }
   },

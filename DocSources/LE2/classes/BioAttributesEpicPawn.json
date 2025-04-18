@@ -1,0 +1,46 @@
+{
+  "parent": "BioAttributes",
+  "package": "SFXGame",
+  "variables": {
+    "m_FirstName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_PowerCooldownMultiplier": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null
+    },
+    "m_ScanLevel": {
+      "type": "BioComplexIntStructAttribute",
+      "documentation": null
+    },
+    "m_RadarRange": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null
+    },
+    "m_LastName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_initialRadarRange": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetName()"
+    },
+    "GetDesignedName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetDesignedName()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "m_sCameraName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_fCameraHeightDelta": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCameraPitchDelta": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCameraYawDelta": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCameraFOVDelta": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCameraNearPlaneDelta": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCameraFocusInnerRadiusDelta": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCameraFocusDistanceDelta": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bDisableHeightAdjust": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

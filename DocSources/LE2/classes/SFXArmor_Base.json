@@ -1,0 +1,102 @@
+{
+  "parent": "Inventory",
+  "package": "SFXGame",
+  "variables": {
+    "ScalePlotId": {
+      "type": "Name",
+      "documentation": null
+    },
+    "DamageResistance": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "PenetrationDefault": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "PenetrationVeryLight": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "PenetrationLight": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "PenetrationMedium": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "PenetrationHeavy": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "ArmorLevel": {
+      "type": "float",
+      "documentation": null
+    },
+    "FortifiedThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "bShowFortifyOnGUI": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ApplyDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "InstigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyDamage(out float Damage, out TraceHitInfo HitInfo, out Vector HitLocation, out Vector Momentum, Class<SFXDamageType> DamageType, Controller InstigatedBy, Actor DamageCauser)"
+    },
+    "GetDamageResistance": {
+      "documentation": null,
+      "signature_members": {
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetDamageResistance(Class<SFXDamageType> DamageType)"
+    },
+    "GetLevelRatio": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetLevelRatio()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

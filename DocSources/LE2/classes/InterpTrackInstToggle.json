@@ -1,0 +1,21 @@
+{
+  "parent": "InterpTrackInst",
+  "package": "Engine",
+  "variables": {
+    "LastUpdatePosition": {
+      "type": "float",
+      "documentation": null
+    },
+    "bSavedActiveState": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Action": {
+      "type": "ETrackToggleAction",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

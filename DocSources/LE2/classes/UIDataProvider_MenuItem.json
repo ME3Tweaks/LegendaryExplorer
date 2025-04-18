@@ -1,0 +1,104 @@
+{
+  "parent": "UIResourceDataProvider",
+  "package": "Engine",
+  "variables": {
+    "OptionSet": {
+      "type": "Name",
+      "documentation": null
+    },
+    "DataStoreMarkup": {
+      "type": "string",
+      "documentation": null
+    },
+    "DescriptionMarkup": {
+      "type": "string",
+      "documentation": null
+    },
+    "FriendlyName": {
+      "type": "string",
+      "documentation": null
+    },
+    "CustomFriendlyName": {
+      "type": "string",
+      "documentation": null
+    },
+    "Description": {
+      "type": "string",
+      "documentation": null
+    },
+    "SchemaCellFields": {
+      "type": "Name",
+      "documentation": null
+    },
+    "IniName": {
+      "type": "string",
+      "documentation": null
+    },
+    "RangeData": {
+      "type": "UIRangeData",
+      "documentation": null
+    },
+    "RequiredGameMode": {
+      "type": "Name",
+      "documentation": null
+    },
+    "EditBoxMaxLength": {
+      "type": "int",
+      "documentation": null
+    },
+    "bEditableCombo": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNumericCombo": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bKeyboardOrMouseOption": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOnlineOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOfflineOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSearchAllInis": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRemoveOn360": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRemoveOnPC": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRemoveOnPS3": {
+      "type": "bool",
+      "documentation": null
+    },
+    "OptionType": {
+      "type": "EMenuOptionType",
+      "documentation": null
+    },
+    "EditboxAllowedChars": {
+      "type": "EEditBoxCharacterSet",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "IsFiltered": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsFiltered()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

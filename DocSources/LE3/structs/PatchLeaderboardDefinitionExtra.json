@@ -1,15 +1,15 @@
 {
   "Members": {
     "nID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "srTitleStrRef": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "bUsesLocalString": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

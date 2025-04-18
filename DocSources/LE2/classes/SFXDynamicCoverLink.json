@@ -1,0 +1,13 @@
+{
+  "parent": "CoverLink",
+  "package": "Engine",
+  "variables": {
+    "m_aContainingActor": {
+      "type": "Actor",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

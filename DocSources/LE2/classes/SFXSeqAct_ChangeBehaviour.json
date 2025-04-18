@@ -1,0 +1,32 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "ControllerClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "oPawn": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "nmBehaviour": {
+      "type": "Name",
+      "documentation": null
+    },
+    "eBehaviour": {
+      "type": "EBioAutoSet",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,27 +1,27 @@
 {
   "Members": {
     "Impact": {
-      "type": null,
+      "type": "ImpactInfo",
       "documentation": null
     },
     "Weapon": {
-      "type": null,
+      "type": "SFXWeapon_NativeBase",
       "documentation": null
     },
     "NumHits": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "FrameCount": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bSuppressAudio": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "FiringMode": {
-      "type": null,
+      "type": "byte",
       "documentation": null
     }
   },

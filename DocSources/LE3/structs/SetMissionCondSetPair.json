@@ -1,19 +1,19 @@
 {
   "Members": {
     "C": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "CA": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "T": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "TA": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

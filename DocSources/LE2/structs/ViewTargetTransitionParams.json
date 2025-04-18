@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "BlendTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendExp": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendFunction": {
+      "type": "EViewTargetBlendFunction",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,49 @@
+{
+  "Members": {
+    "ChoiceEntry": {
+      "type": "SFXChoiceEntry",
+      "documentation": null
+    },
+    "stTech": {
+      "type": "STech",
+      "documentation": null
+    },
+    "stTreasure": {
+      "type": "STreasure",
+      "documentation": null
+    },
+    "PlotName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "TechId": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlotID": {
+      "type": "int",
+      "documentation": null
+    },
+    "TreasureId": {
+      "type": "int",
+      "documentation": null
+    },
+    "UnlockId": {
+      "type": "int",
+      "documentation": null
+    },
+    "nContextId": {
+      "type": "int",
+      "documentation": null
+    },
+    "RMode": {
+      "type": "int",
+      "documentation": null
+    },
+    "DisableId": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

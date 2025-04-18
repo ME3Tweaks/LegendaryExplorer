@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "CREDCurve_NoReward": {
+      "value": 0,
+      "documentation": null
+    },
+    "CREDCurve_Minor": {
+      "value": 1,
+      "documentation": null
+    },
+    "CREDCurve_Small": {
+      "value": 2,
+      "documentation": null
+    },
+    "CREDCurve_Medium": {
+      "value": 3,
+      "documentation": null
+    },
+    "CREDCurve_Large": {
+      "value": 4,
+      "documentation": null
+    },
+    "CREDCurve_Major": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

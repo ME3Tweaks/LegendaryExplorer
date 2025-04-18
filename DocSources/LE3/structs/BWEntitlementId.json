@@ -1,7 +1,7 @@
 {
   "Members": {
     "nID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

@@ -1,0 +1,274 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_lstNotices": {
+      "type": "BioDisplayNotice",
+      "documentation": null
+    },
+    "m_lstTalentNotices": {
+      "type": "BioTalentNotice",
+      "documentation": null
+    },
+    "sWwiseMusicVolumeRTPCName": {
+      "type": "string",
+      "documentation": null
+    },
+    "sWwiseParaReneRTPCName": {
+      "type": "string",
+      "documentation": null
+    },
+    "TalentNoticeInputCharacter": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "m_oTalentNotifyBoxHandler": {
+      "type": "BioSFHandler_MessageBox",
+      "documentation": null
+    },
+    "srTalentOk": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srTalentSkipRemainder": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srLevelUp": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srQuestAdded": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srQuestUpdated": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srQuestCompleted": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srCodexEntry": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srParagonReceived": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srRenegadeReceived": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srMedigel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srSalvage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srMap": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srAbility": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "nParagonPlotVar": {
+      "type": "int",
+      "documentation": null
+    },
+    "nRenegadePlotVar": {
+      "type": "int",
+      "documentation": null
+    },
+    "nWwiseMusicVolumeRTPCPlotVar": {
+      "type": "int",
+      "documentation": null
+    },
+    "fPassivePopupDisplayTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bNoticesNotarized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bTalentNoticeReady": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bHUDAcknowledgedTalentNotify": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDissableTallentNotifications": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "RemoveTalentNotify": {
+      "documentation": null,
+      "signature_members": {
+        "oCharacter": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveTalentNotify(BioPawn oCharacter)"
+    },
+    "AddTalentNotifyStringRef": {
+      "documentation": null,
+      "signature_members": {
+        "nTalentIcon": {
+          "type": null,
+          "documentation": null
+        },
+        "srTalentName": {
+          "type": null,
+          "documentation": null
+        },
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddTalentNotifyStringRef(int nTalentIcon, stringref srTalentName, BioPawn pPawn)"
+    },
+    "AddTalentNotifyString": {
+      "documentation": null,
+      "signature_members": {
+        "nTalentIcon": {
+          "type": null,
+          "documentation": null
+        },
+        "sTalentName": {
+          "type": null,
+          "documentation": null
+        },
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddTalentNotifyString(int nTalentIcon, string sTalentName, BioPawn pPawn)"
+    },
+    "OnTalentNoticeInput": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTalentNoticeInput(bool bAPressed, int nContext)"
+    },
+    "PendingTalentNotify": {
+      "documentation": null,
+      "signature_members": {
+        "oCharacter": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PendingTalentNotify(BioPawn oCharacter)"
+    },
+    "ShowTalentNotify": {
+      "documentation": null,
+      "signature_members": {
+        "oCharacter": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowTalentNotify(BioPawn oCharacter)"
+    },
+    "AddNotice": {
+      "documentation": null,
+      "signature_members": {
+        "nType": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        },
+        "nTimeToLive": {
+          "type": null,
+          "documentation": null
+        },
+        "nIconIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "srTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "strTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "nQuantity": {
+          "type": null,
+          "documentation": null
+        },
+        "nQuantMin": {
+          "type": null,
+          "documentation": null
+        },
+        "nQuantMax": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotice(int nType, int nContext, int nTimeToLive, int nIconIndex, stringref srTitle, string strTitle, optional int nQuantity, optional int nQuantMin, optional int nQuantMax)"
+    },
+    "NotarizeNotices": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotarizeNotices()"
+    },
+    "HasListChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HasListChanged()"
+    },
+    "RetrieveNotices": {
+      "documentation": null,
+      "signature_members": {
+        "lstNotices": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RetrieveNotices(out array<BioDisplayNotice> lstNotices)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,15 +1,15 @@
 {
   "Members": {
     "pCodexEntry": {
-      "type": null,
+      "type": "Pointer",
       "documentation": null
     },
     "nQuestAdded": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bQuestComplete": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

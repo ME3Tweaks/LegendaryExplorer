@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "SFXONLINE_PS_CERBERUS_MAIN": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXONLINE_PS_SHOW_LIVE_CONTENT": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXONLINE_PS_DLC_AVAILABLE": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXONLINE_PS_MARKETPLACE": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

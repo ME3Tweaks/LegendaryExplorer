@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "UIASPECTRATIO_AdjustNone": {
+      "value": 0,
+      "documentation": null
+    },
+    "UIASPECTRATIO_AdjustWidth": {
+      "value": 1,
+      "documentation": null
+    },
+    "UIASPECTRATIO_AdjustHeight": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

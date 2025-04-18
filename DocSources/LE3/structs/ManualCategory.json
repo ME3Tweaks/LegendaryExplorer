@@ -1,11 +1,11 @@
 {
   "Members": {
     "Chapters": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "ChapterIndices": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

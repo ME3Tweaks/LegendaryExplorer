@@ -1,0 +1,29 @@
+{
+  "parent": "NxForceField",
+  "package": "Engine",
+  "variables": {
+    "LinearKernel": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "RenderComponent": {
+      "type": "DrawSphereComponent",
+      "documentation": null
+    },
+    "ForceStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "ForceRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "ForceFalloff": {
+      "type": "ERadialImpulseFalloff",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "m_aModelSpec": {
+      "type": "BioHeadGearAppearanceModelSpec",
+      "documentation": null
+    },
+    "m_nmPackage": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_eArmorType": {
+      "type": "EBioArmorType",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,67 +1,67 @@
 {
   "Members": {
     "sImageResource": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "nmType": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "nmRemoteEvent": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "nmSound": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "nmIcon": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "srTitle": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "srSubTitle": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "srBody": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "srAltTitle": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "srAltBody": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "srAltSubtitle": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "DisplayTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Priority": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nFlourishID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bCanBeMerged": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bIsMini": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

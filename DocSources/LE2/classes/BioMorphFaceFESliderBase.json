@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_nName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_oMorphFaceFrontEnd": {
+      "type": "BioMorphFaceFrontEnd",
+      "documentation": null
+    },
+    "m_bStepped": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

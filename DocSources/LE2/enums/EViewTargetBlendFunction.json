@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "VTBlend_Linear": {
+      "value": 0,
+      "documentation": null
+    },
+    "VTBlend_Cubic": {
+      "value": 1,
+      "documentation": null
+    },
+    "VTBlend_EaseIn": {
+      "value": 2,
+      "documentation": null
+    },
+    "VTBlend_EaseOut": {
+      "value": 3,
+      "documentation": null
+    },
+    "VTBlend_EaseInOut": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

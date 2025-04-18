@@ -1,0 +1,41 @@
+{
+  "parent": "BioBaseAppearance",
+  "package": "SFXGame",
+  "variables": {
+    "m_aArmorSpec": {
+      "type": "BioHeadGearAppearanceArmorSpec",
+      "documentation": null
+    },
+    "m_aFacePlateMeshSpec": {
+      "type": "BioFacePlateMeshSpec",
+      "documentation": null
+    },
+    "m_apFacePlateMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "m_apVisorMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null
+    },
+    "m_apVisorMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "m_nmPrefix": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_oSettings": {
+      "type": "Bio_Appr_Character_HeadGear_Settings",
+      "documentation": null
+    },
+    "m_eArmorType": {
+      "type": "EBioArmorType",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

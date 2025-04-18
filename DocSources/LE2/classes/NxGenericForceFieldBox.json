@@ -1,0 +1,24 @@
+{
+  "parent": "NxGenericForceField",
+  "package": "Engine",
+  "variables": {
+    "BoxExtent": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "RenderComponent": {
+      "type": "DrawBoxComponent",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DoInitRBPhys": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoInitRBPhys()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

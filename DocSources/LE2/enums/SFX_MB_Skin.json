@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "SFX_MB_Skin_User": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFX_MB_Skin_Shepard": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

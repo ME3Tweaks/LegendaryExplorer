@@ -1,0 +1,15 @@
+{
+  "parent": "SFXShield_Energy_Player",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "ScaleShields": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ScaleShields()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

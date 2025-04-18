@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "KVT_Int": {
+      "value": 0,
+      "documentation": null
+    },
+    "KVT_Float": {
+      "value": 1,
+      "documentation": null
+    },
+    "KVT_Bool": {
+      "value": 2,
+      "documentation": null
+    },
+    "KVT_String": {
+      "value": 3,
+      "documentation": null
+    },
+    "KVT_Object": {
+      "value": 4,
+      "documentation": null
+    },
+    "KVT_Name": {
+      "value": 5,
+      "documentation": null
+    },
+    "KVT_Vector": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

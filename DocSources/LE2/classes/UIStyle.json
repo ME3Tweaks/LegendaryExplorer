@@ -1,0 +1,62 @@
+{
+  "parent": "UIRoot",
+  "package": "Engine",
+  "variables": {
+    "StyleName": {
+      "type": "string",
+      "documentation": null
+    },
+    "StyleGroupName": {
+      "type": "string",
+      "documentation": null
+    },
+    "StyleDataClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "StateDataMap": {
+      "type": "Object",
+      "documentation": null
+    },
+    "StyleID": {
+      "type": "STYLE_ID",
+      "documentation": null
+    },
+    "StyleTag": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetDefaultStyle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UIStyle_Data",
+      "signature": "UIStyle_Data GetDefaultStyle()"
+    },
+    "GetStyleForStateByClass": {
+      "documentation": null,
+      "signature_members": {
+        "StateClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "UIStyle_Data",
+      "signature": "UIStyle_Data GetStyleForStateByClass(Class<UIState> StateClass)"
+    },
+    "GetStyleForState": {
+      "documentation": null,
+      "signature_members": {
+        "StateObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "UIStyle_Data",
+      "signature": "UIStyle_Data GetStyleForState(UIState StateObject)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

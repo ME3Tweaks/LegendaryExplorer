@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "GroupName": {
+      "type": "string",
+      "documentation": null
+    },
+    "entitlementName": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

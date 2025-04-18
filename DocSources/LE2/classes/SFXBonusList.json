@@ -1,0 +1,1331 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "RchAssaultRifleName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchAutoPistolName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchBioDmgUpgradeName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchExploreScannerName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchGruntUpgradeName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchHWAmmoName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchHeavyPistolName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchJackUpgradeName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchLegionUpgradeName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchMedigelName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchMiniGameDecryptName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchMiniGameHackName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchMordinUpgradeName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchQuarianShieldName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchHealthUpgradeName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchShieldUpgradeName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchShipProbesName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchShipFuelName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchShipScannerName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchShotgunName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchSniperRifleName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchTechDmgUpgradeName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchARResistanceDamageName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchAssaultRifleAccuracyName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchAutoPistolResistanceDmgName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchAutoPistolMaxAmmoName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchBioticDurationName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchBioticCooldownName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchHPistolArmorDmgName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchHPistolBonusShotName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchMediGelHealName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchMediGelShieldName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchShepardMeleeResistanceName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchMeleeUpgradeName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchShieldRestoreName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchShieldDamageName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchShotgunResistanceDmgName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchShotgunMagCountName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchSniperArmorDmgName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchSniperHeadShotDmgName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchTechDurationName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchTechCooldownName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchBovineFortitudeName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RchAssaultRifleID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchAssaultRifleBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchAssaultRifleCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchAutoPistolID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchAutoPistolBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchAutoPistolCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchBioDmgUpgradeID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchBioDmgUpgradeBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchBioDmgUpgradeCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchExploreScannerID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchExploreScannerBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchExploreScannerCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchGruntUpgradeID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchGruntUpgradeBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchGruntUpgradeCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchHWAmmoID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchHWAmmoBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchHWAmmoCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchHeavyPistolID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchHeavyPistolBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchHeavyPistolCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchJackUpgradeID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchJackUpgradeBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchJackUpgradeCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchLegionUpgradeID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchLegionUpgradeBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchLegionUpgradeCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchMedigelID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchMedigelCache": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchMiniGameDecryptID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchMiniGameDecryptBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchMiniGameDecryptCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchMiniGameHackID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchMiniGameHackBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchMiniGameHackCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchMordinUpgradeID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchMordinUpgradeBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchMordinUpgradeCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchQuarianShieldID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchQuarianShieldBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchQuarianShieldCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchHealthUpgradeID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchHealthUpgradeBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchHealthUpgradeCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchShieldUpgradeID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchShieldUpgradeBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchShieldUpgradeCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchShipProbesID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchShipProbesBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchShipProbesCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchShipFuelID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchShipFuelBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchShipFuelCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchShipScannerID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchShipScannerBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchShipScannerCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchShotgunID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchShotgunBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchShotgunCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchSniperRifleID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchSniperRifleBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchSniperRifleCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchTechDmgUpgradeID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchTechDmgUpgradeBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchTechDmgUpgradeCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchARResistanceDamageID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchARResistanceDamageBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchARResistanceDamageCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchAssaultRifleAccuracyID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchAssaultRifleAccuracyBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchAssaultRifleAccuracyCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchAutoPistolResistanceDmgID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchAutoPistolResistanceDmgBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchAutoPistolResistanceDmgCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchAutoPistolMaxAmmoID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchAutoPistolMaxAmmoBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchAutoPistolMaxAmmoCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchBioticDurationID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchBioticDurationBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchBioticDurationCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchBioticCooldownID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchBioticCooldownBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchBioticCooldownCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchHPistolArmorDmgID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchHPistolArmorDmgBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchHPistolArmorDmgCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchHPistolBonusShotID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchHPistolBonusShotBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchHPistolBonusShotCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchHPistolBonusShotChance": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchMediGelHealID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchMediGelHealCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchMediGelShieldID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchMediGelShieldCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchShepardMeleeResistanceID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchShepardMeleeResistanceBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchShepardMeleeResistanceCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchMeleeUpgradeID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchMeleeUpgradeBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchMeleeUpgradeCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchMeleePhysLevelBonus": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchMeleePhysLevelCache": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchShieldRestoreID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchShieldRestoreBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchShieldRestoreCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchShieldRestoreChance": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchShieldDamageID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchShieldDamageBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchShieldDamageCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchShotgunResistanceDmgID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchShotgunResistanceDmgBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchShotgunResistanceDmgCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchShotgunMagCountID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchShotgunMagCountBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchShotgunMagCountCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchSniperArmorDmgID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchSniperArmorDmgBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchSniperArmorDmgCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchSniperHeadShotDmgID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchSniperHeadShotDmgBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchSniperHeadShotDmgCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchTechDurationID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchTechDurationBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchTechDurationCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchTechCooldownID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchTechCooldownBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchTechCooldownCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchBovineFortitudeID": {
+      "type": "int",
+      "documentation": null
+    },
+    "RchBovineFortitudeBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchBovineFortitudeCache": {
+      "type": "float",
+      "documentation": null
+    },
+    "RchBovineFortitudeChance": {
+      "type": "float",
+      "documentation": null
+    },
+    "ExportIDsCached": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "TecBovineFortitude": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecBovineFortitude(BioGlobalVariableTable gv)"
+    },
+    "TecTechR2": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecTechR2(BioGlobalVariableTable gv)"
+    },
+    "TecTechR1": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecTechR1(BioGlobalVariableTable gv)"
+    },
+    "TecSniperRifleR2": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecSniperRifleR2(BioGlobalVariableTable gv)"
+    },
+    "TecSniperRifleR1": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecSniperRifleR1(BioGlobalVariableTable gv)"
+    },
+    "TecShotgunR2": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        },
+        "Player": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecShotgunR2(BioGlobalVariableTable gv, BioPawn Player)"
+    },
+    "TecShotgunR1": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecShotgunR1(BioGlobalVariableTable gv)"
+    },
+    "TecShieldR2": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecShieldR2(BioGlobalVariableTable gv)"
+    },
+    "TecShieldR1": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecShieldR1(BioGlobalVariableTable gv)"
+    },
+    "TecShepardR2": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        },
+        "Squad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecShepardR2(BioGlobalVariableTable gv, array<BioPawn> Squad)"
+    },
+    "TecShepardR1": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecShepardR1(BioGlobalVariableTable gv)"
+    },
+    "TecMediGelR2": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecMediGelR2(BioGlobalVariableTable gv)"
+    },
+    "TecMediGelR1": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecMediGelR1(BioGlobalVariableTable gv)"
+    },
+    "TecHeavyPistolR2": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecHeavyPistolR2(BioGlobalVariableTable gv)"
+    },
+    "TecHeavyPistolR1": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecHeavyPistolR1(BioGlobalVariableTable gv)"
+    },
+    "TecBioticR2": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecBioticR2(BioGlobalVariableTable gv)"
+    },
+    "TecBioticR1": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecBioticR1(BioGlobalVariableTable gv)"
+    },
+    "TecAutoPistolR2": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        },
+        "Player": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecAutoPistolR2(BioGlobalVariableTable gv, BioPawn Player)"
+    },
+    "TecAutoPistolR1": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecAutoPistolR1(BioGlobalVariableTable gv)"
+    },
+    "TecAssaultRifleR2": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        },
+        "Squad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecAssaultRifleR2(BioGlobalVariableTable gv, array<BioPawn> Squad)"
+    },
+    "TecAssaultRifleR1": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecAssaultRifleR1(BioGlobalVariableTable gv)"
+    },
+    "TecTechUpgrade": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecTechUpgrade(BioGlobalVariableTable gv)"
+    },
+    "TecSniperRifle": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        },
+        "Squad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecSniperRifle(BioGlobalVariableTable gv, array<BioPawn> Squad)"
+    },
+    "TecShotgun": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        },
+        "Squad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecShotgun(BioGlobalVariableTable gv, array<BioPawn> Squad)"
+    },
+    "TecShipScanner": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecShipScanner(BioGlobalVariableTable gv)"
+    },
+    "TecShipFuel": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecShipFuel(BioGlobalVariableTable gv)"
+    },
+    "TecShipProbes": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecShipProbes(BioGlobalVariableTable gv)"
+    },
+    "TecShield": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        },
+        "Squad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecShield(BioGlobalVariableTable gv, array<BioPawn> Squad)"
+    },
+    "TecShepardHealth": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        },
+        "Player": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecShepardHealth(BioGlobalVariableTable gv, BioPawn Player)"
+    },
+    "TecQuarianShield": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        },
+        "Squad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecQuarianShield(BioGlobalVariableTable gv, array<BioPawn> Squad)"
+    },
+    "TecMordinUpgrade": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecMordinUpgrade(BioGlobalVariableTable gv)"
+    },
+    "TecMiniGameHack": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecMiniGameHack(BioGlobalVariableTable gv)"
+    },
+    "TecMiniGameDecrypt": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecMiniGameDecrypt(BioGlobalVariableTable gv)"
+    },
+    "TecMedigelUpgrade": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecMedigelUpgrade(BioGlobalVariableTable gv)"
+    },
+    "TecLegionUpgrade": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        },
+        "Squad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecLegionUpgrade(BioGlobalVariableTable gv, array<BioPawn> Squad)"
+    },
+    "TecJackUpgrade": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecJackUpgrade(BioGlobalVariableTable gv)"
+    },
+    "TecHeavyPistol": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        },
+        "Squad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecHeavyPistol(BioGlobalVariableTable gv, array<BioPawn> Squad)"
+    },
+    "TecHeavyAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        },
+        "Player": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecHeavyAmmo(BioGlobalVariableTable gv, BioPawn Player)"
+    },
+    "TecGruntUpgrade": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        },
+        "Squad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecGruntUpgrade(BioGlobalVariableTable gv, array<BioPawn> Squad)"
+    },
+    "TecExploreScanner": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecExploreScanner(BioGlobalVariableTable gv)"
+    },
+    "TecBioticUpgrade": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecBioticUpgrade(BioGlobalVariableTable gv)"
+    },
+    "TecAutoPistol": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        },
+        "Squad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecAutoPistol(BioGlobalVariableTable gv, array<BioPawn> Squad)"
+    },
+    "TecAssaultRifle": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        },
+        "Squad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TecAssaultRifle(BioGlobalVariableTable gv, array<BioPawn> Squad)"
+    },
+    "ScaleSquadShields": {
+      "documentation": null,
+      "signature_members": {
+        "Squad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ScaleSquadShields(array<BioPawn> Squad)"
+    },
+    "ScaleSquadWeapons": {
+      "documentation": null,
+      "signature_members": {
+        "WeaponClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Squad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ScaleSquadWeapons(Class<SFXWeapon> WeaponClass, array<BioPawn> Squad)"
+    },
+    "GetPlayerSquad": {
+      "documentation": null,
+      "signature_members": {
+        "WorldInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "Squad": {
+          "type": null,
+          "documentation": null
+        },
+        "Player": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetPlayerSquad(BioWorldInfo WorldInfo, out array<BioPawn> Squad, out BioPawn Player)"
+    },
+    "AwardTechBonus": {
+      "documentation": null,
+      "signature_members": {
+        "nmTech": {
+          "type": null,
+          "documentation": null
+        },
+        "WorldInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AwardTechBonus(Name nmTech, BioWorldInfo WorldInfo)"
+    },
+    "UpdateCache": {
+      "documentation": null,
+      "signature_members": {
+        "WorldInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCache(BioWorldInfo WorldInfo)"
+    },
+    "DoPatchDefaultPropertyUpdates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoPatchDefaultPropertyUpdates()"
+    },
+    "CacheExportIDs": {
+      "documentation": null,
+      "signature_members": {
+        "WorldInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CacheExportIDs(BioWorldInfo WorldInfo)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,508 @@
+{
+  "parent": "OnlineProfileSettings",
+  "package": "SFXGame",
+  "variables": {
+    "Rewards": {
+      "type": "AchievementReward",
+      "documentation": null
+    },
+    "StaticAchievementData": {
+      "type": "AchievementData",
+      "documentation": null
+    },
+    "GrinderAchievementSettings": {
+      "type": "GrinderAchievement",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ApplyDisplaySettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyDisplaySettings()"
+    },
+    "ApplyAudioSettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyAudioSettings()"
+    },
+    "ApplySettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplySettings()"
+    },
+    "GetSwappedTriggersShoulders": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetSwappedTriggersShoulders()"
+    },
+    "GetSwappedCrossCircle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetSwappedCrossCircle()"
+    },
+    "SetToDefaultsEx": {
+      "documentation": null,
+      "signature_members": {
+        "lstProfileSettingsToReset": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetToDefaultsEx(const out array<EProfileSetting> lstProfileSettingsToReset)"
+    },
+    "GetChoseMorinthNotSamara": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetChoseMorinthNotSamara()"
+    },
+    "SetChoseMorinthNotSamara": {
+      "documentation": null,
+      "signature_members": {
+        "ChoseMorinth": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetChoseMorinthNotSamara(bool ChoseMorinth)"
+    },
+    "UpdateAchievements": {
+      "documentation": null,
+      "signature_members": {
+        "AchievementsList": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateAchievements(array<AchievementDetails> AchievementsList, BioPlayerController PC)"
+    },
+    "UnlockReward": {
+      "documentation": null,
+      "signature_members": {
+        "AchievementId": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UnlockReward(EAchievementID AchievementId, BioPlayerController PC)"
+    },
+    "GetAchievementStatus": {
+      "documentation": null,
+      "signature_members": {
+        "AchievementId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetAchievementStatus(EAchievementID AchievementId)"
+    },
+    "GetAchievementRequirement": {
+      "documentation": null,
+      "signature_members": {
+        "AchievementId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetAchievementRequirement(EAchievementID AchievementId)"
+    },
+    "HasCompletedAchievement": {
+      "documentation": null,
+      "signature_members": {
+        "AchievementId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasCompletedAchievement(EAchievementID AchievementId)"
+    },
+    "SetAchievementCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "AchievementId": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        },
+        "bSaveProfile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetAchievementCompleted(EAchievementID AchievementId, BioPlayerController PC, optional bool bSaveProfile)"
+    },
+    "ResetAchievementStatus": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetAchievementStatus(BioPlayerController PC)"
+    },
+    "SetAchievementUncompleted": {
+      "documentation": null,
+      "signature_members": {
+        "AchievementId": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        },
+        "bSaveProfile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetAchievementUncompleted(EAchievementID AchievementId, BioPlayerController PC, optional bool bSaveProfile)"
+    },
+    "GetAchievementSettingField": {
+      "documentation": null,
+      "signature_members": {
+        "AchievementId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetAchievementSettingField(EAchievementID AchievementId)"
+    },
+    "GetFinishedGameCareerName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetFinishedGameCareerName()"
+    },
+    "GetNumCodex": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumCodex()"
+    },
+    "GetNumN7MissionsCompleted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumN7MissionsCompleted()"
+    },
+    "GetNumArmourIncinerated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumArmourIncinerated()"
+    },
+    "GetNumBarriersWarped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumBarriersWarped()"
+    },
+    "GetNumShieldsDisrupted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumShieldsDisrupted()"
+    },
+    "GetNumScreams": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumScreams()"
+    },
+    "GetNumPowerCombos": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumPowerCombos()"
+    },
+    "GetNumHeadshots": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumHeadshots()"
+    },
+    "SetCurrentCareerName": {
+      "documentation": null,
+      "signature_members": {
+        "CareerName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCurrentCareerName(string CareerName)"
+    },
+    "GetCurrentCareerName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetCurrentCareerName()"
+    },
+    "SetCurrentDeviceID": {
+      "documentation": null,
+      "signature_members": {
+        "DeviceID": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCurrentDeviceID(int DeviceID, BioPlayerController PC)"
+    },
+    "GetCurrentDeviceID": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetCurrentDeviceID()"
+    },
+    "GetFilmgrainConfigOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetFilmgrainConfigOption()"
+    },
+    "GetMotionBlurConfigOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetMotionBlurConfigOption()"
+    },
+    "GetDialogVolume": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetDialogVolume()"
+    },
+    "GetFXVolume": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetFXVolume()"
+    },
+    "GetMusicVolume": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMusicVolume()"
+    },
+    "GetDisplayGamma": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDisplayGamma()"
+    },
+    "SetShowHints": {
+      "documentation": null,
+      "signature_members": {
+        "bEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetShowHints(bool bEnabled)"
+    },
+    "AreHintsEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AreHintsEnabled()"
+    },
+    "SetTelemetryCollection": {
+      "documentation": null,
+      "signature_members": {
+        "bEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTelemetryCollection(bool bEnabled)"
+    },
+    "IsTelemetryCollectionEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsTelemetryCollectionEnabled()"
+    },
+    "GetAutoLoginConfigOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetAutoLoginConfigOption()"
+    },
+    "SetAutoSaveConfigOption": {
+      "documentation": null,
+      "signature_members": {
+        "bAutoSave": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAutoSaveConfigOption(bool bAutoSave)"
+    },
+    "GetAutoSaveConfigOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetAutoSaveConfigOption()"
+    },
+    "GetSquadPowerConfigOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetSquadPowerConfigOption()"
+    },
+    "GetAutoLevelConfigOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EAutoLevelOptions",
+      "signature": "EAutoLevelOptions GetAutoLevelConfigOption()"
+    },
+    "GetDifficultyConfigOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EDifficultyOptions",
+      "signature": "EDifficultyOptions GetDifficultyConfigOption()"
+    },
+    "GetAimAssistValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EAimAssistOptions",
+      "signature": "EAimAssistOptions GetAimAssistValue()"
+    },
+    "GetSubtitleConfigOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetSubtitleConfigOption()"
+    },
+    "GetTriggerConfigOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ETriggerConfigOptions",
+      "signature": "ETriggerConfigOptions GetTriggerConfigOption()"
+    },
+    "GetStickConfigOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EStickConfigOptions",
+      "signature": "EStickConfigOptions GetStickConfigOption()"
+    },
+    "GetControllerSensitivityValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EProfileControllerSensitivityOptions",
+      "signature": "EProfileControllerSensitivityOptions GetControllerSensitivityValue()"
+    },
+    "GetInvertYOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetInvertYOption()"
+    },
+    "GetControllerVibrationOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetControllerVibrationOption()"
+    },
+    "GrinderAchievementIncrement": {
+      "documentation": null,
+      "signature_members": {
+        "AchievementId": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GrinderAchievementIncrement(EAchievementID AchievementId, BioPlayerController PC)"
+    },
+    "GrinderAchievementReset": {
+      "documentation": null,
+      "signature_members": {
+        "AchievementId": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GrinderAchievementReset(EAchievementID AchievementId, BioPlayerController PC)"
+    },
+    "GetGrinderAchievement": {
+      "documentation": null,
+      "signature_members": {
+        "AchievementId": {
+          "type": null,
+          "documentation": null
+        },
+        "G": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetGrinderAchievement(EAchievementID AchievementId, out GrinderAchievement G)"
+    },
+    "GetAchievementData": {
+      "documentation": null,
+      "signature_members": {
+        "AchievementId": {
+          "type": null,
+          "documentation": null
+        },
+        "AD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetAchievementData(EAchievementID AchievementId, out AchievementData AD)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

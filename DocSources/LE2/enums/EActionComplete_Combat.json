@@ -1,0 +1,53 @@
+{
+  "EnumValues": {
+    "ACC_Cancelled": {
+      "value": 0,
+      "documentation": null
+    },
+    "ACC_Success": {
+      "value": 1,
+      "documentation": null
+    },
+    "ACC_Failed": {
+      "value": 2,
+      "documentation": null
+    },
+    "ACC_Dead": {
+      "value": 3,
+      "documentation": null
+    },
+    "ACC_TargetKilled": {
+      "value": 4,
+      "documentation": null
+    },
+    "ACC_TimeOut": {
+      "value": 5,
+      "documentation": null
+    },
+    "ACC_LowTargeting": {
+      "value": 6,
+      "documentation": null
+    },
+    "ACC_LostSight": {
+      "value": 7,
+      "documentation": null
+    },
+    "ACC_Disabled": {
+      "value": 8,
+      "documentation": null
+    },
+    "ACC_PowerCooldown": {
+      "value": 9,
+      "documentation": null
+    },
+    "ACC_WeaponOverheat": {
+      "value": 10,
+      "documentation": null
+    },
+    "ACC_WeaponCoolDown": {
+      "value": 11,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

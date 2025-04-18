@@ -1,27 +1,27 @@
 {
   "Members": {
     "TargetLocation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "Target": {
-      "type": null,
+      "type": "Object",
       "documentation": null
     },
     "TriggerCounter": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "CustomActionType": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "PowerCustomActionType": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Cmd": {
-      "type": null,
+      "type": "EReplicatedCustomActionCmd",
       "documentation": null
     }
   },

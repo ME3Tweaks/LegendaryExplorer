@@ -1,0 +1,93 @@
+{
+  "Members": {
+    "X": {
+      "type": "float",
+      "documentation": null
+    },
+    "Y": {
+      "type": "float",
+      "documentation": null
+    },
+    "Z": {
+      "type": "float",
+      "documentation": null
+    },
+    "Rotation": {
+      "type": "float",
+      "documentation": null
+    },
+    "XRotation": {
+      "type": "float",
+      "documentation": null
+    },
+    "YRotation": {
+      "type": "float",
+      "documentation": null
+    },
+    "XScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "YScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "ZScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "Alpha": {
+      "type": "float",
+      "documentation": null
+    },
+    "Visible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "hasX": {
+      "type": "bool",
+      "documentation": null
+    },
+    "hasY": {
+      "type": "bool",
+      "documentation": null
+    },
+    "hasZ": {
+      "type": "bool",
+      "documentation": null
+    },
+    "hasRotation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "hasXRotation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "hasYRotation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "hasXScale": {
+      "type": "bool",
+      "documentation": null
+    },
+    "hasYScale": {
+      "type": "bool",
+      "documentation": null
+    },
+    "hasZScale": {
+      "type": "bool",
+      "documentation": null
+    },
+    "hasAlpha": {
+      "type": "bool",
+      "documentation": null
+    },
+    "hasVisible": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

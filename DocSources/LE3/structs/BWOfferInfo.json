@@ -1,27 +1,27 @@
 {
   "Members": {
     "sTitle": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sShortDescription": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sLongDescription": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sPrice": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Id": {
-      "type": null,
+      "type": "BWOfferId",
       "documentation": null
     },
     "nPrice": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

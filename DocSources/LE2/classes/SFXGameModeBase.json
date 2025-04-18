@@ -1,0 +1,373 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "CollectedBindMapping": {
+      "type": "MultiMap_Mirror",
+      "documentation": null
+    },
+    "Bindings": {
+      "type": "KeyBind",
+      "documentation": null
+    },
+    "LocalizedBindings": {
+      "type": "KeyBind",
+      "documentation": null
+    },
+    "bBindingsCollected": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowHUD": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowSelection": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowDamageIndicators": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowRadar": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowRotationUpdate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowMovement": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowCamera": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowCameraMods": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowSave": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowLookAt": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowPauseMenu": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowSubtitle": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasMouseAuthority": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMouseVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMergeNotifications": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bQueueAndSuppressNotifications": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowReticles": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPlayVocalizations": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnforce16x9Subtitiles": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowMessageUI": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Priority": {
+      "type": "EGameModePriority2",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "TurnObjectiveRadarDisplayOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TurnObjectiveRadarDisplayOff()"
+    },
+    "TurnObjectiveRadarDisplayOn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TurnObjectiveRadarDisplayOn()"
+    },
+    "ToggleObjectiveRadarDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "bTurnOn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ToggleObjectiveRadarDisplay(bool bTurnOn)"
+    },
+    "PulseRadarDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "fPulseTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PulseRadarDisplay(float fPulseTime)"
+    },
+    "UnpauseTimeDilationEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnpauseTimeDilationEffects()"
+    },
+    "PauseTimeDilationEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PauseTimeDilationEffects()"
+    },
+    "RemoveTimeDilationEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveTimeDilationEffects()"
+    },
+    "GuiKey": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GuiKey(BioGuiEvents Event)"
+    },
+    "LeaveWorld": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LeaveWorld()"
+    },
+    "StartIngamePropertyEditor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartIngamePropertyEditor()"
+    },
+    "SquadCommand_Move2": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SquadCommand_Move2()"
+    },
+    "SquadCommand_Move1": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SquadCommand_Move1()"
+    },
+    "SquadCommand_Follow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SquadCommand_Follow()"
+    },
+    "SquadCommand_Attack": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SquadCommand_Attack()"
+    },
+    "TurnOffStormForPause": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TurnOffStormForPause()"
+    },
+    "ShowMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowMenu()"
+    },
+    "StopFiringWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopFiringWeapon()"
+    },
+    "SwapWeaponIfEmpty": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SwapWeaponIfEmpty()"
+    },
+    "FireWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FireWeapon()"
+    },
+    "SetSystemFilmgrainEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSystemFilmgrainEnabled(bool bValue)"
+    },
+    "IsSystemFilmgrainEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsSystemFilmgrainEnabled()"
+    },
+    "CollectBindings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CollectBindings()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "DeactivateSpecifier": {
+      "documentation": null,
+      "signature_members": {
+        "ModeSpecifier": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DeactivateSpecifier(Name ModeSpecifier)"
+    },
+    "ActivateSpecifier": {
+      "documentation": null,
+      "signature_members": {
+        "ModeSpecifier": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivateSpecifier(Name ModeSpecifier)"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "ClearTimer": {
+      "documentation": null,
+      "signature_members": {
+        "inTimerFunc": {
+          "type": null,
+          "documentation": null
+        },
+        "inObj": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearTimer(optional Name inTimerFunc, optional Object inObj)"
+    },
+    "SetTimer": {
+      "documentation": null,
+      "signature_members": {
+        "InRate": {
+          "type": null,
+          "documentation": null
+        },
+        "inbLoop": {
+          "type": null,
+          "documentation": null
+        },
+        "inTimerFunc": {
+          "type": null,
+          "documentation": null
+        },
+        "inObj": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTimer(float InRate, optional bool inbLoop, optional Name inTimerFunc, optional Object inObj)"
+    },
+    "HACK_GetCameraMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode HACK_GetCameraMode()"
+    },
+    "GetCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "OldCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "PreserveTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Transition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCameraMode(SFXCameraMode OldCameraMode, out int PreserveTarget, out float TransitionTime, out SFXCameraMode_Interpolate Transition)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

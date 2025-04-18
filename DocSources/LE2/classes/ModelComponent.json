@@ -1,0 +1,33 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "Model": {
+      "type": "Object",
+      "documentation": null
+    },
+    "ZoneIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "ComponentIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "Nodes": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Edges": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Elements": {
+      "type": "Pointer",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

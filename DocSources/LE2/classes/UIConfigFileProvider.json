@@ -1,0 +1,17 @@
+{
+  "parent": "UIConfigProvider",
+  "package": "Engine",
+  "variables": {
+    "Sections": {
+      "type": "UIConfigSectionProvider",
+      "documentation": null
+    },
+    "ConfigFileName": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

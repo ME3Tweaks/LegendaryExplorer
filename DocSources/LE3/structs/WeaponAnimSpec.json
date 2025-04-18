@@ -1,11 +1,11 @@
 {
   "Members": {
     "m_animSets": {
-      "type": null,
+      "type": "AnimSet",
       "documentation": null
     },
     "m_drawAnimSet": {
-      "type": null,
+      "type": "AnimSet",
       "documentation": null
     }
   },

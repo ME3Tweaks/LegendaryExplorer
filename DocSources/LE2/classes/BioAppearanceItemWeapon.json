@@ -1,0 +1,85 @@
+{
+  "parent": "BioBaseAppearance",
+  "package": "SFXGame",
+  "variables": {
+    "m_vfxSpecs": {
+      "type": "BioAppearanceItemWeaponVFXSpec",
+      "documentation": null
+    },
+    "m_variants": {
+      "type": "BioAppearanceItemSophisticatedVariant",
+      "documentation": null
+    },
+    "m_oPawnWeaponAnimations": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "m_previewVariantLabel": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetPhysicsAsset": {
+      "documentation": null,
+      "signature_members": {
+        "Variant": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "PhysicsAsset",
+      "signature": "PhysicsAsset GetPhysicsAsset(int Variant)"
+    },
+    "GetAnimationTree": {
+      "documentation": null,
+      "signature_members": {
+        "Variant": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "AnimTree",
+      "signature": "AnimTree GetAnimationTree(int Variant)"
+    },
+    "GetAnimationSet": {
+      "documentation": null,
+      "signature_members": {
+        "Variant": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "AnimSet",
+      "signature": "AnimSet GetAnimationSet(int Variant)"
+    },
+    "ApplyMaterials": {
+      "documentation": null,
+      "signature_members": {
+        "Variant": {
+          "type": null,
+          "documentation": null
+        },
+        "SkeletalMeshComponent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyMaterials(int Variant, SkeletalMeshComponent SkeletalMeshComponent)"
+    },
+    "GetSkeletalMesh": {
+      "documentation": null,
+      "signature_members": {
+        "Variant": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SkeletalMesh",
+      "signature": "SkeletalMesh GetSkeletalMesh(int Variant)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,111 @@
+{
+  "parent": "SFXVocalizationManagerNativeBase",
+  "package": "SFXGame",
+  "variables": {
+    "PastEvents": {
+      "type": "VocEventLog",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DrawActorLog": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        },
+        "H": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawActorLog(Actor oActor, BioHUD H)"
+    },
+    "DebugDraw": {
+      "documentation": null,
+      "signature_members": {
+        "H": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw(BioHUD H)"
+    },
+    "TickEvents": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TickEvents(float DeltaTime)"
+    },
+    "PlaySFXVocalizationSLineInternal": {
+      "documentation": null,
+      "signature_members": {
+        "E": {
+          "type": null,
+          "documentation": null
+        },
+        "LineToPlay": {
+          "type": null,
+          "documentation": null
+        },
+        "Speaker": {
+          "type": null,
+          "documentation": null
+        },
+        "DelaySec": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PlaySFXVocalizationSLineInternal(const out SFXVocalizationEvent E, const out SFXVocalizationLine LineToPlay, BioPawn Speaker, optional float DelaySec)"
+    },
+    "TriggerVocalizationEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "InInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "Recipient": {
+          "type": null,
+          "documentation": null
+        },
+        "ReferringTo": {
+          "type": null,
+          "documentation": null
+        },
+        "DelaySec": {
+          "type": null,
+          "documentation": null
+        },
+        "fChanceToPlayModifier": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TriggerVocalizationEvent(ESFXVocalizationEventID Id, BioPawn InInstigator, optional BioPawn Recipient, optional BioPawn ReferringTo, optional float DelaySec, optional float fChanceToPlayModifier)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

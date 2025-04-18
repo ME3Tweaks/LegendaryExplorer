@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "AS_Undefined": {
+      "value": 0,
+      "documentation": null
+    },
+    "AS_Null": {
+      "value": 1,
+      "documentation": null
+    },
+    "AS_Number": {
+      "value": 2,
+      "documentation": null
+    },
+    "AS_String": {
+      "value": 3,
+      "documentation": null
+    },
+    "AS_Boolean": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

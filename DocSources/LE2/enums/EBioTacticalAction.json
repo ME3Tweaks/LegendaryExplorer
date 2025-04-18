@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "BIO_TACACT_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_TACACT_SHOOT": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_TACACT_GRENADE": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_TACACT_POWER": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_TACACT_EQUIP": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

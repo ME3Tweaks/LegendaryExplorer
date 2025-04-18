@@ -1,0 +1,237 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "StaticReceivers": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "HitNodeIndices": {
+      "type": "int",
+      "documentation": null
+    },
+    "DecalReceivers": {
+      "type": "DecalReceiver",
+      "documentation": null
+    },
+    "Planes": {
+      "type": "Plane",
+      "documentation": null
+    },
+    "Filter": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "ReceiverImages": {
+      "type": "PrimitiveComponent",
+      "documentation": null
+    },
+    "ReleaseResourcesFence": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Location": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Orientation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "HitLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "HitNormal": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "HitTangent": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "HitBinormal": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "ParentRelativeLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "ParentRelativeOrientation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "OriginalParentRelativeLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "OriginalParentRelativeOrientationVec": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "DecalMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "HitComponent": {
+      "type": "PrimitiveComponent",
+      "documentation": null
+    },
+    "HitBone": {
+      "type": "Name",
+      "documentation": null
+    },
+    "BlendRange": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "Width": {
+      "type": "float",
+      "documentation": null
+    },
+    "Height": {
+      "type": "float",
+      "documentation": null
+    },
+    "TileX": {
+      "type": "float",
+      "documentation": null
+    },
+    "TileY": {
+      "type": "float",
+      "documentation": null
+    },
+    "OffsetX": {
+      "type": "float",
+      "documentation": null
+    },
+    "OffsetY": {
+      "type": "float",
+      "documentation": null
+    },
+    "DecalRotation": {
+      "type": "float",
+      "documentation": null
+    },
+    "FieldOfView": {
+      "type": "float",
+      "documentation": null
+    },
+    "NearPlane": {
+      "type": "float",
+      "documentation": null
+    },
+    "FarPlane": {
+      "type": "float",
+      "documentation": null
+    },
+    "HitNodeIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "HitLevelIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "FracturedStaticMeshComponentIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "DepthBias": {
+      "type": "float",
+      "documentation": null
+    },
+    "SlopeScaleDepthBias": {
+      "type": "float",
+      "documentation": null
+    },
+    "SortOrder": {
+      "type": "int",
+      "documentation": null
+    },
+    "BackfaceAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "bNoClip": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStaticDecal": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bProjectOnBackfaces": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bProjectOnHidden": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bProjectOnBSP": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bProjectOnStaticMeshes": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bProjectOnSkeletalMeshes": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bProjectOnTerrain": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFlipBackfaceDirection": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMovableDecal": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasBeenAttached": {
+      "type": "bool",
+      "documentation": null
+    },
+    "DecalTransform": {
+      "type": "EDecalTransform",
+      "documentation": null
+    },
+    "FilterMode": {
+      "type": "EFilterMode",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetDecalMaterial": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "MaterialInterface",
+      "signature": "MaterialInterface GetDecalMaterial()"
+    },
+    "SetDecalMaterial": {
+      "documentation": null,
+      "signature_members": {
+        "NewDecalMaterial": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDecalMaterial(MaterialInterface NewDecalMaterial)"
+    },
+    "ResetToDefaults": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetToDefaults()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Effect": {
+      "type": "BioVisualEffect",
+      "documentation": null
+    },
+    "NextNode": {
+      "type": "int",
+      "documentation": null
+    },
+    "PrevNode": {
+      "type": "int",
+      "documentation": null
+    },
+    "ValidNode": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

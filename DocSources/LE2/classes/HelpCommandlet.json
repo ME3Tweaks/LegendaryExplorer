@@ -1,0 +1,20 @@
+{
+  "parent": "Commandlet",
+  "package": "Core",
+  "variables": {},
+  "functions": {
+    "Main": {
+      "documentation": null,
+      "signature_members": {
+        "Params": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int Main(string Params)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

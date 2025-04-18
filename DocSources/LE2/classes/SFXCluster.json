@@ -1,0 +1,78 @@
+{
+  "parent": "SFXGalaxyMapObject",
+  "package": "SFXGame",
+  "variables": {
+    "Systems": {
+      "type": "SFXSystem",
+      "documentation": null
+    },
+    "RelayConnections": {
+      "type": "SFXCluster",
+      "documentation": null
+    },
+    "StarColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "StarColor2": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "ClusterTexture": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "NebularDensity": {
+      "type": "float",
+      "documentation": null
+    },
+    "CloudTile": {
+      "type": "float",
+      "documentation": null
+    },
+    "SphereIntensity": {
+      "type": "float",
+      "documentation": null
+    },
+    "SphereSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "ExploredCluster": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "RemoveChild": {
+      "documentation": null,
+      "signature_members": {
+        "Child": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveChild(SFXGalaxyMapObject Child)"
+    },
+    "GetChildren": {
+      "documentation": null,
+      "signature_members": {
+        "Children": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetChildren(out array<SFXGalaxyMapObject> Children)"
+    },
+    "AddChild": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXGalaxyMapObject",
+      "signature": "SFXGalaxyMapObject AddChild()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

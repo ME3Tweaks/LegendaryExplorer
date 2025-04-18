@@ -1,11 +1,11 @@
 {
   "Members": {
     "ScoreEvents": {
-      "type": null,
+      "type": "ScoreEvent",
       "documentation": null
     },
     "Player": {
-      "type": null,
+      "type": "SFXPawn_Player",
       "documentation": null
     }
   },

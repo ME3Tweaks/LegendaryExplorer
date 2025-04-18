@@ -1,0 +1,105 @@
+{
+  "parent": "Settings",
+  "package": "Engine",
+  "variables": {
+    "ServerNonce": {
+      "type": "QWord",
+      "documentation": null
+    },
+    "OwningPlayerId": {
+      "type": "UniqueNetId",
+      "documentation": null
+    },
+    "OwningPlayerName": {
+      "type": "string",
+      "documentation": null
+    },
+    "NumPublicConnections": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumPrivateConnections": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumOpenPublicConnections": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumOpenPrivateConnections": {
+      "type": "int",
+      "documentation": null
+    },
+    "PingInMs": {
+      "type": "int",
+      "documentation": null
+    },
+    "MatchQuality": {
+      "type": "float",
+      "documentation": null
+    },
+    "BuildUniqueId": {
+      "type": "int",
+      "documentation": null
+    },
+    "bShouldAdvertise": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsLanMatch": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUsesStats": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowJoinInProgress": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowInvites": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUsesPresence": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowJoinViaPresence": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowJoinViaPresenceFriendsOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUsesArbitration": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAntiCheatProtected": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWasFromInvite": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsDedicated": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasSkillUpdateInProgress": {
+      "type": "bool",
+      "documentation": null
+    },
+    "GameState": {
+      "type": "EOnlineGameState",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

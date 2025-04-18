@@ -1,0 +1,43 @@
+{
+  "parent": "SequenceEvent",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "TriggerInteraction": {
+      "documentation": null,
+      "signature_members": {
+        "CurrentState": {
+          "type": null,
+          "documentation": null
+        },
+        "EventInstigator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TriggerInteraction(ESFXDoorState CurrentState, Actor EventInstigator)"
+    },
+    "TriggerStateChange": {
+      "documentation": null,
+      "signature_members": {
+        "NewState": {
+          "type": null,
+          "documentation": null
+        },
+        "PrevState": {
+          "type": null,
+          "documentation": null
+        },
+        "EventInstigator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TriggerStateChange(ESFXDoorState NewState, ESFXDoorState PrevState, Actor EventInstigator)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

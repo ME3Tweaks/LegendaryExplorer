@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "WWT_Linear": {
+      "value": 0,
+      "documentation": null
+    },
+    "WWT_Looping": {
+      "value": 1,
+      "documentation": null
+    },
+    "WWT_OutAndBack": {
+      "value": 2,
+      "documentation": null
+    },
+    "WWT_OutAndBackLooping": {
+      "value": 3,
+      "documentation": null
+    },
+    "WWT_Random": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

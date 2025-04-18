@@ -1,11 +1,11 @@
 {
   "Members": {
     "Resource": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Package": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     }
   },

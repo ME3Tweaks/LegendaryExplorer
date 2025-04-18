@@ -1,0 +1,21 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "Coordinates": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "ScreenAlign": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SceneTextureType": {
+      "type": "ESceneTextureType",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

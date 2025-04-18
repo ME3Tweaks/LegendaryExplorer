@@ -1,0 +1,17 @@
+{
+  "parent": "AnimObject",
+  "package": "Engine",
+  "variables": {
+    "NodeName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bDrawSlider": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

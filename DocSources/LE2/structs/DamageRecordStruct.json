@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "DamageCauser": {
+      "type": "Controller",
+      "documentation": null
+    },
+    "DamageDone": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

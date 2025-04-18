@@ -1,0 +1,37 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "SFXGame",
+  "variables": {
+    "BlendOut": {
+      "type": "BioAnimCheckBlendOut",
+      "documentation": null
+    },
+    "Default2LeanBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "Lean2DefaultBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "Default2PopupBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "Popup2DefaultBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "Default2PeekBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "Peek2DefaultBlendDuration": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

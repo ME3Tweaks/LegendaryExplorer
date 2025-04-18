@@ -1,0 +1,35 @@
+{
+  "parent": "SFXSelectionModule",
+  "package": "SFXGame",
+  "variables": {
+    "__OnUsed__Delegate": {
+      "type": "OnUsed",
+      "documentation": null
+    },
+    "fUseRange": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "IsDefaultActionPossible": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsDefaultActionPossible()"
+    },
+    "OnUsed": {
+      "documentation": null,
+      "signature_members": {
+        "User": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUsed(Actor User)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

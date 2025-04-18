@@ -1,0 +1,20 @@
+{
+  "parent": "SFXPower_DisruptorAmmo",
+  "package": "SFXGameContent_Powers",
+  "variables": {
+    "ExtraDamage": {
+      "type": "Vector2D",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetDamage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDamage()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

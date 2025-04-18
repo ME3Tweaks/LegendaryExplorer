@@ -1,0 +1,21 @@
+{
+  "parent": "MaterialExpression",
+  "package": "SFXGame",
+  "variables": {
+    "Normal": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "SpecColor": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "SpecPower": {
+      "type": "ExpressionInput",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

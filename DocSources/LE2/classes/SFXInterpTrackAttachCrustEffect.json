@@ -1,0 +1,65 @@
+{
+  "parent": "SFXGameInterpTrackCustom",
+  "package": "SFXGame",
+  "variables": {
+    "m_aCrustEffectKeyData": {
+      "type": "SFXAttachCrustEffectTrackData",
+      "documentation": null
+    },
+    "m_aTarget": {
+      "type": "BioSeqVar_ObjectFindByTag",
+      "documentation": null
+    },
+    "oEffect": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "TriggerKey": {
+      "documentation": null,
+      "signature_members": {
+        "pTrackInst": {
+          "type": null,
+          "documentation": null
+        },
+        "bAttach": {
+          "type": null,
+          "documentation": null
+        },
+        "fLifeTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TriggerKey(BioInterpTrackInst pTrackInst, bool bAttach, float fLifeTime)"
+    },
+    "KeyDataDisplayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataDisplayName()"
+    },
+    "KeyDataArrayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataArrayName()"
+    },
+    "NewKeyDefaultName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string NewKeyDefaultName()"
+    },
+    "AllowKeyNaming": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AllowKeyNaming()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

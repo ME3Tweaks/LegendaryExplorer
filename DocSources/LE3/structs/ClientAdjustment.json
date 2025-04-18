@@ -1,35 +1,35 @@
 {
   "Members": {
     "NewLoc": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "NewVel": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "NewFloor": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "NewBase": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "TimeStamp": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "newPhysics": {
-      "type": null,
+      "type": "EPhysics",
       "documentation": null
     },
     "bAckGoodMove": {
-      "type": null,
+      "type": "byte",
       "documentation": null
     },
     "bWarning": {
-      "type": null,
+      "type": "byte",
       "documentation": null
     }
   },

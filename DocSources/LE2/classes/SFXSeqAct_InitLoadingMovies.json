@@ -1,0 +1,33 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "Movie": {
+      "type": "BioLoadingMovie",
+      "documentation": null
+    },
+    "ScreenTip": {
+      "type": "BioSFScreenTip",
+      "documentation": null
+    },
+    "HideScaleform": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RequiresExplicitStop": {
+      "type": "bool",
+      "documentation": null
+    },
+    "PlayToCompletion": {
+      "type": "bool",
+      "documentation": null
+    },
+    "StreamFromDisc": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

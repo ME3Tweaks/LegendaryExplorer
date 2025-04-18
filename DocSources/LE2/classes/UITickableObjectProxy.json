@@ -1,0 +1,44 @@
+{
+  "parent": "UIRoot",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUITickableObject": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "__OnScriptTick__Delegate": {
+      "type": "OnScriptTick",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ScriptTick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ScriptTick(float DeltaTime)"
+    },
+    "OnScriptTick": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnScriptTick(UITickableObjectProxy Sender, float DeltaTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

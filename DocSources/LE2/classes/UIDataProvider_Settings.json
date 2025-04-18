@@ -1,0 +1,70 @@
+{
+  "parent": "UIDynamicDataProvider",
+  "package": "Engine",
+  "variables": {
+    "SettingsArrayProviders": {
+      "type": "SettingsArrayProvider",
+      "documentation": null
+    },
+    "Settings": {
+      "type": "Settings",
+      "documentation": null
+    },
+    "bIsAListRow": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnSettingValueUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "SettingName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSettingValueUpdated(Name SettingName)"
+    },
+    "ArrayProviderPropertyChanged": {
+      "documentation": null,
+      "signature_members": {
+        "SourceProvider": {
+          "type": null,
+          "documentation": null
+        },
+        "PropTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ArrayProviderPropertyChanged(UIDataProvider SourceProvider, optional Name PropTag)"
+    },
+    "ProviderInstanceUnbound": {
+      "documentation": null,
+      "signature_members": {
+        "DataSourceInstance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProviderInstanceUnbound(Object DataSourceInstance)"
+    },
+    "ProviderInstanceBound": {
+      "documentation": null,
+      "signature_members": {
+        "DataSourceInstance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProviderInstanceBound(Object DataSourceInstance)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

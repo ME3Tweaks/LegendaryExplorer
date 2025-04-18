@@ -1,0 +1,73 @@
+{
+  "parent": "ActorComponent",
+  "package": "Engine",
+  "variables": {
+    "WheelSuspensionStiffness": {
+      "type": "float",
+      "documentation": null
+    },
+    "WheelSuspensionDamping": {
+      "type": "float",
+      "documentation": null
+    },
+    "WheelSuspensionBias": {
+      "type": "float",
+      "documentation": null
+    },
+    "WheelLongExtremumSlip": {
+      "type": "float",
+      "documentation": null
+    },
+    "WheelLongExtremumValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "WheelLongAsymptoteSlip": {
+      "type": "float",
+      "documentation": null
+    },
+    "WheelLongAsymptoteValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "WheelLatExtremumSlip": {
+      "type": "float",
+      "documentation": null
+    },
+    "WheelLatExtremumValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "WheelLatAsymptoteSlip": {
+      "type": "float",
+      "documentation": null
+    },
+    "WheelLatAsymptoteValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "WheelInertia": {
+      "type": "float",
+      "documentation": null
+    },
+    "AutoDriveSteer": {
+      "type": "float",
+      "documentation": null
+    },
+    "bWheelSpeedOverride": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bClampedFrictionModel": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAutoDrive": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

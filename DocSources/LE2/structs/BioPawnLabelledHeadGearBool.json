@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "m_bIsVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eComponent": {
+      "type": "EBioPawnHeadGearComponent",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

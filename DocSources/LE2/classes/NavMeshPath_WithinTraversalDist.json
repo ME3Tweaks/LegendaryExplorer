@@ -1,0 +1,47 @@
+{
+  "parent": "NavMeshPathConstraint",
+  "package": "Engine",
+  "variables": {
+    "MaxTraversalDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "SoftStartPenalty": {
+      "type": "float",
+      "documentation": null
+    },
+    "bSoft": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "DontExceedMaxDist": {
+      "documentation": null,
+      "signature_members": {
+        "NavHandle": {
+          "type": null,
+          "documentation": null
+        },
+        "InMaxTraversalDist": {
+          "type": null,
+          "documentation": null
+        },
+        "bInSoft": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DontExceedMaxDist(NavigationHandle NavHandle, float InMaxTraversalDist, optional bool bInSoft)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

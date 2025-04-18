@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "AI_NoTicket": {
+      "value": 0,
+      "documentation": null
+    },
+    "AI_TargetTicket": {
+      "value": 1,
+      "documentation": null
+    },
+    "AI_AttackTicket": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

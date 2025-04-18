@@ -1,0 +1,29 @@
+{
+  "parent": "GameViewportClient",
+  "package": "GFxUI",
+  "variables": {
+    "GFxUIControllerClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "GFxUIController": {
+      "type": "GFxInteraction",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Init": {
+      "documentation": null,
+      "signature_members": {
+        "OutError": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Init(out string OutError)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

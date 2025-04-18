@@ -1,0 +1,49 @@
+{
+  "Members": {
+    "BodyPart": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ReactionChance": {
+      "type": "float",
+      "documentation": null
+    },
+    "bDeathReaction": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTriggerOnMove": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTriggerOnIdle": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFrontArc": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRearArc": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFromCrouch": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreShields": {
+      "type": "bool",
+      "documentation": null
+    },
+    "AnimatedReaction": {
+      "type": "EAICustomAction",
+      "documentation": null
+    },
+    "MaxRange": {
+      "type": "EWeaponRange",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,15 +1,15 @@
 {
   "Members": {
     "PropertyValue": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "PropertyName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "bModifyProperty": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

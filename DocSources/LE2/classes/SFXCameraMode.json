@@ -1,0 +1,311 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_avLockedClipPlanePt": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_avLockedHookPlanePt": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_avLockedNewClipPlanePt": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_pov": {
+      "type": "TPOV",
+      "documentation": null
+    },
+    "Offset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "HookOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_vLockedCameraLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_vLockedHook": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_vLockedNewCameraLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "HookName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "CameraName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Owner": {
+      "type": "BioPlayerController",
+      "documentation": null
+    },
+    "Input": {
+      "type": "SFXCameraInput",
+      "documentation": null
+    },
+    "LastCameraCollisionActor": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Debugger": {
+      "type": "BioCameraDebugger",
+      "documentation": null
+    },
+    "FOV": {
+      "type": "float",
+      "documentation": null
+    },
+    "CollisionDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fAspectRatio": {
+      "type": "float",
+      "documentation": null
+    },
+    "bIsCameraShakeEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCollisionEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInstantTransition": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bConstrainAspectRatio": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUseCollisionSource": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetActorCameraHook": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetActorCameraHook()"
+    },
+    "GetCollisionCameraHook": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetCollisionCameraHook()"
+    },
+    "CheckLoop": {
+      "documentation": null,
+      "signature_members": {
+        "M": {
+          "type": null,
+          "documentation": null
+        },
+        "RecurseLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckLoop(SFXCameraMode M, int RecurseLevel)"
+    },
+    "DrawHUD": {
+      "documentation": null,
+      "signature_members": {
+        "M": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawHUD(BioCheatManager M)"
+    },
+    "GetCurrentShake": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Rotator",
+      "signature": "Rotator GetCurrentShake()"
+    },
+    "IsCollisionEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsCollisionEnabled()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "NewOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(BioPlayerController NewOwner)"
+    },
+    "OnUnPossess": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUnPossess()"
+    },
+    "OnPossess": {
+      "documentation": null,
+      "signature_members": {
+        "NewPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnPossess(Pawn NewPawn)"
+    },
+    "MakeInactive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MakeInactive()"
+    },
+    "MakeActive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MakeActive()"
+    },
+    "AimAtPoint": {
+      "documentation": null,
+      "signature_members": {
+        "V": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AimAtPoint(Vector V)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "fTimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float fTimeDelta)"
+    },
+    "GetCameraLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetCameraLocation()"
+    },
+    "DrawHook": {
+      "documentation": null,
+      "signature_members": {
+        "V": {
+          "type": null,
+          "documentation": null
+        },
+        "Actor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawHook(Vector V, Actor Actor)"
+    },
+    "ModifyPostProcessSettings": {
+      "documentation": null,
+      "signature_members": {
+        "PPSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyPostProcessSettings(out PostProcessSettings PPSettings)"
+    },
+    "ComputeClipPlaneRect": {
+      "documentation": null,
+      "signature_members": {
+        "fFov": {
+          "type": null,
+          "documentation": null
+        },
+        "fNearClipPlane": {
+          "type": null,
+          "documentation": null
+        },
+        "fWidth": {
+          "type": null,
+          "documentation": null
+        },
+        "fHeight": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ComputeClipPlaneRect(float fFov, float fNearClipPlane, out float fWidth, out float fHeight)"
+    },
+    "DoCameraCollisionNative": {
+      "documentation": null,
+      "signature_members": {
+        "CollisionHook": {
+          "type": null,
+          "documentation": null
+        },
+        "V": {
+          "type": null,
+          "documentation": null
+        },
+        "R": {
+          "type": null,
+          "documentation": null
+        },
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoCameraCollisionNative(Vector CollisionHook, out Vector V, out Rotator R, Actor A)"
+    },
+    "DoCameraCollision": {
+      "documentation": null,
+      "signature_members": {
+        "V": {
+          "type": null,
+          "documentation": null
+        },
+        "R": {
+          "type": null,
+          "documentation": null
+        },
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoCameraCollision(out Vector V, out Rotator R, Actor A)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

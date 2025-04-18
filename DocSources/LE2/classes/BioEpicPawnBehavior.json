@@ -1,0 +1,410 @@
+{
+  "parent": "BioActorBehavior",
+  "package": "SFXGame",
+  "variables": {
+    "m_powers": {
+      "type": "BioPower",
+      "documentation": null
+    },
+    "m_aVisualEffects": {
+      "type": "EpicPawnVisualEffect",
+      "documentation": null
+    },
+    "m_attributesClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "Squad": {
+      "type": "BioBaseSquad",
+      "documentation": null
+    },
+    "m_PawnAttributes": {
+      "type": "BioAttributesEpicPawn",
+      "documentation": null
+    },
+    "m_nALLEnabled": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nQueueEnabled": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nStackEnabled": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nWeaponsEnabled": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nGrenadesEnabled": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nPowersEnabled": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCombatTransitionEnabled": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCurrentPowerIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nDoorProximityRefCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bDoCameraBehaviorTransition": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eCurrentActionState": {
+      "type": "EActionStateVariable",
+      "documentation": null
+    },
+    "m_ePreviousActionState": {
+      "type": "EActionStateVariable",
+      "documentation": null
+    },
+    "m_combatModeFadeoutState": {
+      "type": "EBioAnimNodeCombatModeFadeOut",
+      "documentation": null
+    },
+    "m_eWeaponFireMode": {
+      "type": "EBioEpicPawnBehaviorWeaponFireMode",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DisplayEpicPawnVisualEffect": {
+      "documentation": null,
+      "signature_members": {
+        "nmLabel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DisplayEpicPawnVisualEffect(Name nmLabel)"
+    },
+    "AdjustInventoryResource": {
+      "documentation": null,
+      "signature_members": {
+        "eResourceType": {
+          "type": null,
+          "documentation": null
+        },
+        "nAmt": {
+          "type": null,
+          "documentation": null
+        },
+        "bNotifyTicker": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AdjustInventoryResource(EInventoryResourceTypes eResourceType, int nAmt, optional bool bNotifyTicker)"
+    },
+    "GetInventoryResource": {
+      "documentation": null,
+      "signature_members": {
+        "eResourceType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetInventoryResource(EInventoryResourceTypes eResourceType)"
+    },
+    "FindPowerIndex": {
+      "documentation": null,
+      "signature_members": {
+        "nmPowerName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindPowerIndex(Name nmPowerName)"
+    },
+    "FindPower": {
+      "documentation": null,
+      "signature_members": {
+        "nmPowerName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioPower",
+      "signature": "BioPower FindPower(Name nmPowerName)"
+    },
+    "GetDoorProximityRefCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetDoorProximityRefCount()"
+    },
+    "ModifyDoorProximityRefCount": {
+      "documentation": null,
+      "signature_members": {
+        "bIncrement": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyDoorProximityRefCount(bool bIncrement)"
+    },
+    "SetPreviousActionState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EActionStateVariable",
+      "signature": "EActionStateVariable SetPreviousActionState()"
+    },
+    "SetActionState": {
+      "documentation": null,
+      "signature_members": {
+        "eState": {
+          "type": null,
+          "documentation": null
+        },
+        "fDelay": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EActionStateVariable",
+      "signature": "EActionStateVariable SetActionState(EActionStateVariable eState, optional float fDelay)"
+    },
+    "TickPowers": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TickPowers(float DeltaTime)"
+    },
+    "ClearCurrentPower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearCurrentPower()"
+    },
+    "SetCurrentPower": {
+      "documentation": null,
+      "signature_members": {
+        "nmPower": {
+          "type": null,
+          "documentation": null
+        },
+        "fCooldownRemaining": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetCurrentPower(Name nmPower, out float fCooldownRemaining)"
+    },
+    "IsAbilityEnabledCombatTransition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsAbilityEnabledCombatTransition()"
+    },
+    "IsAbilityEnabledPowers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsAbilityEnabledPowers()"
+    },
+    "IsAbilityEnabledGrenades": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsAbilityEnabledGrenades()"
+    },
+    "IsAbilityEnabledWeapons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsAbilityEnabledWeapons()"
+    },
+    "IsAbilityEnabledStack": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsAbilityEnabledStack()"
+    },
+    "IsAbilityEnabledQueue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsAbilityEnabledQueue()"
+    },
+    "IsAbilityEnabledAll": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsAbilityEnabledAll()"
+    },
+    "DoDisabledEvent": {
+      "documentation": null,
+      "signature_members": {
+        "eEnableType": {
+          "type": null,
+          "documentation": null
+        },
+        "nmSubType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoDisabledEvent(EDisableType eEnableType, Name nmSubType)"
+    },
+    "DoEnabledEvent": {
+      "documentation": null,
+      "signature_members": {
+        "eEnableType": {
+          "type": null,
+          "documentation": null
+        },
+        "nmSubType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoEnabledEvent(EDisableType eEnableType, Name nmSubType)"
+    },
+    "IsAbilityEnabled_Power": {
+      "documentation": null,
+      "signature_members": {
+        "eEnableType": {
+          "type": null,
+          "documentation": null
+        },
+        "nmSubType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsAbilityEnabled_Power(EDisableType eEnableType, Name nmSubType)"
+    },
+    "AbilityEnable_Power": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": null,
+          "documentation": null
+        },
+        "eEnableType": {
+          "type": null,
+          "documentation": null
+        },
+        "nmSubType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int AbilityEnable_Power(bool bEnable, EDisableType eEnableType, Name nmSubType)"
+    },
+    "IsAbilityEnabled_Offense": {
+      "documentation": null,
+      "signature_members": {
+        "eEnableType": {
+          "type": null,
+          "documentation": null
+        },
+        "nmSubType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsAbilityEnabled_Offense(EDisableType eEnableType, Name nmSubType)"
+    },
+    "AbilityEnable_Offense": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": null,
+          "documentation": null
+        },
+        "eEnableType": {
+          "type": null,
+          "documentation": null
+        },
+        "nmSubType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int AbilityEnable_Offense(bool bEnable, EDisableType eEnableType, Name nmSubType)"
+    },
+    "IsAbilityEnabled_AI": {
+      "documentation": null,
+      "signature_members": {
+        "eEnableType": {
+          "type": null,
+          "documentation": null
+        },
+        "nmSubType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsAbilityEnabled_AI(EDisableType eEnableType, Name nmSubType)"
+    },
+    "AbilityEnable_AI": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": null,
+          "documentation": null
+        },
+        "eEnableType": {
+          "type": null,
+          "documentation": null
+        },
+        "nmSubType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int AbilityEnable_AI(bool bEnable, EDisableType eEnableType, Name nmSubType)"
+    },
+    "InitializeActionFramework": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeActionFramework()"
+    },
+    "TickBehavior": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TickBehavior(float DeltaTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

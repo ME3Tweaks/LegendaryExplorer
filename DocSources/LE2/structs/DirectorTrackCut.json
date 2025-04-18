@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "TargetCamGroup": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Time": {
+      "type": "float",
+      "documentation": null
+    },
+    "TransitionTime": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

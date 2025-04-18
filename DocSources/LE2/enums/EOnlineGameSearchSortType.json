@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "OGSSO_Ascending": {
+      "value": 0,
+      "documentation": null
+    },
+    "OGSSO_Descending": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

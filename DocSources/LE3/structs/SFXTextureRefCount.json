@@ -1,11 +1,11 @@
 {
   "Members": {
     "Texture": {
-      "type": null,
+      "type": "Texture2D",
       "documentation": null
     },
     "RefCount": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

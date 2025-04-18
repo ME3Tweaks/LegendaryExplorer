@@ -1,0 +1,37 @@
+{
+  "parent": "SFXCameraMode_Combat",
+  "package": "SFXGame",
+  "variables": {
+    "Blur": {
+      "type": "MotionBlurEffect",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "MakeInactive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MakeInactive()"
+    },
+    "MakeActive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MakeActive()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "NewOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(BioPlayerController NewOwner)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

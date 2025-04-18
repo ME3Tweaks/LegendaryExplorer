@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "FontICS_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "FontICS_Ansi": {
+      "value": 1,
+      "documentation": null
+    },
+    "FontICS_Symbol": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

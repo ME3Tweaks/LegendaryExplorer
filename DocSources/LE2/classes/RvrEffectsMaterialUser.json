@@ -1,0 +1,41 @@
+{
+  "parent": "MaterialInterface",
+  "package": "Engine",
+  "variables": {
+    "VfTable_FCallbackEventDevice": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "m_pBaseMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "m_pEffectsGroup": {
+      "type": "RvrEffectsMaterialGroup",
+      "documentation": null
+    },
+    "m_pMultiplexor": {
+      "type": "RvrMaterialMultiplexor",
+      "documentation": null
+    },
+    "m_pParentMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "ReentrantFlag": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSupportsStaticMeshes": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_lstParentGuids": {
+      "type": "Guid",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

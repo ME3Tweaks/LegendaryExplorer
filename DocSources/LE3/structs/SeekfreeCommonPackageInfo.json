@@ -1,11 +1,11 @@
 {
   "Members": {
     "SeekfreeName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "CommonName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     }
   },

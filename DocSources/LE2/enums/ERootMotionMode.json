@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "RMM_Translate": {
+      "value": 0,
+      "documentation": null
+    },
+    "RMM_Velocity": {
+      "value": 1,
+      "documentation": null
+    },
+    "RMM_Ignore": {
+      "value": 2,
+      "documentation": null
+    },
+    "RMM_Accel": {
+      "value": 3,
+      "documentation": null
+    },
+    "RMM_Relative": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

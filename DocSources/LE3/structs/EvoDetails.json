@@ -1,19 +1,19 @@
 {
   "Members": {
     "Name": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Desc": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "State": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Cost": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

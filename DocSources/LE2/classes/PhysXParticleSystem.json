@@ -1,0 +1,121 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "CascadeScene": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "PSys": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ExternalAcceleration": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "MaxParticles": {
+      "type": "int",
+      "documentation": null
+    },
+    "RBCollideWithChannels": {
+      "type": "RBCollisionChannelContainer",
+      "documentation": null
+    },
+    "CollisionDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "RestitutionWithStaticShapes": {
+      "type": "float",
+      "documentation": null
+    },
+    "RestitutionWithDynamicShapes": {
+      "type": "float",
+      "documentation": null
+    },
+    "FrictionWithStaticShapes": {
+      "type": "float",
+      "documentation": null
+    },
+    "FrictionWithDynamicShapes": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxMotionDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "Damping": {
+      "type": "float",
+      "documentation": null
+    },
+    "RestParticleDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "RestDensity": {
+      "type": "float",
+      "documentation": null
+    },
+    "KernelRadiusMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "Stiffness": {
+      "type": "float",
+      "documentation": null
+    },
+    "Viscosity": {
+      "type": "float",
+      "documentation": null
+    },
+    "CollisionResponseCoefficient": {
+      "type": "float",
+      "documentation": null
+    },
+    "bDynamicCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableGravity": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStaticCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTwoWayCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDestroy": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSyncFailed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsInGame": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RBChannel": {
+      "type": "ERBCollisionChannel",
+      "documentation": null
+    },
+    "SimulationMethod": {
+      "type": "ESimulationMethod",
+      "documentation": null
+    },
+    "PacketSizeMultiplier": {
+      "type": "EPacketSizeMultiplier",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "VfTable": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "bUseParam": {
+      "type": "bool",
+      "documentation": null
+    },
+    "nObjectType": {
+      "type": "int",
+      "documentation": null
+    },
+    "ObjectTag": {
+      "type": "Name",
+      "documentation": null
+    },
+    "FunctionName": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

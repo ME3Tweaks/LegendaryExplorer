@@ -1,103 +1,103 @@
 {
   "Members": {
     "PlayerKit": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "PlayerClass": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "MapName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "RequiredPlayerMedals": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "PartialPlayerMedals": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "RequiredSquadMedals": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "PartialSquadMedals": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "AccomplishmentProgressName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "KilledEnemyClass": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "ChallengeDamageType": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "PowerName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "EventStartTime": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "EventEndTime": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "DamageSource": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "DifficultyLevel": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "EnemyType": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "NumPlayers": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bMelee": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bHeadShot": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bHeadGib": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bCombo": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bBiotic": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bTech": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "ChallengeType": {
-      "type": null,
+      "type": "ChallengeEventType",
       "documentation": null
     },
     "MedalEarned": {
-      "type": null,
+      "type": "MPMedalType",
       "documentation": null
     }
   },

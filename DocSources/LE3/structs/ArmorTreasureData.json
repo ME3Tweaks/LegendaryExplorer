@@ -1,23 +1,23 @@
 {
   "Members": {
     "ArmorString": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "srDisplayName": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "ArmorPlotState": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Conditional": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "ArmorPiece": {
-      "type": null,
+      "type": "EArmorTreasurePiece",
       "documentation": null
     }
   },

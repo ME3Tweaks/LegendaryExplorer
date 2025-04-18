@@ -1,0 +1,25 @@
+{
+  "parent": "BioAnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_aChildBlendParams": {
+      "type": "BioAnimBlendParams",
+      "documentation": null
+    },
+    "m_oBlendOut": {
+      "type": "BioAnimCheckBlendOut",
+      "documentation": null
+    },
+    "m_oBehavior": {
+      "type": "BioAnimNodeBlendStateBehavior",
+      "documentation": null
+    },
+    "m_nActiveChild": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

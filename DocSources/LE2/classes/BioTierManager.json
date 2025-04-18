@@ -1,0 +1,221 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "TierDetails": {
+      "type": "TierDetails_t",
+      "documentation": null
+    },
+    "TierInfo": {
+      "type": "BioTierInfo",
+      "documentation": null
+    },
+    "DefaultTier": {
+      "type": "Name",
+      "documentation": null
+    },
+    "FloorTier": {
+      "type": "BioTierInfo",
+      "documentation": null
+    },
+    "bReevaluateStreaming": {
+      "type": "bool",
+      "documentation": null
+    },
+    "DefaultTierIndex": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ConvertPlotStreaming": {
+      "documentation": null,
+      "signature_members": {
+        "fnVirtualChunk": {
+          "type": null,
+          "documentation": null
+        },
+        "aRealChunks": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ConvertPlotStreaming(Name fnVirtualChunk, out array<PlotStreamingElement> aRealChunks)"
+    },
+    "UnregisterPlotStreaming": {
+      "documentation": null,
+      "signature_members": {
+        "PlotStreaming": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnregisterPlotStreaming(array<PlotStreamingSet> PlotStreaming)"
+    },
+    "RegisterPlotStreaming": {
+      "documentation": null,
+      "signature_members": {
+        "PlotStreaming": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RegisterPlotStreaming(array<PlotStreamingSet> PlotStreaming)"
+    },
+    "ReevaluateStreaming": {
+      "documentation": null,
+      "signature_members": {
+        "bForce": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReevaluateStreaming(bool bForce)"
+    },
+    "ForegroundStreamingDone": {
+      "documentation": null,
+      "signature_members": {
+        "Sequences": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ForegroundStreamingDone(array<Sequence> Sequences, Pawn PlayerPawn)"
+    },
+    "BackgroundStreamingDone": {
+      "documentation": null,
+      "signature_members": {
+        "Sequences": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BackgroundStreamingDone(array<Sequence> Sequences, Pawn PlayerPawn)"
+    },
+    "RemoveTrigger": {
+      "documentation": null,
+      "signature_members": {
+        "TriggerIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveTrigger(BioTriggerStream TriggerIn)"
+    },
+    "SetTierByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "TierIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "TriggerIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTierByIndex(byte TierIndex, BioTriggerStream TriggerIn)"
+    },
+    "SetTierByName": {
+      "documentation": null,
+      "signature_members": {
+        "TierNameIn": {
+          "type": null,
+          "documentation": null
+        },
+        "TriggerIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTierByName(Name TierNameIn, BioTriggerStream TriggerIn)"
+    },
+    "GetTierIndex": {
+      "documentation": null,
+      "signature_members": {
+        "TierNameIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "byte",
+      "signature": "byte GetTierIndex(Name TierNameIn)"
+    },
+    "GetDefaultTier": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioTierInfo",
+      "signature": "BioTierInfo GetDefaultTier()"
+    },
+    "GetFloorTier": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioTierInfo",
+      "signature": "BioTierInfo GetFloorTier()"
+    },
+    "GetTier": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioTierInfo",
+      "signature": "BioTierInfo GetTier(byte Index)"
+    },
+    "Retouch": {
+      "documentation": null,
+      "signature_members": {
+        "bForce": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Retouch(bool bForce)"
+    },
+    "ClearCurrentTriggers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearCurrentTriggers()"
+    },
+    "GetTierName": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetTierName(byte Index)"
+    },
+    "GetNumTiers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "byte",
+      "signature": "byte GetNumTiers()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

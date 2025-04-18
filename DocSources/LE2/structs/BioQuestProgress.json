@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "VfTable": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "nQuestAdded": {
+      "type": "int",
+      "documentation": null
+    },
+    "bQuestUpdated": {
+      "type": "bool",
+      "documentation": null
+    },
+    "lstTaskHistory": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

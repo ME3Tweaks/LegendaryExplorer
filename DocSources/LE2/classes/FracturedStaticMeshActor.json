@@ -1,0 +1,302 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "ChunkHealth": {
+      "type": "int",
+      "documentation": null
+    },
+    "FracturedByDamageType": {
+      "type": "Class",
+      "documentation": null
+    },
+    "OverrideFragmentDestroyEffects": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "DeferredPartsToSpawn": {
+      "type": "DeferredPartToSpawn",
+      "documentation": null
+    },
+    "PartImpactEffect": {
+      "type": "PhysEffectInfo",
+      "documentation": null
+    },
+    "FracturedStaticMeshComponent": {
+      "type": "FracturedStaticMeshComponent",
+      "documentation": null
+    },
+    "SkinnedComponent": {
+      "type": "FracturedSkinnedMeshComponent",
+      "documentation": null
+    },
+    "ExplosionFractureSound": {
+      "type": "SoundCue",
+      "documentation": null
+    },
+    "SingleChunkFractureSound": {
+      "type": "SoundCue",
+      "documentation": null
+    },
+    "MI_LoseChunkPreviousMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "MaxPartsToSpawnAtOnce": {
+      "type": "int",
+      "documentation": null
+    },
+    "ChunkHealthScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "FractureCullMinDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "FractureCullMaxDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "bHasShownMissingSoundWarning": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBreakChunksOnActorTouch": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetLoseChunkReplacementMaterial": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetLoseChunkReplacementMaterial()"
+    },
+    "HideFragmentsToMaximizeMemoryUsage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideFragmentsToMaximizeMemoryUsage()"
+    },
+    "HideOneFragment": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideOneFragment()"
+    },
+    "ResetVisibility": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetVisibility()"
+    },
+    "BreakOffPartsInRadius": {
+      "documentation": null,
+      "signature_members": {
+        "Origin": {
+          "type": null,
+          "documentation": null
+        },
+        "Radius": {
+          "type": null,
+          "documentation": null
+        },
+        "RBStrength": {
+          "type": null,
+          "documentation": null
+        },
+        "bWantPhysChunksAndParticles": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BreakOffPartsInRadius(Vector Origin, float Radius, float RBStrength, bool bWantPhysChunksAndParticles)"
+    },
+    "Explode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Explode()"
+    },
+    "TakeDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "EventInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TakeDamage(float Damage, Controller EventInstigator, Vector HitLocation, Vector Momentum, Class<DamageType> DamageType, optional TraceHitInfo HitInfo, optional Actor DamageCauser)"
+    },
+    "RemoveDecals": {
+      "documentation": null,
+      "signature_members": {
+        "IndexToRemoveDecalsFrom": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveDecals(int IndexToRemoveDecalsFrom)"
+    },
+    "FractureEffectIsRelevant": {
+      "documentation": null,
+      "signature_members": {
+        "bForceDedicated": {
+          "type": null,
+          "documentation": null
+        },
+        "EffectInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "bWantPhysChunksAndParticles": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FractureEffectIsRelevant(bool bForceDedicated, Pawn EffectInstigator, out byte bWantPhysChunksAndParticles)"
+    },
+    "IsFracturedByDamageType": {
+      "documentation": null,
+      "signature_members": {
+        "dmgType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsFracturedByDamageType(Class<DamageType> dmgType)"
+    },
+    "SpawnDeferredParts": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool SpawnDeferredParts()"
+    },
+    "BreakOffIsolatedIslands": {
+      "documentation": null,
+      "signature_members": {
+        "FragmentVis": {
+          "type": null,
+          "documentation": null
+        },
+        "IgnoreFrags": {
+          "type": null,
+          "documentation": null
+        },
+        "ChunkDir": {
+          "type": null,
+          "documentation": null
+        },
+        "DisableCollWithPart": {
+          "type": null,
+          "documentation": null
+        },
+        "bWantPhysChunks": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BreakOffIsolatedIslands(out array<byte> FragmentVis, array<int> IgnoreFrags, Vector ChunkDir, array<FracturedStaticMeshPart> DisableCollWithPart, bool bWantPhysChunks)"
+    },
+    "ResetHealth": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetHealth()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "SpawnPartMulti": {
+      "documentation": null,
+      "signature_members": {
+        "ChunkIndices": {
+          "type": null,
+          "documentation": null
+        },
+        "InitialVel": {
+          "type": null,
+          "documentation": null
+        },
+        "InitialAngVel": {
+          "type": null,
+          "documentation": null
+        },
+        "RelativeScale": {
+          "type": null,
+          "documentation": null
+        },
+        "bExplosion": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "FracturedStaticMeshPart",
+      "signature": "FracturedStaticMeshPart SpawnPartMulti(array<int> ChunkIndices, Vector InitialVel, Vector InitialAngVel, float RelativeScale, bool bExplosion)"
+    },
+    "SpawnPart": {
+      "documentation": null,
+      "signature_members": {
+        "ChunkIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "InitialVel": {
+          "type": null,
+          "documentation": null
+        },
+        "InitialAngVel": {
+          "type": null,
+          "documentation": null
+        },
+        "RelativeScale": {
+          "type": null,
+          "documentation": null
+        },
+        "bExplosion": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "FracturedStaticMeshPart",
+      "signature": "FracturedStaticMeshPart SpawnPart(int ChunkIndex, Vector InitialVel, Vector InitialAngVel, float RelativeScale, bool bExplosion)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

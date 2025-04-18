@@ -1,23 +1,23 @@
 {
   "Members": {
     "SourceName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "param1": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "param2": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "param3": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "messageId": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

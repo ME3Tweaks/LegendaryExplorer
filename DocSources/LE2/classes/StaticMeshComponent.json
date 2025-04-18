@@ -1,0 +1,133 @@
+{
+  "parent": "MeshComponent",
+  "package": "Engine",
+  "variables": {
+    "ForcedLodModel": {
+      "type": "int",
+      "documentation": null
+    },
+    "PreviousLODLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "StaticMesh": {
+      "type": "StaticMesh",
+      "documentation": null
+    },
+    "WireframeColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "bIgnoreInstanceForTextureStreaming": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOverrideLightMapRes": {
+      "type": "bool",
+      "documentation": null
+    },
+    "OverriddenLightMapRes": {
+      "type": "int",
+      "documentation": null
+    },
+    "OverriddenLODMaxRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "OverridePhysMat": {
+      "type": "bool",
+      "documentation": null
+    },
+    "AudioObstruction": {
+      "type": "float",
+      "documentation": null
+    },
+    "AudioOcclusion": {
+      "type": "float",
+      "documentation": null
+    },
+    "SubDivisionStepSize": {
+      "type": "int",
+      "documentation": null
+    },
+    "bUseSubDivisions": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceStaticDecals": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNeverBecomeDynamic": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBioIsReceivingDecals": {
+      "type": "bool",
+      "documentation": null
+    },
+    "IrrelevantLights": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "LODData": {
+      "type": "StaticMeshComponentLODInfo",
+      "documentation": null
+    },
+    "LightmassSettings": {
+      "type": "LightmassPrimitiveSettings",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CanBecomeDynamic": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanBecomeDynamic()"
+    },
+    "SetForceStaticDecals": {
+      "documentation": null,
+      "signature_members": {
+        "bInForceStaticDecals": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetForceStaticDecals(bool bInForceStaticDecals)"
+    },
+    "DisableRBCollisionWithSMC": {
+      "documentation": null,
+      "signature_members": {
+        "OtherSMC": {
+          "type": null,
+          "documentation": null
+        },
+        "bDisabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisableRBCollisionWithSMC(PrimitiveComponent OtherSMC, bool bDisabled)"
+    },
+    "SetStaticMesh": {
+      "documentation": null,
+      "signature_members": {
+        "NewMesh": {
+          "type": null,
+          "documentation": null
+        },
+        "bForce": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetStaticMesh(StaticMesh NewMesh, optional bool bForce)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

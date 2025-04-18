@@ -1,0 +1,34 @@
+{
+  "parent": "UIDataStore_Settings",
+  "package": "Engine",
+  "variables": {
+    "SessionSettingsProviderClassNames": {
+      "type": "string",
+      "documentation": null
+    },
+    "SessionSettingsProviderClasses": {
+      "type": "Class",
+      "documentation": null
+    },
+    "SessionSettings": {
+      "type": "SessionSettingsProvider",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "NotifyGameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool NotifyGameSessionEnded()"
+    },
+    "ClearDataProviders": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearDataProviders()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

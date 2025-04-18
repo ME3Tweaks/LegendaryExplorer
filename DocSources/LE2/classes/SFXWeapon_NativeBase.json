@@ -1,0 +1,75 @@
+{
+  "parent": "Weapon",
+  "package": "SFXGame",
+  "variables": {
+    "bWeaponExpanded": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInstantExpansion": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceReplayAnimation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDrawingWeaponBlendOut": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReloadWeaponBlendOut": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsZoomed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "VocalizationType": {
+      "type": "ESFXVocalizationWeapon",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CalculateCoverLeanOutOffset": {
+      "documentation": null,
+      "signature_members": {
+        "Offset": {
+          "type": null,
+          "documentation": null
+        },
+        "Direction": {
+          "type": null,
+          "documentation": null
+        },
+        "Type": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CalculateCoverLeanOutOffset(out Vector Offset, ECoverDirection Direction, ECoverType Type)"
+    },
+    "PrecacheVFX": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PrecacheVFX()"
+    },
+    "FireAmmunition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FireAmmunition()"
+    },
+    "IsZoomed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsZoomed()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

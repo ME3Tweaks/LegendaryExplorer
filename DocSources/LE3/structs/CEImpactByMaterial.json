@@ -1,11 +1,11 @@
 {
   "Members": {
     "ClientEffect": {
-      "type": null,
+      "type": "RvrClientEffectInterface",
       "documentation": null
     },
     "MaterialType": {
-      "type": null,
+      "type": "EClientEffectMaterial",
       "documentation": null
     }
   },

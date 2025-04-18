@@ -1,0 +1,124 @@
+{
+  "parent": "StaticMeshActor",
+  "package": "Engine",
+  "variables": {
+    "TouchingActorEntryPosition": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "FoliageVelocity": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "FoliageForce": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "FoliagePosition": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "CylinderComponent": {
+      "type": "CylinderComponent",
+      "documentation": null
+    },
+    "FoliageDamageImpulseScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "FoliageTouchImpulseScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "FoliageStiffness": {
+      "type": "float",
+      "documentation": null
+    },
+    "FoliageStiffnessQuadratic": {
+      "type": "float",
+      "documentation": null
+    },
+    "FoliageDamping": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxDamageImpulse": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxTouchImpulse": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxForce": {
+      "type": "float",
+      "documentation": null
+    },
+    "Mass": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Touch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        },
+        "OtherComp": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Touch(Actor Other, PrimitiveComponent OtherComp, Vector HitLocation, Vector HitNormal)"
+    },
+    "TakeDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "EventInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TakeDamage(float Damage, Controller EventInstigator, Vector HitLocation, Vector Momentum, Class<DamageType> DamageType, optional TraceHitInfo HitInfo, optional Actor DamageCauser)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

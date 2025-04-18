@@ -1,0 +1,21 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_sFileName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_bOverwrite": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIncludeObjComment": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "PYIO_Off": {
+      "value": 0,
+      "documentation": null
+    },
+    "PYIO_On": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

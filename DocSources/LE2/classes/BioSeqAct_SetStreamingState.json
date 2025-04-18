@@ -1,0 +1,30 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "StateName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "NewValue": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "RetouchTriggers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RetouchTriggers()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

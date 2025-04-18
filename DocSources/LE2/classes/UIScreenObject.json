@@ -1,0 +1,2245 @@
+{
+  "parent": "UIRoot",
+  "package": "Engine",
+  "variables": {
+    "Children": {
+      "type": "UIObject",
+      "documentation": null
+    },
+    "DefaultStates": {
+      "type": "Class",
+      "documentation": null
+    },
+    "InactiveStates": {
+      "type": "UIState",
+      "documentation": null
+    },
+    "StateStack": {
+      "type": "UIState",
+      "documentation": null
+    },
+    "FocusControls": {
+      "type": "PlayerInteractionData",
+      "documentation": null
+    },
+    "FocusPropagation": {
+      "type": "UIFocusPropagationData",
+      "documentation": null
+    },
+    "AnimStack": {
+      "type": "UIAnimSequence",
+      "documentation": null
+    },
+    "KeyFrameCompletedDelegates": {
+      "type": "OnUIAnim_KeyFrameCompleted",
+      "documentation": null
+    },
+    "TrackCompletedDelegates": {
+      "type": "OnUIAnim_TrackCompleted",
+      "documentation": null
+    },
+    "__NotifyActiveSkinChanged__Delegate": {
+      "type": "NotifyActiveSkinChanged",
+      "documentation": null
+    },
+    "__OnRawInputKey__Delegate": {
+      "type": "OnRawInputKey",
+      "documentation": null
+    },
+    "__OnRawInputAxis__Delegate": {
+      "type": "OnRawInputAxis",
+      "documentation": null
+    },
+    "__OnProcessInputKey__Delegate": {
+      "type": "OnProcessInputKey",
+      "documentation": null
+    },
+    "__OnProcessInputAxis__Delegate": {
+      "type": "OnProcessInputAxis",
+      "documentation": null
+    },
+    "__NotifyPositionChanged__Delegate": {
+      "type": "NotifyPositionChanged",
+      "documentation": null
+    },
+    "__NotifyResolutionChanged__Delegate": {
+      "type": "NotifyResolutionChanged",
+      "documentation": null
+    },
+    "__NotifyActiveStateChanged__Delegate": {
+      "type": "NotifyActiveStateChanged",
+      "documentation": null
+    },
+    "__NotifyVisibilityChanged__Delegate": {
+      "type": "NotifyVisibilityChanged",
+      "documentation": null
+    },
+    "__OnInitialSceneUpdate__Delegate": {
+      "type": "OnInitialSceneUpdate",
+      "documentation": null
+    },
+    "__OnUIAnim_KeyFrameCompleted__Delegate": {
+      "type": "OnUIAnim_KeyFrameCompleted",
+      "documentation": null
+    },
+    "__OnUIAnim_TrackCompleted__Delegate": {
+      "type": "OnUIAnim_TrackCompleted",
+      "documentation": null
+    },
+    "InitialState": {
+      "type": "Class",
+      "documentation": null
+    },
+    "Position": {
+      "type": "UIScreenValue_Bounds",
+      "documentation": null
+    },
+    "EventProvider": {
+      "type": "UIComp_Event",
+      "documentation": null
+    },
+    "FocusedCue": {
+      "type": "Name",
+      "documentation": null
+    },
+    "MouseEnterCue": {
+      "type": "Name",
+      "documentation": null
+    },
+    "NavigateUpCue": {
+      "type": "Name",
+      "documentation": null
+    },
+    "NavigateDownCue": {
+      "type": "Name",
+      "documentation": null
+    },
+    "NavigateLeftCue": {
+      "type": "Name",
+      "documentation": null
+    },
+    "NavigateRightCue": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ZDepth": {
+      "type": "float",
+      "documentation": null
+    },
+    "AnimationCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "AnimationDebugMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "Opacity": {
+      "type": "float",
+      "documentation": null
+    },
+    "bHidden": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInitialized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNeverFocus": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSupportsFocusHint": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOverrideInputOrder": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAnimating": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAnimationPaused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSupports3DPrimitives": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "LogCurrentState": {
+      "documentation": null,
+      "signature_members": {
+        "Indent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LogCurrentState(int Indent)"
+    },
+    "Find_UIAnimTrackCompletedHandler": {
+      "documentation": null,
+      "signature_members": {
+        "TrackCompletedDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int Find_UIAnimTrackCompletedHandler(delegate<OnUIAnim_TrackCompleted> TrackCompletedDelegate)"
+    },
+    "Find_UIAnimKeyFrameCompletedHandler": {
+      "documentation": null,
+      "signature_members": {
+        "KeyFrameCompletedDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int Find_UIAnimKeyFrameCompletedHandler(delegate<OnUIAnim_KeyFrameCompleted> KeyFrameCompletedDelegate)"
+    },
+    "Remove_UIAnimTrackCompletedHandler": {
+      "documentation": null,
+      "signature_members": {
+        "TrackCompletedDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Remove_UIAnimTrackCompletedHandler(delegate<OnUIAnim_TrackCompleted> TrackCompletedDelegate)"
+    },
+    "Remove_UIAnimKeyFrameCompletedHandler": {
+      "documentation": null,
+      "signature_members": {
+        "KeyFrameCompletedDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Remove_UIAnimKeyFrameCompletedHandler(delegate<OnUIAnim_KeyFrameCompleted> KeyFrameCompletedDelegate)"
+    },
+    "Add_UIAnimTrackCompletedHandler": {
+      "documentation": null,
+      "signature_members": {
+        "TrackCompletedDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Add_UIAnimTrackCompletedHandler(delegate<OnUIAnim_TrackCompleted> TrackCompletedDelegate)"
+    },
+    "Add_UIAnimKeyFrameCompletedHandler": {
+      "documentation": null,
+      "signature_members": {
+        "KeyFrameCompletedDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Add_UIAnimKeyFrameCompletedHandler(delegate<OnUIAnim_KeyFrameCompleted> KeyFrameCompletedDelegate)"
+    },
+    "ActivateTrackCompletedDelegates": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "AnimName": {
+          "type": null,
+          "documentation": null
+        },
+        "TrackTypeMask": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivateTrackCompletedDelegates(UIScreenObject Sender, Name AnimName, int TrackTypeMask)"
+    },
+    "ActivateKeyFrameCompletedDelegates": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "AnimName": {
+          "type": null,
+          "documentation": null
+        },
+        "TrackType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivateKeyFrameCompletedDelegates(UIScreenObject Sender, Name AnimName, EUIAnimType TrackType)"
+    },
+    "UIAnimationEnded": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "AnimName": {
+          "type": null,
+          "documentation": null
+        },
+        "TrackTypeMask": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UIAnimationEnded(UIScreenObject Sender, Name AnimName, int TrackTypeMask)"
+    },
+    "UIAnimationStarted": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "AnimName": {
+          "type": null,
+          "documentation": null
+        },
+        "TrackTypeMask": {
+          "type": null,
+          "documentation": null
+        },
+        "bSetAnimatingFlag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UIAnimationStarted(UIScreenObject Sender, Name AnimName, int TrackTypeMask, optional bool bSetAnimatingFlag)"
+    },
+    "IsAnimationPaused": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsAnimationPaused()"
+    },
+    "PauseAnimations": {
+      "documentation": null,
+      "signature_members": {
+        "bPauseAnimation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PauseAnimations(bool bPauseAnimation)"
+    },
+    "IsAnimating": {
+      "documentation": null,
+      "signature_members": {
+        "AnimationSequenceName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsAnimating(optional Name AnimationSequenceName)"
+    },
+    "ClearUIAnimationLoop": {
+      "documentation": null,
+      "signature_members": {
+        "SequenceIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "TrackTypeMask": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearUIAnimationLoop(int SequenceIndex, optional int TrackTypeMask)"
+    },
+    "StopUIAnimation": {
+      "documentation": null,
+      "signature_members": {
+        "AnimName": {
+          "type": null,
+          "documentation": null
+        },
+        "AnimSeq": {
+          "type": null,
+          "documentation": null
+        },
+        "bFinalize": {
+          "type": null,
+          "documentation": null
+        },
+        "TrackTypeMask": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StopUIAnimation(Name AnimName, optional UIAnimationSeq AnimSeq, optional bool bFinalize, optional int TrackTypeMask)"
+    },
+    "PlayUIAnimation": {
+      "documentation": null,
+      "signature_members": {
+        "AnimName": {
+          "type": null,
+          "documentation": null
+        },
+        "AnimSeqTemplate": {
+          "type": null,
+          "documentation": null
+        },
+        "OverrideLoopMode": {
+          "type": null,
+          "documentation": null
+        },
+        "PlaybackRate": {
+          "type": null,
+          "documentation": null
+        },
+        "InitialPosition": {
+          "type": null,
+          "documentation": null
+        },
+        "bSetAnimatingFlag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayUIAnimation(Name AnimName, optional UIAnimationSeq AnimSeqTemplate, optional EUIAnimationLoopMode OverrideLoopMode, optional float PlaybackRate, optional float InitialPosition, optional bool bSetAnimatingFlag)"
+    },
+    "FindAnimationSequenceIndex": {
+      "documentation": null,
+      "signature_members": {
+        "SequenceName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindAnimationSequenceIndex(Name SequenceName)"
+    },
+    "TickAnimations": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TickAnimations(float DeltaTime)"
+    },
+    "AnimGetCurrentPPSettings": {
+      "documentation": null,
+      "signature_members": {
+        "CurrentSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AnimGetCurrentPPSettings(out PostProcessSettings CurrentSettings)"
+    },
+    "Anim_SetValue": {
+      "documentation": null,
+      "signature_members": {
+        "AnimationType": {
+          "type": null,
+          "documentation": null
+        },
+        "NewValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Anim_SetValue(EUIAnimType AnimationType, const out UIAnimationRawData NewValue)"
+    },
+    "Anim_GetValue": {
+      "documentation": null,
+      "signature_members": {
+        "AnimationType": {
+          "type": null,
+          "documentation": null
+        },
+        "out_CurrentValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Anim_GetValue(EUIAnimType AnimationType, out UIAnimationRawData out_CurrentValue)"
+    },
+    "OnUIAnim_TrackCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "AnimName": {
+          "type": null,
+          "documentation": null
+        },
+        "TrackTypeMask": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUIAnim_TrackCompleted(UIScreenObject Sender, Name AnimName, int TrackTypeMask)"
+    },
+    "OnUIAnim_KeyFrameCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "AnimName": {
+          "type": null,
+          "documentation": null
+        },
+        "TrackType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUIAnim_KeyFrameCompleted(UIScreenObject Sender, Name AnimName, EUIAnimType TrackType)"
+    },
+    "BecomePrimaryPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BecomePrimaryPlayer(int PlayerIndex)"
+    },
+    "GetNATType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ENATType",
+      "signature": "ENATType GetNATType()"
+    },
+    "GetLoggedInControllerIds": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerIds": {
+          "type": null,
+          "documentation": null
+        },
+        "bRequireOnlineLogin": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxPlayersToCheck": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetLoggedInControllerIds(out array<int> ControllerIds, optional bool bRequireOnlineLogin, optional int MaxPlayersToCheck)"
+    },
+    "GetLoggedInPlayerCount": {
+      "documentation": null,
+      "signature_members": {
+        "bRequireOnlineLogin": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxPlayersToCheck": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetLoggedInPlayerCount(optional bool bRequireOnlineLogin, optional int MaxPlayersToCheck)"
+    },
+    "CanPlayOnline": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanPlayOnline(optional int ControllerId)"
+    },
+    "HasLinkConnection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasLinkConnection()"
+    },
+    "GetLoginStatus": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ELoginStatus",
+      "signature": "ELoginStatus GetLoginStatus(optional int ControllerId)"
+    },
+    "OnConsoleCommand": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnConsoleCommand(UIAction_ConsoleCommand Action)"
+    },
+    "DisableWidget": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DisableWidget(int PlayerIndex)"
+    },
+    "EnableWidget": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EnableWidget(int PlayerIndex)"
+    },
+    "GetParent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UIScreenObject",
+      "signature": "UIScreenObject GetParent()"
+    },
+    "ActivateFocusHint": {
+      "documentation": null,
+      "signature_members": {
+        "FocusHintObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ActivateFocusHint(UIObject FocusHintObject)"
+    },
+    "GetSupportedUIActionKeyNames": {
+      "documentation": null,
+      "signature_members": {
+        "out_KeyNames": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetSupportedUIActionKeyNames(out array<Name> out_KeyNames)"
+    },
+    "DisablePlayerInput": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bRecurse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisablePlayerInput(byte PlayerIndex, optional bool bRecurse)"
+    },
+    "EnablePlayerInput": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bRecurse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnablePlayerInput(byte PlayerIndex, optional bool bRecurse)"
+    },
+    "SetVisibility": {
+      "documentation": null,
+      "signature_members": {
+        "bIsVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVisibility(bool bIsVisible)"
+    },
+    "PrivateSetVisibility": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrivateSetVisibility(bool bVisible)"
+    },
+    "IsGamepadConnected": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsGamepadConnected(optional int ControllerId)"
+    },
+    "IsLoggedIn": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        },
+        "bRequireOnlineLogin": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsLoggedIn(optional int ControllerId, optional bool bRequireOnlineLogin)"
+    },
+    "RemovedFromParent": {
+      "documentation": null,
+      "signature_members": {
+        "WidgetOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemovedFromParent(UIScreenObject WidgetOwner)"
+    },
+    "RemovedChild": {
+      "documentation": null,
+      "signature_members": {
+        "WidgetOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "OldChild": {
+          "type": null,
+          "documentation": null
+        },
+        "ExclusionSet": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemovedChild(UIScreenObject WidgetOwner, UIObject OldChild, optional array<UIObject> ExclusionSet)"
+    },
+    "AddedChild": {
+      "documentation": null,
+      "signature_members": {
+        "WidgetOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "NewChild": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddedChild(UIScreenObject WidgetOwner, UIObject NewChild)"
+    },
+    "PostInitialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostInitialize()"
+    },
+    "Initialized": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialized()"
+    },
+    "GetWidgetPathName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetWidgetPathName()"
+    },
+    "GetAspectRatioAutoScaleFactor": {
+      "documentation": null,
+      "signature_members": {
+        "BaseFont": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetAspectRatioAutoScaleFactor(optional Font BaseFont)"
+    },
+    "GetInverseCanvasToScreen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Matrix",
+      "signature": "Matrix GetInverseCanvasToScreen()"
+    },
+    "GetCanvasToScreen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Matrix",
+      "signature": "Matrix GetCanvasToScreen()"
+    },
+    "PixelToCanvas": {
+      "documentation": null,
+      "signature_members": {
+        "PixelPosition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector PixelToCanvas(const out Vector2D PixelPosition)"
+    },
+    "ScreenToCanvas": {
+      "documentation": null,
+      "signature_members": {
+        "ScreenPosition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector ScreenToCanvas(const out Vector4 ScreenPosition)"
+    },
+    "PixelToScreen": {
+      "documentation": null,
+      "signature_members": {
+        "PixelPosition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector4",
+      "signature": "Vector4 PixelToScreen(const out Vector2D PixelPosition)"
+    },
+    "ScreenToPixel": {
+      "documentation": null,
+      "signature_members": {
+        "ScreenPosition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector2D",
+      "signature": "Vector2D ScreenToPixel(const out Vector4 ScreenPosition)"
+    },
+    "CanvasToScreen": {
+      "documentation": null,
+      "signature_members": {
+        "CanvasPosition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector4",
+      "signature": "Vector4 CanvasToScreen(const out Vector CanvasPosition)"
+    },
+    "DeProject": {
+      "documentation": null,
+      "signature_members": {
+        "PixelPosition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector DeProject(const out Vector PixelPosition)"
+    },
+    "Project": {
+      "documentation": null,
+      "signature_members": {
+        "CanvasPosition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector Project(const out Vector CanvasPosition)"
+    },
+    "GetDockedWidgets": {
+      "documentation": null,
+      "signature_members": {
+        "out_DockedWidgets": {
+          "type": null,
+          "documentation": null
+        },
+        "SourceFace": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetFace": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetDockedWidgets(out array<UIObject> out_DockedWidgets, optional EUIWidgetFace SourceFace, optional EUIWidgetFace TargetFace)"
+    },
+    "ResolveUIExtent": {
+      "documentation": null,
+      "signature_members": {
+        "ExtentToResolve": {
+          "type": null,
+          "documentation": null
+        },
+        "OwnerWidget": {
+          "type": null,
+          "documentation": null
+        },
+        "OutputType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float ResolveUIExtent(const out UIScreenValue_Extent ExtentToResolve, UIScreenObject OwnerWidget, optional EUIExtentEvalType OutputType)"
+    },
+    "GetPositionVector": {
+      "documentation": null,
+      "signature_members": {
+        "bIncludeParentPosition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetPositionVector(optional bool bIncludeParentPosition)"
+    },
+    "GetBounds": {
+      "documentation": null,
+      "signature_members": {
+        "Dimension": {
+          "type": null,
+          "documentation": null
+        },
+        "OutputType": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnoreDockPadding": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetBounds(EUIOrientation Dimension, optional EPositionEvalType OutputType, optional bool bIgnoreDockPadding)"
+    },
+    "GetPosition": {
+      "documentation": null,
+      "signature_members": {
+        "Face": {
+          "type": null,
+          "documentation": null
+        },
+        "OutputType": {
+          "type": null,
+          "documentation": null
+        },
+        "bIncludeOrigin": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnoreDockPadding": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetPosition(EUIWidgetFace Face, optional EPositionEvalType OutputType, optional bool bIncludeOrigin, optional bool bIgnoreDockPadding)"
+    },
+    "SetPosition": {
+      "documentation": null,
+      "signature_members": {
+        "NewValue": {
+          "type": null,
+          "documentation": null
+        },
+        "Face": {
+          "type": null,
+          "documentation": null
+        },
+        "InputType": {
+          "type": null,
+          "documentation": null
+        },
+        "bIncludesViewportOrigin": {
+          "type": null,
+          "documentation": null
+        },
+        "bResolveChange": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPosition(float NewValue, EUIWidgetFace Face, optional EPositionEvalType InputType, optional bool bIncludesViewportOrigin, optional bool bResolveChange)"
+    },
+    "InvalidateAllPositions": {
+      "documentation": null,
+      "signature_members": {
+        "bIgnoreDockedFaces": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InvalidateAllPositions(optional bool bIgnoreDockedFaces)"
+    },
+    "InvalidatePosition": {
+      "documentation": null,
+      "signature_members": {
+        "Face": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InvalidatePosition(EUIWidgetFace Face)"
+    },
+    "GetPlayerOwnerIndex": {
+      "documentation": null,
+      "signature_members": {
+        "bRequireValidIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetPlayerOwnerIndex(optional bool bRequireValidIndex)"
+    },
+    "GetBestControllerId": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetBestControllerId()"
+    },
+    "GetBestPlayerIndex": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetBestPlayerIndex()"
+    },
+    "GetSupportedPlayerCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetSupportedPlayerCount()"
+    },
+    "GetActivePlayerCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetActivePlayerCount()"
+    },
+    "SetInputMask": {
+      "documentation": null,
+      "signature_members": {
+        "NewInputMask": {
+          "type": null,
+          "documentation": null
+        },
+        "bRecurse": {
+          "type": null,
+          "documentation": null
+        },
+        "bForcedOverride": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInputMask(byte NewInputMask, optional bool bRecurse, optional bool bForcedOverride)"
+    },
+    "GetInputMask": {
+      "documentation": null,
+      "signature_members": {
+        "bInheritedMaskOnly": {
+          "type": null,
+          "documentation": null
+        },
+        "bOverrideMaskOnly": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "byte",
+      "signature": "byte GetInputMask(optional bool bInheritedMaskOnly, optional bool bOverrideMaskOnly)"
+    },
+    "AcceptsPlayerInput": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AcceptsPlayerInput(int PlayerIndex)"
+    },
+    "IsRuntimeInstance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsRuntimeInstance()"
+    },
+    "IsPressed": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsPressed(optional int PlayerIndex)"
+    },
+    "IsActive": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsActive(optional int PlayerIndex)"
+    },
+    "IsFocused": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsFocused(optional int PlayerIndex)"
+    },
+    "IsDisabled": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bCheckOwnerChain": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsDisabled(optional int PlayerIndex, optional bool bCheckOwnerChain)"
+    },
+    "IsEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bCheckOwnerChain": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsEnabled(optional int PlayerIndex, optional bool bCheckOwnerChain)"
+    },
+    "OverrideLastFocusedControl": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "ChildToFocus": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OverrideLastFocusedControl(int PlayerIndex, UIObject ChildToFocus)"
+    },
+    "GetLastFocusedControl": {
+      "documentation": null,
+      "signature_members": {
+        "bRecurse": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "UIObject",
+      "signature": "UIObject GetLastFocusedControl(optional bool bRecurse, optional int PlayerIndex)"
+    },
+    "GetFocusedControl": {
+      "documentation": null,
+      "signature_members": {
+        "bRecurse": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "UIObject",
+      "signature": "UIObject GetFocusedControl(optional bool bRecurse, optional int PlayerIndex)"
+    },
+    "KillFocus": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool KillFocus(UIScreenObject Sender, optional int PlayerIndex)"
+    },
+    "SetFocusToChild": {
+      "documentation": null,
+      "signature_members": {
+        "ChildToFocus": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetFocusToChild(optional UIObject ChildToFocus, optional int PlayerIndex)"
+    },
+    "SetFocus": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetFocus(UIScreenObject Sender, optional int PlayerIndex)"
+    },
+    "CanPropagateFocusFor": {
+      "documentation": null,
+      "signature_members": {
+        "TestChild": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanPropagateFocusFor(UIObject TestChild)"
+    },
+    "CanAcceptFocus": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bIncludeParentVisibility": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanAcceptFocus(optional int PlayerIndex, optional bool bIncludeParentVisibility)"
+    },
+    "IsNeverFocused": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsNeverFocused()"
+    },
+    "NavigateFocus": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "Direction": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bFocusChanged": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NavigateFocus(UIScreenObject Sender, EUIWidgetFace Direction, optional int PlayerIndex, optional out byte bFocusChanged)"
+    },
+    "PrevControl": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PrevControl(UIScreenObject Sender, optional int PlayerIndex)"
+    },
+    "NextControl": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NextControl(UIScreenObject Sender, optional int PlayerIndex)"
+    },
+    "FocusLastControl": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FocusLastControl(UIScreenObject Sender, optional int PlayerIndex)"
+    },
+    "FocusFirstControl": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FocusFirstControl(UIScreenObject Sender, optional int PlayerIndex)"
+    },
+    "IsHoldingShift": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsHoldingShift(int ControllerId)"
+    },
+    "IsHoldingAlt": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsHoldingAlt(int ControllerId)"
+    },
+    "IsHoldingCtrl": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsHoldingCtrl(int ControllerId)"
+    },
+    "ConditionalPropagateEnabledState": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bForce": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ConditionalPropagateEnabledState(int PlayerIndex, optional bool bForce)"
+    },
+    "DeactivateStateByClass": {
+      "documentation": null,
+      "signature_members": {
+        "StateToRemove": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "StateThatWasRemoved": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DeactivateStateByClass(Class<UIState> StateToRemove, int PlayerIndex, optional out UIState StateThatWasRemoved)"
+    },
+    "DeactivateState": {
+      "documentation": null,
+      "signature_members": {
+        "StateToRemove": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DeactivateState(UIState StateToRemove, int PlayerIndex)"
+    },
+    "ActivateStateByClass": {
+      "documentation": null,
+      "signature_members": {
+        "StateToActivate": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "StateThatWasAdded": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ActivateStateByClass(Class<UIState> StateToActivate, int PlayerIndex, optional out UIState StateThatWasAdded)"
+    },
+    "ActivateState": {
+      "documentation": null,
+      "signature_members": {
+        "StateToActivate": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ActivateState(UIState StateToActivate, int PlayerIndex)"
+    },
+    "HasActiveStateOfClass": {
+      "documentation": null,
+      "signature_members": {
+        "StateClass": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "StateIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasActiveStateOfClass(Class<UIState> StateClass, int PlayerIndex, optional out int StateIndex)"
+    },
+    "GetCurrentState": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "UIState",
+      "signature": "UIState GetCurrentState(optional int PlayerIndex)"
+    },
+    "SetEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bEnabled": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetEnabled(bool bEnabled, optional int PlayerIndex)"
+    },
+    "FindEventsOfClass": {
+      "documentation": null,
+      "signature_members": {
+        "EventClassToFind": {
+          "type": null,
+          "documentation": null
+        },
+        "out_EventInstances": {
+          "type": null,
+          "documentation": null
+        },
+        "LimitScope": {
+          "type": null,
+          "documentation": null
+        },
+        "bExactClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FindEventsOfClass(Class<UIEvent> EventClassToFind, out array<UIEvent> out_EventInstances, optional UIState LimitScope, optional bool bExactClass)"
+    },
+    "ActivateEventByClass": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "EventClassToActivate": {
+          "type": null,
+          "documentation": null
+        },
+        "InEventActivator": {
+          "type": null,
+          "documentation": null
+        },
+        "bActivateImmediately": {
+          "type": null,
+          "documentation": null
+        },
+        "IndicesToActivate": {
+          "type": null,
+          "documentation": null
+        },
+        "out_ActivatedEvents": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivateEventByClass(int PlayerIndex, Class<UIEvent> EventClassToActivate, optional Object InEventActivator, optional bool bActivateImmediately, optional array<int> IndicesToActivate, optional out array<UIEvent> out_ActivatedEvents)"
+    },
+    "GetAspectRatio": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetAspectRatio()"
+    },
+    "GetViewportHeight": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetViewportHeight()"
+    },
+    "GetViewportWidth": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetViewportWidth()"
+    },
+    "GetViewportSize": {
+      "documentation": null,
+      "signature_members": {
+        "out_ViewportSize": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetViewportSize(out Vector2D out_ViewportSize)"
+    },
+    "GetViewportOrigin": {
+      "documentation": null,
+      "signature_members": {
+        "out_ViewportOrigin": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetViewportOrigin(out Vector2D out_ViewportOrigin)"
+    },
+    "GetViewportScale": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetViewportScale()"
+    },
+    "GetViewportOffset": {
+      "documentation": null,
+      "signature_members": {
+        "out_ViewportOffset": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetViewportOffset(out Vector2D out_ViewportOffset)"
+    },
+    "RebuildNavigationLinks": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool RebuildNavigationLinks()"
+    },
+    "RequestPrimitiveReview": {
+      "documentation": null,
+      "signature_members": {
+        "bReinitializePrimitives": {
+          "type": null,
+          "documentation": null
+        },
+        "bReviewPrimitiveUsage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RequestPrimitiveReview(bool bReinitializePrimitives, bool bReviewPrimitiveUsage)"
+    },
+    "RequestSceneInputMaskUpdate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RequestSceneInputMaskUpdate()"
+    },
+    "RequestFormattingUpdate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RequestFormattingUpdate()"
+    },
+    "RequestSceneUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "bDockingStackChanged": {
+          "type": null,
+          "documentation": null
+        },
+        "bPositionsChanged": {
+          "type": null,
+          "documentation": null
+        },
+        "bNavLinksOutdated": {
+          "type": null,
+          "documentation": null
+        },
+        "bWidgetStylesChanged": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RequestSceneUpdate(bool bDockingStackChanged, bool bPositionsChanged, optional bool bNavLinksOutdated, optional bool bWidgetStylesChanged)"
+    },
+    "GetDockClients": {
+      "documentation": null,
+      "signature_members": {
+        "DockClients": {
+          "type": null,
+          "documentation": null
+        },
+        "bDirectDockClientsOnly": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetFace": {
+          "type": null,
+          "documentation": null
+        },
+        "SourceFace": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetDockClients(optional out array<UIObject> DockClients, optional bool bDirectDockClientsOnly, optional EUIWidgetFace TargetFace, optional EUIWidgetFace SourceFace)"
+    },
+    "GetObjectCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjectCount()"
+    },
+    "GetChildren": {
+      "documentation": null,
+      "signature_members": {
+        "bRecurse": {
+          "type": null,
+          "documentation": null
+        },
+        "ExclusionSet": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "UIObject",
+      "signature": "array<UIObject> GetChildren(optional bool bRecurse, optional array<UIObject> ExclusionSet)"
+    },
+    "ContainsChildOfClass": {
+      "documentation": null,
+      "signature_members": {
+        "SearchClass": {
+          "type": null,
+          "documentation": null
+        },
+        "bRecurse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ContainsChildOfClass(Class<UIObject> SearchClass, optional bool bRecurse)"
+    },
+    "ContainsChild": {
+      "documentation": null,
+      "signature_members": {
+        "Child": {
+          "type": null,
+          "documentation": null
+        },
+        "bRecurse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ContainsChild(UIObject Child, optional bool bRecurse)"
+    },
+    "FindChildIndex": {
+      "documentation": null,
+      "signature_members": {
+        "WidgetName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindChildIndex(Name WidgetName)"
+    },
+    "FindChildUsingID": {
+      "documentation": null,
+      "signature_members": {
+        "WidgetID": {
+          "type": null,
+          "documentation": null
+        },
+        "bRecurse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "UIObject",
+      "signature": "UIObject FindChildUsingID(WIDGET_ID WidgetID, optional bool bRecurse)"
+    },
+    "FindChild": {
+      "documentation": null,
+      "signature_members": {
+        "WidgetName": {
+          "type": null,
+          "documentation": null
+        },
+        "bRecurse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "UIObject",
+      "signature": "UIObject FindChild(Name WidgetName, optional bool bRecurse)"
+    },
+    "ReplaceChild": {
+      "documentation": null,
+      "signature_members": {
+        "ExistingChild": {
+          "type": null,
+          "documentation": null
+        },
+        "NewChild": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReplaceChild(UIObject ExistingChild, UIObject NewChild)"
+    },
+    "ReparentChildren": {
+      "documentation": null,
+      "signature_members": {
+        "ChildrenToReparent": {
+          "type": null,
+          "documentation": null
+        },
+        "NewParent": {
+          "type": null,
+          "documentation": null
+        },
+        "InsertIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReparentChildren(array<UIObject> ChildrenToReparent, UIScreenObject NewParent, optional int InsertIndex)"
+    },
+    "ReparentChild": {
+      "documentation": null,
+      "signature_members": {
+        "CurrentChild": {
+          "type": null,
+          "documentation": null
+        },
+        "NewParent": {
+          "type": null,
+          "documentation": null
+        },
+        "InsertIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReparentChild(UIObject CurrentChild, UIScreenObject NewParent, optional int InsertIndex)"
+    },
+    "RemoveChildren": {
+      "documentation": null,
+      "signature_members": {
+        "ChildrenToRemove": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "UIObject",
+      "signature": "array<UIObject> RemoveChildren(array<UIObject> ChildrenToRemove)"
+    },
+    "RemoveChild": {
+      "documentation": null,
+      "signature_members": {
+        "ExistingChild": {
+          "type": null,
+          "documentation": null
+        },
+        "ExclusionSet": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveChild(UIObject ExistingChild, optional array<UIObject> ExclusionSet)"
+    },
+    "InsertChild": {
+      "documentation": null,
+      "signature_members": {
+        "NewChild": {
+          "type": null,
+          "documentation": null
+        },
+        "InsertIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bRenameExisting": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int InsertChild(UIObject NewChild, optional int InsertIndex, optional bool bRenameExisting)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "inOwnerScene": {
+          "type": null,
+          "documentation": null
+        },
+        "InOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(UIScene inOwnerScene, optional UIObject InOwner)"
+    },
+    "InstanceUIPrefab": {
+      "documentation": null,
+      "signature_members": {
+        "SourcePrefab": {
+          "type": null,
+          "documentation": null
+        },
+        "PrefabInstanceName": {
+          "type": null,
+          "documentation": null
+        },
+        "PlacementLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "InsertIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bRenameExisting": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "UIPrefabInstance",
+      "signature": "UIPrefabInstance InstanceUIPrefab(UIPrefab SourcePrefab, optional Name PrefabInstanceName, optional const out Vector2D PlacementLocation, optional int InsertIndex, optional bool bRenameExisting)"
+    },
+    "CreateWidget": {
+      "documentation": null,
+      "signature_members": {
+        "Owner": {
+          "type": null,
+          "documentation": null
+        },
+        "WidgetClass": {
+          "type": null,
+          "documentation": null
+        },
+        "WidgetArchetype": {
+          "type": null,
+          "documentation": null
+        },
+        "WidgetName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "UIObject",
+      "signature": "UIObject CreateWidget(UIScreenObject Owner, Class<UIObject> WidgetClass, optional Object WidgetArchetype, optional Name WidgetName)"
+    },
+    "PlayUISound": {
+      "documentation": null,
+      "signature_members": {
+        "SoundCueName": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PlayUISound(Name SoundCueName, optional int PlayerIndex)"
+    },
+    "GetPlayerOwner": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "LocalPlayer",
+      "signature": "LocalPlayer GetPlayerOwner(optional int PlayerIndex)"
+    },
+    "InitializePlayerTracking": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializePlayerTracking()"
+    },
+    "RemovePlayerData": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "RemovedPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemovePlayerData(int PlayerIndex, LocalPlayer RemovedPlayer)"
+    },
+    "CreatePlayerData": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "AddedPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CreatePlayerData(int PlayerIndex, LocalPlayer AddedPlayer)"
+    },
+    "SetZDepth": {
+      "documentation": null,
+      "signature_members": {
+        "NewZDepth": {
+          "type": null,
+          "documentation": null
+        },
+        "bPropagateToChildren": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetZDepth(float NewZDepth, optional bool bPropagateToChildren)"
+    },
+    "GetZDepth": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetZDepth()"
+    },
+    "IsHidden": {
+      "documentation": null,
+      "signature_members": {
+        "bIncludeParents": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsHidden(optional bool bIncludeParents)"
+    },
+    "IsVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bIncludeParents": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsVisible(optional bool bIncludeParents)"
+    },
+    "IsInitialized": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsInitialized()"
+    },
+    "OnInitialSceneUpdate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnInitialSceneUpdate()"
+    },
+    "NotifyVisibilityChanged": {
+      "documentation": null,
+      "signature_members": {
+        "SourceWidget": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyVisibilityChanged(UIScreenObject SourceWidget, bool bIsVisible)"
+    },
+    "NotifyActiveStateChanged": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "NewlyActiveState": {
+          "type": null,
+          "documentation": null
+        },
+        "PreviouslyActiveState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyActiveStateChanged(UIScreenObject Sender, int PlayerIndex, UIState NewlyActiveState, optional UIState PreviouslyActiveState)"
+    },
+    "NotifyResolutionChanged": {
+      "documentation": null,
+      "signature_members": {
+        "OldViewportsize": {
+          "type": null,
+          "documentation": null
+        },
+        "NewViewportSize": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyResolutionChanged(const out Vector2D OldViewportsize, const out Vector2D NewViewportSize)"
+    },
+    "NotifyPositionChanged": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyPositionChanged(UIScreenObject Sender)"
+    },
+    "OnProcessInputAxis": {
+      "documentation": null,
+      "signature_members": {
+        "EventParms": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnProcessInputAxis(const out SubscribedInputEventParameters EventParms)"
+    },
+    "OnProcessInputKey": {
+      "documentation": null,
+      "signature_members": {
+        "EventParms": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnProcessInputKey(const out SubscribedInputEventParameters EventParms)"
+    },
+    "OnRawInputAxis": {
+      "documentation": null,
+      "signature_members": {
+        "EventParms": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnRawInputAxis(const out InputEventParameters EventParms)"
+    },
+    "OnRawInputKey": {
+      "documentation": null,
+      "signature_members": {
+        "EventParms": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnRawInputKey(const out InputEventParameters EventParms)"
+    },
+    "NotifyActiveSkinChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyActiveSkinChanged()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

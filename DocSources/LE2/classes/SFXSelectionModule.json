@@ -1,0 +1,84 @@
+{
+  "parent": "SFXModule",
+  "package": "SFXGame",
+  "variables": {
+    "m_TargetOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "LensFlareComp": {
+      "type": "SFXSelectionLensFlareComponent",
+      "documentation": null
+    },
+    "LensFlareTemplate": {
+      "type": "LensFlare",
+      "documentation": null
+    },
+    "TargetSaveBool": {
+      "type": "SeqVar_Bool",
+      "documentation": null
+    },
+    "CombatTargetSaveBool": {
+      "type": "SeqVar_Bool",
+      "documentation": null
+    },
+    "m_srTargetTipText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srGameName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_fSelectionRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bTargetable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCombatTargetable": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "SetCombatTargetable": {
+      "documentation": null,
+      "signature_members": {
+        "bTargetable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCombatTargetable(bool bTargetable)"
+    },
+    "SetTargetable": {
+      "documentation": null,
+      "signature_members": {
+        "bTargetable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTargetable(bool bTargetable)"
+    },
+    "GetSelectionPoint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetSelectionPoint()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

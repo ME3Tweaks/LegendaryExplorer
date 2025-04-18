@@ -1,0 +1,57 @@
+{
+  "parent": "SFXSF_ReticleBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_vExtents": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "m_vExtentShrinkDelta": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "m_fMinTargetSelectionWidth": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMinTargetSelectionHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fReticleShrinkTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fFlourishLifeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fSelectionBoxScalingFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bPreviouslyInitialized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDoingActionFlourish": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ClearReticle": {
+      "documentation": null,
+      "signature_members": {
+        "bTransition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearReticle(optional bool bTransition)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

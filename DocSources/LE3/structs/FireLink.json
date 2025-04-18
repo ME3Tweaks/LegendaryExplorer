@@ -1,19 +1,19 @@
 {
   "Members": {
     "Interactions": {
-      "type": null,
+      "type": "byte",
       "documentation": null
     },
     "PackedProperties_CoverPairRefAndDynamicInfo": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bFallbackLink": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bDynamicIndexInited": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

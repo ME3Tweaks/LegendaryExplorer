@@ -1,7 +1,7 @@
 {
   "Members": {
     "Distribution": {
-      "type": null,
+      "type": "DistributionVector",
       "documentation": null
     }
   },

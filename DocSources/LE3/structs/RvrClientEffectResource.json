@@ -1,15 +1,15 @@
 {
   "Members": {
     "Effect": {
-      "type": null,
+      "type": "RvrClientEffectSpawnable",
       "documentation": null
     },
     "Priority": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "TimeStamp": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

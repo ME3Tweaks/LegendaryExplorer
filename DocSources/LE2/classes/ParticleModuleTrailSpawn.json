@@ -1,0 +1,17 @@
+{
+  "parent": "ParticleModuleTrailBase",
+  "package": "Engine",
+  "variables": {
+    "SpawnDistanceMap": {
+      "type": "DistributionFloatParticleParameter",
+      "documentation": null
+    },
+    "MinSpawnVelocity": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

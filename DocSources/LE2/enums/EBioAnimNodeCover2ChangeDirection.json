@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "eBioAnimNodeCover2ChangeDirection_Idle": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimNodeCover2ChangeDirection_TransitionToMirror": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimNodeCover2ChangeDirection_TransitionToDefault": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

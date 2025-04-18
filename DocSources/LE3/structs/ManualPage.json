@@ -1,35 +1,35 @@
 {
   "Members": {
     "Image": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Id": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Chapter": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "PageNum": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Title": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Body": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "ConsoleBody": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "ChapterIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

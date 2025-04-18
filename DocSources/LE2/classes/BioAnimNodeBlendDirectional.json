@@ -1,0 +1,33 @@
+{
+  "parent": "BioAnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "DirDegreesPerSecond": {
+      "type": "float",
+      "documentation": null
+    },
+    "ForeBackBlendTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "RotationDeadzone": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fDirAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bForward": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bWasMoving": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

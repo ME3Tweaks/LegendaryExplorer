@@ -1,0 +1,17 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "SectionMap": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "PageMap": {
+      "type": "Map_Mirror",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,134 @@
+{
+  "parent": "UIDataProvider",
+  "package": "Engine",
+  "variables": {
+    "RefreshSubscriberNotifies": {
+      "type": "OnDataStoreValueUpdated",
+      "documentation": null
+    },
+    "__OnDataStoreValueUpdated__Delegate": {
+      "type": "OnDataStoreValueUpdated",
+      "documentation": null
+    },
+    "Tag": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetDataStoreClient": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "DataStoreClient",
+      "signature": "DataStoreClient GetDataStoreClient()"
+    },
+    "OnCommit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCommit()"
+    },
+    "RefreshSubscribers": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyTag": {
+          "type": null,
+          "documentation": null
+        },
+        "bInvalidateValues": {
+          "type": null,
+          "documentation": null
+        },
+        "SourceProvider": {
+          "type": null,
+          "documentation": null
+        },
+        "ArrayIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RefreshSubscribers(optional Name PropertyTag, optional bool bInvalidateValues, optional UIDataProvider SourceProvider, optional int ArrayIndex)"
+    },
+    "NotifyGameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool NotifyGameSessionEnded()"
+    },
+    "SubscriberDetached": {
+      "documentation": null,
+      "signature_members": {
+        "Subscriber": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SubscriberDetached(UIDataStoreSubscriber Subscriber)"
+    },
+    "SubscriberAttached": {
+      "documentation": null,
+      "signature_members": {
+        "Subscriber": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SubscriberAttached(UIDataStoreSubscriber Subscriber)"
+    },
+    "Unregistered": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Unregistered(LocalPlayer PlayerOwner)"
+    },
+    "Registered": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Registered(LocalPlayer PlayerOwner)"
+    },
+    "OnDataStoreValueUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "SourceDataStore": {
+          "type": null,
+          "documentation": null
+        },
+        "bValuesInvalidated": {
+          "type": null,
+          "documentation": null
+        },
+        "PropertyTag": {
+          "type": null,
+          "documentation": null
+        },
+        "SourceProvider": {
+          "type": null,
+          "documentation": null
+        },
+        "ArrayIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDataStoreValueUpdated(UIDataStore SourceDataStore, bool bValuesInvalidated, Name PropertyTag, UIDataProvider SourceProvider, int ArrayIndex)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

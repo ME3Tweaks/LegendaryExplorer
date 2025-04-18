@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "m_a": {
+      "type": "BioPawnLabelledHeadGearBool",
+      "documentation": null
+    },
+    "m_bOverride": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

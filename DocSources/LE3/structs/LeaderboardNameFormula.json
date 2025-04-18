@@ -1,11 +1,11 @@
 {
   "Members": {
     "Name": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "AppendLocaleCode": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

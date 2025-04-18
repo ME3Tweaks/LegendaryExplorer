@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "BScMvSS_Idle": {
+      "value": 0,
+      "documentation": null
+    },
+    "BScMvSS_Walk": {
+      "value": 1,
+      "documentation": null
+    },
+    "BScMvSS_Run": {
+      "value": 2,
+      "documentation": null
+    },
+    "BScMvSS_Sprint": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "CCP_PeekLeftCrouch": {
+      "value": 0,
+      "documentation": null
+    },
+    "CCP_PeekLeftStand": {
+      "value": 1,
+      "documentation": null
+    },
+    "CCP_PeekRightCrouch": {
+      "value": 2,
+      "documentation": null
+    },
+    "CCP_PeekRightStand": {
+      "value": 3,
+      "documentation": null
+    },
+    "CCP_Popup": {
+      "value": 4,
+      "documentation": null
+    },
+    "CCP_AimBack": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

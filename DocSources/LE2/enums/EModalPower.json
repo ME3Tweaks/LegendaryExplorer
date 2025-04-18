@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "ModalPower_Carnage": {
+      "value": 0,
+      "documentation": null
+    },
+    "ModalPower_Overkill": {
+      "value": 1,
+      "documentation": null
+    },
+    "ModalPower_Marksman": {
+      "value": 2,
+      "documentation": null
+    },
+    "ModalPower_Assassinate": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

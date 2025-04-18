@@ -1,0 +1,62 @@
+{
+  "parent": "SkeletalMeshActor",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "CreateGoreActor": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        },
+        "BoneName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateGoreActor(Pawn Pawn, Name BoneName)"
+    },
+    "SwitchBodiesBelow": {
+      "documentation": null,
+      "signature_members": {
+        "ParentBoneName": {
+          "type": null,
+          "documentation": null
+        },
+        "FromSkelComp": {
+          "type": null,
+          "documentation": null
+        },
+        "ToSkelComp": {
+          "type": null,
+          "documentation": null
+        },
+        "FromInst": {
+          "type": null,
+          "documentation": null
+        },
+        "ToInst": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SwitchBodiesBelow(Name ParentBoneName, SkeletalMeshComponent FromSkelComp, SkeletalMeshComponent ToSkelComp, PhysicsAssetInstance FromInst, PhysicsAssetInstance ToInst)"
+    },
+    "CopyBindPose": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CopyBindPose(BioPawn Pawn)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

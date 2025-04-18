@@ -1,0 +1,17 @@
+{
+  "parent": "ParticleModuleTypeDataBase",
+  "package": "Engine",
+  "variables": {
+    "VerticalLod": {
+      "type": "PhysXEmitterVerticalLodProperties",
+      "documentation": null
+    },
+    "PhysXParSys": {
+      "type": "PhysXParticleSystem",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

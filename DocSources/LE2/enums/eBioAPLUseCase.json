@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "APL_USE_TOGGLE": {
+      "value": 0,
+      "documentation": null
+    },
+    "APL_USE_STATE0": {
+      "value": 1,
+      "documentation": null
+    },
+    "APL_USE_STATE1": {
+      "value": 2,
+      "documentation": null
+    },
+    "APL_USE_ELECTRONICS": {
+      "value": 3,
+      "documentation": null
+    },
+    "APL_USE_DECRYPT": {
+      "value": 4,
+      "documentation": null
+    },
+    "APL_USE_PROXIMITY": {
+      "value": 5,
+      "documentation": null
+    },
+    "APL_USE_PROXIMITY_ENTER": {
+      "value": 6,
+      "documentation": null
+    },
+    "APL_USE_PROXIMITY_EXIT": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

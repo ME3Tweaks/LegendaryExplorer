@@ -1,0 +1,21 @@
+{
+  "parent": "Actor",
+  "package": "WwiseAudio",
+  "variables": {},
+  "functions": {
+    "GetUpVector": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetUpVector()"
+    },
+    "GetFrontVector": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetFrontVector()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

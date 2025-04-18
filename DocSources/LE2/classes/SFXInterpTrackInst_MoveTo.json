@@ -1,0 +1,17 @@
+{
+  "parent": "InterpTrackInstMove",
+  "package": "SFXGame",
+  "variables": {
+    "StartLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "StartRotation": {
+      "type": "Rotator",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

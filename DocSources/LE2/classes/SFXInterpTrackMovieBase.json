@@ -1,0 +1,20 @@
+{
+  "parent": "SFXGameInterpTrackCustom",
+  "package": "SFXGame",
+  "variables": {
+    "m_aMovieKeyData": {
+      "type": "SFXMoviePlayStateData",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "KeyDataArrayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataArrayName()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

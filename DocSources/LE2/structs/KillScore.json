@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Message": {
+      "type": "string",
+      "documentation": null
+    },
+    "DamageClassName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Points": {
+      "type": "int",
+      "documentation": null
+    },
+    "GrinderAchievementId": {
+      "type": "EAchievementID",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

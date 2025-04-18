@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "OffsetInfo": {
+      "type": "InterpPropertyInfo",
+      "documentation": null
+    },
+    "ParameterName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "fCurrentValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "bInited": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

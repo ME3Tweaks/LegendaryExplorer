@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "LT_Known": {
+      "value": 0,
+      "documentation": null
+    },
+    "LT_Interp": {
+      "value": 1,
+      "documentation": null
+    },
+    "LT_Exact": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "Prefix": {
+      "type": "string",
+      "documentation": null
+    },
+    "GameType": {
+      "type": "string",
+      "documentation": null
+    },
+    "AdditionalGameTypes": {
+      "type": "string",
+      "documentation": null
+    },
+    "ForcedObjects": {
+      "type": "string",
+      "documentation": null
+    },
+    "bUsesCommonPackage": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

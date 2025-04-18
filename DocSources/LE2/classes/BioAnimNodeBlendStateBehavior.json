@@ -1,0 +1,17 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aNodeDefinitions": {
+      "type": "BioAnimStateNodeBehaviorDef",
+      "documentation": null
+    },
+    "m_fQueryPlayTime": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

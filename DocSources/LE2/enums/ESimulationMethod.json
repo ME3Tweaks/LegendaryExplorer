@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "ESM_SPH": {
+      "value": 0,
+      "documentation": null
+    },
+    "ESM_NO_PARTICLE_INTERACTION": {
+      "value": 1,
+      "documentation": null
+    },
+    "ESM_MIXED_MODE": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

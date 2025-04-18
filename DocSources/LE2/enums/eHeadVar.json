@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "BioHV_Head1": {
+      "value": 0,
+      "documentation": null
+    },
+    "BioHV_Head2": {
+      "value": 1,
+      "documentation": null
+    },
+    "BioHV_Head3": {
+      "value": 2,
+      "documentation": null
+    },
+    "BioHV_Head4": {
+      "value": 3,
+      "documentation": null
+    },
+    "BioHV_Head5": {
+      "value": 4,
+      "documentation": null
+    },
+    "BioHV_Head6": {
+      "value": 5,
+      "documentation": null
+    },
+    "BioHV_Head7": {
+      "value": 6,
+      "documentation": null
+    },
+    "BioHV_Head8": {
+      "value": 7,
+      "documentation": null
+    },
+    "BioHV_Head9": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

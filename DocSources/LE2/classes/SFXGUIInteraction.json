@@ -1,0 +1,32 @@
+{
+  "parent": "GFxInteraction",
+  "package": "SFXGame",
+  "variables": {
+    "ControlTokens": {
+      "type": "SFXSFControlToken",
+      "documentation": null
+    },
+    "ControlTokenAliases": {
+      "type": "SFXControlTokenAlias",
+      "documentation": null
+    },
+    "StringMappings": {
+      "type": "SFXStringMap",
+      "documentation": null
+    },
+    "ReplaceRegisteredTMWithFullHeightChar": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "NotifyGameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyGameSessionEnded()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

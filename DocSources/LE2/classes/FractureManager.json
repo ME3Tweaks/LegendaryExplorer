@@ -1,0 +1,189 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "PartPool": {
+      "type": "FracturedStaticMeshPart",
+      "documentation": null
+    },
+    "FreeParts": {
+      "type": "int",
+      "documentation": null
+    },
+    "ActorsWithDeferredPartsToSpawn": {
+      "type": "FracturedStaticMeshActor",
+      "documentation": null
+    },
+    "FSMPartPoolSize": {
+      "type": "int",
+      "documentation": null
+    },
+    "DestroyVibrationLevel": {
+      "type": "float",
+      "documentation": null
+    },
+    "DestroyMinAngVel": {
+      "type": "float",
+      "documentation": null
+    },
+    "ExplosionVelScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "bEnableAntiVibration": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableSpawnChunkEffectForRadialDamage": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "SpawnDeferredParts": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SpawnDeferredParts()"
+    },
+    "ReturnPartActor": {
+      "documentation": null,
+      "signature_members": {
+        "Part": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReturnPartActor(FracturedStaticMeshPart Part)"
+    },
+    "SpawnPartActor": {
+      "documentation": null,
+      "signature_members": {
+        "Parent": {
+          "type": null,
+          "documentation": null
+        },
+        "SpawnLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "SpawnRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "FracturedStaticMeshPart",
+      "signature": "FracturedStaticMeshPart SpawnPartActor(FracturedStaticMeshActor Parent, Vector SpawnLocation, Rotator SpawnRotation)"
+    },
+    "GetFSMPart": {
+      "documentation": null,
+      "signature_members": {
+        "Parent": {
+          "type": null,
+          "documentation": null
+        },
+        "SpawnLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "SpawnRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "FracturedStaticMeshPart",
+      "signature": "FracturedStaticMeshPart GetFSMPart(FracturedStaticMeshActor Parent, Vector SpawnLocation, Rotator SpawnRotation)"
+    },
+    "ResetPoolVisibility": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetPoolVisibility()"
+    },
+    "CreateFSMParts": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CreateFSMParts()"
+    },
+    "CleanUpFSMParts": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CleanUpFSMParts()"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "PreBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreBeginPlay()"
+    },
+    "GetFSMFractureCullDistanceScale": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetFSMFractureCullDistanceScale()"
+    },
+    "GetFSMRadialSpawnChanceScale": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetFSMRadialSpawnChanceScale()"
+    },
+    "GetFSMDirectSpawnChanceScale": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetFSMDirectSpawnChanceScale()"
+    },
+    "GetNumFSMPartsScale": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetNumFSMPartsScale()"
+    },
+    "SpawnChunkDestroyEffect": {
+      "documentation": null,
+      "signature_members": {
+        "Effect": {
+          "type": null,
+          "documentation": null
+        },
+        "ChunkBox": {
+          "type": null,
+          "documentation": null
+        },
+        "ChunkDir": {
+          "type": null,
+          "documentation": null
+        },
+        "Scale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnChunkDestroyEffect(ParticleSystem Effect, Box ChunkBox, Vector ChunkDir, float Scale)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

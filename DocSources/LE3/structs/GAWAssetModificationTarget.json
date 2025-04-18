@@ -1,11 +1,11 @@
 {
   "Members": {
     "TargetID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Value": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

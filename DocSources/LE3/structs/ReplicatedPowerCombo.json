@@ -1,31 +1,31 @@
 {
   "Members": {
     "EffectClass": {
-      "type": null,
+      "type": "Class",
       "documentation": null
     },
     "HitLocation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "TargetPawn": {
-      "type": null,
+      "type": "BioPawn",
       "documentation": null
     },
     "SourcePowerInstigator": {
-      "type": null,
+      "type": "BioPawn",
       "documentation": null
     },
     "TriggerCounter": {
-      "type": null,
+      "type": "byte",
       "documentation": null
     },
     "DetonatorPowerID": {
-      "type": null,
+      "type": "byte",
       "documentation": null
     },
     "SourcePowerID": {
-      "type": null,
+      "type": "byte",
       "documentation": null
     }
   },

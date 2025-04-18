@@ -1,0 +1,116 @@
+{
+  "parent": "SFXPawn",
+  "package": "SFXGameContent_Powers",
+  "variables": {
+    "__OnDroneKilled__Delegate": {
+      "type": "OnDroneKilled",
+      "documentation": null
+    },
+    "DroneColor": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "DroneColor2": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Caster": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "PSC_Active": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "PSC_Spawn": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "PS_DeathVFX": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "bCustomColor": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCustomColor2": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PlayDeathVocalization": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayDeathVocalization(BioPawn Killer)"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "Died": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Died(Controller Killer, Class<DamageType> DamageType, Vector HitLocation)"
+    },
+    "SetDroneColor2": {
+      "documentation": null,
+      "signature_members": {
+        "NewColor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDroneColor2(Vector NewColor)"
+    },
+    "SetDroneColor": {
+      "documentation": null,
+      "signature_members": {
+        "NewColor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDroneColor(Vector NewColor)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "OnDroneKilled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnDroneKilled()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

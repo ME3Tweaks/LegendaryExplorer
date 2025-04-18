@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "SFXRC_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXRC_Standard": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXRC_HeavyWeapon": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXRC_Sniper": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXRC_COUNT": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

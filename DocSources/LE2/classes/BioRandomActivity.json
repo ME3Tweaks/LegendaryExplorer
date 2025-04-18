@@ -1,0 +1,21 @@
+{
+  "parent": "BioBaseActivity",
+  "package": "SFXGame",
+  "variables": {
+    "m_afTwitchProbabilitys": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fBaseTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fVarianceTime": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

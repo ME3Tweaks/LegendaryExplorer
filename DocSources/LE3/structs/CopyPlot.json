@@ -1,15 +1,15 @@
 {
   "Members": {
     "nSId": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nTId": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nType": {
-      "type": null,
+      "type": "SFXPlotType",
       "documentation": null
     }
   },

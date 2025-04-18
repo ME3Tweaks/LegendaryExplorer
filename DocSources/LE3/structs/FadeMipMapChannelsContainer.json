@@ -1,19 +1,19 @@
 {
   "Members": {
     "FadeRedChannel": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "FadeGreenChannel": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "FadeBlueChannel": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "FadeAlphaChannel": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

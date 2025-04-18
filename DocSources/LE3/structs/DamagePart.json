@@ -1,11 +1,11 @@
 {
   "Members": {
     "PartName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "DamageScale": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

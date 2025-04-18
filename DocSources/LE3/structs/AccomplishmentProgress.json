@@ -1,15 +1,15 @@
 {
   "Members": {
     "Name": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "Index": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "LinkedProfileSetting": {
-      "type": null,
+      "type": "EProfileSetting",
       "documentation": null
     }
   },

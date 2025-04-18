@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "offerType": {
+      "type": "string",
+      "documentation": null
+    },
+    "OfferId": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

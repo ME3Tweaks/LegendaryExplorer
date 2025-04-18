@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "DataOrigin_NewGame": {
+      "value": 0,
+      "documentation": null
+    },
+    "DataOrigin_ME1": {
+      "value": 1,
+      "documentation": null
+    },
+    "DataOrigin_ME2": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

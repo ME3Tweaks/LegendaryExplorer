@@ -1,0 +1,25 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "Fragmented": {
+      "type": "byte",
+      "documentation": null
+    },
+    "BoxElemStart": {
+      "type": "int",
+      "documentation": null
+    },
+    "ConvexElemStart": {
+      "type": "int",
+      "documentation": null
+    },
+    "DetailedCollision": {
+      "type": "RB_BodySetup",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

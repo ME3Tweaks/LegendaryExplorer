@@ -1,0 +1,39 @@
+{
+  "parent": "BioArtPlaceable",
+  "package": "SFXGame",
+  "variables": {
+    "m_oPlayerWithinDoorProximity": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "m_fFarCloseDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bSaveStateWhenPlayerEntered": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CalcDistanceFromDoorPlane": {
+      "documentation": null,
+      "signature_members": {
+        "vWorldLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float CalcDistanceFromDoorPlane(const out Vector vWorldLocation)"
+    },
+    "BioDoProximityCheck": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool BioDoProximityCheck()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

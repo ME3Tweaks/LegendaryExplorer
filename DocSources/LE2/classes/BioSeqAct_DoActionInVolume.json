@@ -1,0 +1,36 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_aActorList": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "ClassFilter": {
+      "type": "Class",
+      "documentation": null
+    },
+    "Volume": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "CurrentObject": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_nIndex": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,44 @@
+{
+  "parent": "SFXCustomAction_DamageReaction",
+  "package": "SFXGame",
+  "variables": {
+    "UtilizeCrust": {
+      "type": "VisualEffect",
+      "documentation": null
+    },
+    "BS_ReactionAlternative1": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "BS_ReactionAlternative2": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "BS_ReactionExploreAlternative": {
+      "type": "BodyStance",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CheckFiring": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckFiring()"
+    },
+    "CheckMoving": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckMoving()"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

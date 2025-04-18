@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "LinkDesc": {
+      "type": "string",
+      "documentation": null
+    },
+    "LinkAction": {
+      "type": "Name",
+      "documentation": null
+    },
+    "LinkedOp": {
+      "type": "SequenceOp",
+      "documentation": null
+    },
+    "QueuedActivations": {
+      "type": "int",
+      "documentation": null
+    },
+    "ActivateDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "bHasImpulse": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisabled": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

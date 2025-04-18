@@ -1,0 +1,25 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "ConeColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "ConeRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "ConeAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "ConeSides": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

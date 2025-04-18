@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "SpecParam": {
+      "type": "ScalarParameterValue",
+      "documentation": null
+    },
+    "SpecPwrParam": {
+      "type": "ScalarParameterValue",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

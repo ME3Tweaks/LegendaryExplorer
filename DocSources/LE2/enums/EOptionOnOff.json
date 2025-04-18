@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "OOO_On": {
+      "value": 0,
+      "documentation": null
+    },
+    "OOO_Off": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,15 +1,15 @@
 {
   "Members": {
     "HitLocation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "HitNormal": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "Trigger": {
-      "type": null,
+      "type": "byte",
       "documentation": null
     }
   },

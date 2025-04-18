@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "eBioAnimNodeFall_Falling": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimNodeFall_Landing": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

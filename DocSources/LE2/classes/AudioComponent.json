@@ -1,0 +1,418 @@
+{
+  "parent": "ActorComponent",
+  "package": "Engine",
+  "variables": {
+    "SoundCue": {
+      "type": "SoundCue",
+      "documentation": null
+    },
+    "CueFirstNode": {
+      "type": "SoundNode",
+      "documentation": null
+    },
+    "InstanceParameters": {
+      "type": "AudioComponentParam",
+      "documentation": null
+    },
+    "bUseOwnerLocation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAutoPlay": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAutoDestroy": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStopWhenOwnerDestroyed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShouldRemainActiveIfDropped": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWasOccluded": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSuppressSubtitles": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWasPlaying": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowSpatialization": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFinished": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPreviewComponent": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreForFlushing": {
+      "type": "bool",
+      "documentation": null
+    },
+    "StereoBleed": {
+      "type": "float",
+      "documentation": null
+    },
+    "LFEBleed": {
+      "type": "float",
+      "documentation": null
+    },
+    "bEQFilterApplied": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAlwaysPlay": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsUISound": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsMusic": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoReverb": {
+      "type": "bool",
+      "documentation": null
+    },
+    "WaveInstances": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "SoundNodeData": {
+      "type": "byte",
+      "documentation": null
+    },
+    "SoundNodeOffsetMap": {
+      "type": "Object",
+      "documentation": null
+    },
+    "SoundNodeResetWaveMap": {
+      "type": "MultiMap_Mirror",
+      "documentation": null
+    },
+    "Listener": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "PlaybackTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "PortalVolume": {
+      "type": "PortalVolume",
+      "documentation": null
+    },
+    "Location": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "ComponentLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "LastOwner": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "SubtitlePriority": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadeInStartTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadeInStopTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadeInTargetVolume": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadeOutStartTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadeOutStopTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadeOutTargetVolume": {
+      "type": "float",
+      "documentation": null
+    },
+    "AdjustVolumeStartTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "AdjustVolumeStopTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "AdjustVolumeTargetVolume": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrAdjustVolumeTargetVolume": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentNotifyBufferFinishedHook": {
+      "type": "SoundNode",
+      "documentation": null
+    },
+    "CurrentLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "CurrentVolume": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentPitch": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentHighFrequencyGain": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentUseSpatialization": {
+      "type": "int",
+      "documentation": null
+    },
+    "CurrentUseSeamlessLooping": {
+      "type": "int",
+      "documentation": null
+    },
+    "CurrentVolumeMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentPitchMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentHighFrequencyGainMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentVoiceCenterChannelVolume": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentVoiceRadioVolume": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastUpdateTime": {
+      "type": "Double",
+      "documentation": null
+    },
+    "SourceInteriorVolume": {
+      "type": "float",
+      "documentation": null
+    },
+    "SourceInteriorLPF": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentInteriorVolume": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentInteriorLPF": {
+      "type": "float",
+      "documentation": null
+    },
+    "VolumeMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "PitchMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "HighFrequencyGainMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "OcclusionCheckInterval": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastOcclusionCheckTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "PreviewSoundRadius": {
+      "type": "DrawSoundRadiusComponent",
+      "documentation": null
+    },
+    "__OnAudioFinished__Delegate": {
+      "type": "OnAudioFinished",
+      "documentation": null
+    },
+    "__OnQueueSubtitles__Delegate": {
+      "type": "OnQueueSubtitles",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OcclusionChanged": {
+      "documentation": null,
+      "signature_members": {
+        "bNowOccluded": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OcclusionChanged(bool bNowOccluded)"
+    },
+    "OnQueueSubtitles": {
+      "documentation": null,
+      "signature_members": {
+        "Subtitles": {
+          "type": null,
+          "documentation": null
+        },
+        "CueDuration": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnQueueSubtitles(array<SubtitleCue> Subtitles, float CueDuration)"
+    },
+    "OnAudioFinished": {
+      "documentation": null,
+      "signature_members": {
+        "AC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnAudioFinished(AudioComponent AC)"
+    },
+    "ResetToDefaults": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetToDefaults()"
+    },
+    "SetWaveParameter": {
+      "documentation": null,
+      "signature_members": {
+        "InName": {
+          "type": null,
+          "documentation": null
+        },
+        "InWave": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWaveParameter(Name InName, SoundNodeWave InWave)"
+    },
+    "SetFloatParameter": {
+      "documentation": null,
+      "signature_members": {
+        "InName": {
+          "type": null,
+          "documentation": null
+        },
+        "InFloat": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFloatParameter(Name InName, float InFloat)"
+    },
+    "AdjustVolume": {
+      "documentation": null,
+      "signature_members": {
+        "AdjustVolumeDuration": {
+          "type": null,
+          "documentation": null
+        },
+        "AdjustVolumeLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AdjustVolume(float AdjustVolumeDuration, float AdjustVolumeLevel)"
+    },
+    "FadeOut": {
+      "documentation": null,
+      "signature_members": {
+        "FadeOutDuration": {
+          "type": null,
+          "documentation": null
+        },
+        "FadeVolumeLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FadeOut(float FadeOutDuration, float FadeVolumeLevel)"
+    },
+    "FadeIn": {
+      "documentation": null,
+      "signature_members": {
+        "FadeInDuration": {
+          "type": null,
+          "documentation": null
+        },
+        "FadeVolumeLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FadeIn(float FadeInDuration, float FadeVolumeLevel)"
+    },
+    "IsPlaying": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsPlaying()"
+    },
+    "Stop": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Stop()"
+    },
+    "Play": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Play()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

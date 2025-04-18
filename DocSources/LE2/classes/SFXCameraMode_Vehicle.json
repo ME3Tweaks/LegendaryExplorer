@@ -1,0 +1,104 @@
+{
+  "parent": "SFXCameraMode",
+  "package": "SFXGame",
+  "variables": {
+    "RegularCameraHookOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "AlternateCameraHookOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "ElasticPosition": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "HookLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Blur": {
+      "type": "MotionBlurEffect",
+      "documentation": null
+    },
+    "ArcRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "RegularCameraArcRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "AlternateCameraArcRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "ElasticSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "ElasticScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastDeltaT": {
+      "type": "float",
+      "documentation": null
+    },
+    "bUpdatedThisFrame": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "MakeInactive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MakeInactive()"
+    },
+    "MakeActive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MakeActive()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "UpdatePosition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdatePosition()"
+    },
+    "GetCameraLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetCameraLocation()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(BioPlayerController PC)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

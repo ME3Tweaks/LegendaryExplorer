@@ -1,19 +1,19 @@
 {
   "Members": {
     "ForcedLocation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "PC": {
-      "type": null,
+      "type": "PlayerController",
       "documentation": null
     },
     "ReplicatedMoves": {
-      "type": null,
+      "type": "SFXSavedMove",
       "documentation": null
     },
     "bForceNewLocation": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

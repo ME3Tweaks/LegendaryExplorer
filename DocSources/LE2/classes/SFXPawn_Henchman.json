@@ -1,0 +1,269 @@
+{
+  "parent": "SFXPawn",
+  "package": "SFXGame",
+  "variables": {
+    "HenchmenInfo": {
+      "type": "HenchmanInfoStruct",
+      "documentation": null
+    },
+    "HelmetMesh": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "m_GUI_Icon": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "m_GUI_Icon_Dead": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "m_nmMappedPower": {
+      "type": "Name",
+      "documentation": null
+    },
+    "PowerUseDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "bHelmetHidesHead": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHelmetHidesHair": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CreateWeapons": {
+      "documentation": null,
+      "signature_members": {
+        "ChkLoadout": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateWeapons(SFXLoadoutData ChkLoadout)"
+    },
+    "GetDefaultLoadout": {
+      "documentation": null,
+      "signature_members": {
+        "HTag": {
+          "type": null,
+          "documentation": null
+        },
+        "DLoadout": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetDefaultLoadout(Name HTag, out Name DLoadout[6])"
+    },
+    "GetMaxAttackTickets": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMaxAttackTickets()"
+    },
+    "GetMaxTargetTickets": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMaxTargetTickets()"
+    },
+    "PlayDeathVocalization": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayDeathVocalization(BioPawn Killer)"
+    },
+    "SetRTPCHelmetIsEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "WwiseComponent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRTPCHelmetIsEnabled(WwiseAudioComponent WwiseComponent)"
+    },
+    "GetGUIIcon": {
+      "documentation": null,
+      "signature_members": {
+        "bDeadIcon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Texture2D",
+      "signature": "Texture2D GetGUIIcon(optional bool bDeadIcon)"
+    },
+    "ValidateRagdoll": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ValidateRagdoll()"
+    },
+    "InitializeHenchman": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeHenchman(int DesiredLevel)"
+    },
+    "SpawnDefaultWeapons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SpawnDefaultWeapons()"
+    },
+    "Resurrect": {
+      "documentation": null,
+      "signature_members": {
+        "PercentOfHealthRegained": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsInstantaneous": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Resurrect(float PercentOfHealthRegained, bool bIsInstantaneous)"
+    },
+    "Revive": {
+      "documentation": null,
+      "signature_members": {
+        "User": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Revive(Actor User)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "GetAttackOrderPower": {
+      "documentation": null,
+      "signature_members": {
+        "Power": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetAttackOrderPower(out SFXPower Power)"
+    },
+    "InCombat": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool InCombat()"
+    },
+    "OutsideWorldBounds": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OutsideWorldBounds()"
+    },
+    "FellOutOfWorld": {
+      "documentation": null,
+      "signature_members": {
+        "dmgType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FellOutOfWorld(Class<DamageType> dmgType)"
+    },
+    "GetScaledLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetScaledLevel()"
+    },
+    "ForceHelmetVisibility": {
+      "documentation": null,
+      "signature_members": {
+        "bHelmetVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ForceHelmetVisibility(bool bHelmetVisible)"
+    },
+    "ShowHelmet": {
+      "documentation": null,
+      "signature_members": {
+        "bShowHelmet": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowHelmet(bool bShowHelmet)"
+    }
+  },
+  "states": {
+    "BioPawn": {
+      "functions": {
+        "UpdateCombatMode": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Downed": {
+      "functions": {
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

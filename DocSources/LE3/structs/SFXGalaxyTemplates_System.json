@@ -1,83 +1,83 @@
 {
   "Members": {
     "Planet": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "PlanetCircle": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "PlanetRing": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "Object": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "Arrow": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "AsteroidBelt": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "SystemSphere": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "SystemCard1": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "SystemCard2": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "Emitter": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "Sunlight": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "Sun": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "LensFlare": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "MassRelay": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "MassRelayRed": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "MassRelayVFX": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "FuelDepot": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "Crosshair": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "Camera": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "ReaperArrow": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     }
   },

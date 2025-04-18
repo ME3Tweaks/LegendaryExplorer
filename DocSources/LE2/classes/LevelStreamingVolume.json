@@ -1,0 +1,67 @@
+{
+  "parent": "Volume",
+  "package": "Engine",
+  "variables": {
+    "StreamingLevels": {
+      "type": "LevelStreaming",
+      "documentation": null
+    },
+    "TestVolumeDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "bEditorPreVisOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTestDistanceToVolume": {
+      "type": "bool",
+      "documentation": null
+    },
+    "StreamingUsage": {
+      "type": "EStreamingVolumeUsage",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ApplyCheckpointRecord": {
+      "documentation": null,
+      "signature_members": {
+        "Record": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyCheckpointRecord(const out CheckpointRecord Record)"
+    },
+    "CreateCheckpointRecord": {
+      "documentation": null,
+      "signature_members": {
+        "Record": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateCheckpointRecord(out CheckpointRecord Record)"
+    },
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle Action)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

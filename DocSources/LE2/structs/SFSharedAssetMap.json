@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "SharedFile": {
+      "type": "string",
+      "documentation": null
+    },
+    "SharedResource": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

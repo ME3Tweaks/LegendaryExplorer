@@ -1,0 +1,15 @@
+{
+  "parent": "SequenceEvent",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "RegisterEvent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RegisterEvent()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

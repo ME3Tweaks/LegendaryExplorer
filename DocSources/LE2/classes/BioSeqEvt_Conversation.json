@@ -1,0 +1,21 @@
+{
+  "parent": "SequenceEvent",
+  "package": "SFXGame",
+  "variables": {
+    "sScriptName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Conv": {
+      "type": "BioConversation",
+      "documentation": null
+    },
+    "eScriptType": {
+      "type": "EConversationScriptType",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

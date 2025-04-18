@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "BIO_ATTRIBUTE_PAWN_RACE_HUMAN": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTE_PAWN_RACE_ASARI": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTE_PAWN_RACE_TURIAN": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTE_PAWN_RACE_SALARIAN": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTE_PAWN_RACE_QUARIAN": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTE_PAWN_RACE_OTHER": {
+      "value": 5,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTE_PAWN_RACE_KROGAN": {
+      "value": 6,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTE_PAWN_RACE_GETH": {
+      "value": 7,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTE_PAWN_RACE_OTHER_ARTIFICIAL": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

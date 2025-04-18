@@ -1,11 +1,11 @@
 {
   "Members": {
     "pAnimSet": {
-      "type": null,
+      "type": "AnimSet",
       "documentation": null
     },
     "nRefCount": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

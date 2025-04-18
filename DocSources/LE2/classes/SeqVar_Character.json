@@ -1,0 +1,13 @@
+{
+  "parent": "SeqVar_Object",
+  "package": "Engine",
+  "variables": {
+    "PawnClass": {
+      "type": "Class",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

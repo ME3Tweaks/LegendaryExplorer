@@ -1,0 +1,169 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Actors": {
+      "type": "PhysXDestructibleActor",
+      "documentation": null
+    },
+    "ActorKillList": {
+      "type": "PhysXDestructibleActor",
+      "documentation": null
+    },
+    "Chunks": {
+      "type": "PhysXDestructibleChunk",
+      "documentation": null
+    },
+    "Overlaps": {
+      "type": "PhysXDestructibleOverlap",
+      "documentation": null
+    },
+    "Active": {
+      "type": "int",
+      "documentation": null
+    },
+    "PseudoSupporterFifo": {
+      "type": "int",
+      "documentation": null
+    },
+    "FractureOriginFifo": {
+      "type": "int",
+      "documentation": null
+    },
+    "FractureOriginChunks": {
+      "type": "int",
+      "documentation": null
+    },
+    "RouteUpdateArea": {
+      "type": "int",
+      "documentation": null
+    },
+    "PassiveFractureChunks": {
+      "type": "int",
+      "documentation": null
+    },
+    "RouteUpdateFifo": {
+      "type": "int",
+      "documentation": null
+    },
+    "Manager": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "PseudoSupporterFifoStart": {
+      "type": "int",
+      "documentation": null
+    },
+    "FractureOriginFifoStart": {
+      "type": "int",
+      "documentation": null
+    },
+    "PerFrameProcessBudget": {
+      "type": "int",
+      "documentation": null
+    },
+    "RouteUpdateFifoStart": {
+      "type": "int",
+      "documentation": null
+    },
+    "SupportDepth": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetChunkCentroid": {
+      "documentation": null,
+      "signature_members": {
+        "ChunkIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetChunkCentroid(int ChunkIndex)"
+    },
+    "GetChunkMatrix": {
+      "documentation": null,
+      "signature_members": {
+        "ChunkIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Matrix",
+      "signature": "Matrix GetChunkMatrix(int ChunkIndex)"
+    },
+    "CrumbleChunk": {
+      "documentation": null,
+      "signature_members": {
+        "ChunkIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CrumbleChunk(int ChunkIndex)"
+    },
+    "FractureChunk": {
+      "documentation": null,
+      "signature_members": {
+        "ChunkIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "Point": {
+          "type": null,
+          "documentation": null
+        },
+        "Impulse": {
+          "type": null,
+          "documentation": null
+        },
+        "bInheritRootVel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FractureChunk(int ChunkIndex, Vector Point, Vector Impulse, bool bInheritRootVel)"
+    },
+    "DamageChunk": {
+      "documentation": null,
+      "signature_members": {
+        "ChunkIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "Point": {
+          "type": null,
+          "documentation": null
+        },
+        "BaseDamage": {
+          "type": null,
+          "documentation": null
+        },
+        "Radius": {
+          "type": null,
+          "documentation": null
+        },
+        "bFullDamage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageFalloffExp": {
+          "type": null,
+          "documentation": null
+        },
+        "Output": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DamageChunk(int ChunkIndex, Vector Point, float BaseDamage, float Radius, bool bFullDamage, float DamageFalloffExp, out array<int> Output)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

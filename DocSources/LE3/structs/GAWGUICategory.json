@@ -1,19 +1,19 @@
 {
   "Members": {
     "ImagePath": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Id": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "srCategoryName": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "srCategoryDescription": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

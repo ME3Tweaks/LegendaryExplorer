@@ -1,0 +1,24 @@
+{
+  "parent": "SFXShield_Base",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "AdjustShieldImpactLocation": {
+      "documentation": null,
+      "signature_members": {
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AdjustShieldImpactLocation(Vector HitNormal, out Vector HitLocation)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

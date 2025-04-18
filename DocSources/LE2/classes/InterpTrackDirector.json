@@ -1,0 +1,17 @@
+{
+  "parent": "InterpTrack",
+  "package": "Engine",
+  "variables": {
+    "CutTrack": {
+      "type": "DirectorTrackCut",
+      "documentation": null
+    },
+    "bSimulateCameraCutsOnClients": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

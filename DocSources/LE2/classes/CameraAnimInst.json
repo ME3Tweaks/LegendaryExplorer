@@ -1,0 +1,228 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "UserPlaySpaceMatrix": {
+      "type": "Matrix",
+      "documentation": null
+    },
+    "LastPPSettings": {
+      "type": "PostProcessSettings",
+      "documentation": null
+    },
+    "CamAnim": {
+      "type": "CameraAnim",
+      "documentation": null
+    },
+    "MoveTrack": {
+      "type": "InterpTrackMove",
+      "documentation": null
+    },
+    "MoveInst": {
+      "type": "InterpTrackInstMove",
+      "documentation": null
+    },
+    "SourceAnimNode": {
+      "type": "AnimNodeSequence",
+      "documentation": null
+    },
+    "InterpGroupInst": {
+      "type": "InterpGroupInst",
+      "documentation": null
+    },
+    "CurTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurBlendInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurBlendOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "PlayRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "BasePlayScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "TransientScaleModifier": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentBlendWeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "RemainingTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastPPSettingsAlpha": {
+      "type": "float",
+      "documentation": null
+    },
+    "bLooping": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFinished": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAutoReleaseWhenFinished": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBlendingIn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBlendingOut": {
+      "type": "bool",
+      "documentation": null
+    },
+    "PlaySpace": {
+      "type": "ECameraAnimPlaySpace",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetPlaySpace": {
+      "documentation": null,
+      "signature_members": {
+        "NewSpace": {
+          "type": null,
+          "documentation": null
+        },
+        "UserPlaySpace": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlaySpace(ECameraAnimPlaySpace NewSpace, optional Rotator UserPlaySpace)"
+    },
+    "ApplyTransientScaling": {
+      "documentation": null,
+      "signature_members": {
+        "Scalar": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyTransientScaling(float Scalar)"
+    },
+    "Stop": {
+      "documentation": null,
+      "signature_members": {
+        "bImmediate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Stop(optional bool bImmediate)"
+    },
+    "AdvanceAnim": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "bJump": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AdvanceAnim(float DeltaTime, bool bJump)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "NewRate": {
+          "type": null,
+          "documentation": null
+        },
+        "NewScale": {
+          "type": null,
+          "documentation": null
+        },
+        "NewBlendInTime": {
+          "type": null,
+          "documentation": null
+        },
+        "NewBlendOutTime": {
+          "type": null,
+          "documentation": null
+        },
+        "NewDuration": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float NewRate, float NewScale, float NewBlendInTime, float NewBlendOutTime, optional float NewDuration)"
+    },
+    "Play": {
+      "documentation": null,
+      "signature_members": {
+        "Anim": {
+          "type": null,
+          "documentation": null
+        },
+        "CamActor": {
+          "type": null,
+          "documentation": null
+        },
+        "InRate": {
+          "type": null,
+          "documentation": null
+        },
+        "InScale": {
+          "type": null,
+          "documentation": null
+        },
+        "InBlendInTime": {
+          "type": null,
+          "documentation": null
+        },
+        "InBlendOutTime": {
+          "type": null,
+          "documentation": null
+        },
+        "bInLoop": {
+          "type": null,
+          "documentation": null
+        },
+        "bRandomStartTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Duration": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Play(CameraAnim Anim, Actor CamActor, float InRate, float InScale, float InBlendInTime, float InBlendOutTime, bool bInLoop, bool bRandomStartTime, optional float Duration)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

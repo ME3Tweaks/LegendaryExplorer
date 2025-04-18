@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "EVALPOS_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "EVALPOS_PixelViewport": {
+      "value": 1,
+      "documentation": null
+    },
+    "EVALPOS_PixelScene": {
+      "value": 2,
+      "documentation": null
+    },
+    "EVALPOS_PixelOwner": {
+      "value": 3,
+      "documentation": null
+    },
+    "EVALPOS_PercentageViewport": {
+      "value": 4,
+      "documentation": null
+    },
+    "EVALPOS_PercentageOwner": {
+      "value": 5,
+      "documentation": null
+    },
+    "EVALPOS_PercentageScene": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

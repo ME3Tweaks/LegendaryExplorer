@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "WeaponState_Expanded": {
+      "value": 0,
+      "documentation": null
+    },
+    "WeaponState_Expanding": {
+      "value": 1,
+      "documentation": null
+    },
+    "WeaponState_Collapsing": {
+      "value": 2,
+      "documentation": null
+    },
+    "WeaponState_Collapsed": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

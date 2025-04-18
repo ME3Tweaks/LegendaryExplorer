@@ -1,0 +1,53 @@
+{
+  "parent": "SkelControlBase",
+  "package": "Engine",
+  "variables": {
+    "BoneTranslation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "BoneRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "TranslationSpaceBoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RotationSpaceBoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bApplyTranslation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bApplyRotation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAddTranslation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAddRotation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRemoveMeshRotation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "BoneTranslationSpace": {
+      "type": "EBoneControlSpace",
+      "documentation": null
+    },
+    "BoneRotationSpace": {
+      "type": "EBoneControlSpace",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,109 @@
+{
+  "parent": "ParticleModuleUberBase",
+  "package": "Engine",
+  "variables": {
+    "Lifetime": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "StartSize": {
+      "type": "RawDistributionVector",
+      "documentation": null
+    },
+    "StartRotation": {
+      "type": "RawDistributionVector",
+      "documentation": null
+    },
+    "LifeMultiplier": {
+      "type": "RawDistributionVector",
+      "documentation": null
+    },
+    "PC_VelocityScale": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "PC_StartLocation": {
+      "type": "RawDistributionVector",
+      "documentation": null
+    },
+    "PC_StartRadius": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "PC_StartHeight": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "ColorOverLife": {
+      "type": "RawDistributionVector",
+      "documentation": null
+    },
+    "AlphaOverLife": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "bInheritParent": {
+      "type": "bool",
+      "documentation": null
+    },
+    "MultiplyX": {
+      "type": "bool",
+      "documentation": null
+    },
+    "MultiplyY": {
+      "type": "bool",
+      "documentation": null
+    },
+    "MultiplyZ": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsUsingCylinder": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPositive_X": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPositive_Y": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPositive_Z": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNegative_X": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNegative_Y": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNegative_Z": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSurfaceOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bVelocity": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRadialVelocity": {
+      "type": "bool",
+      "documentation": null
+    },
+    "PC_HeightAxis": {
+      "type": "CylinderHeightAxis",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

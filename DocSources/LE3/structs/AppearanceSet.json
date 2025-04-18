@@ -1,47 +1,47 @@
 {
   "Members": {
     "HighlightImage": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "AvailableImage": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "DeadImage": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "SilhouetteImage": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "DescriptionText": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "CustomToken0": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "MemberTag": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "MemberAppearancePlotLabel": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "AppearanceId": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "MemberAppearanceValue": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "PlotUnlockCID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

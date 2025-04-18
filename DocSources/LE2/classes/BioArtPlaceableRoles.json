@@ -1,0 +1,17 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "oDefaults": {
+      "type": "ArtPlaceableRole",
+      "documentation": null
+    },
+    "aRoles": {
+      "type": "ArtPlaceableRole",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

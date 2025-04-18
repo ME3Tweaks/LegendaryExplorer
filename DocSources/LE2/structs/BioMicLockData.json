@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "m_nmFindActor": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_bLock": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eFindActorMode": {
+      "type": "EActorTrackFindActorMode",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

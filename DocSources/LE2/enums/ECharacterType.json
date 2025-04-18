@@ -1,0 +1,97 @@
+{
+  "EnumValues": {
+    "CharacterType_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "CharacterType_Human": {
+      "value": 1,
+      "documentation": null
+    },
+    "CharacterType_Turian": {
+      "value": 2,
+      "documentation": null
+    },
+    "CharacterType_Asari": {
+      "value": 3,
+      "documentation": null
+    },
+    "CharacterType_Krogan": {
+      "value": 4,
+      "documentation": null
+    },
+    "CharacterType_Quarian": {
+      "value": 5,
+      "documentation": null
+    },
+    "CharacterType_Salarian": {
+      "value": 6,
+      "documentation": null
+    },
+    "CharacterType_Vorcha": {
+      "value": 7,
+      "documentation": null
+    },
+    "CharacterType_LightMech": {
+      "value": 8,
+      "documentation": null
+    },
+    "CharacterType_HeavyMech": {
+      "value": 9,
+      "documentation": null
+    },
+    "CharacterType_MechDog": {
+      "value": 10,
+      "documentation": null
+    },
+    "CharacterType_Batarian": {
+      "value": 11,
+      "documentation": null
+    },
+    "CharacterType_GethInfantry": {
+      "value": 12,
+      "documentation": null
+    },
+    "CharacterType_GethColossus": {
+      "value": 13,
+      "documentation": null
+    },
+    "CharacterType_GethDestroyer": {
+      "value": 14,
+      "documentation": null
+    },
+    "CharacterType_Husk": {
+      "value": 15,
+      "documentation": null
+    },
+    "CharacterType_Scion": {
+      "value": 16,
+      "documentation": null
+    },
+    "CharacterType_Praetorian": {
+      "value": 17,
+      "documentation": null
+    },
+    "CharacterType_Collector": {
+      "value": 18,
+      "documentation": null
+    },
+    "CharacterType_Oculus": {
+      "value": 19,
+      "documentation": null
+    },
+    "CharacterType_Gunship": {
+      "value": 20,
+      "documentation": null
+    },
+    "CharacterType_Animal": {
+      "value": 21,
+      "documentation": null
+    },
+    "CharacterType_Other": {
+      "value": 22,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

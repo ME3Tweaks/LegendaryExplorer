@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "MODE_TOPLEVEL": {
+      "value": 0,
+      "documentation": null
+    },
+    "MODE_RESEARCH": {
+      "value": 1,
+      "documentation": null
+    },
+    "MODE_TECH": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

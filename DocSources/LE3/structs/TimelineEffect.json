@@ -1,267 +1,267 @@
 {
   "Members": {
     "TimeDilation": {
-      "type": null,
+      "type": "InterpCurveFloat",
       "documentation": null
     },
     "Reactions": {
-      "type": null,
+      "type": "EReactionTypes",
       "documentation": null
     },
     "AOEFunc": {
-      "type": null,
+      "type": "AOEEvalFunc",
       "documentation": null
     },
     "InputAlias": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "InputHandle": {
-      "type": null,
+      "type": "InputHandler",
       "documentation": null
     },
     "RumbleClass": {
-      "type": null,
+      "type": "Class",
       "documentation": null
     },
     "ScreenShakeClass": {
-      "type": null,
+      "type": "Class",
       "documentation": null
     },
     "DamageType": {
-      "type": null,
+      "type": "Class",
       "documentation": null
     },
     "AOEFilterClass": {
-      "type": null,
+      "type": "Class",
       "documentation": null
     },
     "GameEffectClass": {
-      "type": null,
+      "type": "Class",
       "documentation": null
     },
     "ScreenShake": {
-      "type": null,
+      "type": "ScreenShakeStruct",
       "documentation": null
     },
     "ClientEffectID": {
-      "type": null,
+      "type": "Guid",
       "documentation": null
     },
     "PS_Rotation": {
-      "type": null,
+      "type": "Rotator",
       "documentation": null
     },
     "PSC_Instance": {
-      "type": null,
+      "type": "ParticleSystemComponent",
       "documentation": null
     },
     "RBC_BlurInstance": {
-      "type": null,
+      "type": "RadialBlurComponent",
       "documentation": null
     },
     "PS_Template": {
-      "type": null,
+      "type": "ParticleSystem",
       "documentation": null
     },
     "SocketName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "Sound": {
-      "type": null,
+      "type": "WwiseEvent",
       "documentation": null
     },
     "PlayerSound": {
-      "type": null,
+      "type": "WwiseEvent",
       "documentation": null
     },
     "Rumble": {
-      "type": null,
+      "type": "ForceFeedbackWaveform",
       "documentation": null
     },
     "ScreenShakeObject": {
-      "type": null,
+      "type": "SFXCameraShakeBase",
       "documentation": null
     },
     "AOEImpactTimeline": {
-      "type": null,
+      "type": "SFXTimelineData",
       "documentation": null
     },
     "SyncPartnerImpactTimeline": {
-      "type": null,
+      "type": "SFXTimelineData",
       "documentation": null
     },
     "TimelineTemplate": {
-      "type": null,
+      "type": "SFXTimelineData",
       "documentation": null
     },
     "Func": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "BlurMaterial": {
-      "type": null,
+      "type": "MaterialInterface",
       "documentation": null
     },
     "CamAnim": {
-      "type": null,
+      "type": "CameraAnim",
       "documentation": null
     },
     "RVR_CrustTemplate": {
-      "type": null,
+      "type": "RvrClientEffectInterface",
       "documentation": null
     },
     "TimeIndex": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "TimeRemaining": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "CrustDuration": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "TimeDilationLength": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "RagdollForce": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Damage": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "AOERadius": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "AOEConeAngle": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "nMatchedInputIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "BlurScale": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "BlurFalloffExponent": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "BlurOpacity": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "CamStartTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "CamBlendInTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "CamBlendOutTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "CamPlayRate": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "CamDuration": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "CEStartIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "GameEffectDuration": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "GameEffectValue": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bActivated": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bActiveInput": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bReceivedInput": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bUseWeaponMesh": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bApplyBloodColorParam": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bDilateSound": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bAOEAffectsTarget": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bOnPress": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bExclusive": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bBufferedInput": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bLoopCamAnim": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bCEAllowCooldown": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bCEStopAllMatching": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "Type": {
-      "type": null,
+      "type": "ETimelineType",
       "documentation": null
     },
     "TargetType": {
-      "type": null,
+      "type": "ETimelineTarget",
       "documentation": null
     },
     "VocID": {
-      "type": null,
+      "type": "ESFXVocalizationEventID",
       "documentation": null
     },
     "Constraint": {
-      "type": null,
+      "type": "EBioPartGroup",
       "documentation": null
     },
     "AOEType": {
-      "type": null,
+      "type": "ETimelineAOEType",
       "documentation": null
     }
   },

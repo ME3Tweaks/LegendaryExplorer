@@ -1,0 +1,31 @@
+{
+  "parent": "Volume",
+  "package": "WwiseAudio",
+  "variables": {
+    "m_oTrackTimer": {
+      "type": "WwiseVolumeTimer",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "TimerPop": {
+      "documentation": null,
+      "signature_members": {
+        "T": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TimerPop(WwiseVolumeTimer T)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

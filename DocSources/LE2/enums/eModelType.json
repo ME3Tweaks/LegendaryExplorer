@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "BioMT_BodyAndHead": {
+      "value": 0,
+      "documentation": null
+    },
+    "BioMT_Simple": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

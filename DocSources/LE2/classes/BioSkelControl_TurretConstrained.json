@@ -1,0 +1,53 @@
+{
+  "parent": "SkelControlSingleBone",
+  "package": "SFXGame",
+  "variables": {
+    "MaxAngle": {
+      "type": "TurretConstraintData",
+      "documentation": null
+    },
+    "MinAngle": {
+      "type": "TurretConstraintData",
+      "documentation": null
+    },
+    "DesiredBoneRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "LagDegreesPerSecond": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLagScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "bConstrainPitch": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bConstrainYaw": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bConstrainRoll": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInvertPitch": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInvertYaw": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInvertRoll": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

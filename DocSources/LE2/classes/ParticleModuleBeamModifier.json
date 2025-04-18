@@ -1,0 +1,41 @@
+{
+  "parent": "ParticleModuleBeamBase",
+  "package": "Engine",
+  "variables": {
+    "PositionRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    },
+    "TangentRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    },
+    "Strength": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "PositionOptions": {
+      "type": "BeamModifierOptions",
+      "documentation": null
+    },
+    "TangentOptions": {
+      "type": "BeamModifierOptions",
+      "documentation": null
+    },
+    "StrengthOptions": {
+      "type": "BeamModifierOptions",
+      "documentation": null
+    },
+    "bAbsoluteTangent": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ModifierType": {
+      "type": "BeamModifierType",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

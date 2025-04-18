@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "MST_Gamma": {
+      "value": 0,
+      "documentation": null
+    },
+    "MST_HDRContrast": {
+      "value": 1,
+      "documentation": null
+    },
+    "MST_HDRBrightness": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

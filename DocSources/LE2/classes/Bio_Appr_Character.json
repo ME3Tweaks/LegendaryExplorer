@@ -1,0 +1,105 @@
+{
+  "parent": "BioBaseAppearance",
+  "package": "SFXGame",
+  "variables": {
+    "Head": {
+      "type": "Bio_Appr_Character_Head",
+      "documentation": null
+    },
+    "m_aLookBoneDefs": {
+      "type": "LookAtBoneDef",
+      "documentation": null
+    },
+    "vProceduralCameraPosition": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "rProceduralCameraRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "vCameraFocusPoint": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_oSettings": {
+      "type": "Bio_Appr_Character_Settings",
+      "documentation": null
+    },
+    "Body": {
+      "type": "Bio_Appr_Character_Body",
+      "documentation": null
+    },
+    "BloodColor": {
+      "type": "Name",
+      "documentation": null
+    },
+    "LifetimeCrust": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "DeathCrust": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "CreatureSpeed": {
+      "type": "Name",
+      "documentation": null
+    },
+    "MovementInfo": {
+      "type": "SFXMovementData",
+      "documentation": null
+    },
+    "m_LookAtDefinition": {
+      "type": "BioLookAtDefinition",
+      "documentation": null
+    },
+    "m_nmDefaultGesturesPoseAnim": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_pCookedDefGestPoseSet": {
+      "type": "BioDynamicAnimSet",
+      "documentation": null
+    },
+    "DefaultFaceFXAsset": {
+      "type": "FaceFXAsset",
+      "documentation": null
+    },
+    "LifetimeMaterialFadeDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "fFov": {
+      "type": "float",
+      "documentation": null
+    },
+    "fNearClip": {
+      "type": "float",
+      "documentation": null
+    },
+    "fDOFFocusInnerRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "fDOFFocusDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "HideEquipedItems": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CanStrafe": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ModelType": {
+      "type": "eModelType",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

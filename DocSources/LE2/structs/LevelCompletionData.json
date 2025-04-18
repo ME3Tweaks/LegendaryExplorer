@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Label": {
+      "type": "string",
+      "documentation": null
+    },
+    "PlotID": {
+      "type": "int",
+      "documentation": null
+    },
+    "ParagonPoints": {
+      "type": "int",
+      "documentation": null
+    },
+    "RenegadePoints": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

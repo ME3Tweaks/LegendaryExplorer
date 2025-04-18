@@ -1,0 +1,127 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "LensFlareComp": {
+      "type": "LensFlareComponent",
+      "documentation": null
+    },
+    "bCurrentlyActive": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetActorParameter": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "Param": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetActorParameter(Name ParameterName, Actor Param)"
+    },
+    "SetExtColorParameter": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "Red": {
+          "type": null,
+          "documentation": null
+        },
+        "Green": {
+          "type": null,
+          "documentation": null
+        },
+        "Blue": {
+          "type": null,
+          "documentation": null
+        },
+        "Alpha": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetExtColorParameter(Name ParameterName, float Red, float Green, float Blue, float Alpha)"
+    },
+    "SetColorParameter": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "Param": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetColorParameter(Name ParameterName, LinearColor Param)"
+    },
+    "SetVectorParameter": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "Param": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVectorParameter(Name ParameterName, Vector Param)"
+    },
+    "SetFloatParameter": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "Param": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFloatParameter(Name ParameterName, float Param)"
+    },
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle Action)"
+    },
+    "SetTemplate": {
+      "documentation": null,
+      "signature_members": {
+        "NewTemplate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTemplate(LensFlare NewTemplate)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

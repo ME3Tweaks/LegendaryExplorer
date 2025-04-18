@@ -1,0 +1,69 @@
+{
+  "Members": {
+    "sText": {
+      "type": "string",
+      "documentation": null
+    },
+    "pCue": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "srText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "nConditionalFunc": {
+      "type": "int",
+      "documentation": null
+    },
+    "nConditionalParam": {
+      "type": "int",
+      "documentation": null
+    },
+    "nStateTransition": {
+      "type": "int",
+      "documentation": null
+    },
+    "nStateTransitionParam": {
+      "type": "int",
+      "documentation": null
+    },
+    "nExportID": {
+      "type": "int",
+      "documentation": null
+    },
+    "nScriptIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "nCameraIntimacy": {
+      "type": "int",
+      "documentation": null
+    },
+    "bFireConditional": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAmbient": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNonTextLine": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSoundLoaded": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreBodyGestures": {
+      "type": "bool",
+      "documentation": null
+    },
+    "eGUIStyle": {
+      "type": "EConvGUIStyles",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

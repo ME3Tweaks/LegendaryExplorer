@@ -1,51 +1,51 @@
 {
   "Members": {
     "Cluster": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "ClusterCircle": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "GalaxySphere": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "Twinkle": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "Crosshair": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "Camera": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "ClusterPath": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "DisabledClusterCircle": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "ReaperIcon": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "ReaperClusterCircle": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "CurrentLocationIcon": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "PulsingCircleHighlight": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     }
   },

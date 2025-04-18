@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "EAG_NL_LOGIN": {
+      "value": 0,
+      "documentation": null
+    },
+    "EAG_NL_CREATE": {
+      "value": 1,
+      "documentation": null
+    },
+    "EAG_NL_CANCEL": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "DTYPE_Setup": {
+      "value": 0,
+      "documentation": null
+    },
+    "DTYPE_Invalid": {
+      "value": 1,
+      "documentation": null
+    },
+    "DTYPE_Preview": {
+      "value": 2,
+      "documentation": null
+    },
+    "DTYPE_Native": {
+      "value": 3,
+      "documentation": null
+    },
+    "DTYPE_RealTime": {
+      "value": 4,
+      "documentation": null
+    },
+    "DTYPE_Procedural": {
+      "value": 5,
+      "documentation": null
+    },
+    "DTYPE_Xenon": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

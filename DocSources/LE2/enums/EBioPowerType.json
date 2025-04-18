@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "BIO_POWER_TYPE_UNKNOWN": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_POWER_TYPE_CYLINDER": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_POWER_TYPE_TARGET": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_POWER_TYPE_PARTY": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_POWER_TYPE_IMPACT_VOLUME": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_POWER_TYPE_MELEE": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

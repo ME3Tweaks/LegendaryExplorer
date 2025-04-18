@@ -1,0 +1,39 @@
+{
+  "parent": "SequenceEvent",
+  "package": "SFXGame",
+  "variables": {
+    "Powers": {
+      "type": "Class",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "HandleActivation": {
+      "documentation": null,
+      "signature_members": {
+        "InOriginator": {
+          "type": null,
+          "documentation": null
+        },
+        "InInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "inPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleActivation(Actor InOriginator, Actor InInstigator, Class<BioPowerScript> inPower)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

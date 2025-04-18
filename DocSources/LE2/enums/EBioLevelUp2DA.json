@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "LEVEL_UP_2DA_LEVEL_UP": {
+      "value": 0,
+      "documentation": null
+    },
+    "LEVEL_UP_2DA_EXPERIENCE": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

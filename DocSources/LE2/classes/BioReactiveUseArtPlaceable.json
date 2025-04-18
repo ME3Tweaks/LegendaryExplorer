@@ -1,0 +1,25 @@
+{
+  "parent": "BioReactive",
+  "package": "SFXGame",
+  "variables": {
+    "Active": {
+      "type": "BioActiveUseArtPlaceable",
+      "documentation": null
+    },
+    "m_nmSkillToGoto": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_bTransitionIntialized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDone": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

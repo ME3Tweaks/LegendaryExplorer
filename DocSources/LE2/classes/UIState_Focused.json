@@ -1,0 +1,24 @@
+{
+  "parent": "UIState",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "ActivateState": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ActivateState(UIScreenObject Target, int PlayerIndex)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

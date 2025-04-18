@@ -1,0 +1,25 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Effects": {
+      "type": "PostProcessEffect",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "FindPostProcessEffect": {
+      "documentation": null,
+      "signature_members": {
+        "EffectName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "PostProcessEffect",
+      "signature": "PostProcessEffect FindPostProcessEffect(Name EffectName)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

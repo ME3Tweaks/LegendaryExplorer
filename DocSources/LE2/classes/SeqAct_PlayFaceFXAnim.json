@@ -1,0 +1,25 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "FaceFXGroupName": {
+      "type": "string",
+      "documentation": null
+    },
+    "FaceFXAnimName": {
+      "type": "string",
+      "documentation": null
+    },
+    "FaceFXAnimSetRef": {
+      "type": "FaceFXAnimSet",
+      "documentation": null
+    },
+    "SoundCueToPlay": {
+      "type": "SoundCue",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

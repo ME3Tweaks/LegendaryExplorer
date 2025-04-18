@@ -1,0 +1,62 @@
+{
+  "parent": "SFXGalaxyMapObject",
+  "package": "SFXGame",
+  "variables": {
+    "Planets": {
+      "type": "BioPlanet",
+      "documentation": null
+    },
+    "SunColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "StarColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "FlareTint": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "m_bHasMassRelay": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bShowNebula": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "RemoveChild": {
+      "documentation": null,
+      "signature_members": {
+        "Child": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveChild(SFXGalaxyMapObject Child)"
+    },
+    "GetChildren": {
+      "documentation": null,
+      "signature_members": {
+        "Children": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetChildren(out array<SFXGalaxyMapObject> Children)"
+    },
+    "AddChild": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXGalaxyMapObject",
+      "signature": "SFXGalaxyMapObject AddChild()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

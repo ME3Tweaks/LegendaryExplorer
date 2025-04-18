@@ -1,0 +1,61 @@
+{
+  "Members": {
+    "BaseDamage": {
+      "type": "float",
+      "documentation": null
+    },
+    "RangeMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "PassiveGEMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "GEMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "StealthMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastBulletMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "DifficultyMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "PartBasedDamageMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "DamageScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "CoverLeanMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "CoverMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "StormMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "RagdollMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "AchievementBonusDamage": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

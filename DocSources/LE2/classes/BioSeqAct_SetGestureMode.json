@@ -1,0 +1,25 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "ActorTags": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_aPawns": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "m_bForActionStation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "GestureMode": {
+      "type": "EBioSetGestureModes",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

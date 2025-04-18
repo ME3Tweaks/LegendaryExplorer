@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "BIO_ANIM_NODE_BLEND_BY_FIRE_SEQUENCE_CHILD_IDLE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_ANIM_NODE_BLEND_BY_FIRE_SEQUENCE_CHILD_START": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_ANIM_NODE_BLEND_BY_FIRE_SEQUENCE_CHILD_LOOP": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_ANIM_NODE_BLEND_BY_FIRE_SEQUENCE_CHILD": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_ANIM_NODE_BLEND_BY_FIRE_SEQUENCE_CHILD_END": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

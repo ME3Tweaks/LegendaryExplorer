@@ -1,0 +1,225 @@
+{
+  "EnumValues": {
+    "ACHIEVEMENT_00_COMPLETE": {
+      "value": 0,
+      "documentation": null
+    },
+    "ACHIEVEMENT_01_PRONOR_COMPLETE": {
+      "value": 1,
+      "documentation": null
+    },
+    "ACHIEVEMENT_02_PROCER_COMPLETE": {
+      "value": 2,
+      "documentation": null
+    },
+    "ACHIEVEMENT_03_CR1": {
+      "value": 3,
+      "documentation": null
+    },
+    "ACHIEVEMENT_04_CR2": {
+      "value": 4,
+      "documentation": null
+    },
+    "ACHIEVEMENT_05_ENDGAME": {
+      "value": 5,
+      "documentation": null
+    },
+    "ACHIEVEMENT_06_COMPLETESURVIVE": {
+      "value": 6,
+      "documentation": null
+    },
+    "ACHIEVEMENT_07_COMPLETEFOLLOWER": {
+      "value": 7,
+      "documentation": null
+    },
+    "ACHIEVEMENT_08_LEGIONACQ": {
+      "value": 8,
+      "documentation": null
+    },
+    "ACHIEVEMENT_09_GARRUSACQ": {
+      "value": 9,
+      "documentation": null
+    },
+    "ACHIEVEMENT_10_THANEACQ": {
+      "value": 10,
+      "documentation": null
+    },
+    "ACHIEVEMENT_11_JACKACQ": {
+      "value": 11,
+      "documentation": null
+    },
+    "ACHIEVEMENT_12_SAMARRAACQ": {
+      "value": 12,
+      "documentation": null
+    },
+    "ACHIEVEMENT_13_GRUNTACQ": {
+      "value": 13,
+      "documentation": null
+    },
+    "ACHIEVEMENT_14_MORDINACQ": {
+      "value": 14,
+      "documentation": null
+    },
+    "ACHIEVEMENT_15_TALIACQ": {
+      "value": 15,
+      "documentation": null
+    },
+    "ACHIEVEMENT_16_LEGIONLOYALTY": {
+      "value": 16,
+      "documentation": null
+    },
+    "ACHIEVEMENT_17_GRUNTLOYALTY": {
+      "value": 17,
+      "documentation": null
+    },
+    "ACHIEVEMENT_18_THANELOYALTY": {
+      "value": 18,
+      "documentation": null
+    },
+    "ACHIEVEMENT_19_JACKLOYALTY": {
+      "value": 19,
+      "documentation": null
+    },
+    "ACHIEVEMENT_20_SAMARRALOYALTY": {
+      "value": 20,
+      "documentation": null
+    },
+    "ACHIEVEMENT_21_GARRUSLOYALTY": {
+      "value": 21,
+      "documentation": null
+    },
+    "ACHIEVEMENT_22_JACOBLOYALTY": {
+      "value": 22,
+      "documentation": null
+    },
+    "ACHIEVEMENT_23_MORDINLOYALTY": {
+      "value": 23,
+      "documentation": null
+    },
+    "ACHIEVEMENT_24_MIRANDALOYALTY": {
+      "value": 24,
+      "documentation": null
+    },
+    "ACHIEVEMENT_25_TALILOYALTY": {
+      "value": 25,
+      "documentation": null
+    },
+    "ACHIEVEMENT_26_THRESHERMAW": {
+      "value": 26,
+      "documentation": null
+    },
+    "ACHIEVEMENT_27_HEADSHOT": {
+      "value": 27,
+      "documentation": null
+    },
+    "ACHIEVEMENT_28_BURNARMOUR": {
+      "value": 28,
+      "documentation": null
+    },
+    "ACHIEVEMENT_29_SCREAM": {
+      "value": 29,
+      "documentation": null
+    },
+    "ACHIEVEMENT_30_DISRUPTSHIELDS": {
+      "value": 30,
+      "documentation": null
+    },
+    "ACHIEVEMENT_31_POWERCOMBO": {
+      "value": 31,
+      "documentation": null
+    },
+    "ACHIEVEMENT_32_BREAKBARRIERS": {
+      "value": 32,
+      "documentation": null
+    },
+    "ACHIEVEMENT_33_MULTIN7MISSION": {
+      "value": 33,
+      "documentation": null
+    },
+    "ACHIEVEMENT_34_EXPLORATION": {
+      "value": 34,
+      "documentation": null
+    },
+    "ACHIEVEMENT_35_N7MISSION": {
+      "value": 35,
+      "documentation": null
+    },
+    "ACHIEVEMENT_36_RESEARCH": {
+      "value": 36,
+      "documentation": null
+    },
+    "ACHIEVEMENT_37_WEAPONUPGRADE": {
+      "value": 37,
+      "documentation": null
+    },
+    "ACHIEVEMENT_38_CODEX": {
+      "value": 38,
+      "documentation": null
+    },
+    "ACHIEVEMENT_39_EVOLVEDPOWER": {
+      "value": 39,
+      "documentation": null
+    },
+    "ACHIEVEMENT_40_DLC1_ZAEEDLOYALTY": {
+      "value": 40,
+      "documentation": null
+    },
+    "ACHIEVEMENT_41_DLC2_KASUMILOYALTY": {
+      "value": 41,
+      "documentation": null
+    },
+    "ACHIEVEMENT_42_DLC4_UNC1COMPLETE": {
+      "value": 42,
+      "documentation": null
+    },
+    "ACHIEVEMENT_43_DLC7_BROKERDEFEAT": {
+      "value": 43,
+      "documentation": null
+    },
+    "ACHIEVEMENT_44_TRILOGY_INSANITYI": {
+      "value": 44,
+      "documentation": null
+    },
+    "ACHIEVEMENT_45_TRILOGY_INSANITYII": {
+      "value": 45,
+      "documentation": null
+    },
+    "ACHIEVEMENT_46_TRILOGY_INSANITYIII": {
+      "value": 46,
+      "documentation": null
+    },
+    "ACHIEVEMENT_47_TRILOGY_PARAMOURI": {
+      "value": 47,
+      "documentation": null
+    },
+    "ACHIEVEMENT_48_TRILOGY_PARAMOURII": {
+      "value": 48,
+      "documentation": null
+    },
+    "ACHIEVEMENT_49_TRILOGY_PARAMOURIII": {
+      "value": 49,
+      "documentation": null
+    },
+    "ACHIEVEMENT_50_TRILOGY_LONGSERVICE": {
+      "value": 50,
+      "documentation": null
+    },
+    "ACHIEVEMENT_51_TRILOGY_RECRUIT": {
+      "value": 51,
+      "documentation": null
+    },
+    "ACHIEVEMENT_52_TRILOGY_SOLDIER": {
+      "value": 52,
+      "documentation": null
+    },
+    "ACHIEVEMENT_53_TRILOGY_VETERAN": {
+      "value": 53,
+      "documentation": null
+    },
+    "ACHIEVEMENT_54_TRILOGY_BRUISER": {
+      "value": 54,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

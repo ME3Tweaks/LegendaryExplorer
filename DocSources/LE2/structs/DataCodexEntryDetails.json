@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "sName": {
+      "type": "string",
+      "documentation": null
+    },
+    "pEntry": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "nSectionID": {
+      "type": "int",
+      "documentation": null
+    },
+    "bUpdated": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,93 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "LoadingMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "SavingMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "DeletingMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_bShowMessage": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HideLoadingMessage": {
+      "documentation": null,
+      "signature_members": {
+        "bDoTransition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HideLoadingMessage(optional bool bDoTransition)"
+    },
+    "ShowLoadingMessage": {
+      "documentation": null,
+      "signature_members": {
+        "bDoTransition": {
+          "type": null,
+          "documentation": null
+        },
+        "srMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowLoadingMessage(optional bool bDoTransition, optional stringref srMessage)"
+    },
+    "ShowDeletingMessage": {
+      "documentation": null,
+      "signature_members": {
+        "bDoTransition": {
+          "type": null,
+          "documentation": null
+        },
+        "srMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowDeletingMessage(bool bDoTransition, optional stringref srMessage)"
+    },
+    "HideSavingMessage": {
+      "documentation": null,
+      "signature_members": {
+        "bDoTransition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HideSavingMessage(optional bool bDoTransition)"
+    },
+    "ShowSavingMessage": {
+      "documentation": null,
+      "signature_members": {
+        "bDoTransition": {
+          "type": null,
+          "documentation": null
+        },
+        "srMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowSavingMessage(optional bool bDoTransition, optional stringref srMessage)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

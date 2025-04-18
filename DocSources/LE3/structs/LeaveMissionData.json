@@ -1,27 +1,27 @@
 {
   "Members": {
     "CurrentMap": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "NextMap": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "NextStart": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "EndGmAct": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "EndGmX": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "EndGmY": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

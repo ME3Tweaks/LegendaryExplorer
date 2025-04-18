@@ -1,0 +1,50 @@
+{
+  "parent": "SFXPower",
+  "package": "SFXGame",
+  "variables": {
+    "CharmIntimidateModifier": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetNegotiationBonus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetNegotiationBonus()"
+    },
+    "ModifyIntimidateSkill": {
+      "documentation": null,
+      "signature_members": {
+        "fIntimidateSkill": {
+          "type": null,
+          "documentation": null
+        },
+        "nRankToUse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyIntimidateSkill(out float fIntimidateSkill, optional int nRankToUse)"
+    },
+    "ModifyCharmSkill": {
+      "documentation": null,
+      "signature_members": {
+        "fCharmSkill": {
+          "type": null,
+          "documentation": null
+        },
+        "nRankToUse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyCharmSkill(out float fCharmSkill, optional int nRankToUse)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

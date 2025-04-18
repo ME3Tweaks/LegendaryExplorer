@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "HitInfo": {
+      "type": "TraceHitInfo",
+      "documentation": null
+    },
+    "HitLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "HitNormal": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "RayDir": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "StartTrace": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "HitActor": {
+      "type": "Actor",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

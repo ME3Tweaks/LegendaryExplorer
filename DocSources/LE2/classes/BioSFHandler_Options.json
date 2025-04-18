@@ -1,0 +1,264 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "m_lstOptsToReset": {
+      "type": "int",
+      "documentation": null
+    },
+    "TelemetryInfo": {
+      "type": "OptionTelemetryInfo",
+      "documentation": null
+    },
+    "ExtendedTelemetryInfo": {
+      "type": "OptionTelemetryInfo",
+      "documentation": null
+    },
+    "__OnCloseCallback__Delegate": {
+      "type": "OnCloseCallback",
+      "documentation": null
+    },
+    "NewSettings": {
+      "type": "SFXProfileSettings",
+      "documentation": null
+    },
+    "ResetToDefaultsText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ConfirmResetToDefaultsText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CancelResetToDefaultsText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ExitConfirmText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ConfirmExitFromMenuText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CancelExitFromMenuText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srSkipConfirm": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srYes": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srNo": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "FilmGrainOption_Initial": {
+      "type": "int",
+      "documentation": null
+    },
+    "FilmGrainOption_ToSend": {
+      "type": "int",
+      "documentation": null
+    },
+    "BrightnessOption_Initial": {
+      "type": "int",
+      "documentation": null
+    },
+    "BrightnessOption_ToSend": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bSelfPanelClose": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWaitingOnMsgBox": {
+      "type": "bool",
+      "documentation": null
+    },
+    "GuiMode": {
+      "type": "EOptionsGuiMode",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "CloseGui": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseGui()"
+    },
+    "SendTelemetryChanges": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SendTelemetryChanges()"
+    },
+    "GetProfileSettingsForOptions": {
+      "documentation": null,
+      "signature_members": {
+        "lstProfSettings": {
+          "type": null,
+          "documentation": null
+        },
+        "lstTypes": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetProfileSettingsForOptions(out array<EProfileSetting> lstProfSettings, const out array<int> lstTypes)"
+    },
+    "GetProfileSettingForOption": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EProfileSetting",
+      "signature": "EProfileSetting GetProfileSettingForOption(int Type)"
+    },
+    "SetVsyncStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetVsyncStatus()"
+    },
+    "SetHDRStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetHDRStatus()"
+    },
+    "SetOption": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOption(int Type, int Value)"
+    },
+    "SetOptionsOnGUI": {
+      "documentation": null,
+      "signature_members": {
+        "Settings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOptionsOnGUI(SFXProfileSettings Settings)"
+    },
+    "Callback_ResetToDefaults": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_ResetToDefaults(bool bAPressed, int context)"
+    },
+    "onExIntResetToDefaults": {
+      "documentation": null,
+      "signature_members": {
+        "sPackedIDs": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "onExIntResetToDefaults(string sPackedIDs)"
+    },
+    "Helper_ExtractPackedOptIDs": {
+      "documentation": null,
+      "signature_members": {
+        "lstOptIDs": {
+          "type": null,
+          "documentation": null
+        },
+        "sPackedIDs": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Helper_ExtractPackedOptIDs(out array<int> lstOptIDs, string sPackedIDs)"
+    },
+    "Helper_CreateResetConfirmPopup": {
+      "documentation": null,
+      "signature_members": {
+        "GuiMan": {
+          "type": null,
+          "documentation": null
+        },
+        "pInputDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Helper_CreateResetConfirmPopup(MassEffectGuiManager GuiMan, delegate<InputCallback> pInputDelegate)"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Command": {
+          "type": null,
+          "documentation": null
+        },
+        "lstArguments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte Command, const out array<string> lstArguments)"
+    },
+    "SetOnCloseCallback": {
+      "documentation": null,
+      "signature_members": {
+        "fn_OnCloseDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOnCloseCallback(delegate<OnCloseCallback> fn_OnCloseDelegate)"
+    },
+    "OnCloseCallback": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCloseCallback()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

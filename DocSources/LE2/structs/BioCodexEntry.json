@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "VfTable": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "srTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srDescription": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "nTextureIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "nPriority": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

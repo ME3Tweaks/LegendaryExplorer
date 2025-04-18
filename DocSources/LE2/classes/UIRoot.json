@@ -1,0 +1,268 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "GetOnlinePlayerInterfaceEx": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "OnlinePlayerInterfaceEx",
+      "signature": "OnlinePlayerInterfaceEx GetOnlinePlayerInterfaceEx()"
+    },
+    "GetOnlinePlayerInterface": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "OnlinePlayerInterface",
+      "signature": "OnlinePlayerInterface GetOnlinePlayerInterface()"
+    },
+    "GetOnlineGameInterface": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "OnlineGameInterface",
+      "signature": "OnlineGameInterface GetOnlineGameInterface()"
+    },
+    "ConvertWidgetIDToString": {
+      "documentation": null,
+      "signature_members": {
+        "SourceWidget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string ConvertWidgetIDToString(UIObject SourceWidget)"
+    },
+    "GetDataStoreStringValue": {
+      "documentation": null,
+      "signature_members": {
+        "InDataStoreMarkup": {
+          "type": null,
+          "documentation": null
+        },
+        "OutStringValue": {
+          "type": null,
+          "documentation": null
+        },
+        "OwnerScene": {
+          "type": null,
+          "documentation": null
+        },
+        "OwnerPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetDataStoreStringValue(string InDataStoreMarkup, out string OutStringValue, optional UIScene OwnerScene, optional LocalPlayer OwnerPlayer)"
+    },
+    "GetDataStoreFieldValue": {
+      "documentation": null,
+      "signature_members": {
+        "InDataStoreMarkup": {
+          "type": null,
+          "documentation": null
+        },
+        "OutFieldValue": {
+          "type": null,
+          "documentation": null
+        },
+        "OwnerScene": {
+          "type": null,
+          "documentation": null
+        },
+        "OwnerPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetDataStoreFieldValue(string InDataStoreMarkup, out UIProviderFieldValue OutFieldValue, optional UIScene OwnerScene, optional LocalPlayer OwnerPlayer)"
+    },
+    "SetDataStoreStringValue": {
+      "documentation": null,
+      "signature_members": {
+        "InDataStoreMarkup": {
+          "type": null,
+          "documentation": null
+        },
+        "InStringValue": {
+          "type": null,
+          "documentation": null
+        },
+        "OwnerScene": {
+          "type": null,
+          "documentation": null
+        },
+        "OwnerPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetDataStoreStringValue(string InDataStoreMarkup, string InStringValue, optional UIScene OwnerScene, optional LocalPlayer OwnerPlayer)"
+    },
+    "SetDataStoreFieldValue": {
+      "documentation": null,
+      "signature_members": {
+        "InDataStoreMarkup": {
+          "type": null,
+          "documentation": null
+        },
+        "InFieldValue": {
+          "type": null,
+          "documentation": null
+        },
+        "OwnerScene": {
+          "type": null,
+          "documentation": null
+        },
+        "OwnerPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetDataStoreFieldValue(string InDataStoreMarkup, const out UIProviderFieldValue InFieldValue, optional UIScene OwnerScene, optional LocalPlayer OwnerPlayer)"
+    },
+    "StaticResolveDataStore": {
+      "documentation": null,
+      "signature_members": {
+        "DataStoreTag": {
+          "type": null,
+          "documentation": null
+        },
+        "OwnerScene": {
+          "type": null,
+          "documentation": null
+        },
+        "InPlayerOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "UIDataStore",
+      "signature": "UIDataStore StaticResolveDataStore(Name DataStoreTag, optional UIScene OwnerScene, optional LocalPlayer InPlayerOwner)"
+    },
+    "GetPrimitiveTransform": {
+      "documentation": null,
+      "signature_members": {
+        "Widget": {
+          "type": null,
+          "documentation": null
+        },
+        "bIncludeAnchorPosition": {
+          "type": null,
+          "documentation": null
+        },
+        "bIncudeRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "bIncludeScale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Matrix",
+      "signature": "Matrix GetPrimitiveTransform(UIObject Widget, optional bool bIncludeAnchorPosition, optional bool bIncudeRotation, optional bool bIncludeScale)"
+    },
+    "SetMouseCaptureOverride": {
+      "documentation": null,
+      "signature_members": {
+        "bCaptureMouse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMouseCaptureOverride(bool bCaptureMouse)"
+    },
+    "GetCursorSize": {
+      "documentation": null,
+      "signature_members": {
+        "CursorXL": {
+          "type": null,
+          "documentation": null
+        },
+        "CursorYL": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCursorSize(out float CursorXL, out float CursorYL)"
+    },
+    "GetCursorPosition": {
+      "documentation": null,
+      "signature_members": {
+        "CursorX": {
+          "type": null,
+          "documentation": null
+        },
+        "CursorY": {
+          "type": null,
+          "documentation": null
+        },
+        "Scene": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCursorPosition(out int CursorX, out int CursorY, optional const UIScene Scene)"
+    },
+    "GetFaceOrientation": {
+      "documentation": null,
+      "signature_members": {
+        "Face": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EUIOrientation",
+      "signature": "EUIOrientation GetFaceOrientation(EUIWidgetFace Face)"
+    },
+    "GetSceneClient": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "GameUISceneClient",
+      "signature": "GameUISceneClient GetSceneClient()"
+    },
+    "GetCurrentUIController": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UIInteraction",
+      "signature": "UIInteraction GetCurrentUIController()"
+    },
+    "IsEditor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsEditor()"
+    },
+    "IsConsole": {
+      "documentation": null,
+      "signature_members": {
+        "ConsoleType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsConsole(optional EConsoleType ConsoleType)"
+    },
+    "GetInputPlatformType": {
+      "documentation": null,
+      "signature_members": {
+        "OwningPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EInputPlatformType",
+      "signature": "EInputPlatformType GetInputPlatformType(optional LocalPlayer OwningPlayer)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

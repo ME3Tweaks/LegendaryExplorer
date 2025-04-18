@@ -1,0 +1,29 @@
+{
+  "parent": "StaticMeshComponent",
+  "package": "Engine",
+  "variables": {
+    "Meshes": {
+      "type": "CoverMeshes",
+      "documentation": null
+    },
+    "LocationOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "AutoAdjustOn": {
+      "type": "StaticMesh",
+      "documentation": null
+    },
+    "AutoAdjustOff": {
+      "type": "StaticMesh",
+      "documentation": null
+    },
+    "Disabled": {
+      "type": "StaticMesh",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

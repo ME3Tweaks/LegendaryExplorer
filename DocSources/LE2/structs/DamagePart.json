@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Damage": {
+      "type": "float",
+      "documentation": null
+    },
+    "bIsDetached": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

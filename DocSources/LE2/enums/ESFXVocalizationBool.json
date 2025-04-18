@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "SFXVocalizationBool_False": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXVocalizationBool_True": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

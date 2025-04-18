@@ -1,0 +1,121 @@
+{
+  "parent": "PlayerController",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "ServerSwitch": {
+      "documentation": null,
+      "signature_members": {
+        "URL": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerSwitch(string URL)"
+    },
+    "Switch": {
+      "documentation": null,
+      "signature_members": {
+        "URL": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Switch(string URL)"
+    },
+    "ServerRestartMap": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ServerRestartMap()"
+    },
+    "RestartMap": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RestartMap()"
+    },
+    "PlayerList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayerList()"
+    },
+    "ServerKick": {
+      "documentation": null,
+      "signature_members": {
+        "S": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerKick(string S)"
+    },
+    "Kick": {
+      "documentation": null,
+      "signature_members": {
+        "S": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Kick(string S)"
+    },
+    "ServerKickBan": {
+      "documentation": null,
+      "signature_members": {
+        "S": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerKickBan(string S)"
+    },
+    "KickBan": {
+      "documentation": null,
+      "signature_members": {
+        "S": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "KickBan(string S)"
+    },
+    "ServerAdmin": {
+      "documentation": null,
+      "signature_members": {
+        "CommandLine": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerAdmin(string CommandLine)"
+    },
+    "Admin": {
+      "documentation": null,
+      "signature_members": {
+        "CommandLine": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Admin(string CommandLine)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

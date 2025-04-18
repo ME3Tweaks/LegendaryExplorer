@@ -1,31 +1,31 @@
 {
   "Members": {
     "PlotId": {
-      "type": null,
+      "type": "PlotIdenfitier",
       "documentation": null
     },
     "srCharacter": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "srLocation": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "nValue": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nConditional": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nConditionalParam": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Floor": {
-      "type": null,
+      "type": "SFXAreaMapLayout",
       "documentation": null
     }
   },

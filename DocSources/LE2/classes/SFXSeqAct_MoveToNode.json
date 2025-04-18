@@ -1,0 +1,79 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "oPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "oMoveTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "fMoveOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "fTimeOut": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fTotalTimeRunning": {
+      "type": "float",
+      "documentation": null
+    },
+    "nCompletionReason": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nReason": {
+      "type": "int",
+      "documentation": null
+    },
+    "bWalking": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDone": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bWasWalkingBefore": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "MoveTo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MoveTo()"
+    },
+    "CancelMove": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CancelMove()"
+    },
+    "MoveToCallback": {
+      "documentation": null,
+      "signature_members": {
+        "nReason": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MoveToCallback(int nReason)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

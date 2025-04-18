@@ -1,23 +1,23 @@
 {
   "Members": {
     "Image": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "WaveClass": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Id": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Name": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "AllCapsName": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

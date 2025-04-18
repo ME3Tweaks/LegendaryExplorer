@@ -1,0 +1,62 @@
+{
+  "parent": "SFXCameraMode_Interpolate",
+  "package": "SFXGame",
+  "variables": {
+    "ZoomSnapTargetLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "StartRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "StartLocation": {
+      "type": "Vector",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta)"
+    },
+    "MakeInactive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MakeInactive()"
+    },
+    "InitializeTransition": {
+      "documentation": null,
+      "signature_members": {
+        "FromMode": {
+          "type": null,
+          "documentation": null
+        },
+        "ToMode": {
+          "type": null,
+          "documentation": null
+        },
+        "Time": {
+          "type": null,
+          "documentation": null
+        },
+        "PreserveTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeTransition(SFXCameraMode FromMode, SFXCameraMode ToMode, float Time, bool PreserveTarget)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

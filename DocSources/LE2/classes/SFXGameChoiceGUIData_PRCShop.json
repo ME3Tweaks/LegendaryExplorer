@@ -1,0 +1,25 @@
+{
+  "parent": "SFXGameChoiceGUIData",
+  "package": "SFXGame",
+  "variables": {
+    "lstChoicesNoStrRef": {
+      "type": "SFXChoiceEntryNoStrRef",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddChoiceNoStrRef": {
+      "documentation": null,
+      "signature_members": {
+        "oChoice": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddChoiceNoStrRef(SFXChoiceEntryNoStrRef oChoice)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

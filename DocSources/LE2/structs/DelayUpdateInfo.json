@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Pawn": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "EventName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "UpdateTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "Type": {
+      "type": "EPerceptionType",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

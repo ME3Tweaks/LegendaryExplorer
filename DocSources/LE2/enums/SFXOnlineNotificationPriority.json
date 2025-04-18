@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "SFXONLINE_NOTIFICATION_PRIORITY_CERBERUS_CONTENT": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXONLINE_NOTIFICATION_PRIORITY_NEW_UNLOCK": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXONLINE_NOTIFICATION_PRIORITY_SOON_DLC": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXONLINE_NOTIFICATION_PRIORITY_MOTD": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXONLINE_NOTIFICATION_PRIORITY_UPCOMING_UNLOCK": {
+      "value": 4,
+      "documentation": null
+    },
+    "SFXONLINE_NOTIFICATION_PRIORITY_UPCOMING_DLC": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

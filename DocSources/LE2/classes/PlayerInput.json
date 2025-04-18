@@ -1,0 +1,361 @@
+{
+  "parent": "Input",
+  "package": "Engine",
+  "variables": {
+    "LastAxisKeyName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ZeroTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "SmoothedMouse": {
+      "type": "float",
+      "documentation": null
+    },
+    "GAMEPAD_DEADZONE": {
+      "type": "float",
+      "documentation": null
+    },
+    "DoubleClickTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "DoubleClickTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "MouseSensitivity": {
+      "type": "float",
+      "documentation": null
+    },
+    "aBaseX": {
+      "type": "float",
+      "documentation": null
+    },
+    "aBaseY": {
+      "type": "float",
+      "documentation": null
+    },
+    "aBaseZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "aMouseX": {
+      "type": "float",
+      "documentation": null
+    },
+    "aMouseY": {
+      "type": "float",
+      "documentation": null
+    },
+    "aForward": {
+      "type": "float",
+      "documentation": null
+    },
+    "aTurn": {
+      "type": "float",
+      "documentation": null
+    },
+    "aStrafe": {
+      "type": "float",
+      "documentation": null
+    },
+    "aUp": {
+      "type": "float",
+      "documentation": null
+    },
+    "aLookUp": {
+      "type": "float",
+      "documentation": null
+    },
+    "aRightAnalogTrigger": {
+      "type": "float",
+      "documentation": null
+    },
+    "aLeftAnalogTrigger": {
+      "type": "float",
+      "documentation": null
+    },
+    "aPS3AccelX": {
+      "type": "float",
+      "documentation": null
+    },
+    "aPS3AccelY": {
+      "type": "float",
+      "documentation": null
+    },
+    "aPS3AccelZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "aPS3Gyro": {
+      "type": "float",
+      "documentation": null
+    },
+    "RawJoyUp": {
+      "type": "float",
+      "documentation": null
+    },
+    "RawJoyRight": {
+      "type": "float",
+      "documentation": null
+    },
+    "RawJoyLookRight": {
+      "type": "float",
+      "documentation": null
+    },
+    "RawJoyLookUp": {
+      "type": "float",
+      "documentation": null
+    },
+    "MoveForwardSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "MoveStrafeSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "LookRightScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "LookUpScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "MouseSamples": {
+      "type": "int",
+      "documentation": null
+    },
+    "MouseSamplingTotal": {
+      "type": "float",
+      "documentation": null
+    },
+    "AutoUnlockTurnTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bUsingGamepad": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInvertMouse": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInvertTurn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWasForward": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWasBack": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWasLeft": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWasRight": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEdgeForward": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEdgeBack": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEdgeLeft": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEdgeRight": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableMouseSmoothing": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableFOVScaling": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLockTurnUntilRelease": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStrafe": {
+      "type": "byte",
+      "documentation": null
+    },
+    "bXAxis": {
+      "type": "byte",
+      "documentation": null
+    },
+    "bYAxis": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SmoothMouse": {
+      "documentation": null,
+      "signature_members": {
+        "aMouse": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "SampleCount": {
+          "type": null,
+          "documentation": null
+        },
+        "Index": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float SmoothMouse(float aMouse, float DeltaTime, out byte SampleCount, int Index)"
+    },
+    "ClearSmoothing": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearSmoothing()"
+    },
+    "SmartJump": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SmartJump()"
+    },
+    "Jump": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Jump()"
+    },
+    "ProcessInputMatching": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessInputMatching(float DeltaTime)"
+    },
+    "CheckForDoubleClickMove": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EDoubleClickDir",
+      "signature": "EDoubleClickDir CheckForDoubleClickMove(float DeltaTime)"
+    },
+    "CatchDoubleClickInput": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CatchDoubleClickInput()"
+    },
+    "PlayerInput": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayerInput(float DeltaTime)"
+    },
+    "AdjustMouseSensitivity": {
+      "documentation": null,
+      "signature_members": {
+        "FOVScale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AdjustMouseSensitivity(float FOVScale)"
+    },
+    "PostProcessInput": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PostProcessInput(float DeltaTime)"
+    },
+    "PreProcessInput": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PreProcessInput(float DeltaTime)"
+    },
+    "DrawHUD": {
+      "documentation": null,
+      "signature_members": {
+        "H": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawHUD(HUD H)"
+    },
+    "SetSensitivity": {
+      "documentation": null,
+      "signature_members": {
+        "F": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSensitivity(float F)"
+    },
+    "InvertTurn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool InvertTurn()"
+    },
+    "InvertMouse": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool InvertMouse()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,15 +1,15 @@
 {
   "Members": {
     "Asset": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "GroupID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Floor": {
-      "type": null,
+      "type": "SFXAreaMapLayout",
       "documentation": null
     }
   },

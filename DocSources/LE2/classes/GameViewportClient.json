@@ -1,0 +1,893 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "VfTable_FViewportClient": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "VfTable_FExec": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "VfTable_FCallbackEventDevice": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Viewport": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ViewportFrame": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "GlobalInteractions": {
+      "type": "Interaction",
+      "documentation": null
+    },
+    "UIControllerClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "UIController": {
+      "type": "UIInteraction",
+      "documentation": null
+    },
+    "BioScaleFormManagerClassName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_pScaleFormManager": {
+      "type": "BioSFManager",
+      "documentation": null
+    },
+    "ViewportConsole": {
+      "type": "Console",
+      "documentation": null
+    },
+    "pShowFlags": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "LoadingMessage": {
+      "type": "string",
+      "documentation": null
+    },
+    "SavingMessage": {
+      "type": "string",
+      "documentation": null
+    },
+    "ConnectingMessage": {
+      "type": "string",
+      "documentation": null
+    },
+    "PausedMessage": {
+      "type": "string",
+      "documentation": null
+    },
+    "PrecachingMessage": {
+      "type": "string",
+      "documentation": null
+    },
+    "bShowTitleSafeZone": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisplayingUIMouseCursor": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUIMouseCaptureOverride": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableWorldRendering": {
+      "type": "bool",
+      "documentation": null
+    },
+    "EnableNewFilmGrainOverride": {
+      "type": "bool",
+      "documentation": null
+    },
+    "EnableNewFilmGrain": {
+      "type": "bool",
+      "documentation": null
+    },
+    "FilmGrain_ScaleOverride": {
+      "type": "bool",
+      "documentation": null
+    },
+    "EnableRandomFilmGrainOverride": {
+      "type": "bool",
+      "documentation": null
+    },
+    "EnableRandomFilmGrain": {
+      "type": "bool",
+      "documentation": null
+    },
+    "TitleSafeZone": {
+      "type": "TitleSafeZoneArea",
+      "documentation": null
+    },
+    "LoadScreenTexture": {
+      "type": "string",
+      "documentation": null
+    },
+    "SplitscreenInfo": {
+      "type": "SplitscreenData",
+      "documentation": null
+    },
+    "DesiredSplitscreenType": {
+      "type": "ESplitScreenType",
+      "documentation": null
+    },
+    "ActiveSplitscreenType": {
+      "type": "ESplitScreenType",
+      "documentation": null
+    },
+    "Default2PSplitType": {
+      "type": "ESplitScreenType",
+      "documentation": null
+    },
+    "Default3PSplitType": {
+      "type": "ESplitScreenType",
+      "documentation": null
+    },
+    "ProgressMessage": {
+      "type": "string",
+      "documentation": null
+    },
+    "ProgressTimeOut": {
+      "type": "float",
+      "documentation": null
+    },
+    "ProgressFadeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "DebugProperties": {
+      "type": "DebugDisplayProperty",
+      "documentation": null
+    },
+    "FilmGrain_Scale": {
+      "type": "float",
+      "documentation": null
+    },
+    "__HandleInputKey__Delegate": {
+      "type": "HandleInputKey",
+      "documentation": null
+    },
+    "__HandleInputAxis__Delegate": {
+      "type": "HandleInputAxis",
+      "documentation": null
+    },
+    "__HandleInputChar__Delegate": {
+      "type": "HandleInputChar",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "FilmGrainToggleMode": {
+      "documentation": null,
+      "signature_members": {
+        "RandomEnable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FilmGrainToggleMode(bool RandomEnable)"
+    },
+    "FilmGrainSetScale": {
+      "documentation": null,
+      "signature_members": {
+        "Scale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FilmGrainSetScale(float Scale)"
+    },
+    "FilmGrainToggleNew": {
+      "documentation": null,
+      "signature_members": {
+        "Enable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FilmGrainToggleNew(bool Enable)"
+    },
+    "ClearProgressMessages": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearProgressMessages()"
+    },
+    "SetProgressTime": {
+      "documentation": null,
+      "signature_members": {
+        "T": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetProgressTime(float T)"
+    },
+    "NotifyConnectionError": {
+      "documentation": null,
+      "signature_members": {
+        "Message": {
+          "type": null,
+          "documentation": null
+        },
+        "Title": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyConnectionError(optional string Message, optional string Title)"
+    },
+    "SetProgressMessage": {
+      "documentation": null,
+      "signature_members": {
+        "MessageType": {
+          "type": null,
+          "documentation": null
+        },
+        "Message": {
+          "type": null,
+          "documentation": null
+        },
+        "Title": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnoreFutureNetworkMessages": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetProgressMessage(EProgressMessageType MessageType, string Message, optional string Title, optional bool bIgnoreFutureNetworkMessages)"
+    },
+    "RemoveLocalPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "ExistingPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int RemoveLocalPlayer(LocalPlayer ExistingPlayer)"
+    },
+    "AddLocalPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "NewPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int AddLocalPlayer(LocalPlayer NewPlayer)"
+    },
+    "NotifyPlayerRemoved": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "RemovedPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyPlayerRemoved(int PlayerIndex, LocalPlayer RemovedPlayer)"
+    },
+    "NotifyPlayerAdded": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "AddedPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyPlayerAdded(int PlayerIndex, LocalPlayer AddedPlayer)"
+    },
+    "DrawTransitionMessage": {
+      "documentation": null,
+      "signature_members": {
+        "Canvas": {
+          "type": null,
+          "documentation": null
+        },
+        "Message": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawTransitionMessage(Canvas Canvas, string Message)"
+    },
+    "DrawTransitionScreen": {
+      "documentation": null,
+      "signature_members": {
+        "Canvas": {
+          "type": null,
+          "documentation": null
+        },
+        "oTexture": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawTransitionScreen(Canvas Canvas, Texture2D oTexture)"
+    },
+    "DrawTransition": {
+      "documentation": null,
+      "signature_members": {
+        "Canvas": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawTransition(Canvas Canvas)"
+    },
+    "DisplayProgressMessage": {
+      "documentation": null,
+      "signature_members": {
+        "Canvas": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayProgressMessage(Canvas Canvas)"
+    },
+    "PostRender": {
+      "documentation": null,
+      "signature_members": {
+        "Canvas": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PostRender(Canvas Canvas)"
+    },
+    "DrawTitleSafeArea": {
+      "documentation": null,
+      "signature_members": {
+        "Canvas": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawTitleSafeArea(Canvas Canvas)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "CalculatePixelCenter": {
+      "documentation": null,
+      "signature_members": {
+        "out_CenterX": {
+          "type": null,
+          "documentation": null
+        },
+        "out_CenterY": {
+          "type": null,
+          "documentation": null
+        },
+        "LPlayer": {
+          "type": null,
+          "documentation": null
+        },
+        "Canvas": {
+          "type": null,
+          "documentation": null
+        },
+        "bUseMaxPercent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CalculatePixelCenter(out float out_CenterX, out float out_CenterY, LocalPlayer LPlayer, Canvas Canvas, optional bool bUseMaxPercent)"
+    },
+    "CalculateDeadZoneForAllSides": {
+      "documentation": null,
+      "signature_members": {
+        "LPlayer": {
+          "type": null,
+          "documentation": null
+        },
+        "Canvas": {
+          "type": null,
+          "documentation": null
+        },
+        "fTopSafeZone": {
+          "type": null,
+          "documentation": null
+        },
+        "fBottomSafeZone": {
+          "type": null,
+          "documentation": null
+        },
+        "fLeftSafeZone": {
+          "type": null,
+          "documentation": null
+        },
+        "fRightSafeZone": {
+          "type": null,
+          "documentation": null
+        },
+        "bUseMaxPercent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CalculateDeadZoneForAllSides(LocalPlayer LPlayer, Canvas Canvas, out float fTopSafeZone, out float fBottomSafeZone, out float fLeftSafeZone, out float fRightSafeZone, optional bool bUseMaxPercent)"
+    },
+    "CalculateDeadZone": {
+      "documentation": null,
+      "signature_members": {
+        "LPlayer": {
+          "type": null,
+          "documentation": null
+        },
+        "SZType": {
+          "type": null,
+          "documentation": null
+        },
+        "Canvas": {
+          "type": null,
+          "documentation": null
+        },
+        "bUseMaxPercent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float CalculateDeadZone(LocalPlayer LPlayer, ESafeZoneType SZType, Canvas Canvas, optional bool bUseMaxPercent)"
+    },
+    "CalculateSafeZoneValues": {
+      "documentation": null,
+      "signature_members": {
+        "out_Horizontal": {
+          "type": null,
+          "documentation": null
+        },
+        "out_Vertical": {
+          "type": null,
+          "documentation": null
+        },
+        "Canvas": {
+          "type": null,
+          "documentation": null
+        },
+        "LocalPlayerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bUseMaxPercent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CalculateSafeZoneValues(out float out_Horizontal, out float out_Vertical, Canvas Canvas, int LocalPlayerIndex, bool bUseMaxPercent)"
+    },
+    "GetPixelSizeOfScreen": {
+      "documentation": null,
+      "signature_members": {
+        "out_Width": {
+          "type": null,
+          "documentation": null
+        },
+        "out_Height": {
+          "type": null,
+          "documentation": null
+        },
+        "Canvas": {
+          "type": null,
+          "documentation": null
+        },
+        "LocalPlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetPixelSizeOfScreen(out float out_Width, out float out_Height, Canvas Canvas, int LocalPlayerIndex)"
+    },
+    "HasRightSafeZone": {
+      "documentation": null,
+      "signature_members": {
+        "LocalPlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasRightSafeZone(int LocalPlayerIndex)"
+    },
+    "HasLeftSafeZone": {
+      "documentation": null,
+      "signature_members": {
+        "LocalPlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasLeftSafeZone(int LocalPlayerIndex)"
+    },
+    "HasBottomSafeZone": {
+      "documentation": null,
+      "signature_members": {
+        "LocalPlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasBottomSafeZone(int LocalPlayerIndex)"
+    },
+    "HasTopSafeZone": {
+      "documentation": null,
+      "signature_members": {
+        "LocalPlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasTopSafeZone(int LocalPlayerIndex)"
+    },
+    "ConvertLocalPlayerToGamePlayerIndex": {
+      "documentation": null,
+      "signature_members": {
+        "LPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int ConvertLocalPlayerToGamePlayerIndex(LocalPlayer LPlayer)"
+    },
+    "GetSubtitleRegion": {
+      "documentation": null,
+      "signature_members": {
+        "MinPos": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxPos": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetSubtitleRegion(out Vector2D MinPos, out Vector2D MaxPos)"
+    },
+    "LayoutPlayers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LayoutPlayers()"
+    },
+    "UpdateActiveSplitscreenType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateActiveSplitscreenType()"
+    },
+    "GetSplitscreenConfiguration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ESplitScreenType",
+      "signature": "ESplitScreenType GetSplitscreenConfiguration()"
+    },
+    "SetSplitscreenConfiguration": {
+      "documentation": null,
+      "signature_members": {
+        "SplitType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSplitscreenConfiguration(ESplitScreenType SplitType)"
+    },
+    "GameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GameSessionEnded()"
+    },
+    "InsertInteraction": {
+      "documentation": null,
+      "signature_members": {
+        "NewInteraction": {
+          "type": null,
+          "documentation": null
+        },
+        "InIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int InsertInteraction(Interaction NewInteraction, optional int InIndex)"
+    },
+    "CreateInitialPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "OutError": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CreateInitialPlayer(out string OutError)"
+    },
+    "Init": {
+      "documentation": null,
+      "signature_members": {
+        "OutError": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Init(out string OutError)"
+    },
+    "SetConsoleTarget": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetConsoleTarget(int PlayerIndex)"
+    },
+    "ShowTitleSafeArea": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowTitleSafeArea()"
+    },
+    "SetSplit": {
+      "documentation": null,
+      "signature_members": {
+        "Mode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSplit(int Mode)"
+    },
+    "DebugRemovePlayer": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugRemovePlayer(int ControllerId)"
+    },
+    "SSSwapControllers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SSSwapControllers()"
+    },
+    "DebugCreatePlayer": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugCreatePlayer(int ControllerId)"
+    },
+    "FindPlayerByControllerId": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "LocalPlayer",
+      "signature": "LocalPlayer FindPlayerByControllerId(int ControllerId)"
+    },
+    "RemovePlayer": {
+      "documentation": null,
+      "signature_members": {
+        "ExPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemovePlayer(LocalPlayer ExPlayer)"
+    },
+    "CreatePlayer": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        },
+        "OutError": {
+          "type": null,
+          "documentation": null
+        },
+        "bSpawnActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "LocalPlayer",
+      "signature": "LocalPlayer CreatePlayer(int ControllerId, out string OutError, bool bSpawnActor)"
+    },
+    "ShouldForceFullscreenViewport": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldForceFullscreenViewport()"
+    },
+    "SetLockInputToController": {
+      "documentation": null,
+      "signature_members": {
+        "b_iValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetLockInputToController(bool b_iValue)"
+    },
+    "GetLockInputToController": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetLockInputToController()"
+    },
+    "IsFullScreenViewport": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsFullScreenViewport()"
+    },
+    "GetViewportSize": {
+      "documentation": null,
+      "signature_members": {
+        "out_ViewportSize": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetViewportSize(out Vector2D out_ViewportSize)"
+    },
+    "ConsoleCommand": {
+      "documentation": null,
+      "signature_members": {
+        "Command": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string ConsoleCommand(string Command)"
+    },
+    "HandleInputChar": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        },
+        "Unicode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputChar(int ControllerId, string Unicode)"
+    },
+    "HandleInputAxis": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        },
+        "Key": {
+          "type": null,
+          "documentation": null
+        },
+        "Delta": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "bGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputAxis(int ControllerId, Name Key, float Delta, float DeltaTime, bool bGamepad)"
+    },
+    "HandleInputKey": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        },
+        "Key": {
+          "type": null,
+          "documentation": null
+        },
+        "EventType": {
+          "type": null,
+          "documentation": null
+        },
+        "AmountDepressed": {
+          "type": null,
+          "documentation": null
+        },
+        "bGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputKey(int ControllerId, Name Key, EInputEvent EventType, float AmountDepressed, optional bool bGamepad)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

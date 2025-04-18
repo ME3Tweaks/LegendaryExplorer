@@ -1,23 +1,23 @@
 {
   "Members": {
     "tPosition": {
-      "type": null,
+      "type": "IntPoint",
       "documentation": null
     },
     "nmPropAction": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "fPropActionTimeDelay": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bEnterEvent": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bExitEvent": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

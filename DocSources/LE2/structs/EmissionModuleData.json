@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "m_LocalEmissionAreas": {
+      "type": "LocalEmissionAreaWeight",
+      "documentation": null
+    },
+    "m_EmissionAreaPreviousWorldToLocal": {
+      "type": "Matrix",
+      "documentation": null
+    },
+    "m_EmissionAreaPreviousWorldToLocalValid": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_NextEmissionAreas": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_CachedSpawnMeshes": {
+      "type": "MeshComponent",
+      "documentation": null
+    },
+    "m_pOwningModule": {
+      "type": "BioParticleModuleLocationAttachedMesh",
+      "documentation": null
+    },
+    "m_CachedNumSpawnMeshes": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

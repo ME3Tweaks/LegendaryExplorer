@@ -1,0 +1,25 @@
+{
+  "parent": "UIResourceDataProvider",
+  "package": "Engine",
+  "variables": {
+    "MapName": {
+      "type": "string",
+      "documentation": null
+    },
+    "ScreenshotPathName": {
+      "type": "string",
+      "documentation": null
+    },
+    "DisplayName": {
+      "type": "string",
+      "documentation": null
+    },
+    "Description": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

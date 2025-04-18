@@ -1,0 +1,93 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "SFXGame",
+  "variables": {
+    "WalkSynchGroupName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RunSynchGroupName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "IdleSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinWalkSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "MidWalkSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxWalkSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinRunSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "MidRunSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxRunSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "IdleTimeout": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendTimeIdle2Walk": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendTimeIdle2Run": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendTimeWalk2Idle": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendTimeWalk2Run": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendTimeRun2Idle": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendTimeRun2Walk": {
+      "type": "float",
+      "documentation": null
+    },
+    "IdleTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentAcceleration": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentWalkRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentRunRate": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

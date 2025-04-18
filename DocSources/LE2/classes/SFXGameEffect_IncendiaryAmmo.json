@@ -1,0 +1,132 @@
+{
+  "parent": "SFXGameEffect_AmmoPower",
+  "package": "SFXGameContent_Powers",
+  "variables": {
+    "PS_ImpactEffect": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "PS_FlameEffect": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "PS_FireSpreadEffect": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "AreaExplosionChance": {
+      "type": "float",
+      "documentation": null
+    },
+    "AreaExplosionDamage": {
+      "type": "float",
+      "documentation": null
+    },
+    "AreaExplosionRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "RobotDamageMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "AnimatedReactionChance": {
+      "type": "float",
+      "documentation": null
+    },
+    "Damage": {
+      "type": "float",
+      "documentation": null
+    },
+    "DamageDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "bSpawnImpactFlames": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CauseAnimatedReaction": {
+      "documentation": null,
+      "signature_members": {
+        "oHitActor": {
+          "type": null,
+          "documentation": null
+        },
+        "fDelay": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CauseAnimatedReaction(Actor oHitActor, float fDelay)"
+    },
+    "AddGameEffects": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "fDuration": {
+          "type": null,
+          "documentation": null
+        },
+        "fDamagePerSecond": {
+          "type": null,
+          "documentation": null
+        },
+        "BPInstigator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddGameEffects(Actor oTarget, float fDuration, float fDamagePerSecond, BioPawn BPInstigator)"
+    },
+    "DoEvolvedAoEImpact": {
+      "documentation": null,
+      "signature_members": {
+        "Impact": {
+          "type": null,
+          "documentation": null
+        },
+        "WeaponOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoEvolvedAoEImpact(ImpactInfo Impact, BioPawn WeaponOwner, SFXWeapon Weapon)"
+    },
+    "GetDamageVocProbabilityMod": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDamageVocProbabilityMod()"
+    },
+    "OnWeaponImpact": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        },
+        "Impact": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnWeaponImpact(SFXWeapon Weapon, ImpactInfo Impact)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

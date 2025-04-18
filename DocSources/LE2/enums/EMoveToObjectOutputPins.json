@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "MTO_Success": {
+      "value": 0,
+      "documentation": null
+    },
+    "MTO_Failed": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

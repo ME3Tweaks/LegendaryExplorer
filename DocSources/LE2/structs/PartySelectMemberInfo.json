@@ -1,0 +1,61 @@
+{
+  "Members": {
+    "Tag": {
+      "type": "Name",
+      "documentation": null
+    },
+    "LoadoutTag": {
+      "type": "Name",
+      "documentation": null
+    },
+    "DiscoveredLabel": {
+      "type": "Name",
+      "documentation": null
+    },
+    "AvailableLabel": {
+      "type": "Name",
+      "documentation": null
+    },
+    "InPartyLabel": {
+      "type": "Name",
+      "documentation": null
+    },
+    "IsLoyalLabel": {
+      "type": "Name",
+      "documentation": null
+    },
+    "OldLoyaltyLabel": {
+      "type": "Name",
+      "documentation": null
+    },
+    "AppearanceLabel": {
+      "type": "Name",
+      "documentation": null
+    },
+    "StrName": {
+      "type": "int",
+      "documentation": null
+    },
+    "ImageIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "KismetIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "DeadIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "StrDossierText": {
+      "type": "int",
+      "documentation": null
+    },
+    "StrSpecialty": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

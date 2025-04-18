@@ -1,0 +1,169 @@
+{
+  "parent": "BioCustomAction",
+  "package": "SFXGame",
+  "variables": {
+    "BS_Reaction": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "BS_ReactionExplore": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "PS_Impact": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "Instigator": {
+      "type": "Controller",
+      "documentation": null
+    },
+    "fAnimPlayRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "fAnimBlendInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fAnimBlendOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fAnimStartTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fReactionDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "RotationTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ImpactScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "bAnimLooping": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowAnimInterrupt": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRagdollOnFinish": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRotateOnHit": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ERootMotionMode": {
+      "type": "ERootMotionMode",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ActivateImpactEmitter": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivateImpactEmitter(Vector HitLocation, Vector HitNormal, TraceHitInfo HitInfo)"
+    },
+    "EndThisCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndThisCustomAction()"
+    },
+    "CheckForRagdollRecovery": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckForRagdollRecovery()"
+    },
+    "BodyStanceAnimEndNotification": {
+      "documentation": null,
+      "signature_members": {
+        "SeqNode": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayedTime": {
+          "type": null,
+          "documentation": null
+        },
+        "ExcessTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BodyStanceAnimEndNotification(AnimNodeSequence SeqNode, float PlayedTime, float ExcessTime)"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    },
+    "OnCustomActionTimeUp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCustomActionTimeUp()"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "Init": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "bPlayImpact": {
+          "type": null,
+          "documentation": null
+        },
+        "Inst": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Init(Vector HitLocation, Vector HitNormal, TraceHitInfo HitInfo, bool bPlayImpact, optional Controller Inst)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

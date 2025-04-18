@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "Instigator": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "Recipient": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "Id": {
+      "type": "int",
+      "documentation": null
+    },
+    "DelayTimeRemainingSec": {
+      "type": "float",
+      "documentation": null
+    },
+    "DebugIndex": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

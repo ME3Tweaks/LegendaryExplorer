@@ -1,0 +1,29 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "BoxColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "BoxMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "BoxExtent": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "bDrawWireBox": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDrawLitBox": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "sName": {
+      "type": "string",
+      "documentation": null
+    },
+    "Value": {
+      "type": "int",
+      "documentation": null
+    },
+    "UnlockedAt": {
+      "type": "int",
+      "documentation": null
+    },
+    "AchievementId": {
+      "type": "int",
+      "documentation": null
+    },
+    "TalenTreeID": {
+      "type": "int",
+      "documentation": null
+    },
+    "IsAchievementUnlocked": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

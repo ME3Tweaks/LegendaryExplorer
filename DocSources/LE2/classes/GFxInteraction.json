@@ -1,0 +1,41 @@
+{
+  "parent": "Interaction",
+  "package": "GFxUI",
+  "variables": {
+    "VfTable_FCallbackEventDevice": {
+      "type": "Pointer",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "NotifyGameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyGameSessionEnded()"
+    },
+    "GetFocusMovie": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "GFxMovie",
+      "signature": "GFxMovie GetFocusMovie()"
+    },
+    "SetFocusMovie": {
+      "documentation": null,
+      "signature_members": {
+        "MovieName": {
+          "type": null,
+          "documentation": null
+        },
+        "captureInput": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetFocusMovie(string MovieName, bool captureInput)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

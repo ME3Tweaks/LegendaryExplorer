@@ -1,0 +1,99 @@
+{
+  "parent": "PathGoalEvaluator",
+  "package": "SFXGame",
+  "variables": {
+    "CoverGoalConstraints": {
+      "type": "CoverGoalConstraint",
+      "documentation": null
+    },
+    "AI": {
+      "type": "SFXAI_NativeBase",
+      "documentation": null
+    },
+    "BestMarker": {
+      "type": "CoverSlotMarker",
+      "documentation": null
+    },
+    "TetherActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "BestRating": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxToRate": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumMarkersTested": {
+      "type": "int",
+      "documentation": null
+    },
+    "MoveTowardsGoalActor": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetDumpString": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetDumpString()"
+    },
+    "AddCoverGoalConstraint": {
+      "documentation": null,
+      "signature_members": {
+        "Constraint": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddCoverGoalConstraint(CoverGoalConstraint Constraint)"
+    },
+    "RateSlotMarker": {
+      "documentation": null,
+      "signature_members": {
+        "Marker": {
+          "type": null,
+          "documentation": null
+        },
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        },
+        "BaseRating": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RateSlotMarker(CoverSlotMarker Marker, Pawn Pawn, int BaseRating)"
+    },
+    "InitNative": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitNative()"
+    },
+    "Init": {
+      "documentation": null,
+      "signature_members": {
+        "oAI": {
+          "type": null,
+          "documentation": null
+        },
+        "GoalActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Init(SFXAI_NativeBase oAI, Actor GoalActor)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

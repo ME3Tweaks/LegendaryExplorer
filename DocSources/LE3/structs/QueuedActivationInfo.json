@@ -1,23 +1,23 @@
 {
   "Members": {
     "ActivateIndices": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "ActivatedEvent": {
-      "type": null,
+      "type": "SequenceEvent",
       "documentation": null
     },
     "inOriginator": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "inInstigator": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "bPushTop": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

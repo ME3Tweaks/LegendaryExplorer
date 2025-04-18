@@ -1,19 +1,19 @@
 {
   "Members": {
     "Level": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "ExperienceRequired": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "TalentReward": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "HenchmanTalentReward": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

@@ -1,19 +1,19 @@
 {
   "Members": {
     "Sound": {
-      "type": null,
+      "type": "WwiseEvent",
       "documentation": null
     },
     "bAnyEvolved": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bReplaceBaseSound": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "EvolveChoice": {
-      "type": null,
+      "type": "EEvolveChoice",
       "documentation": null
     }
   },

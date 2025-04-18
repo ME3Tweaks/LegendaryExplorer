@@ -1,0 +1,57 @@
+{
+  "Members": {
+    "sTitle": {
+      "type": "string",
+      "documentation": null
+    },
+    "sSubtitle": {
+      "type": "string",
+      "documentation": null
+    },
+    "sBody": {
+      "type": "string",
+      "documentation": null
+    },
+    "nmType": {
+      "type": "Name",
+      "documentation": null
+    },
+    "oImage": {
+      "type": "Texture",
+      "documentation": null
+    },
+    "nRemoteEvent": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nmSound": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nmStopSound": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nPriority": {
+      "type": "int",
+      "documentation": null
+    },
+    "CreationTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fDisplayTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "nFlourishID": {
+      "type": "int",
+      "documentation": null
+    },
+    "Data1": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

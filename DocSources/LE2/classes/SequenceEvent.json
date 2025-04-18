@@ -1,0 +1,126 @@
+{
+  "parent": "SequenceOp",
+  "package": "Engine",
+  "variables": {
+    "DuplicateEvts": {
+      "type": "SequenceEvent",
+      "documentation": null
+    },
+    "lstTags": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Originator": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "Instigator": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "ActivationTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "TriggerCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxTriggerCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "ReTriggerDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxWidth": {
+      "type": "int",
+      "documentation": null
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTagListInclusionary": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRegistered": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bClientSideOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Priority": {
+      "type": "byte",
+      "documentation": null
+    },
+    "WhoTriggers": {
+      "type": "EWhoTriggers",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Toggled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Toggled()"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "PassesWhoTriggers": {
+      "documentation": null,
+      "signature_members": {
+        "InInstigator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PassesWhoTriggers(Actor InInstigator)"
+    },
+    "CheckActivate": {
+      "documentation": null,
+      "signature_members": {
+        "InOriginator": {
+          "type": null,
+          "documentation": null
+        },
+        "InInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "bTest": {
+          "type": null,
+          "documentation": null
+        },
+        "ActivateIndices": {
+          "type": null,
+          "documentation": null
+        },
+        "bPushTop": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckActivate(Actor InOriginator, Actor InInstigator, optional bool bTest, optional const out array<int> ActivateIndices, optional bool bPushTop)"
+    },
+    "RegisterEvent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RegisterEvent()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

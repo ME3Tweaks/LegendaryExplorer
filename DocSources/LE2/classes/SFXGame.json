@@ -1,0 +1,951 @@
+{
+  "parent": "GameInfo",
+  "package": "SFXGame",
+  "variables": {
+    "MaleActorType": {
+      "type": "string",
+      "documentation": null
+    },
+    "FemaleActorType": {
+      "type": "string",
+      "documentation": null
+    },
+    "MaleCustomHead": {
+      "type": "string",
+      "documentation": null
+    },
+    "FemaleCustomHead": {
+      "type": "string",
+      "documentation": null
+    },
+    "HenchmanPackageMap": {
+      "type": "HenchPackageMap",
+      "documentation": null
+    },
+    "TimeDilationCurves": {
+      "type": "TimeDilationStruct",
+      "documentation": null
+    },
+    "NGPlusPlotVariables": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Difficulty": {
+      "type": "Class",
+      "documentation": null
+    },
+    "gameconfig": {
+      "type": "SFXGameConfig",
+      "documentation": null
+    },
+    "ObjectPool": {
+      "type": "SFXObjectPool",
+      "documentation": null
+    },
+    "VocManager": {
+      "type": "SFXVocalizationManager",
+      "documentation": null
+    },
+    "SFXOnlineSubsystem": {
+      "type": "SFXOnlineSubsystem",
+      "documentation": null
+    },
+    "PlayerSquad": {
+      "type": "BioPlayerSquad",
+      "documentation": null
+    },
+    "StartSlowEvent": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "StopSlowEvent": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "BonusList": {
+      "type": "SFXBonusList",
+      "documentation": null
+    },
+    "PhysicsDamageMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "StormStamina": {
+      "type": "float",
+      "documentation": null
+    },
+    "StormRegen": {
+      "type": "float",
+      "documentation": null
+    },
+    "StormStaminaNonCombat": {
+      "type": "float",
+      "documentation": null
+    },
+    "StormRegenNonCombat": {
+      "type": "float",
+      "documentation": null
+    },
+    "HackCrouchCoverOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "fAutoUnlitDownsizeThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeDilationOverride": {
+      "type": "float",
+      "documentation": null
+    },
+    "EnableDamage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMin1Health": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInCombat": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceCombat": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAutoUnlitDownsizeInCombat": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bGenerateTutorialEvents": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowSquadScreenMessageBoxes": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "RestartPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "NewPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RestartPlayer(Controller NewPlayer)"
+    },
+    "PulseFullAmmoMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PulseFullAmmoMessage()"
+    },
+    "StartMatch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartMatch()"
+    },
+    "SetNGPlusPlotStates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetNGPlusPlotStates()"
+    },
+    "EnumeratePersonalizationVars": {
+      "documentation": null,
+      "signature_members": {
+        "Vars": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnumeratePersonalizationVars(out array<int> Vars)"
+    },
+    "AddCustomElementListPlotVars": {
+      "documentation": null,
+      "signature_members": {
+        "Elements": {
+          "type": null,
+          "documentation": null
+        },
+        "Vars": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddCustomElementListPlotVars(out array<CustomizableElement> Elements, out array<int> Vars)"
+    },
+    "OnGameCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "nEndID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnGameCompleted(int nEndID)"
+    },
+    "SetRenegadePoints": {
+      "documentation": null,
+      "signature_members": {
+        "nPoints": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRenegadePoints(int nPoints)"
+    },
+    "GetRenegadePoints": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetRenegadePoints()"
+    },
+    "SetParagonPoints": {
+      "documentation": null,
+      "signature_members": {
+        "nPoints": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetParagonPoints(int nPoints)"
+    },
+    "GetParagonPoints": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetParagonPoints()"
+    },
+    "CalcWeaponFire": {
+      "documentation": null,
+      "signature_members": {
+        "W": {
+          "type": null,
+          "documentation": null
+        },
+        "StartTrace": {
+          "type": null,
+          "documentation": null
+        },
+        "EndTrace": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactList": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ImpactInfo",
+      "signature": "ImpactInfo CalcWeaponFire(Weapon W, out Vector StartTrace, out Vector EndTrace, out array<ImpactInfo> ImpactList)"
+    },
+    "OnPlayerSquadDeath": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPlayerSquadDeath()"
+    },
+    "CheckGameOver": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CheckGameOver()"
+    },
+    "SignalEndGame": {
+      "documentation": null,
+      "signature_members": {
+        "GameOverString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SignalEndGame(optional stringref GameOverString)"
+    },
+    "SwitchTarget": {
+      "documentation": null,
+      "signature_members": {
+        "InstigatorController": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SwitchTarget(Controller InstigatorController, Actor Target)"
+    },
+    "IsCurrentTarget": {
+      "documentation": null,
+      "signature_members": {
+        "InstigatorController": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsCurrentTarget(Controller InstigatorController, Actor Target)"
+    },
+    "ScoreHeadshot": {
+      "documentation": null,
+      "signature_members": {
+        "InstigatorController": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ScoreHeadshot(Controller InstigatorController, Class<SFXDamageType> DamageType)"
+    },
+    "ScoreDamage": {
+      "documentation": null,
+      "signature_members": {
+        "InstigatorController": {
+          "type": null,
+          "documentation": null
+        },
+        "Damaged": {
+          "type": null,
+          "documentation": null
+        },
+        "RawDamageDealt": {
+          "type": null,
+          "documentation": null
+        },
+        "ActualDamageDealt": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ScoreDamage(Controller InstigatorController, Controller Damaged, float RawDamageDealt, float ActualDamageDealt, Class<SFXDamageType> DamageType)"
+    },
+    "ScoreKill": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": null,
+          "documentation": null
+        },
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ScoreKill(Controller Killer, Controller Other)"
+    },
+    "ScoreFlamethrowerTankKill": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": null,
+          "documentation": null
+        },
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ScoreFlamethrowerTankKill(Controller Killer, Controller Other)"
+    },
+    "DestroySFXOnlineSubsystem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DestroySFXOnlineSubsystem()"
+    },
+    "PreExit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreExit()"
+    },
+    "InitGame": {
+      "documentation": null,
+      "signature_members": {
+        "Options": {
+          "type": null,
+          "documentation": null
+        },
+        "ErrorMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitGame(string Options, out string ErrorMessage)"
+    },
+    "GrantScaledCredits": {
+      "documentation": null,
+      "signature_members": {
+        "nSize": {
+          "type": null,
+          "documentation": null
+        },
+        "bTickResource": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GrantScaledCredits(int nSize, optional bool bTickResource)"
+    },
+    "PlayTransientSound": {
+      "documentation": null,
+      "signature_members": {
+        "InWwiseEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "SoundLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "RTPCName": {
+          "type": null,
+          "documentation": null
+        },
+        "RTPCValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayTransientSound(WwiseBaseSoundObject InWwiseEvent, Vector SoundLocation, optional array<string> RTPCName, optional array<float> RTPCValue)"
+    },
+    "GetPlayerResourcesManager": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXInventoryManager",
+      "signature": "SFXInventoryManager GetPlayerResourcesManager()"
+    },
+    "StartFirstUsePowerDelay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartFirstUsePowerDelay()"
+    },
+    "ToggleCombatOverride": {
+      "documentation": null,
+      "signature_members": {
+        "bCombatOverride": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ToggleCombatOverride(bool bCombatOverride)"
+    },
+    "CombatEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CombatEnded()"
+    },
+    "CombatStarted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CombatStarted()"
+    },
+    "ProbeOnCombatEnd": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProbeOnCombatEnd()"
+    },
+    "ProbeOnCombatBegin": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProbeOnCombatBegin()"
+    },
+    "OnCombatEnd": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCombatEnd()"
+    },
+    "OnCombatStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCombatStart()"
+    },
+    "InCombat": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool InCombat()"
+    },
+    "PreventPermanentDeath": {
+      "documentation": null,
+      "signature_members": {
+        "KilledPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PreventPermanentDeath(BioPawn KilledPawn)"
+    },
+    "PreventDeath": {
+      "documentation": null,
+      "signature_members": {
+        "KilledPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "Killer": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PreventDeath(Pawn KilledPawn, Controller Killer, Class<DamageType> DamageType, Vector HitLocation)"
+    },
+    "Killed": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": null,
+          "documentation": null
+        },
+        "KilledPlayer": {
+          "type": null,
+          "documentation": null
+        },
+        "KilledPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Killed(Controller Killer, Controller KilledPlayer, Pawn KilledPawn, Class<DamageType> DamageType)"
+    },
+    "ModifyDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "injured": {
+          "type": null,
+          "documentation": null
+        },
+        "InstigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyDamage(out float Damage, out TraceHitInfo HitInfo, out Vector HitLocation, out Vector Momentum, Class<SFXDamageType> DamageType, Actor injured, Controller InstigatedBy, optional Actor DamageCauser)"
+    },
+    "TriggerVocalizationEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VocalizationID": {
+          "type": null,
+          "documentation": null
+        },
+        "InstigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "Recipient": {
+          "type": null,
+          "documentation": null
+        },
+        "Delay": {
+          "type": null,
+          "documentation": null
+        },
+        "fChanceToPlayModifier": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TriggerVocalizationEvent(byte VocalizationID, BioPawn InstigatedBy, optional BioPawn Recipient, optional float Delay, optional float fChanceToPlayModifier)"
+    },
+    "OnTimeDilationChange": {
+      "documentation": null,
+      "signature_members": {
+        "NewTimeDilation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTimeDilationChange(float NewTimeDilation)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta)"
+    },
+    "UpdateTimeDilationArray": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float UpdateTimeDilationArray(float TimeDelta)"
+    },
+    "CancelTimeDilation": {
+      "documentation": null,
+      "signature_members": {
+        "Identifier": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CancelTimeDilation(Name Identifier)"
+    },
+    "RequestTimeDilation": {
+      "documentation": null,
+      "signature_members": {
+        "Curve": {
+          "type": null,
+          "documentation": null
+        },
+        "TotalTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Identifier": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RequestTimeDilation(InterpCurveFloat Curve, float TotalTime, optional Name Identifier)"
+    },
+    "LoadPackage": {
+      "documentation": null,
+      "signature_members": {
+        "PackageName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadPackage(string PackageName)"
+    },
+    "UpdatePlotStateRTPCs": {
+      "documentation": null,
+      "signature_members": {
+        "VarTable": {
+          "type": null,
+          "documentation": null
+        },
+        "Player": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdatePlotStateRTPCs(BioGlobalVariableTable VarTable, SFXPawn_Player Player)"
+    },
+    "UpdatePlotVariables": {
+      "documentation": null,
+      "signature_members": {
+        "Player": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdatePlotVariables(SFXPawn_Player Player)"
+    },
+    "SpawnDefaultPawnFor": {
+      "documentation": null,
+      "signature_members": {
+        "NewPlayer": {
+          "type": null,
+          "documentation": null
+        },
+        "StartSpot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Pawn",
+      "signature": "Pawn SpawnDefaultPawnFor(Controller NewPlayer, NavigationPoint StartSpot)"
+    },
+    "GetCharacterClassByName": {
+      "documentation": null,
+      "signature_members": {
+        "ClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Class",
+      "signature": "Class<SFXPawn_Player> GetCharacterClassByName(coerce string ClassName)"
+    },
+    "GetIDByClass": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ECharacterClass",
+      "signature": "ECharacterClass GetIDByClass(Class<Pawn> PlayerClass)"
+    },
+    "FindPlayerStart": {
+      "documentation": null,
+      "signature_members": {
+        "Player": {
+          "type": null,
+          "documentation": null
+        },
+        "InTeam": {
+          "type": null,
+          "documentation": null
+        },
+        "IncomingName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "NavigationPoint",
+      "signature": "NavigationPoint FindPlayerStart(Controller Player, optional byte InTeam, optional string IncomingName)"
+    },
+    "SetPlayerDefaults": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlayerDefaults(Pawn PlayerPawn)"
+    },
+    "GetChallengeLevel": {
+      "documentation": null,
+      "signature_members": {
+        "Idx": {
+          "type": null,
+          "documentation": null
+        },
+        "ChallengeLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetChallengeLevel(int Idx, out int ChallengeLevel)"
+    },
+    "GetChallengeModifier": {
+      "documentation": null,
+      "signature_members": {
+        "Idx": {
+          "type": null,
+          "documentation": null
+        },
+        "ChallengeModifier": {
+          "type": null,
+          "documentation": null
+        },
+        "LevelModifier": {
+          "type": null,
+          "documentation": null
+        },
+        "TechModifier": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetChallengeModifier(int Idx, out float ChallengeModifier, optional out float LevelModifier, optional out float TechModifier)"
+    },
+    "GetPlayerData": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerName": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPlayerData(int ControllerId, out string PlayerName, out stringref PlayerClass)"
+    },
+    "GetPlayerLevel": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPlayerLevel(int ControllerId, out int PlayerLevel)"
+    },
+    "GetPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXPawn_Player",
+      "signature": "SFXPawn_Player GetPlayer(int ControllerId)"
+    },
+    "UpdateDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateDamage(int Damage)"
+    },
+    "SortActorsByAngle": {
+      "documentation": null,
+      "signature_members": {
+        "List": {
+          "type": null,
+          "documentation": null
+        },
+        "RefLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "RefRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "bPreferBioPawns": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SortActorsByAngle(out array<Actor> List, Vector RefLocation, Rotator RefRotation, bool bPreferBioPawns)"
+    },
+    "GetSimpleString": {
+      "documentation": null,
+      "signature_members": {
+        "StrRef": {
+          "type": null,
+          "documentation": null
+        },
+        "bParse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetSimpleString(stringref StrRef, optional bool bParse)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "ReCalculate": {
+      "documentation": null,
+      "signature_members": {
+        "F": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReCalculate(out ScaledFloat F)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

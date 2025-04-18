@@ -1,0 +1,96 @@
+{
+  "parent": "PhysicsVolume",
+  "package": "Engine",
+  "variables": {
+    "WallDir": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "LookDir": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "ClimbDir": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "LadderList": {
+      "type": "Ladder",
+      "documentation": null
+    },
+    "PendingClimber": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "WallDirArrow": {
+      "type": "ArrowComponent",
+      "documentation": null
+    },
+    "bNoPhysicalLadder": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAutoPath": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowLadderStrafing": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PhysicsChangedFor": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PhysicsChangedFor(Actor Other)"
+    },
+    "PawnLeavingVolume": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PawnLeavingVolume(Pawn P)"
+    },
+    "PawnEnteredVolume": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PawnEnteredVolume(Pawn P)"
+    },
+    "InUse": {
+      "documentation": null,
+      "signature_members": {
+        "Ignored": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InUse(Pawn Ignored)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

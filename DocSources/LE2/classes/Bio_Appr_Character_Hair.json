@@ -1,0 +1,28 @@
+{
+  "parent": "BioBaseAppearance",
+  "package": "SFXGame",
+  "variables": {
+    "m_aMaterials": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "m_oSettings": {
+      "type": "Bio_Appr_Character_Hair_Settings",
+      "documentation": null
+    },
+    "m_oModelMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetModel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SkeletalMesh",
+      "signature": "SkeletalMesh GetModel()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "FirstColoredMip": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

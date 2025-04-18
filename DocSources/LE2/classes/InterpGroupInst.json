@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "TrackInst": {
+      "type": "InterpTrackInst",
+      "documentation": null
+    },
+    "Group": {
+      "type": "InterpGroup",
+      "documentation": null
+    },
+    "GroupActor": {
+      "type": "Actor",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

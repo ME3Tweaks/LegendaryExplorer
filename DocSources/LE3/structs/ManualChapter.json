@@ -1,35 +1,35 @@
 {
   "Members": {
     "Image": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "PageIndices": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "FncChapterExclusion": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "Id": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "ChapterNum": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Title": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Body": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "ConsoleBody": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

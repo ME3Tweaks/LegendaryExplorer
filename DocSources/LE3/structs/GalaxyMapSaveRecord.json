@@ -1,11 +1,11 @@
 {
   "Members": {
     "Planets": {
-      "type": null,
+      "type": "PlanetSaveRecord",
       "documentation": null
     },
     "Systems": {
-      "type": null,
+      "type": "SystemSaveRecord",
       "documentation": null
     }
   },

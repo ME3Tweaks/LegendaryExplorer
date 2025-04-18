@@ -1,0 +1,20 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float fDeltaT)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "parent": "Volume",
+  "package": "SFXGame",
+  "variables": {
+    "PlaypenGuid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "bSubtractive": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

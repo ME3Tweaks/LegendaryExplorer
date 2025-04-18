@@ -1,43 +1,43 @@
 {
   "Members": {
     "sName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sPawnName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sDescription": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sIconResource": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "oWeaponClass": {
-      "type": null,
+      "type": "Class",
       "documentation": null
     },
     "oIconMC": {
-      "type": null,
+      "type": "GFxValue",
       "documentation": null
     },
     "nWeaponIcon": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nAmmo": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bEquipped": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "eWeaponState": {
-      "type": null,
+      "type": "SFXPowerWheelWeaponState",
       "documentation": null
     }
   },

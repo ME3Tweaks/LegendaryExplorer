@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "EBPCC_DoNothing": {
+      "value": 0,
+      "documentation": null
+    },
+    "EBPCC_Kill": {
+      "value": 1,
+      "documentation": null
+    },
+    "EBPCC_Freeze": {
+      "value": 2,
+      "documentation": null
+    },
+    "EBPCC_FreezeTranslation": {
+      "value": 3,
+      "documentation": null
+    },
+    "EBPCC_FreezeRotation": {
+      "value": 4,
+      "documentation": null
+    },
+    "EBPCC_FreezeMovement": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

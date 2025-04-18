@@ -1,23 +1,23 @@
 {
   "Members": {
     "SublevelName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "ObjectName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Value": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "ObjectClass": {
-      "type": null,
+      "type": "Class",
       "documentation": null
     },
     "PropertyName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     }
   },

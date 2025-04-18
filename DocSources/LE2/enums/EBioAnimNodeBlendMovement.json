@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "eBioAnimNodeBlendMovement_Idle": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimNodeBlendMovement_Walk": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimNodeBlendMovement_Run": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

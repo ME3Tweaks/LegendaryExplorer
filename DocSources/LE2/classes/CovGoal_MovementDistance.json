@@ -1,0 +1,37 @@
+{
+  "parent": "CoverGoalConstraint",
+  "package": "SFXGame",
+  "variables": {
+    "BestCoverDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxCoverDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinCoverDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinDistTowardGoal": {
+      "type": "float",
+      "documentation": null
+    },
+    "bMoveTowardGoal": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHardConstraint": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreCoverOutOfRange": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

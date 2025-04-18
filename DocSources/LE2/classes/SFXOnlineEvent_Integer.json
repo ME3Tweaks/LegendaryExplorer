@@ -1,0 +1,31 @@
+{
+  "parent": "SFXOnlineEvent",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "m_nInteger": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetInteger": {
+      "documentation": null,
+      "signature_members": {
+        "nInteger": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInteger(int nInteger)"
+    },
+    "GetInteger": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetInteger()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

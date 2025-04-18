@@ -1,0 +1,13 @@
+{
+  "parent": "InterpTrackInst",
+  "package": "SFXGame",
+  "variables": {
+    "ResetVector": {
+      "type": "Vector",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

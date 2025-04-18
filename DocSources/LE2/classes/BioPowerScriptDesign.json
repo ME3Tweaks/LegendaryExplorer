@@ -1,0 +1,705 @@
+{
+  "parent": "BioPowerScript",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "HasRemainingShieldOfType": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "ShieldClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasRemainingShieldOfType(BioPawn oPawn, Class<SFXShield_Base> ShieldClass)"
+    },
+    "SpawnVFXAtLocation": {
+      "documentation": null,
+      "signature_members": {
+        "Location": {
+          "type": null,
+          "documentation": null
+        },
+        "PS": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnVFXAtLocation(Vector Location, ParticleSystem PS)"
+    },
+    "ImpactPlaceable": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": null,
+          "documentation": null
+        },
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "PlotPlaceableDamage": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceDamage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ImpactPlaceable(Actor oCaster, Actor oImpacted, Vector Momentum, float PlotPlaceableDamage, optional bool bForceDamage)"
+    },
+    "RagdollPhysicsImpact": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "oImpactActor": {
+          "type": null,
+          "documentation": null
+        },
+        "vImpactDir": {
+          "type": null,
+          "documentation": null
+        },
+        "fVelocityToDamageMult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RagdollPhysicsImpact(Pawn oPawn, Actor oImpactActor, Vector vImpactDir, optional float fVelocityToDamageMult)"
+    },
+    "CheckBioticComboAchievement": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": null,
+          "documentation": null
+        },
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "bOrderedByPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CheckBioticComboAchievement(BioPawn oCaster, BioPawn oTarget, bool bOrderedByPlayer)"
+    },
+    "RemoveBioticEffects": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bRemoveStasis": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveBioticEffects(BioPawn oPawn, optional bool bRemoveStasis)"
+    },
+    "HasEffectType": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "EffectClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasEffectType(Actor oTarget, Class<Object> EffectClass)"
+    },
+    "GetPhysicsLevelResistance": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetPhysicsLevelResistance(Actor oTarget)"
+    },
+    "GetBioticMultiplier": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetBioticMultiplier(Actor oTarget)"
+    },
+    "GetWeaponDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetWeaponDamage(SFXWeapon Weapon, Vector HitLocation, Actor HitActor)"
+    },
+    "GetBulletsPerSecond": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetBulletsPerSecond(SFXWeapon Weapon)"
+    },
+    "LerpPowerParameter2D": {
+      "documentation": null,
+      "signature_members": {
+        "Parameter": {
+          "type": null,
+          "documentation": null
+        },
+        "PowerRank": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float LerpPowerParameter2D(Vector2D Parameter, int PowerRank)"
+    },
+    "LerpPowerParameter": {
+      "documentation": null,
+      "signature_members": {
+        "Parameter": {
+          "type": null,
+          "documentation": null
+        },
+        "PowerRank": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float LerpPowerParameter(Vector Parameter, int PowerRank)"
+    },
+    "CanBeRagdolledByPowers": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanBeRagdolledByPowers(BioPawn oPawn)"
+    },
+    "IsInRagdoll": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsInRagdoll(Actor oActor)"
+    },
+    "PlayRandomReaction": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "InstigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "Actions": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PlayRandomReaction(BioPawn oPawn, Controller InstigatedBy, const out array<EAICustomAction> Actions)"
+    },
+    "HasAnimatedReactions": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "Actions": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int HasAnimatedReactions(BioPawn oPawn, const out array<EAICustomAction> Actions)"
+    },
+    "IsPlayingCombatReaction": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsPlayingCombatReaction(Actor oTarget)"
+    },
+    "GetCustomActionMapping": {
+      "documentation": null,
+      "signature_members": {
+        "Reaction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EAICustomAction",
+      "signature": "EAICustomAction GetCustomActionMapping(ECombatReaction Reaction)"
+    },
+    "CauseDamageReaction": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        },
+        "InstigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "Reaction": {
+          "type": null,
+          "documentation": null
+        },
+        "OverrideCurrentReaction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CauseDamageReaction(Actor oActor, Controller InstigatedBy, ECombatReaction Reaction, optional bool OverrideCurrentReaction)"
+    },
+    "ApplyPermanentGameEffect": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "ClassName": {
+          "type": null,
+          "documentation": null
+        },
+        "fEffectValue": {
+          "type": null,
+          "documentation": null
+        },
+        "nmCategory": {
+          "type": null,
+          "documentation": null
+        },
+        "InInstigator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ApplyPermanentGameEffect(Actor oTarget, Class<SFXGameEffect> ClassName, float fEffectValue, Name nmCategory, Controller InInstigator)"
+    },
+    "ApplyTemporaryGameEffect": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "ClassName": {
+          "type": null,
+          "documentation": null
+        },
+        "fDuration": {
+          "type": null,
+          "documentation": null
+        },
+        "fEffectValue": {
+          "type": null,
+          "documentation": null
+        },
+        "nmCategory": {
+          "type": null,
+          "documentation": null
+        },
+        "InInstigator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ApplyTemporaryGameEffect(Actor oTarget, Class<SFXGameEffect> ClassName, float fDuration, float fEffectValue, Name nmCategory, Controller InInstigator)"
+    },
+    "HideActorMesh": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HideActorMesh(Actor oActor)"
+    },
+    "PurgeWeaponHeat": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        },
+        "PurgeHeavyWeapons": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PurgeWeaponHeat(SFXWeapon Weapon, optional bool PurgeHeavyWeapons)"
+    },
+    "GetPawnByName": {
+      "documentation": null,
+      "signature_members": {
+        "oWorldInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "PawnName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioPawn",
+      "signature": "BioPawn GetPawnByName(WorldInfo oWorldInfo, Name PawnName)"
+    },
+    "SetWeaponTracerVFX": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": null,
+          "documentation": null
+        },
+        "Mesh": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetWeaponTracerVFX(Actor oCaster, StaticMesh Mesh)"
+    },
+    "SpawnRandomImpactVFX": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactParticleSystem": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnRandomImpactVFX(BioPawn Pawn, ParticleSystem ImpactParticleSystem)"
+    },
+    "GetRandomImpactBone": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetRandomImpactBone(BioPawn Pawn)"
+    },
+    "SpawnWeaponImpactVFX": {
+      "documentation": null,
+      "signature_members": {
+        "Impact": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactParticleSystem": {
+          "type": null,
+          "documentation": null
+        },
+        "UseImpactNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "UseGodBone": {
+          "type": null,
+          "documentation": null
+        },
+        "DrawScale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnWeaponImpactVFX(ImpactInfo Impact, ParticleSystem ImpactParticleSystem, optional bool UseImpactNormal, optional bool UseGodBone, optional float DrawScale)"
+    },
+    "AdjustInventoryResource": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        },
+        "eResource": {
+          "type": null,
+          "documentation": null
+        },
+        "nAmount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AdjustInventoryResource(Actor oActor, EInventoryResourceTypes eResource, int nAmount)"
+    },
+    "IncreaseAllPowerCooldowns": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        },
+        "fDuration": {
+          "type": null,
+          "documentation": null
+        },
+        "bIncreaseTech": {
+          "type": null,
+          "documentation": null
+        },
+        "bIncreaseBiotic": {
+          "type": null,
+          "documentation": null
+        },
+        "bIncreaseWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "bIncreaseCombat": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IncreaseAllPowerCooldowns(Actor oActor, float fDuration, optional bool bIncreaseTech, optional bool bIncreaseBiotic, optional bool bIncreaseWeapon, optional bool bIncreaseCombat)"
+    },
+    "ClearAllPowerCooldowns": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ClearAllPowerCooldowns(Actor oActor)"
+    },
+    "ModifyArmor": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "fArmor": {
+          "type": null,
+          "documentation": null
+        },
+        "bSetHeavyArmor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ModifyArmor(Actor oTarget, float fArmor, optional bool bSetHeavyArmor)"
+    },
+    "ResetBioticResistance": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ResetBioticResistance(Actor oTarget)"
+    },
+    "SetBioticResistance": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "fResistance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetBioticResistance(Actor oTarget, float fResistance)"
+    },
+    "GetFactionRelationship": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": null,
+          "documentation": null
+        },
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EBioFactionRelationship",
+      "signature": "EBioFactionRelationship GetFactionRelationship(Actor oCaster, Actor oTarget)"
+    },
+    "GetDistanceModifier": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetDistanceModifier(Actor oTarget)"
+    },
+    "GetPhysicsLevel": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnoreResistance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetPhysicsLevel(Actor oImpacted, optional bool bIgnoreResistance)"
+    },
+    "IsMachineRace": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsMachineRace(Actor oImpacted)"
+    },
+    "IsAnimalRace": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsAnimalRace(Actor oImpacted)"
+    },
+    "IsHumanoidRace": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsHumanoidRace(Actor oImpacted)"
+    },
+    "IsOfRace": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        },
+        "eRace": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsOfRace(Actor oImpacted, ECharacterType eRace)"
+    },
+    "IsDeadBody": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsDeadBody(Actor oImpacted)"
+    },
+    "IsPlaceable": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsPlaceable(Actor oImpacted)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

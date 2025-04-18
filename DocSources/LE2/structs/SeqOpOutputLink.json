@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "Links": {
+      "type": "SeqOpOutputInputLink",
+      "documentation": null
+    },
+    "LinkDesc": {
+      "type": "string",
+      "documentation": null
+    },
+    "LinkAction": {
+      "type": "Name",
+      "documentation": null
+    },
+    "LinkedOp": {
+      "type": "SequenceOp",
+      "documentation": null
+    },
+    "ActivateDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "bHasImpulse": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisabled": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

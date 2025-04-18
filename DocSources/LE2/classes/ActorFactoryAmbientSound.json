@@ -1,0 +1,13 @@
+{
+  "parent": "ActorFactory",
+  "package": "Engine",
+  "variables": {
+    "AmbientSoundCue": {
+      "type": "SoundCue",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

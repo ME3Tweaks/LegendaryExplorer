@@ -1,0 +1,41 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "CollideActors": {
+      "type": "bool",
+      "documentation": null
+    },
+    "BlockActors": {
+      "type": "bool",
+      "documentation": null
+    },
+    "BlockZeroExtent": {
+      "type": "bool",
+      "documentation": null
+    },
+    "BlockNonZeroExtent": {
+      "type": "bool",
+      "documentation": null
+    },
+    "BlockRigidBody": {
+      "type": "bool",
+      "documentation": null
+    },
+    "HiddenGame": {
+      "type": "bool",
+      "documentation": null
+    },
+    "HiddenEditor": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CastShadow": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

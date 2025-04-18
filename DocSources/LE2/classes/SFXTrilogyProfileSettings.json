@@ -1,0 +1,104 @@
+{
+  "parent": "OnlineProfileSettings",
+  "package": "SFXGame",
+  "variables": {
+    "StaticTrilogyGrinderAchievementData": {
+      "type": "TrilogyGrinderAchievementData",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "IsComplete": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        },
+        "AchievementId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsComplete(BioPlayerController PC, EAchievementID AchievementId)"
+    },
+    "UnlockAchievement": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        },
+        "AchievementId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnlockAchievement(BioPlayerController PC, EAchievementID AchievementId)"
+    },
+    "ResetTrilogyData": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetTrilogyData(BioPlayerController PC)"
+    },
+    "GrinderStatReset": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GrinderStatReset(int ProfileSettingId, BioPlayerController PC)"
+    },
+    "UniqueStatIncrement": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UniqueStatIncrement(int ProfileSettingId, BioPlayerController PC)"
+    },
+    "GrinderStatIncrement": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        },
+        "Amount": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GrinderStatIncrement(int ProfileSettingId, int Amount, BioPlayerController PC)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

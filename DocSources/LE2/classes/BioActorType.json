@@ -1,0 +1,98 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {
+    "ActorGameName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_clsActor": {
+      "type": "Class",
+      "documentation": null
+    },
+    "VocalizationBank": {
+      "type": "SFXVocalizationBank",
+      "documentation": null
+    },
+    "ActorGameNameStrRef": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_fPhysicsDamageRelativeVelocityThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPhysicsDamageScalar": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPhysicsDamageImpulseScalar": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPhysicsDamageMinThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPhysicsDamageMaxAllowedPerHit": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nPhysicsLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fUseRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nRequiredScanLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nTargetTipText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_bMin1Health": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bTargetable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCombatTargetable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDefaultActionPossibleOverridden": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPlotProtected": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSuppressDisintegration": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "IsDisintegrationSuppressed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsDisintegrationSuppressed()"
+    },
+    "IsPlotProtected": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsPlotProtected()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

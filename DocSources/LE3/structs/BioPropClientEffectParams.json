@@ -1,23 +1,23 @@
 {
   "Members": {
     "vHitLocation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "vHitNormal": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "vRayDir": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "vSpawnValue": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "nmHitBone": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     }
   },

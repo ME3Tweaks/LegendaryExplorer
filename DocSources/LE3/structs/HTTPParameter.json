@@ -1,11 +1,11 @@
 {
   "Members": {
     "mName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "mValue": {
-      "type": null,
+      "type": "string",
       "documentation": null
     }
   },

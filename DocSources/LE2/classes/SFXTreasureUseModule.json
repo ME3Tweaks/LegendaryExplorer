@@ -1,0 +1,194 @@
+{
+  "parent": "SFXSimpleUseModule",
+  "package": "SFXGame",
+  "variables": {
+    "ResourcePercent": {
+      "type": "int",
+      "documentation": null
+    },
+    "TreasureType": {
+      "type": "ETreasureType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "IsDefaultActionPossible": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsDefaultActionPossible()"
+    },
+    "GiveAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "ttype": {
+          "type": null,
+          "documentation": null
+        },
+        "oWorldInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "ResourceAmount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GiveAmmo(ETreasureType ttype, BioWorldInfo oWorldInfo, int ResourceAmount)"
+    },
+    "ScaleAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "HWeapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ScaleAmmo(SFXHeavyWeapon HWeapon)"
+    },
+    "GiveInventoryTreasure": {
+      "documentation": null,
+      "signature_members": {
+        "InvType": {
+          "type": null,
+          "documentation": null
+        },
+        "Amount": {
+          "type": null,
+          "documentation": null
+        },
+        "oWorldInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsSalvage": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnoreBudget": {
+          "type": null,
+          "documentation": null
+        },
+        "bExtraIfLow": {
+          "type": null,
+          "documentation": null
+        },
+        "bSuppressNotifications": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GiveInventoryTreasure(EInventoryResourceTypes InvType, int Amount, BioWorldInfo oWorldInfo, optional bool bIsSalvage, optional bool bIgnoreBudget, optional bool bExtraIfLow, optional bool bSuppressNotifications)"
+    },
+    "GiveMediGel": {
+      "documentation": null,
+      "signature_members": {
+        "ttype": {
+          "type": null,
+          "documentation": null
+        },
+        "oWorldInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "ResourceAmount": {
+          "type": null,
+          "documentation": null
+        },
+        "bAbsoluteAmount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GiveMediGel(ETreasureType ttype, BioWorldInfo oWorldInfo, int ResourceAmount, bool bAbsoluteAmount)"
+    },
+    "GiveCash": {
+      "documentation": null,
+      "signature_members": {
+        "ttype": {
+          "type": null,
+          "documentation": null
+        },
+        "oWorldInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "nBudgetPercent": {
+          "type": null,
+          "documentation": null
+        },
+        "bAbsoluteAmount": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsSalvage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GiveCash(ETreasureType ttype, BioWorldInfo oWorldInfo, int nBudgetPercent, bool bAbsoluteAmount, bool bIsSalvage)"
+    },
+    "AwardResource": {
+      "documentation": null,
+      "signature_members": {
+        "ttype": {
+          "type": null,
+          "documentation": null
+        },
+        "oWorldInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "nBudgetPercent": {
+          "type": null,
+          "documentation": null
+        },
+        "bAbsoluteAmount": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsSalvage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AwardResource(ETreasureType ttype, BioWorldInfo oWorldInfo, int nBudgetPercent, optional bool bAbsoluteAmount, optional bool bIsSalvage)"
+    },
+    "SetTargetable": {
+      "documentation": null,
+      "signature_members": {
+        "bTargetable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTargetable(bool bTargetable)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "OnUsed": {
+      "documentation": null,
+      "signature_members": {
+        "User": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUsed(Actor User)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

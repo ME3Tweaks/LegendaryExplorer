@@ -1,0 +1,17 @@
+{
+  "parent": "LightComponent",
+  "package": "Engine",
+  "variables": {
+    "LowerBrightness": {
+      "type": "float",
+      "documentation": null
+    },
+    "LowerColor": {
+      "type": "Color",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

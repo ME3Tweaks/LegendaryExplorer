@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "HenchTag": {
+      "type": "Name",
+      "documentation": null
+    },
+    "PackageName": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

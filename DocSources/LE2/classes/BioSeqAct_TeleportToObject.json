@@ -1,0 +1,40 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_oActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_oTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_bUseTargetOrientation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisableCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisablePhysics": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSnapToFloor": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,65 @@
+{
+  "parent": "DecalComponent",
+  "package": "SFXGame",
+  "variables": {
+    "FadeInTime": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "FadeOutTime": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "DecalLifetime": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "DecalSize": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "DecalRoll": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "DecalYaw": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "DecalPitch": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "SizeScale": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "aDecalMaterialParameters": {
+      "type": "BioCurveDrivenParameter",
+      "documentation": null
+    },
+    "m_MaterialInstance": {
+      "type": "MaterialInstanceConstant",
+      "documentation": null
+    },
+    "m_SkeletalDecal": {
+      "type": "SpotLightComponent",
+      "documentation": null
+    },
+    "m_SkeletalReceiver": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "bScaleByDistance": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bProjectOnShields": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "SPLITRENDER_Fullscreen": {
+      "value": 0,
+      "documentation": null
+    },
+    "SPLITRENDER_PlayerOwner": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

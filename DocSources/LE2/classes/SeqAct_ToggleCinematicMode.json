@@ -1,0 +1,55 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "bDisableMovement": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableTurning": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHidePlayer": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableInput": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHideHUD": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDeadBodies": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDroppedPickups": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "IsValidUISequenceObject": {
+      "documentation": null,
+      "signature_members": {
+        "TargetObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidUISequenceObject(optional UIScreenObject TargetObject)"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

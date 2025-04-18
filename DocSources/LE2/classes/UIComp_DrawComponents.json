@@ -1,0 +1,93 @@
+{
+  "parent": "UIComponent",
+  "package": "Engine",
+  "variables": {
+    "__OnFadeComplete__Delegate": {
+      "type": "OnFadeComplete",
+      "documentation": null
+    },
+    "FadeAlpha": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadeTarget": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastRenderTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadeRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadeType": {
+      "type": "EFadeType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnFadeComplete": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnFadeComplete(UIComp_DrawComponents Sender)"
+    },
+    "ResetFade": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetFade()"
+    },
+    "Pulse": {
+      "documentation": null,
+      "signature_members": {
+        "MaxAlpha": {
+          "type": null,
+          "documentation": null
+        },
+        "MinAlpha": {
+          "type": null,
+          "documentation": null
+        },
+        "PulseRate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Pulse(optional float MaxAlpha, optional float MinAlpha, optional float PulseRate)"
+    },
+    "Fade": {
+      "documentation": null,
+      "signature_members": {
+        "FromAlpha": {
+          "type": null,
+          "documentation": null
+        },
+        "ToAlpha": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetFadeTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Fade(float FromAlpha, float ToAlpha, float TargetFadeTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

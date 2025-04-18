@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "Trails_CameraUp": {
+      "value": 0,
+      "documentation": null
+    },
+    "Trails_SourceUp": {
+      "value": 1,
+      "documentation": null
+    },
+    "Trails_WorldUp": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

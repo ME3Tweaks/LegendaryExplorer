@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "pObject": {
+      "type": "Object",
+      "documentation": null
+    },
+    "nKeyIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "fTime": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

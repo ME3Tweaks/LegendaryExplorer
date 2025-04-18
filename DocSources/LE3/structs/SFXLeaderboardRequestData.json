@@ -1,11 +1,11 @@
 {
   "Members": {
     "PrimaryIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "SecondaryIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

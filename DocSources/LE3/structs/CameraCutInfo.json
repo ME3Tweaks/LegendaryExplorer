@@ -1,15 +1,15 @@
 {
   "Members": {
     "location": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "SFXOwningScene": {
-      "type": null,
+      "type": "SFXSceneShopNode",
       "documentation": null
     },
     "TimeStamp": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

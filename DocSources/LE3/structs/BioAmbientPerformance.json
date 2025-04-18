@@ -1,23 +1,23 @@
 {
   "Members": {
     "nmGroup": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "nmPropName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "nmOriginalName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "bValidForDLCOnly": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bSuppressDamage": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

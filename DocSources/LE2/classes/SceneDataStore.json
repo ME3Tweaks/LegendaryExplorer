@@ -1,0 +1,366 @@
+{
+  "parent": "UIDataStore",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementProvider": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "VfTable_IUIListElementCellProvider": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "OwnerScene": {
+      "type": "UIScene",
+      "documentation": null
+    },
+    "SceneDataProvider": {
+      "type": "UIDynamicFieldProvider",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Registered": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Registered(LocalPlayer PlayerOwner)"
+    },
+    "SceneDataFieldChanged": {
+      "documentation": null,
+      "signature_members": {
+        "SourceProvider": {
+          "type": null,
+          "documentation": null
+        },
+        "PropTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SceneDataFieldChanged(UIDataProvider SourceProvider, optional Name PropTag)"
+    },
+    "FindCollectionValueIndex": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "ValueToFind": {
+          "type": null,
+          "documentation": null
+        },
+        "bPersistent": {
+          "type": null,
+          "documentation": null
+        },
+        "CellTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindCollectionValueIndex(Name FieldName, const out string ValueToFind, optional bool bPersistent, optional Name CellTag)"
+    },
+    "GetCollectionValue": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "ValueIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "out_Value": {
+          "type": null,
+          "documentation": null
+        },
+        "bPersistent": {
+          "type": null,
+          "documentation": null
+        },
+        "CellTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCollectionValue(Name FieldName, int ValueIndex, out string out_Value, optional bool bPersistent, optional Name CellTag)"
+    },
+    "ClearCollectionValueArray": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "bPersistent": {
+          "type": null,
+          "documentation": null
+        },
+        "CellTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ClearCollectionValueArray(Name FieldName, optional bool bPersistent, optional Name CellTag)"
+    },
+    "ReplaceCollectionValueByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "ValueIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "NewValue": {
+          "type": null,
+          "documentation": null
+        },
+        "bPersistent": {
+          "type": null,
+          "documentation": null
+        },
+        "CellTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReplaceCollectionValueByIndex(Name FieldName, int ValueIndex, const out string NewValue, optional bool bPersistent, optional Name CellTag)"
+    },
+    "ReplaceCollectionValue": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "CurrentValue": {
+          "type": null,
+          "documentation": null
+        },
+        "NewValue": {
+          "type": null,
+          "documentation": null
+        },
+        "bPersistent": {
+          "type": null,
+          "documentation": null
+        },
+        "CellTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReplaceCollectionValue(Name FieldName, const out string CurrentValue, const out string NewValue, optional bool bPersistent, optional Name CellTag)"
+    },
+    "RemoveCollectionValueByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "ValueIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bPersistent": {
+          "type": null,
+          "documentation": null
+        },
+        "CellTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveCollectionValueByIndex(Name FieldName, int ValueIndex, optional bool bPersistent, optional Name CellTag)"
+    },
+    "RemoveCollectionValue": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "ValueToRemove": {
+          "type": null,
+          "documentation": null
+        },
+        "bPersistent": {
+          "type": null,
+          "documentation": null
+        },
+        "CellTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveCollectionValue(Name FieldName, const out string ValueToRemove, optional bool bPersistent, optional Name CellTag)"
+    },
+    "InsertCollectionValue": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "NewValue": {
+          "type": null,
+          "documentation": null
+        },
+        "InsertIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bPersistent": {
+          "type": null,
+          "documentation": null
+        },
+        "bAllowDuplicateValues": {
+          "type": null,
+          "documentation": null
+        },
+        "CellTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InsertCollectionValue(Name FieldName, const out string NewValue, optional int InsertIndex, optional bool bPersistent, optional bool bAllowDuplicateValues, optional Name CellTag)"
+    },
+    "SetCollectionValueArray": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "CollectionValues": {
+          "type": null,
+          "documentation": null
+        },
+        "bClearExisting": {
+          "type": null,
+          "documentation": null
+        },
+        "InsertIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bPersistent": {
+          "type": null,
+          "documentation": null
+        },
+        "CellTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetCollectionValueArray(Name FieldName, const out array<string> CollectionValues, optional bool bClearExisting, optional int InsertIndex, optional bool bPersistent, optional Name CellTag)"
+    },
+    "GetCollectionValueArray": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "out_DataValueArray": {
+          "type": null,
+          "documentation": null
+        },
+        "bPersistent": {
+          "type": null,
+          "documentation": null
+        },
+        "CellTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCollectionValueArray(Name FieldName, out array<string> out_DataValueArray, optional bool bPersistent, optional Name CellTag)"
+    },
+    "ClearFields": {
+      "documentation": null,
+      "signature_members": {
+        "bReinitializeRuntimeFields": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ClearFields(optional bool bReinitializeRuntimeFields)"
+    },
+    "FindFieldIndex": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "bSearchPersistentFields": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindFieldIndex(Name FieldName, optional bool bSearchPersistentFields)"
+    },
+    "RemoveField": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveField(Name FieldName)"
+    },
+    "AddField": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "FieldType": {
+          "type": null,
+          "documentation": null
+        },
+        "bPersistent": {
+          "type": null,
+          "documentation": null
+        },
+        "out_InsertPosition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddField(Name FieldName, optional EUIDataProviderFieldType FieldType, optional bool bPersistent, optional out int out_InsertPosition)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

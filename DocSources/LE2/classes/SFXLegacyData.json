@@ -1,0 +1,122 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "PlayerRecord": {
+      "type": "PlayerSaveRecord",
+      "documentation": null
+    },
+    "ImportVarTable": {
+      "type": "BioGlobalVariableTable",
+      "documentation": null
+    },
+    "LegacyCredits": {
+      "type": "int",
+      "documentation": null
+    },
+    "ParagonPoints": {
+      "type": "int",
+      "documentation": null
+    },
+    "RenegadePoints": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetSpawnData": {
+      "documentation": null,
+      "signature_members": {
+        "IsFemale": {
+          "type": null,
+          "documentation": null
+        },
+        "CharacterClass": {
+          "type": null,
+          "documentation": null
+        },
+        "FirstName": {
+          "type": null,
+          "documentation": null
+        },
+        "Origin": {
+          "type": null,
+          "documentation": null
+        },
+        "Notoriety": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetSpawnData(out int IsFemale, out Class<SFXPawn_Player> CharacterClass, out string FirstName, out EOriginType Origin, out ENotorietyType Notoriety)"
+    },
+    "ProcessME1SaveGame": {
+      "documentation": null,
+      "signature_members": {
+        "SaveGame": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessME1SaveGame(SFXSaveGame SaveGame)"
+    },
+    "GetRenegadePointsPct": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetRenegadePointsPct()"
+    },
+    "GetParagonPointsPct": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetParagonPointsPct()"
+    },
+    "GetOrigin": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EOriginType",
+      "signature": "EOriginType GetOrigin()"
+    },
+    "GetNotoriety": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ENotorietyType",
+      "signature": "ENotorietyType GetNotoriety()"
+    },
+    "GetLegacyClass": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetLegacyClass()"
+    },
+    "GetLegacyCredits": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetLegacyCredits()"
+    },
+    "GetLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetLevel()"
+    },
+    "GetFirstName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetFirstName()"
+    },
+    "IsFemale": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsFemale()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

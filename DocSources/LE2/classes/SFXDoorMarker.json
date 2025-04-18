@@ -1,0 +1,105 @@
+{
+  "parent": "NavigationPoint",
+  "package": "SFXGame",
+  "variables": {
+    "MyDoor": {
+      "type": "SFXDoor",
+      "documentation": null
+    },
+    "nUnblockCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "bWaitUntilCompletelyOpened": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInitiallyClosed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBlockedWhenClosed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDoorOpen": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTempDisabledCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPrevBlockedState": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SuggestMovePreparation": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SuggestMovePreparation(Pawn Other)"
+    },
+    "ProceedWithMove": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ProceedWithMove(Pawn Other)"
+    },
+    "SpecialHandling": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor SpecialHandling(Pawn Other)"
+    },
+    "DoorClosed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoorClosed()"
+    },
+    "DoorOpened": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoorOpened()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "RestoreDoorMarkerBlockedState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int RestoreDoorMarkerBlockedState()"
+    },
+    "UnblockDoorMarker": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int UnblockDoorMarker()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

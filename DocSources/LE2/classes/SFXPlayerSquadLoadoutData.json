@@ -1,0 +1,219 @@
+{
+  "parent": "SFXLoadoutData",
+  "package": "SFXGame",
+  "variables": {
+    "AssaultRifles": {
+      "type": "LoadoutWeaponInfo",
+      "documentation": null
+    },
+    "Shotguns": {
+      "type": "LoadoutWeaponInfo",
+      "documentation": null
+    },
+    "SniperRifles": {
+      "type": "LoadoutWeaponInfo",
+      "documentation": null
+    },
+    "AutoPistols": {
+      "type": "LoadoutWeaponInfo",
+      "documentation": null
+    },
+    "HeavyPistols": {
+      "type": "LoadoutWeaponInfo",
+      "documentation": null
+    },
+    "HeavyWeapons": {
+      "type": "LoadoutWeaponInfo",
+      "documentation": null
+    },
+    "PlotWeapons": {
+      "type": "PlotWeapon",
+      "documentation": null
+    },
+    "StandardWeapons": {
+      "type": "ELoadoutWeapons",
+      "documentation": null
+    },
+    "UnlockableStandardWeapons": {
+      "type": "UnlockableWeaponClass",
+      "documentation": null
+    },
+    "PlayerLoadoutInfo": {
+      "type": "LoadoutInfo",
+      "documentation": null
+    },
+    "HenchLoadoutInfo": {
+      "type": "LoadoutInfo",
+      "documentation": null
+    },
+    "PlayerBonusWeapons": {
+      "type": "BonusWeaponInfo",
+      "documentation": null
+    },
+    "PlayerSpecialWeapons": {
+      "type": "SpecialWeaponInfo",
+      "documentation": null
+    },
+    "HenchmenSpecialWeapons": {
+      "type": "SpecialWeaponInfo",
+      "documentation": null
+    },
+    "MaxWeapons": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CanHenchmanUseWeaponClass2": {
+      "documentation": null,
+      "signature_members": {
+        "HenchTag": {
+          "type": null,
+          "documentation": null
+        },
+        "WeaponClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanHenchmanUseWeaponClass2(Name HenchTag, Name WeaponClassName)"
+    },
+    "CanHenchmanUseWeaponClass": {
+      "documentation": null,
+      "signature_members": {
+        "HenchTag": {
+          "type": null,
+          "documentation": null
+        },
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanHenchmanUseWeaponClass(Name HenchTag, Class<SFXWeapon> Weapon)"
+    },
+    "CanPlayerUseWeaponClass": {
+      "documentation": null,
+      "signature_members": {
+        "WeaponClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanPlayerUseWeaponClass(Class<SFXWeapon> WeaponClass)"
+    },
+    "CanHenchmanUseWeaponGroup": {
+      "documentation": null,
+      "signature_members": {
+        "HenchTag": {
+          "type": null,
+          "documentation": null
+        },
+        "WeaponGroup": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanHenchmanUseWeaponGroup(Name HenchTag, ELoadoutWeapons WeaponGroup)"
+    },
+    "GetHenchmanClassname": {
+      "documentation": null,
+      "signature_members": {
+        "HenchTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetHenchmanClassname(Name HenchTag)"
+    },
+    "CanPlayerUseWeaponGroup": {
+      "documentation": null,
+      "signature_members": {
+        "WeaponGroup": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanPlayerUseWeaponGroup(ELoadoutWeapons WeaponGroup)"
+    },
+    "GetPluralPrettyName": {
+      "documentation": null,
+      "signature_members": {
+        "Idx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetPluralPrettyName(int Idx)"
+    },
+    "FindWeaponClass": {
+      "documentation": null,
+      "signature_members": {
+        "WeaponClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Class",
+      "signature": "Class<SFXWeapon> FindWeaponClass(Name WeaponClassName)"
+    },
+    "GetWeaponCategoryByName": {
+      "documentation": null,
+      "signature_members": {
+        "WClassName": {
+          "type": null,
+          "documentation": null
+        },
+        "GroupIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "EntryIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetWeaponCategoryByName(Name WClassName, out int GroupIdx, out int EntryIdx)"
+    },
+    "GetWeaponCategory": {
+      "documentation": null,
+      "signature_members": {
+        "WClass": {
+          "type": null,
+          "documentation": null
+        },
+        "GroupIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "EntryIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetWeaponCategory(Class<SFXWeapon> WClass, out int GroupIdx, out int EntryIdx)"
+    },
+    "GetWeaponGroup": {
+      "documentation": null,
+      "signature_members": {
+        "Idx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "LoadoutWeaponInfo",
+      "signature": "array<LoadoutWeaponInfo> GetWeaponGroup(int Idx)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

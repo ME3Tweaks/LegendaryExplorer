@@ -1,0 +1,191 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_fMaxMass": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMaxSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMinTimeBetweenSoundByActor": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMinSpeedToPlay": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bEnableLogging": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetSpeedSpecifier": {
+      "documentation": null,
+      "signature_members": {
+        "oComp": {
+          "type": null,
+          "documentation": null
+        },
+        "fSpeedToUse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetSpeedSpecifier(PrimitiveComponent oComp, float fSpeedToUse)"
+    },
+    "GetMassSpecifier": {
+      "documentation": null,
+      "signature_members": {
+        "oComp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetMassSpecifier(PrimitiveComponent oComp)"
+    },
+    "UpdateLastCollidedActor": {
+      "documentation": null,
+      "signature_members": {
+        "oComp": {
+          "type": null,
+          "documentation": null
+        },
+        "OtherActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateLastCollidedActor(PrimitiveComponent oComp, Actor OtherActor)"
+    },
+    "UpdateLastTimePlayed": {
+      "documentation": null,
+      "signature_members": {
+        "oComp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateLastTimePlayed(PrimitiveComponent oComp)"
+    },
+    "IsTooSlowToPlay": {
+      "documentation": null,
+      "signature_members": {
+        "oComp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsTooSlowToPlay(PrimitiveComponent oComp)"
+    },
+    "IsSameCollidedActor": {
+      "documentation": null,
+      "signature_members": {
+        "oComp": {
+          "type": null,
+          "documentation": null
+        },
+        "OtherActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsSameCollidedActor(PrimitiveComponent oComp, Actor OtherActor)"
+    },
+    "IsTooSoonToPlay": {
+      "documentation": null,
+      "signature_members": {
+        "oComp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsTooSoonToPlay(PrimitiveComponent oComp)"
+    },
+    "CanPlay": {
+      "documentation": null,
+      "signature_members": {
+        "oComp0": {
+          "type": null,
+          "documentation": null
+        },
+        "oComp1": {
+          "type": null,
+          "documentation": null
+        },
+        "RigidCollisionData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanPlay(PrimitiveComponent oComp0, PrimitiveComponent oComp1, const out CollisionImpactData RigidCollisionData)"
+    },
+    "GetPhysMatWwiseType": {
+      "documentation": null,
+      "signature_members": {
+        "PhysMat": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetPhysMatWwiseType(PhysicalMaterial PhysMat)"
+    },
+    "GetWwiseEvent": {
+      "documentation": null,
+      "signature_members": {
+        "PhysMat": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "WwiseEvent",
+      "signature": "WwiseEvent GetWwiseEvent(PhysicalMaterial PhysMat)"
+    },
+    "PlaySoundOnPhysMatAt": {
+      "documentation": null,
+      "signature_members": {
+        "Game": {
+          "type": null,
+          "documentation": null
+        },
+        "PhysMat": {
+          "type": null,
+          "documentation": null
+        },
+        "PhysMatSweetener": {
+          "type": null,
+          "documentation": null
+        },
+        "pos": {
+          "type": null,
+          "documentation": null
+        },
+        "RTPCNames": {
+          "type": null,
+          "documentation": null
+        },
+        "RTPCValues": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlaySoundOnPhysMatAt(GameInfo Game, PhysicalMaterial PhysMat, PhysicalMaterial PhysMatSweetener, Vector pos, array<string> RTPCNames, array<float> RTPCValues)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

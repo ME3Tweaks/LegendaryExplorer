@@ -1,0 +1,20 @@
+{
+  "parent": "Info",
+  "package": "WwiseAudio",
+  "variables": {
+    "m_oVolume": {
+      "type": "WwiseVolume",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Timer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Timer()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

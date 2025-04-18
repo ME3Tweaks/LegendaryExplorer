@@ -1,11 +1,11 @@
 {
   "Members": {
     "Name": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Description": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

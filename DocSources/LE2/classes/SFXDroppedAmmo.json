@@ -1,0 +1,262 @@
+{
+  "parent": "DroppedPickup",
+  "package": "SFXGame",
+  "variables": {
+    "AmmoMesh": {
+      "type": "StaticMeshComponent",
+      "documentation": null
+    },
+    "AmmoPickupSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "Clip_MM": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "Clip_MM_Disabled": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "PlayerNameCache": {
+      "type": "Name",
+      "documentation": null
+    },
+    "AmmoDropPct": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "bIsDisabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDecays": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPooled": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "UnTouch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnTouch(Actor Other)"
+    },
+    "Reuse": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reuse()"
+    },
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "PickedUpBy": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PickedUpBy(Pawn P)"
+    },
+    "EncroachedBy": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EncroachedBy(Actor Other)"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "Landed": {
+      "documentation": null,
+      "signature_members": {
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "FloorActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Landed(Vector HitNormal, Actor FloorActor)"
+    },
+    "SetCollisionCylinderSize": {
+      "documentation": null,
+      "signature_members": {
+        "CollisionRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "CollisionHeight": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCollisionCylinderSize(float CollisionRadius, float CollisionHeight)"
+    },
+    "GiveTo": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GiveTo(Pawn P)"
+    },
+    "GiveAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "InvManager": {
+          "type": null,
+          "documentation": null
+        },
+        "fBonusAmmo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GiveAmmo(InventoryManager InvManager, optional float fBonusAmmo)"
+    },
+    "ShouldDropAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldDropAmmo(SFXWeapon Weapon, PlayerController PC)"
+    },
+    "GetUsedAmmoPct": {
+      "documentation": null,
+      "signature_members": {
+        "InvManager": {
+          "type": null,
+          "documentation": null
+        },
+        "bCountAmmoInMagazine": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetUsedAmmoPct(InventoryManager InvManager, bool bCountAmmoInMagazine)"
+    },
+    "CanPickUpAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "InvManager": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanPickUpAmmo(InventoryManager InvManager)"
+    },
+    "CalculateAmmoStarvation": {
+      "documentation": null,
+      "signature_members": {
+        "InvManager": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float CalculateAmmoStarvation(InventoryManager InvManager)"
+    }
+  },
+  "states": {
+    "Pickup": {
+      "functions": {
+        "CheckTouching": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "RecheckValidTouch": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "ValidTouch": {
+          "documentation": null,
+          "signature_members": {
+            "Other": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "CheckPlayerFull": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,53 @@
+{
+  "EnumValues": {
+    "CoverDesc_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "CoverDesc_InWindow": {
+      "value": 1,
+      "documentation": null
+    },
+    "CoverDesc_InDoorway": {
+      "value": 2,
+      "documentation": null
+    },
+    "CoverDesc_BehindCar": {
+      "value": 3,
+      "documentation": null
+    },
+    "CoverDesc_BehindTruck": {
+      "value": 4,
+      "documentation": null
+    },
+    "CoverDesc_OnTruck": {
+      "value": 5,
+      "documentation": null
+    },
+    "CoverDesc_BehindBarrier": {
+      "value": 6,
+      "documentation": null
+    },
+    "CoverDesc_BehindColumn": {
+      "value": 7,
+      "documentation": null
+    },
+    "CoverDesc_BehindCrate": {
+      "value": 8,
+      "documentation": null
+    },
+    "CoverDesc_BehindWall": {
+      "value": 9,
+      "documentation": null
+    },
+    "CoverDesc_BehindStatue": {
+      "value": 10,
+      "documentation": null
+    },
+    "CoverDesc_BehindSandbags": {
+      "value": 11,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

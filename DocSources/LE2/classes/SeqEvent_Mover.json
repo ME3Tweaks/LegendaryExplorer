@@ -1,0 +1,59 @@
+{
+  "parent": "SequenceEvent",
+  "package": "Engine",
+  "variables": {
+    "StayOpenTime": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "NotifyFinishedOpen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyFinishedOpen()"
+    },
+    "NotifyDetached": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyDetached(Actor Other)"
+    },
+    "NotifyAttached": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyAttached(Actor Other)"
+    },
+    "NotifyEncroachingOn": {
+      "documentation": null,
+      "signature_members": {
+        "Hit": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyEncroachingOn(Actor Hit)"
+    },
+    "RegisterEvent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RegisterEvent()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

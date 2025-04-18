@@ -1,0 +1,33 @@
+{
+  "parent": "AnimNodeSequence",
+  "package": "SFXGame",
+  "variables": {
+    "MirroredAnimSeqName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "MirroredAnimSeq": {
+      "type": "AnimSequence",
+      "documentation": null
+    },
+    "DefaultAnimSeq": {
+      "type": "AnimSequence",
+      "documentation": null
+    },
+    "MirroredAnimLinkupIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "DefaultAnimLinkupIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "bUseMirrored": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

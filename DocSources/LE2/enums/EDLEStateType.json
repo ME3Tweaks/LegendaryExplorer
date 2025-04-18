@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "DLEST_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "DLEST_Cinematic": {
+      "value": 1,
+      "documentation": null
+    },
+    "DLEST_Simple": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

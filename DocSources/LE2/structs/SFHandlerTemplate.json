@@ -1,0 +1,53 @@
+{
+  "Members": {
+    "HandlerClass": {
+      "type": "string",
+      "documentation": null
+    },
+    "PanelResource": {
+      "type": "string",
+      "documentation": null
+    },
+    "PanelClass": {
+      "type": "string",
+      "documentation": null
+    },
+    "Tag": {
+      "type": "Name",
+      "documentation": null
+    },
+    "CurvePixelError": {
+      "type": "float",
+      "documentation": null
+    },
+    "ZOrder": {
+      "type": "int",
+      "documentation": null
+    },
+    "UseEdgeAA": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAutoStart": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAutoVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRequiresScaling": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Platform": {
+      "type": "EConsoleType",
+      "documentation": null
+    },
+    "StrokeStyle": {
+      "type": "SFMovieStrokeStyle",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

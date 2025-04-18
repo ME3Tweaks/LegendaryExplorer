@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "EntryList": {
+      "type": "int",
+      "documentation": null
+    },
+    "nListenerIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "bUnskippable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIllegal": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ReplyType": {
+      "type": "EReplyTypes",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

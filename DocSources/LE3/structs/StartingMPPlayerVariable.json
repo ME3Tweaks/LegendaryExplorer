@@ -1,11 +1,11 @@
 {
   "Members": {
     "PlayerVariable": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Value": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

@@ -1,0 +1,13 @@
+{
+  "parent": "WwiseEvent",
+  "package": "WwiseAudio",
+  "variables": {
+    "Arguments": {
+      "type": "WwiseDialogueArgument",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

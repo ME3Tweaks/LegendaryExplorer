@@ -1,0 +1,207 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "BoolVariables": {
+      "type": "int",
+      "documentation": null
+    },
+    "IntVariables": {
+      "type": "int",
+      "documentation": null
+    },
+    "FloatVariables": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimedPlotUnlocks": {
+      "type": "TimedPlotUnlock_t",
+      "documentation": null
+    },
+    "oNameLookupTable": {
+      "type": "Bio2DA",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ClearAllVariables": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearAllVariables()"
+    },
+    "GetStrRefByName": {
+      "documentation": null,
+      "signature_members": {
+        "nmLabel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "stringref",
+      "signature": "stringref GetStrRefByName(Name nmLabel)"
+    },
+    "SetFloatByName": {
+      "documentation": null,
+      "signature_members": {
+        "nmLabel": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFloatByName(Name nmLabel, float fValue)"
+    },
+    "GetFloatByName": {
+      "documentation": null,
+      "signature_members": {
+        "nmLabel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetFloatByName(Name nmLabel)"
+    },
+    "SetIntByName": {
+      "documentation": null,
+      "signature_members": {
+        "nmLabel": {
+          "type": null,
+          "documentation": null
+        },
+        "nValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetIntByName(Name nmLabel, int nValue)"
+    },
+    "GetIntByName": {
+      "documentation": null,
+      "signature_members": {
+        "nmLabel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetIntByName(Name nmLabel)"
+    },
+    "SetBoolByName": {
+      "documentation": null,
+      "signature_members": {
+        "nmLabel": {
+          "type": null,
+          "documentation": null
+        },
+        "bValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBoolByName(Name nmLabel, bool bValue)"
+    },
+    "GetBoolByName": {
+      "documentation": null,
+      "signature_members": {
+        "nmLabel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetBoolByName(Name nmLabel)"
+    },
+    "SetFloat": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFloat(int nIndex, float fValue)"
+    },
+    "GetFloat": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetFloat(int nIndex)"
+    },
+    "SetInt": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "nValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInt(int nIndex, int nValue)"
+    },
+    "GetInt": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetInt(int nIndex)"
+    },
+    "SetBool": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bValue": {
+          "type": null,
+          "documentation": null
+        },
+        "bEvaluateAchievement": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBool(int nIndex, bool bValue, optional bool bEvaluateAchievement)"
+    },
+    "GetBool": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetBool(int nIndex)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

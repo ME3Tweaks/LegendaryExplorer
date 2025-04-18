@@ -1,15 +1,15 @@
 {
   "Members": {
     "aPartSys": {
-      "type": null,
+      "type": "ParticleSystemComponent",
       "documentation": null
     },
     "aClientEffects": {
-      "type": null,
+      "type": "RvrClientEffectInterface",
       "documentation": null
     },
     "pPropCmp": {
-      "type": null,
+      "type": "MeshComponent",
       "documentation": null
     }
   },

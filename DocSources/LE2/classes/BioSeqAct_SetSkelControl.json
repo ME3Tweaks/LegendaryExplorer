@@ -1,0 +1,33 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "nmTargetController": {
+      "type": "Name",
+      "documentation": null
+    },
+    "oPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "fStrengthTarget": {
+      "type": "float",
+      "documentation": null
+    },
+    "fBlendInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fBlendOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bSetStrengthFromAnimNode": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

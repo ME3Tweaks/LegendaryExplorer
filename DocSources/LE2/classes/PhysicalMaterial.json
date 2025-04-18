@@ -1,0 +1,170 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "AnisoFrictionDir": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "ImpactEffect": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "ImpactSound": {
+      "type": "SoundCue",
+      "documentation": null
+    },
+    "SlideEffect": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "SlideSound": {
+      "type": "SoundCue",
+      "documentation": null
+    },
+    "FractureSoundExplosion": {
+      "type": "SoundCue",
+      "documentation": null
+    },
+    "FractureSoundSingle": {
+      "type": "SoundCue",
+      "documentation": null
+    },
+    "m_nmPhysicsCollisionSound": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Parent": {
+      "type": "PhysicalMaterial",
+      "documentation": null
+    },
+    "PhysicalMaterialProperty": {
+      "type": "PhysicalMaterialPropertyBase",
+      "documentation": null
+    },
+    "MaterialIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "Friction": {
+      "type": "float",
+      "documentation": null
+    },
+    "Restitution": {
+      "type": "float",
+      "documentation": null
+    },
+    "FrictionV": {
+      "type": "float",
+      "documentation": null
+    },
+    "Density": {
+      "type": "float",
+      "documentation": null
+    },
+    "AngularDamping": {
+      "type": "float",
+      "documentation": null
+    },
+    "LinearDamping": {
+      "type": "float",
+      "documentation": null
+    },
+    "MagneticResponse": {
+      "type": "float",
+      "documentation": null
+    },
+    "WindResponse": {
+      "type": "float",
+      "documentation": null
+    },
+    "ImpactThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "ImpactReFireDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "SlideThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "SlideReFireDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "AudioObstruction": {
+      "type": "float",
+      "documentation": null
+    },
+    "AudioOcclusion": {
+      "type": "float",
+      "documentation": null
+    },
+    "bForceConeFriction": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableAnisotropicFriction": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIgnoreSelfCollisions": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AllPhysicalMaterials": {
+      "documentation": null,
+      "signature_members": {
+        "OutPhysMat": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AllPhysicalMaterials(out PhysicalMaterial OutPhysMat)"
+    },
+    "GetPhysicalMaterialProperty": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "PhysicalMaterialPropertyBase",
+      "signature": "PhysicalMaterialPropertyBase GetPhysicalMaterialProperty(Class<PhysicalMaterialPropertyBase> DesiredClass)"
+    },
+    "FindFractureSounds": {
+      "documentation": null,
+      "signature_members": {
+        "OutSoundExplosion": {
+          "type": null,
+          "documentation": null
+        },
+        "OutSoundSingle": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FindFractureSounds(out SoundCue OutSoundExplosion, out SoundCue OutSoundSingle)"
+    },
+    "FindPhysEffectInfo": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "PhysEffectInfo",
+      "signature": "PhysEffectInfo FindPhysEffectInfo(EPhysEffectType Type)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,19 +1,19 @@
 {
   "Members": {
     "RequiredWeaponClasses": {
-      "type": null,
+      "type": "ELoadoutWeapons",
       "documentation": null
     },
     "StartingWeaponClasses": {
-      "type": null,
+      "type": "ELoadoutWeapons",
       "documentation": null
     },
     "className": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "NumOptionalSlots": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

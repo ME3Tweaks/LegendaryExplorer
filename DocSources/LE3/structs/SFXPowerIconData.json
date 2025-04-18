@@ -1,31 +1,31 @@
 {
   "Members": {
     "Path": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "MappedIconPath": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "MappedIconBGPath": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Id": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Boundary": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "IsHenchmanIcon": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "IsQuickslotIcon": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

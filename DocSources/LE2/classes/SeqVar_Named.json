@@ -1,0 +1,21 @@
+{
+  "parent": "SequenceVariable",
+  "package": "Engine",
+  "variables": {
+    "ExpectedType": {
+      "type": "Class",
+      "documentation": null
+    },
+    "FindVarName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bStatusIsOk": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,73 @@
+{
+  "EnumValues": {
+    "MM_ENTRY_DEFAULT": {
+      "value": 0,
+      "documentation": null
+    },
+    "MM_ENTRY_NEWGAME": {
+      "value": 1,
+      "documentation": null
+    },
+    "MM_ENTRY_NEWGAME_MALE": {
+      "value": 2,
+      "documentation": null
+    },
+    "MM_ENTRY_NEWGAME_FEMALE": {
+      "value": 3,
+      "documentation": null
+    },
+    "MM_ENTRY_LOADGAME": {
+      "value": 4,
+      "documentation": null
+    },
+    "MM_ENTRY_EXTRAS": {
+      "value": 5,
+      "documentation": null
+    },
+    "MM_ENTRY_ACHIEVEMENTS": {
+      "value": 6,
+      "documentation": null
+    },
+    "MM_ENTRY_ALERT_DLC": {
+      "value": 7,
+      "documentation": null
+    },
+    "MM_ENTRY_LIVECONTENT": {
+      "value": 8,
+      "documentation": null
+    },
+    "MM_ENTRY_OPTIONS": {
+      "value": 9,
+      "documentation": null
+    },
+    "MM_ENTRY_CREDITS": {
+      "value": 10,
+      "documentation": null
+    },
+    "MM_ENTRY_IMPORT": {
+      "value": 11,
+      "documentation": null
+    },
+    "MM_ENTRY_IMPORT_ME2": {
+      "value": 12,
+      "documentation": null
+    },
+    "MM_ENTRY_MARKETPLACE": {
+      "value": 13,
+      "documentation": null
+    },
+    "MM_ENTRY_EXITGAME": {
+      "value": 14,
+      "documentation": null
+    },
+    "MM_ENTRY_GAMEMANUAL": {
+      "value": 15,
+      "documentation": null
+    },
+    "MM_ENTRY_EMPTY": {
+      "value": 16,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

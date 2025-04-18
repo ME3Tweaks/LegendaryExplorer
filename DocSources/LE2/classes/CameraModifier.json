@@ -1,0 +1,164 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "CameraOwner": {
+      "type": "Camera",
+      "documentation": null
+    },
+    "AlphaInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "AlphaOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "Alpha": {
+      "type": "float",
+      "documentation": null
+    },
+    "TargetAlpha": {
+      "type": "float",
+      "documentation": null
+    },
+    "bDisabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPendingDisable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bExclusive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDebug": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Priority": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "UpdateAlpha": {
+      "documentation": null,
+      "signature_members": {
+        "Camera": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateAlpha(Camera Camera, float DeltaTime)"
+    },
+    "ProcessViewRotation": {
+      "documentation": null,
+      "signature_members": {
+        "ViewTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "out_ViewRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "out_DeltaRot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ProcessViewRotation(Actor ViewTarget, float DeltaTime, out Rotator out_ViewRotation, out Rotator out_DeltaRot)"
+    },
+    "ToggleModifier": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleModifier()"
+    },
+    "EnableModifier": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnableModifier()"
+    },
+    "DisableModifier": {
+      "documentation": null,
+      "signature_members": {
+        "bImmediate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisableModifier(optional bool bImmediate)"
+    },
+    "RemoveCameraModifier": {
+      "documentation": null,
+      "signature_members": {
+        "Camera": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveCameraModifier(Camera Camera)"
+    },
+    "AddCameraModifier": {
+      "documentation": null,
+      "signature_members": {
+        "Camera": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddCameraModifier(Camera Camera)"
+    },
+    "IsDisabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsDisabled()"
+    },
+    "ModifyCamera": {
+      "documentation": null,
+      "signature_members": {
+        "Camera": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "OutPOV": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ModifyCamera(Camera Camera, float DeltaTime, out TPOV OutPOV)"
+    },
+    "Init": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Init()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

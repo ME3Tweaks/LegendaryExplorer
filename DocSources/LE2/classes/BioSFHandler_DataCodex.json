@@ -1,0 +1,152 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "lstSections": {
+      "type": "DataCodexEntryDetails",
+      "documentation": null
+    },
+    "lstImages": {
+      "type": "CodexImageDetails",
+      "documentation": null
+    },
+    "sDefaultCodexImage": {
+      "type": "string",
+      "documentation": null
+    },
+    "sExternalTextureLink": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_oVoiceOver": {
+      "type": "WwiseAudioComponent",
+      "documentation": null
+    },
+    "m_fScrollValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nVoiceOverPage": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fTimeUntilVoiceOver": {
+      "type": "float",
+      "documentation": null
+    },
+    "fVoiceOverDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "fVoiceOverCancelFadeOut": {
+      "type": "float",
+      "documentation": null
+    },
+    "srMarkAllCompleteMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srMarkAllCompleteMessageConfirm": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srMarkAllCompleteMessageCancel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_nUpStamp": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bAnalogScroll": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnSwapTabs": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnSwapTabs()"
+    },
+    "OnEnteredSubItem": {
+      "documentation": null,
+      "signature_members": {
+        "nSection": {
+          "type": null,
+          "documentation": null
+        },
+        "nPage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnEnteredSubItem(int nSection, int nPage)"
+    },
+    "OnExpandItem": {
+      "documentation": null,
+      "signature_members": {
+        "nSection": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnExpandItem(int nSection)"
+    },
+    "OnExitedItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnExitedItem()"
+    },
+    "OnEnteredItem": {
+      "documentation": null,
+      "signature_members": {
+        "nSection": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnEnteredItem(int nSection)"
+    },
+    "OnSortItems": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnSortItems()"
+    },
+    "OnSetAllItemsViewed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnSetAllItemsViewed()"
+    },
+    "OnInitialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnInitialize()"
+    },
+    "MarkAllSectionsViewed": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MarkAllSectionsViewed(bool bAPressed, int nContext)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,19 +1,19 @@
 {
   "Members": {
     "mImageName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "mJob": {
-      "type": null,
+      "type": "SFXOnlineJobHTTPRequest",
       "documentation": null
     },
     "mDynamicImage": {
-      "type": null,
+      "type": "Texture2D",
       "documentation": null
     },
     "mCompleted": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

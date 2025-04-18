@@ -1,15 +1,15 @@
 {
   "Members": {
     "ClassNameID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Value": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bShouldDeactivateAfterMatch": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

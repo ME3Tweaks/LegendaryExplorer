@@ -1,0 +1,17 @@
+{
+  "parent": "SkelControlBase",
+  "package": "Engine",
+  "variables": {
+    "SourceBoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "TwistAngleScale": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

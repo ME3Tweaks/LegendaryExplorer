@@ -1,15 +1,15 @@
 {
   "Members": {
     "AssetToLoad": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "LoadedAsset": {
-      "type": null,
+      "type": "Object",
       "documentation": null
     },
     "AssetLoadStatus": {
-      "type": null,
+      "type": "EAsyncLoadStatus",
       "documentation": null
     }
   },

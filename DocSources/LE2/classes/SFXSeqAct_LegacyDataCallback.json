@@ -1,0 +1,76 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "CopyComicPlotStates": {
+      "documentation": null,
+      "signature_members": {
+        "OriginalVarTable": {
+          "type": null,
+          "documentation": null
+        },
+        "NewVarTable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CopyComicPlotStates(BioGlobalVariableTable OriginalVarTable, BioGlobalVariableTable NewVarTable)"
+    },
+    "ApplyME2PlotStates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyME2PlotStates()"
+    },
+    "ApplyME1PlotStates": {
+      "documentation": null,
+      "signature_members": {
+        "ImportVarTable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyME1PlotStates(BioGlobalVariableTable ImportVarTable)"
+    },
+    "ResetCanonPlotStates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetCanonPlotStates()"
+    },
+    "ApplyCanonPlotStates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyCanonPlotStates()"
+    },
+    "UpdateOp": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateOp(float DeltaTime)"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

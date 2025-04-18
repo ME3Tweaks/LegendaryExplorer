@@ -1,0 +1,99 @@
+{
+  "parent": "SequenceEvent",
+  "package": "Engine",
+  "variables": {
+    "ClassProximityTypes": {
+      "type": "Class",
+      "documentation": null
+    },
+    "IgnoredClassProximityTypes": {
+      "type": "Class",
+      "documentation": null
+    },
+    "TouchedList": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "bForceOverlapping": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseInstigator": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIgnoreVehicleTransitions": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowDeadPawns": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "NotifyTouchingPawnDied": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyTouchingPawnDied(Pawn P)"
+    },
+    "Toggled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Toggled()"
+    },
+    "CheckUnTouchActivate": {
+      "documentation": null,
+      "signature_members": {
+        "InOriginator": {
+          "type": null,
+          "documentation": null
+        },
+        "InInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "bTest": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckUnTouchActivate(Actor InOriginator, Actor InInstigator, optional bool bTest)"
+    },
+    "CheckTouchActivate": {
+      "documentation": null,
+      "signature_members": {
+        "InOriginator": {
+          "type": null,
+          "documentation": null
+        },
+        "InInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "bTest": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckTouchActivate(Actor InOriginator, Actor InInstigator, optional bool bTest)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

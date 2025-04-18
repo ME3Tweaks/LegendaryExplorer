@@ -1,0 +1,380 @@
+{
+  "parent": "PlayerInput",
+  "package": "SFXGame",
+  "variables": {
+    "InputTimers": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "LookStickResponseCurve": {
+      "type": "InterpCurveFloat",
+      "documentation": null
+    },
+    "MouseDampeningCurve": {
+      "type": "InterpCurveFloat",
+      "documentation": null
+    },
+    "StaticConsoleBinds": {
+      "type": "StaticKeyBind",
+      "documentation": null
+    },
+    "StaticPCBinds": {
+      "type": "StaticKeyBind",
+      "documentation": null
+    },
+    "m_aFlyCamConsoleBinds": {
+      "type": "StaticKeyBind",
+      "documentation": null
+    },
+    "DebugMenu": {
+      "type": "DebugMenuEntry",
+      "documentation": null
+    },
+    "DebugSubMenu": {
+      "type": "DebugMenuEntry",
+      "documentation": null
+    },
+    "AxisBuffer": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastAxisBuffer": {
+      "type": "float",
+      "documentation": null
+    },
+    "AccumulatedAimVector": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_nmMappedPower": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmMappedPower2": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmMappedPower3": {
+      "type": "Name",
+      "documentation": null
+    },
+    "aGuiStrafe": {
+      "type": "float",
+      "documentation": null
+    },
+    "aGuiBaseY": {
+      "type": "float",
+      "documentation": null
+    },
+    "aGuiTurn": {
+      "type": "float",
+      "documentation": null
+    },
+    "aGuiLookUp": {
+      "type": "float",
+      "documentation": null
+    },
+    "aGuiMouseX": {
+      "type": "float",
+      "documentation": null
+    },
+    "aGuiMouseY": {
+      "type": "float",
+      "documentation": null
+    },
+    "MoveStickMag": {
+      "type": "float",
+      "documentation": null
+    },
+    "RawJoyUpDown": {
+      "type": "float",
+      "documentation": null
+    },
+    "GuiDeadzone": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_KeyInputDisabled": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCurConvSelection": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fConversationReplyLeftRight": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fConversationReplyUpDown": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fQuickOrderTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "AccumulatedRotationSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "CoverRemapThresholdPC": {
+      "type": "int",
+      "documentation": null
+    },
+    "CoverRemapThreshold": {
+      "type": "int",
+      "documentation": null
+    },
+    "bUseMouseDampening": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWantsToZoom": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ToggleFlyCam": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleFlyCam()"
+    },
+    "GhostMoveDown": {
+      "documentation": null,
+      "signature_members": {
+        "bState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GhostMoveDown(bool bState)"
+    },
+    "GhostMoveUp": {
+      "documentation": null,
+      "signature_members": {
+        "bState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GhostMoveUp(bool bState)"
+    },
+    "CancelReload": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CancelReload()"
+    },
+    "RemapControlsByRotation": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaRot": {
+          "type": null,
+          "documentation": null
+        },
+        "NewRight": {
+          "type": null,
+          "documentation": null
+        },
+        "NewUp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemapControlsByRotation(Rotator DeltaRot, out float NewRight, out float NewUp)"
+    },
+    "UpdateViewRotation": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateViewRotation(float DeltaTime)"
+    },
+    "PlayerInput": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayerInput(float DeltaTime)"
+    },
+    "PostProcessInput": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PostProcessInput(float DeltaTime)"
+    },
+    "AdjustMouseSensitivity": {
+      "documentation": null,
+      "signature_members": {
+        "FOVScale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AdjustMouseSensitivity(float FOVScale)"
+    },
+    "PreProcessInput": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PreProcessInput(float DeltaTime)"
+    },
+    "ComputeStickResponse": {
+      "documentation": null,
+      "signature_members": {
+        "RawStickValue": {
+          "type": null,
+          "documentation": null
+        },
+        "Input": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float ComputeStickResponse(float RawStickValue, SFXCameraInput Input, float DeltaTime)"
+    },
+    "IsEnterMenuButtonAssignmentSwapped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsEnterMenuButtonAssignmentSwapped()"
+    },
+    "IsKeyInputIgnored": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsKeyInputIgnored()"
+    },
+    "IgnoreKeyInput": {
+      "documentation": null,
+      "signature_members": {
+        "bValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "IgnoreKeyInput(bool bValue)"
+    },
+    "SetInputDisabled": {
+      "documentation": null,
+      "signature_members": {
+        "bValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInputDisabled(bool bValue)"
+    },
+    "GetInputDisabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetInputDisabled()"
+    },
+    "DebugExecInputCommands": {
+      "documentation": null,
+      "signature_members": {
+        "Cmd": {
+          "type": null,
+          "documentation": null
+        },
+        "bButtonPressed": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugExecInputCommands(string Cmd, bool bButtonPressed)"
+    },
+    "GetBind": {
+      "documentation": null,
+      "signature_members": {
+        "Key": {
+          "type": null,
+          "documentation": null
+        },
+        "Control": {
+          "type": null,
+          "documentation": null
+        },
+        "Shift": {
+          "type": null,
+          "documentation": null
+        },
+        "Alt": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetBind(const out Name Key, bool Control, bool Shift, bool Alt)"
+    },
+    "IsCombatEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsCombatEnabled()"
+    },
+    "ActivatePower": {
+      "documentation": null,
+      "signature_members": {
+        "nmPower": {
+          "type": null,
+          "documentation": null
+        },
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "vTargetLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "vOriginalCameraLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "rOriginalCameraRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ActivatePower(Name nmPower, optional Actor oTarget, optional Vector vTargetLocation, optional Vector vOriginalCameraLocation, optional Rotator rOriginalCameraRotation)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

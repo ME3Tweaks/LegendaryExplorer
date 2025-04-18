@@ -1,11 +1,11 @@
 {
   "Members": {
     "RTPCName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "RTPCValue": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

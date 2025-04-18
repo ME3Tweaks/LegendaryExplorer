@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "LANB_NotUsingLanBeacon": {
+      "value": 0,
+      "documentation": null
+    },
+    "LANB_Hosting": {
+      "value": 1,
+      "documentation": null
+    },
+    "LANB_Searching": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

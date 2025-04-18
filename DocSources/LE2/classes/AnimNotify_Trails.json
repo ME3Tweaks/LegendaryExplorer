@@ -1,0 +1,77 @@
+{
+  "parent": "AnimNotify",
+  "package": "Engine",
+  "variables": {
+    "TrailSampledData": {
+      "type": "TrailSample",
+      "documentation": null
+    },
+    "PSTemplate": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "FirstEdgeSocketName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "SecondEdgeSocketName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ControlPointSocketName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "AnimNodeSeq": {
+      "type": "AnimNodeSequence",
+      "documentation": null
+    },
+    "LastStartTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "EndTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "SamplesPerSecond": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeStep": {
+      "type": "float",
+      "documentation": null
+    },
+    "bIsExtremeContent": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSkipIfOwnerIsHidden": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bResampleRequired": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetNumSteps": {
+      "documentation": null,
+      "signature_members": {
+        "InLastTrailIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetNumSteps(int InLastTrailIndex)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

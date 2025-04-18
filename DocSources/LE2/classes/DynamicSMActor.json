@@ -1,0 +1,151 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "ReplicatedMeshTranslation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "ReplicatedMeshRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "ReplicatedMeshScale3D": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "StaticMeshComponent": {
+      "type": "StaticMeshComponent",
+      "documentation": null
+    },
+    "LightEnvironment": {
+      "type": "DynamicLightEnvironmentComponent",
+      "documentation": null
+    },
+    "ReplicatedMesh": {
+      "type": "StaticMesh",
+      "documentation": null
+    },
+    "ReplicatedMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "bForceStaticDecals": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPawnCanBaseOn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSafeBaseIfAsleep": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetLightEnvironmentToNotBeDynamic": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetLightEnvironmentToNotBeDynamic()"
+    },
+    "Detach": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Detach(Actor Other)"
+    },
+    "Attach": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Attach(Actor Other)"
+    },
+    "CanBasePawn": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanBasePawn(Pawn P)"
+    },
+    "SetStaticMesh": {
+      "documentation": null,
+      "signature_members": {
+        "NewMesh": {
+          "type": null,
+          "documentation": null
+        },
+        "NewTranslation": {
+          "type": null,
+          "documentation": null
+        },
+        "NewRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "NewScale3D": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetStaticMesh(StaticMesh NewMesh, optional Vector NewTranslation, optional Rotator NewRotation, optional Vector NewScale3D)"
+    },
+    "OnSetMaterial": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSetMaterial(SeqAct_SetMaterial Action)"
+    },
+    "OnSetMesh": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSetMesh(SeqAct_SetMesh Action)"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

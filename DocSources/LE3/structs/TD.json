@@ -1,39 +1,39 @@
 {
   "Members": {
     "Level": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "TREASURE": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "ConditionalGAWAssets": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "UndetectableGAWAssets": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "PlotId": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Credits": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "AllianceCredits": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "XP": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "LevelEnum": {
-      "type": null,
+      "type": "EME3Level",
       "documentation": null
     }
   },

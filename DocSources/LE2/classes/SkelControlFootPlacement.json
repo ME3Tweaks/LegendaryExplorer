@@ -1,0 +1,45 @@
+{
+  "parent": "SkelControlLimb",
+  "package": "Engine",
+  "variables": {
+    "FootRotOffset": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "FootOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxUpAdjustment": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxDownAdjustment": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxFootOrientAdjust": {
+      "type": "float",
+      "documentation": null
+    },
+    "bInvertFootUpAxis": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOrientFootToGround": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOnlyEnableForUpAdjustment": {
+      "type": "bool",
+      "documentation": null
+    },
+    "FootUpAxis": {
+      "type": "EAxis",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,19 +1,19 @@
 {
   "Members": {
     "Items": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "LevelName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "nCredits": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nXP": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

@@ -1,0 +1,94 @@
+{
+  "parent": "SFXAI_Core",
+  "package": "SFXGame",
+  "variables": {
+    "m_nInvalidatedCoverRetries": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCoverMoveCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fAggressiveTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bApproachTarget": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCheckLOSBeforeStop": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasHowled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFarHowled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bApproachEnemy": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetMovementSpeed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetMovementSpeed()"
+    },
+    "AdvanceOnEnemy": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AdvanceOnEnemy()"
+    },
+    "AdvanceTimer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AdvanceTimer()"
+    },
+    "NotifyUnderAttack": {
+      "documentation": null,
+      "signature_members": {
+        "bHit": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyUnderAttack(bool bHit)"
+    }
+  },
+  "states": {
+    "MovingToGoal": {
+      "functions": {
+        "PeriodicMoveCheck": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Combat_Vanguard": {
+      "functions": {
+        "PushedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

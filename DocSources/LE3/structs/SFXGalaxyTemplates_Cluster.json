@@ -1,43 +1,43 @@
 {
   "Members": {
     "ClusterPlanes": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "ClusterBackgrounds": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "System": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "SystemCircle": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "ClusterSphere": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "ClusterStars": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "FuelElipse": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "Emitter": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "Crosshair": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "Camera": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     }
   },

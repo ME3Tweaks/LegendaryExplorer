@@ -1,0 +1,81 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "SFXGame",
+  "variables": {
+    "RotTransitions": {
+      "type": "RotTransitionInfo",
+      "documentation": null
+    },
+    "BioPawnOwner": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "LastPawnYaw": {
+      "type": "int",
+      "documentation": null
+    },
+    "PawnRotationRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastRootBoneYaw": {
+      "type": "int",
+      "documentation": null
+    },
+    "YawOffset": {
+      "type": "int",
+      "documentation": null
+    },
+    "TransitionBlendInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "TransitionBlendOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentTransitionIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "TransitionThresholdAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "fRotationResetRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "AbortThresholdPercentage": {
+      "type": "float",
+      "documentation": null
+    },
+    "AbortTransitionBlendTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bInitialized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRootRotInitialized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDelayBlendOutToPlayAnim": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPlayingTurnTransition": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTransitioningToIdle": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

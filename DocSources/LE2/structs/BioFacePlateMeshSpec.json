@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "m_pMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null
+    },
+    "m_bHidesVisor": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

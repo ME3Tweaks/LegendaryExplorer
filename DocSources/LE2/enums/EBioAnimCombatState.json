@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "eBioAnimCombat_NoState": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimCombat_FireAuto": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimCombat_FireAutoStop": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioAnimCombat_FireManual": {
+      "value": 3,
+      "documentation": null
+    },
+    "eBioAnimCombat_ThrowGrenade": {
+      "value": 4,
+      "documentation": null
+    },
+    "eBioAnimCombat_DoneFireManual": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

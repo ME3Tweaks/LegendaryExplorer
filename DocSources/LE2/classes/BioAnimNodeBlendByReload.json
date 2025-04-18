@@ -1,0 +1,15 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "GetReloadDuration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetReloadDuration()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "parent": "AnimNotify_WwiseEvent",
+  "package": "SFXGame",
+  "variables": {
+    "RaceTypeRTPCName": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,104 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_lSelectionsInRange": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_oCurrentSelectionTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_oLastSelectionTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_oPendingSelectionTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "SelectionFlareComp": {
+      "type": "LensFlareComponent",
+      "documentation": null
+    },
+    "m_fPendingSelectionChangedTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "SelectionFarRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "SelectionFarAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "SelectionCloseRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "SelectionCloseAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bCurrentSelectionIsCombatTarget": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCurrentSelectionObstructed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eCurrentSelectionMode": {
+      "type": "EGeneralSelectionMode",
+      "documentation": null
+    },
+    "m_ePreviousSelectionMode": {
+      "type": "EGeneralSelectionMode",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetSelectionIconMaterialParam": {
+      "documentation": null,
+      "signature_members": {
+        "Param": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSelectionIconMaterialParam(Name Param, int Value)"
+    },
+    "IsSelectable": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsSelectable(Actor oTarget)"
+    },
+    "UpdateSelection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateSelection()"
+    },
+    "FindCurrentSelectionTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FindCurrentSelectionTarget()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

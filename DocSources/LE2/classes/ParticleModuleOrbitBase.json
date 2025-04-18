@@ -1,0 +1,13 @@
+{
+  "parent": "ParticleModule",
+  "package": "Engine",
+  "variables": {
+    "bUseEmitterTime": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

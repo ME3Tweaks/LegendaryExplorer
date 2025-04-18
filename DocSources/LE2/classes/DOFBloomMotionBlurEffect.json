@@ -1,0 +1,29 @@
+{
+  "parent": "DOFAndBloomEffect",
+  "package": "Engine",
+  "variables": {
+    "MaxVelocity": {
+      "type": "float",
+      "documentation": null
+    },
+    "MotionBlurAmount": {
+      "type": "float",
+      "documentation": null
+    },
+    "CameraRotationThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "CameraTranslationThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "FullMotionBlur": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

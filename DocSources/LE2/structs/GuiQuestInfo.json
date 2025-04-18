@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "sName": {
+      "type": "string",
+      "documentation": null
+    },
+    "nID": {
+      "type": "int",
+      "documentation": null
+    },
+    "nAdded": {
+      "type": "int",
+      "documentation": null
+    },
+    "bComplete": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUpdated": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

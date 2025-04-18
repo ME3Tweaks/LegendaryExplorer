@@ -1,0 +1,17 @@
+{
+  "parent": "SceneCaptureComponent",
+  "package": "Engine",
+  "variables": {
+    "TextureTarget": {
+      "type": "TextureRenderTarget2D",
+      "documentation": null
+    },
+    "ScaleFOV": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

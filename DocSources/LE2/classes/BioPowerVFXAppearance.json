@@ -1,0 +1,57 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "PlayerCrust": {
+      "type": "PowerVFXData",
+      "documentation": null
+    },
+    "PlayerMaterial": {
+      "type": "PowerVFXData",
+      "documentation": null
+    },
+    "UsingEffect": {
+      "type": "PowerVFXData",
+      "documentation": null
+    },
+    "FramebufferEffect": {
+      "type": "PowerVFXData",
+      "documentation": null
+    },
+    "TargetCrust": {
+      "type": "PowerVFXData",
+      "documentation": null
+    },
+    "TargetMaterial": {
+      "type": "PowerVFXData",
+      "documentation": null
+    },
+    "ImpactVisualEffect": {
+      "type": "PowerVFXData",
+      "documentation": null
+    },
+    "WorldImpactVisualEffect": {
+      "type": "PowerVFXData",
+      "documentation": null
+    },
+    "CastingBeam": {
+      "type": "PowerVFXData",
+      "documentation": null
+    },
+    "nmProjectileAttachPoint": {
+      "type": "Name",
+      "documentation": null
+    },
+    "vfxProjectileEffect": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "vfxReleaseEffect": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

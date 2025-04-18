@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "RBA_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "RBA_Discard": {
+      "value": 1,
+      "documentation": null
+    },
+    "RBA_Translate": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

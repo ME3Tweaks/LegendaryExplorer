@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Material": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "MeshName": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

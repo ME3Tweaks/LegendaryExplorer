@@ -1,15 +1,15 @@
 {
   "Members": {
     "MovieDef": {
-      "type": null,
+      "type": "GPtr_Mirror",
       "documentation": null
     },
     "MovieView": {
-      "type": null,
+      "type": "GPtr_Mirror",
       "documentation": null
     },
     "GFxMovie": {
-      "type": null,
+      "type": "GFxMovie",
       "documentation": null
     }
   },

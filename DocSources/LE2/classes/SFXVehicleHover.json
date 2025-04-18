@@ -1,0 +1,448 @@
+{
+  "parent": "SVehicle",
+  "package": "SFXGame",
+  "variables": {
+    "FactionClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "JumpForce": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "BoostForce": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "OffGroundForce": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_vPauseVelocity": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Loadout": {
+      "type": "SFXLoadoutData",
+      "documentation": null
+    },
+    "AudioComponent": {
+      "type": "WwiseAudioComponent",
+      "documentation": null
+    },
+    "VehicleMotorEventPair": {
+      "type": "WwiseEventPairObject",
+      "documentation": null
+    },
+    "VehicleVerticalBoostEventPair": {
+      "type": "WwiseEventPairObject",
+      "documentation": null
+    },
+    "VehicleForwardBoostEventPair": {
+      "type": "WwiseEventPairObject",
+      "documentation": null
+    },
+    "VehicleVerticalBoostEndEvent": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "VehicleForwardBoostEndEvent": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "VehicleBottomOutEvent": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "VehicleMiningSuccessEvent": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "VehicleMiningFailureEvent": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "VehicleStartupEvent": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "VehicleShutdownEvent": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "LeftSuspensionEvent": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "RightSuspensionEvent": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "HitSomething": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "VehicleMiningEventPair": {
+      "type": "WwiseEventPairObject",
+      "documentation": null
+    },
+    "VehicleTurretMovementStartEventPair": {
+      "type": "WwiseEventPairObject",
+      "documentation": null
+    },
+    "m_oDamageVisualEffect": {
+      "type": "BioVisualEffect",
+      "documentation": null
+    },
+    "m_oDeathVFXTemplate": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "m_oDamageVFXTemplate": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "ThrustFeedback": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null
+    },
+    "CurrentMiningNode": {
+      "type": "SFXMiningNode",
+      "documentation": null
+    },
+    "MiningFeedbackWaveForm": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null
+    },
+    "m_oMiningVFXTemplate": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "MiningPSC": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "m_oAfterburnerVisual": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "LeftAfterburnerPSC": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "RightAfterburnerPSC": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "LightEnvironment": {
+      "type": "LightEnvironmentComponent",
+      "documentation": null
+    },
+    "CurrentThrustJuice": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxThrustJuice": {
+      "type": "float",
+      "documentation": null
+    },
+    "ThrustRegenerationFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastLeftSuspension": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastRightSuspension": {
+      "type": "float",
+      "documentation": null
+    },
+    "PreviousCameraPitch": {
+      "type": "float",
+      "documentation": null
+    },
+    "OnGroundJumpMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "ForwardThrustBurnRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "VerticalThrustBurnRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "ThrustRegenerationDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "BurnOutPercentage": {
+      "type": "float",
+      "documentation": null
+    },
+    "ForcedRegenAmount": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeLeftToStartRegen": {
+      "type": "float",
+      "documentation": null
+    },
+    "SelfRepairDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "SelfRepairRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastHitTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "HitDamage": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxPitchAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "TotalMiningTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeToNextMiningImpulse": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeToNextMiningFlash": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeToFlashMiningIndicator": {
+      "type": "float",
+      "documentation": null
+    },
+    "MiningIndicatorColor": {
+      "type": "float",
+      "documentation": null
+    },
+    "MiningFlashDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "MiningFlashDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "RadarRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "RadarFOV": {
+      "type": "float",
+      "documentation": null
+    },
+    "bWeaponFiring": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAudioXBoostEventStopped": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAudioZBoostEventStopped": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTurrentMovementSoundStopped": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMiningFailed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsPaused": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "RigidBodyCollision": {
+      "documentation": null,
+      "signature_members": {
+        "HitComponent": {
+          "type": null,
+          "documentation": null
+        },
+        "OtherComponent": {
+          "type": null,
+          "documentation": null
+        },
+        "RigidCollisionData": {
+          "type": null,
+          "documentation": null
+        },
+        "ContactIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RigidBodyCollision(PrimitiveComponent HitComponent, PrimitiveComponent OtherComponent, const out CollisionImpactData RigidCollisionData, int ContactIndex)"
+    },
+    "NotifyBump": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotifyBump(Actor Other, Vector HitNormal)"
+    },
+    "RanInto": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RanInto(Actor Other)"
+    },
+    "GetFaction": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EBioFactionTypes",
+      "signature": "EBioFactionTypes GetFaction(Pawn Other)"
+    },
+    "IsFriendly": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsFriendly(Pawn Other)"
+    },
+    "IsHostile": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsHostile(Pawn Other)"
+    },
+    "GetViewRotation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Rotator",
+      "signature": "Rotator GetViewRotation()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "TakeDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "EventInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TakeDamage(float Damage, Controller EventInstigator, Vector HitLocation, Vector Momentum, Class<DamageType> DamageType, optional TraceHitInfo HitInfo, optional Actor DamageCauser)"
+    },
+    "IsPendingFire": {
+      "documentation": null,
+      "signature_members": {
+        "InFiringMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsPendingFire(byte InFiringMode)"
+    },
+    "Died": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Died(Controller Killer, Class<DamageType> DamageType, Vector HitLocation)"
+    },
+    "AddDefaultInventory": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AddDefaultInventory()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,19 +1,19 @@
 {
   "Members": {
     "Tracers": {
-      "type": null,
+      "type": "SFXTracer",
       "documentation": null
     },
     "Mesh": {
-      "type": null,
+      "type": "StaticMesh",
       "documentation": null
     },
     "Template": {
-      "type": null,
+      "type": "ParticleSystem",
       "documentation": null
     },
     "NextIdx": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

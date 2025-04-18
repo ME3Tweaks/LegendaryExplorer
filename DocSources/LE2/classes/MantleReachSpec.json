@@ -1,0 +1,13 @@
+{
+  "parent": "ForcedReachSpec",
+  "package": "Engine",
+  "variables": {
+    "bClimbUp": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

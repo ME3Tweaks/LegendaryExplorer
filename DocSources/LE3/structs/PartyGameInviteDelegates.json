@@ -1,7 +1,7 @@
 {
   "Members": {
     "Delegates": {
-      "type": null,
+      "type": "OnSendPartyGameInvitesComplete",
       "documentation": null
     }
   },

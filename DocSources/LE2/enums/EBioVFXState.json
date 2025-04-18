@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "BVFX_SPAWN": {
+      "value": 0,
+      "documentation": null
+    },
+    "BVFX_LIFE": {
+      "value": 1,
+      "documentation": null
+    },
+    "BVFX_DEATH": {
+      "value": 2,
+      "documentation": null
+    },
+    "BVFX_ENUM_SIZE": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

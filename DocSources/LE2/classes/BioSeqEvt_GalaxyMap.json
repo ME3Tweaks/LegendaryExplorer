@@ -1,0 +1,17 @@
+{
+  "parent": "SequenceEvent",
+  "package": "SFXGame",
+  "variables": {
+    "sEvent": {
+      "type": "string",
+      "documentation": null
+    },
+    "EventParameter": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

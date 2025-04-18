@@ -1,0 +1,63 @@
+{
+  "parent": "SFXGameModeBase",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "IPEDownAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IPEDownAction()"
+    },
+    "IPEUpAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IPEUpAction()"
+    },
+    "IPELeftTrigger": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IPELeftTrigger()"
+    },
+    "IPERightTrigger": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IPERightTrigger()"
+    },
+    "IPELeftShoulder": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IPELeftShoulder()"
+    },
+    "IPERightShoulder": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IPERightShoulder()"
+    },
+    "EndIPE": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndIPE()"
+    },
+    "IPEBack": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IPEBack()"
+    },
+    "IPEForward": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IPEForward()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

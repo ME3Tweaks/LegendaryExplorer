@@ -1,0 +1,33 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {
+    "m_nmPhysicsImpactBone": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_fVFXScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_eReportMethod": {
+      "type": "EBioBaseAppearanceReportMethod",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetModelByName": {
+      "documentation": null,
+      "signature_members": {
+        "S": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SkeletalMesh",
+      "signature": "SkeletalMesh GetModelByName(string S)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

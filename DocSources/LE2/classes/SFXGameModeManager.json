@@ -1,0 +1,461 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "SupportedModes": {
+      "type": "Class",
+      "documentation": null
+    },
+    "GameModes": {
+      "type": "SFXGameModeBase",
+      "documentation": null
+    },
+    "KeyNames": {
+      "type": "LocalizedKeyName",
+      "documentation": null
+    },
+    "lstTutorialParseStrings": {
+      "type": "TutorialCommandsDetails",
+      "documentation": null
+    },
+    "sAudioGameModeRTPCName": {
+      "type": "string",
+      "documentation": null
+    },
+    "KEY_BINDING_VERSION": {
+      "type": "float",
+      "documentation": null
+    },
+    "srUnboundKeyString": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CurrentMode": {
+      "type": "EGameModes",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetLocalizedNameForKey": {
+      "documentation": null,
+      "signature_members": {
+        "Key": {
+          "type": null,
+          "documentation": null
+        },
+        "Control": {
+          "type": null,
+          "documentation": null
+        },
+        "Shift": {
+          "type": null,
+          "documentation": null
+        },
+        "Alt": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetLocalizedNameForKey(Name Key, bool Control, bool Shift, bool Alt)"
+    },
+    "UpdateAllBindMappingCollections": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateAllBindMappingCollections()"
+    },
+    "ResetKeyPresses": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetKeyPresses()"
+    },
+    "ParseStringForPCCommands": {
+      "documentation": null,
+      "signature_members": {
+        "sMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string ParseStringForPCCommands(string sMessage)"
+    },
+    "ResetBindings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetBindings()"
+    },
+    "ShouldAllowMessageUI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldAllowMessageUI()"
+    },
+    "ShouldEnforce16x9Subtitiles": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldEnforce16x9Subtitiles()"
+    },
+    "ShouldPlayVocalizations": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldPlayVocalizations()"
+    },
+    "ShouldShowReticles": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldShowReticles()"
+    },
+    "ShouldQueueAndSuppressNotifications": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldQueueAndSuppressNotifications()"
+    },
+    "ShouldMergeNotifications": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldMergeNotifications()"
+    },
+    "GetMouseVisible": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetMouseVisible()"
+    },
+    "HasMouseAuthority": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasMouseAuthority()"
+    },
+    "ShouldShowSubtitles": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldShowSubtitles()"
+    },
+    "AllowsLookAt": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AllowsLookAt()"
+    },
+    "AllowsSaving": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AllowsSaving()"
+    },
+    "AllowsCameraMods": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AllowsCameraMods()"
+    },
+    "AllowRotationUpdates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AllowRotationUpdates()"
+    },
+    "ShouldShowRadar": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldShowRadar()"
+    },
+    "ShouldShowDamageIndicators": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldShowDamageIndicators()"
+    },
+    "ShouldShowSelection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldShowSelection()"
+    },
+    "ShouldShowHUD": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldShowHUD()"
+    },
+    "IsActive": {
+      "documentation": null,
+      "signature_members": {
+        "Mode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsActive(EGameModes Mode)"
+    },
+    "UpdateCurrentMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateCurrentMode()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "GetPhotoMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXGameModePhoto",
+      "signature": "SFXGameModePhoto GetPhotoMode()"
+    },
+    "HACK_GetCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "GalaxyOrConversationMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode HACK_GetCameraMode(EGameModes GalaxyOrConversationMode)"
+    },
+    "HACK_BeginExitGalaxyMap": {
+      "documentation": null,
+      "signature_members": {
+        "resize": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HACK_BeginExitGalaxyMap(bool resize)"
+    },
+    "HACK_CanExitGalaxyMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HACK_CanExitGalaxyMode()"
+    },
+    "HACK_GetOrbitalMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXGameModeBase",
+      "signature": "SFXGameModeBase HACK_GetOrbitalMode()"
+    },
+    "UpdateControllerButtonBindings": {
+      "documentation": null,
+      "signature_members": {
+        "bSwapCrossCircle": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateControllerButtonBindings(bool bSwapCrossCircle)"
+    },
+    "UpdateControllerTriggerBindings": {
+      "documentation": null,
+      "signature_members": {
+        "ConfigOption": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateControllerTriggerBindings(ETriggerConfigOptions ConfigOption)"
+    },
+    "UpdateControllerStickBindings": {
+      "documentation": null,
+      "signature_members": {
+        "ConfigOption": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateControllerStickBindings(EStickConfigOptions ConfigOption)"
+    },
+    "Helper_ResetStaticPCBindings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Helper_ResetStaticPCBindings()"
+    },
+    "Helper_SetStaticPCBinding": {
+      "documentation": null,
+      "signature_members": {
+        "Key": {
+          "type": null,
+          "documentation": null
+        },
+        "Command": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Helper_SetStaticPCBinding(Name Key, string Command)"
+    },
+    "ResetControllerBindings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetControllerBindings()"
+    },
+    "Helper_ResetStaticConsoleBindings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Helper_ResetStaticConsoleBindings()"
+    },
+    "Helper_SetStaticConsoleBinding": {
+      "documentation": null,
+      "signature_members": {
+        "Key": {
+          "type": null,
+          "documentation": null
+        },
+        "Command": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Helper_SetStaticConsoleBinding(Name Key, string Command)"
+    },
+    "Helper_SwapStaticConsoleSticks": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Helper_SwapStaticConsoleSticks()"
+    },
+    "Helper_SwapStaticConsoleBindings": {
+      "documentation": null,
+      "signature_members": {
+        "SourceKey": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetKey": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Helper_SwapStaticConsoleBindings(Name SourceKey, Name TargetKey)"
+    },
+    "Helper_SwapBindings": {
+      "documentation": null,
+      "signature_members": {
+        "TargetMode": {
+          "type": null,
+          "documentation": null
+        },
+        "SourceKey": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetKey": {
+          "type": null,
+          "documentation": null
+        },
+        "bSwapBindings": {
+          "type": null,
+          "documentation": null
+        },
+        "OverrideSourceCommand": {
+          "type": null,
+          "documentation": null
+        },
+        "OverrideTargetCommand": {
+          "type": null,
+          "documentation": null
+        },
+        "bUseDefaultBindings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Helper_SwapBindings(SFXGameModeBase TargetMode, Name SourceKey, Name TargetKey, bool bSwapBindings, optional string OverrideSourceCommand, optional string OverrideTargetCommand, optional bool bUseDefaultBindings)"
+    },
+    "GetCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "OldCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "PreserveTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Transition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCameraMode(SFXCameraMode OldCameraMode, out int PreserveTarget, out float TransitionTime, out SFXCameraMode_Interpolate Transition)"
+    },
+    "TurnOffStormForPause": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TurnOffStormForPause()"
+    },
+    "CanPause": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanPause()"
+    },
+    "DisableMode": {
+      "documentation": null,
+      "signature_members": {
+        "Mode": {
+          "type": null,
+          "documentation": null
+        },
+        "ModeSpecifier": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisableMode(EGameModes Mode, optional Name ModeSpecifier)"
+    },
+    "EnableMode": {
+      "documentation": null,
+      "signature_members": {
+        "Mode": {
+          "type": null,
+          "documentation": null
+        },
+        "ModeSpecifier": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnableMode(EGameModes Mode, optional Name ModeSpecifier)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

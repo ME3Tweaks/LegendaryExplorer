@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "BIO_CAPMODE_WEAPON": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_CAPMODE_BIOTICS": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_CAPMODE_TECH": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_CAPMODE_COMBAT": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_CAPMODE_GRENADES": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_CAPMODE_ERROR": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

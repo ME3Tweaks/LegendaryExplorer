@@ -1,0 +1,37 @@
+{
+  "parent": "Bio_Appr_Character_Base_Settings",
+  "package": "SFXGame",
+  "variables": {
+    "m_oHeadGearSettings": {
+      "type": "Bio_Appr_Character_HeadGear_Settings",
+      "documentation": null
+    },
+    "m_nModelVariant": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nMaterialConfig": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bIsHeadGearLoaded": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsHeadGearHidden": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eArmorType": {
+      "type": "EBioArmorType",
+      "documentation": null
+    },
+    "m_eVisualOverride": {
+      "type": "EBioArmorType",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

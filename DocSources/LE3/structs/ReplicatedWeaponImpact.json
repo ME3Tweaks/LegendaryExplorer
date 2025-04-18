@@ -1,23 +1,23 @@
 {
   "Members": {
     "oWeapon": {
-      "type": null,
+      "type": "SFXWeapon",
       "documentation": null
     },
     "oProjectile": {
-      "type": null,
+      "type": "SFXProjectile",
       "documentation": null
     },
     "CustomActionReactionType": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "TriggerCounter": {
-      "type": null,
+      "type": "byte",
       "documentation": null
     },
     "Delay": {
-      "type": null,
+      "type": "byte",
       "documentation": null
     }
   },

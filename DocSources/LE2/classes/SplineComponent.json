@@ -1,0 +1,78 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "SplineInfo": {
+      "type": "InterpCurveVector",
+      "documentation": null
+    },
+    "SplineReparamTable": {
+      "type": "InterpCurveFloat",
+      "documentation": null
+    },
+    "SplineCurviness": {
+      "type": "float",
+      "documentation": null
+    },
+    "SplineColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "SplineDrawRes": {
+      "type": "float",
+      "documentation": null
+    },
+    "SplineArrowSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "bSplineDisabled": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetTangentAtDistanceAlongSpline": {
+      "documentation": null,
+      "signature_members": {
+        "Distance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetTangentAtDistanceAlongSpline(float Distance)"
+    },
+    "GetLocationAtDistanceAlongSpline": {
+      "documentation": null,
+      "signature_members": {
+        "Distance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetLocationAtDistanceAlongSpline(float Distance)"
+    },
+    "GetSplineLength": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetSplineLength()"
+    },
+    "UpdateSplineReparamTable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateSplineReparamTable()"
+    },
+    "UpdateSplineCurviness": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateSplineCurviness()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

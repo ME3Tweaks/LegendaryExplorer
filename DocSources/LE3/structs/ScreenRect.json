@@ -1,19 +1,19 @@
 {
   "Members": {
     "Top": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Left": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Width": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Height": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

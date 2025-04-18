@@ -1,0 +1,56 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aCreatureVFXs": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "m_aPlaceableVFXs": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ApplyEffect": {
+      "documentation": null,
+      "signature_members": {
+        "MetaEffect": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "fLifeTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyEffect(BioMetaVFX MetaEffect, Object Target, optional float fLifeTime)"
+    },
+    "ApplyEffectByName": {
+      "documentation": null,
+      "signature_members": {
+        "sEffect": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "fLifeTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyEffectByName(string sEffect, Object Target, optional float fLifeTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

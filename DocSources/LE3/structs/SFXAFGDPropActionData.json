@@ -1,19 +1,19 @@
 {
   "Members": {
     "nmActionName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "pPartSys": {
-      "type": null,
+      "type": "ParticleSystem",
       "documentation": null
     },
     "pClientEffect": {
-      "type": null,
+      "type": "RvrClientEffectInterface",
       "documentation": null
     },
     "fTimeDelay": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

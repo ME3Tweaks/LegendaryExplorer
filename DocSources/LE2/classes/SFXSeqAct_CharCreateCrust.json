@@ -1,0 +1,25 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "CrustEffectActor": {
+      "type": "BioVisualEffect",
+      "documentation": null
+    },
+    "PreviousTarget": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "CurrentTarget": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "CrustToApply": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,107 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "ReleaseResourcesFence": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "SourceColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "Template": {
+      "type": "LensFlare",
+      "documentation": null
+    },
+    "PreviewInnerCone": {
+      "type": "DrawLightConeComponent",
+      "documentation": null
+    },
+    "PreviewOuterCone": {
+      "type": "DrawLightConeComponent",
+      "documentation": null
+    },
+    "PreviewRadius": {
+      "type": "DrawLightRadiusComponent",
+      "documentation": null
+    },
+    "OuterCone": {
+      "type": "float",
+      "documentation": null
+    },
+    "InnerCone": {
+      "type": "float",
+      "documentation": null
+    },
+    "ConeFudgeFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "Radius": {
+      "type": "float",
+      "documentation": null
+    },
+    "bAutoActivate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasTranslucency": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasUnlitTranslucency": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasUnlitDistortion": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUsesSceneColor": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetIsActive": {
+      "documentation": null,
+      "signature_members": {
+        "bInIsActive": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetIsActive(bool bInIsActive)"
+    },
+    "SetSourceColor": {
+      "documentation": null,
+      "signature_members": {
+        "InSourceColor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSourceColor(LinearColor InSourceColor)"
+    },
+    "SetTemplate": {
+      "documentation": null,
+      "signature_members": {
+        "NewTemplate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTemplate(LensFlare NewTemplate)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "parent": "DynamicLightEnvironmentComponent",
+  "package": "Engine",
+  "variables": {
+    "ReferenceCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "bAllowDLESharing": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

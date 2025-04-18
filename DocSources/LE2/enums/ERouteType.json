@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "ERT_Linear": {
+      "value": 0,
+      "documentation": null
+    },
+    "ERT_Loop": {
+      "value": 1,
+      "documentation": null
+    },
+    "ERT_Circle": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

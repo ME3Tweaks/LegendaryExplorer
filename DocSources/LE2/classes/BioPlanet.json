@@ -1,0 +1,375 @@
+{
+  "parent": "SFXGalaxyMapObject",
+  "package": "SFXGame",
+  "variables": {
+    "Suns": {
+      "type": "PlanetSun",
+      "documentation": null
+    },
+    "Features": {
+      "type": "SFXPlanetFeature",
+      "documentation": null
+    },
+    "MapName": {
+      "type": "string",
+      "documentation": null
+    },
+    "ImageBackground": {
+      "type": "string",
+      "documentation": null
+    },
+    "PlanetEvent": {
+      "type": "string",
+      "documentation": null
+    },
+    "RingColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "CloudColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "CoronaColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "PreviewImageResource": {
+      "type": "GFxMovieInfo",
+      "documentation": null
+    },
+    "PlanetMaterial": {
+      "type": "MaterialInstanceConstant",
+      "documentation": null
+    },
+    "CloudMaterial": {
+      "type": "MaterialInstanceConstant",
+      "documentation": null
+    },
+    "ScenePrefab": {
+      "type": "Prefab",
+      "documentation": null
+    },
+    "TextureParam": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "Description": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ButtonLabel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "MissionBriefing": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ResourceRichness": {
+      "type": "float",
+      "documentation": null
+    },
+    "PlanetRotation": {
+      "type": "float",
+      "documentation": null
+    },
+    "Opacity": {
+      "type": "float",
+      "documentation": null
+    },
+    "FringeBloom": {
+      "type": "float",
+      "documentation": null
+    },
+    "RelativeSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "DefaultDisplaySize": {
+      "type": "float",
+      "documentation": null
+    },
+    "TerrainDepthFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "UnscaledMineralsSum": {
+      "type": "float",
+      "documentation": null
+    },
+    "PlacedMineralsPool": {
+      "type": "float",
+      "documentation": null
+    },
+    "RandomMineralsBase": {
+      "type": "float",
+      "documentation": null
+    },
+    "EezoMineralsBase": {
+      "type": "float",
+      "documentation": null
+    },
+    "ScanBarMaxMineralSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "PlanetLandCondition": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlanetEventCondition": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlanetEventParameter": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlanetEventTransition": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlanetEventTransitionParameter": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlanetEventMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "PlanetPlotLabel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "PlanetPlotLabelCondition": {
+      "type": "int",
+      "documentation": null
+    },
+    "ActiveWorld": {
+      "type": "int",
+      "documentation": null
+    },
+    "AlreadyExplored": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInitialized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "PlanetType": {
+      "type": "EPlanetType",
+      "documentation": null
+    },
+    "OrbitRing": {
+      "type": "EOrbitRingType",
+      "documentation": null
+    },
+    "SystemLevelType": {
+      "type": "ESystemLevelType",
+      "documentation": null
+    },
+    "PlanetLevelType": {
+      "type": "EBioGalaxyMap_PlanetType",
+      "documentation": null
+    },
+    "PlanetLandConditionRegion": {
+      "type": "EBioRegionAutoSet",
+      "documentation": null
+    },
+    "PlanetLandConditionPlot": {
+      "type": "EBioPlanetLandConditionPlotAutoSet",
+      "documentation": null
+    },
+    "PlanetLandConditionName": {
+      "type": "EBioPlanetLandConditionAutoSet",
+      "documentation": null
+    },
+    "PlanetEventConditionRegion": {
+      "type": "EBioRegionAutoSet",
+      "documentation": null
+    },
+    "PlanetEventConditionPlot": {
+      "type": "EBioPlanetEventConditionPlotAutoSet",
+      "documentation": null
+    },
+    "PlanetEventConditionName": {
+      "type": "EBioPlanetEventConditionAutoSet",
+      "documentation": null
+    },
+    "PlanetEventTransitionRegion": {
+      "type": "EBioRegionAutoSet",
+      "documentation": null
+    },
+    "PlanetEventTransitionPlot": {
+      "type": "EBioPlanetEventTransitionPlotAutoSet",
+      "documentation": null
+    },
+    "PlanetEventTransitionName": {
+      "type": "EBioPlanetEventTransitionAutoSet",
+      "documentation": null
+    },
+    "PlanetPlotLabelConditionRegion": {
+      "type": "EBioRegionAutoSet",
+      "documentation": null
+    },
+    "PlanetPlotLabelConditionPlot": {
+      "type": "EBioPlanetPlotLabelConditionPlotAutoSet",
+      "documentation": null
+    },
+    "PlanetPlotLabelConditionName": {
+      "type": "EBioPlanetPlotLabelConditionAutoSet",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "EnumerateChildren": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnumerateChildren()"
+    },
+    "GetScaledResourceAmount": {
+      "documentation": null,
+      "signature_members": {
+        "MineralType": {
+          "type": null,
+          "documentation": null
+        },
+        "UnscaledAmount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetScaledResourceAmount(EMineralType MineralType, float UnscaledAmount)"
+    },
+    "RemoveChild": {
+      "documentation": null,
+      "signature_members": {
+        "Child": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveChild(SFXGalaxyMapObject Child)"
+    },
+    "GetChildren": {
+      "documentation": null,
+      "signature_members": {
+        "Children": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetChildren(out array<SFXGalaxyMapObject> Children)"
+    },
+    "AddChild": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXGalaxyMapObject",
+      "signature": "SFXGalaxyMapObject AddChild()"
+    },
+    "SphereToPlanePos": {
+      "documentation": null,
+      "signature_members": {
+        "vSphere": {
+          "type": null,
+          "documentation": null
+        },
+        "SphereRadius": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector SphereToPlanePos(Vector vSphere, float SphereRadius)"
+    },
+    "PlanePosToSphere": {
+      "documentation": null,
+      "signature_members": {
+        "vPosition2D": {
+          "type": null,
+          "documentation": null
+        },
+        "SphereRadius": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector PlanePosToSphere(Vector vPosition2D, float SphereRadius)"
+    },
+    "GetPlanetSize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetPlanetSize()"
+    },
+    "LoadPlanetData": {
+      "documentation": null,
+      "signature_members": {
+        "Planet": {
+          "type": null,
+          "documentation": null
+        },
+        "TemporaryComponents": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadPlanetData(InterpActor Planet, out array<ParticleSystemComponent> TemporaryComponents)"
+    },
+    "LoadProbeImpacts": {
+      "documentation": null,
+      "signature_members": {
+        "vImpacts": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadProbeImpacts(out array<Vector> vImpacts)"
+    },
+    "SaveProbeImpact": {
+      "documentation": null,
+      "signature_members": {
+        "vImpact": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveProbeImpact(Vector vImpact)"
+    },
+    "SetVisited": {
+      "documentation": null,
+      "signature_members": {
+        "bVisited": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVisited(bool bVisited)"
+    },
+    "IsVisited": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsVisited()"
+    },
+    "SetupMinerals": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetupMinerals()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

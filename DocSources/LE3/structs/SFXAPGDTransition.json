@@ -1,15 +1,15 @@
 {
   "Members": {
     "fBlendTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "nPlayChance": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nDestPoseIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

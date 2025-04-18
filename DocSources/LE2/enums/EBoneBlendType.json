@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "BLENDTYPE_ALWAYS": {
+      "value": 0,
+      "documentation": null
+    },
+    "BLENDTYPE_ALWAYS_BONE_SWITCH": {
+      "value": 1,
+      "documentation": null
+    },
+    "BLENDTYPE_CROSSFADE_BONE_SWITCH": {
+      "value": 2,
+      "documentation": null
+    },
+    "BLENDTYPE_SWITCH": {
+      "value": 3,
+      "documentation": null
+    },
+    "BLENDTYPE_TOGGLE": {
+      "value": 4,
+      "documentation": null
+    },
+    "BLENDTYPE_WEIGHT": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

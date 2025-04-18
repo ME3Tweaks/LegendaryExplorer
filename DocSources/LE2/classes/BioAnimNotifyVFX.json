@@ -1,0 +1,13 @@
+{
+  "parent": "AnimNotify",
+  "package": "SFXGame",
+  "variables": {
+    "m_nmVisualEffectLabel": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

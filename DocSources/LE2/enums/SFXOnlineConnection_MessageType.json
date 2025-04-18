@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "SFXONLINE_MT_NORMAL": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXONLINE_MT_DOWNLOAD_PROMPT": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

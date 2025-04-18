@@ -1,0 +1,45 @@
+{
+  "parent": "ParticleModuleAttractorBase",
+  "package": "Engine",
+  "variables": {
+    "Range": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "Strength": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "EmitterName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "LastSelIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "bStrengthByDistance": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAffectBaseVelocity": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRenewSource": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInheritSourceVel": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SelectionMethod": {
+      "type": "EAttractorParticleSelectionMethod",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

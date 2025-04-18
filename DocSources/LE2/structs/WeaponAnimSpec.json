@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "AnimType": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_animSets": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "m_drawAnimSet": {
+      "type": "AnimSet",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

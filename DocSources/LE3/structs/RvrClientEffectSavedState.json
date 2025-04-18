@@ -1,47 +1,47 @@
 {
   "Members": {
     "Atoms": {
-      "type": null,
+      "type": "BoneAtom",
       "documentation": null
     },
     "Attachments": {
-      "type": null,
+      "type": "RvrClientEffectSavedAttachment",
       "documentation": null
     },
     "location": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "Rotation": {
-      "type": null,
+      "type": "Rotator",
       "documentation": null
     },
     "Velocity": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "ComponentTranslation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "ComponentRotation": {
-      "type": null,
+      "type": "Rotator",
       "documentation": null
     },
     "ComponentScale3D": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "ComponentScale": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "LOD": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "TimeStamp": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

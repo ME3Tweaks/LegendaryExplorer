@@ -1,0 +1,53 @@
+{
+  "parent": "NxForceField",
+  "package": "Engine",
+  "variables": {
+    "Kernel": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "RadialStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "RotationalStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "LiftStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "ForceRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "ForceTopRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "LiftFalloffHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "EscapeVelocity": {
+      "type": "float",
+      "documentation": null
+    },
+    "ForceHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "HeightOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "BSpecialRadialForceMode": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

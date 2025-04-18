@@ -1,0 +1,17 @@
+{
+  "parent": "InterpTrackInst",
+  "package": "Engine",
+  "variables": {
+    "LastUpdatePosition": {
+      "type": "float",
+      "documentation": null
+    },
+    "bFirstUpdate": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

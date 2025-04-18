@@ -1,0 +1,545 @@
+{
+  "parent": "BioCameraBehavior",
+  "package": "SFXGame",
+  "variables": {
+    "m_sSelectableObject": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sCenterObject": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sCrossHairObject": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sCameraObject": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sPlanetEvent": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_pScaleformObjects": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_SystemSelectors": {
+      "type": "SFXGalaxyMapSelector",
+      "documentation": null
+    },
+    "m_ClusterSelectors": {
+      "type": "SFXGalaxyMapSelector",
+      "documentation": null
+    },
+    "m_GalaxySelectors": {
+      "type": "SFXGalaxyMapSelector",
+      "documentation": null
+    },
+    "m_pDynamicClusterPath": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_pDynamicObjects": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_sBuyFuelSound_PctFullRTPCName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sShipTravelSound_SpeedRTPCName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sShipTravelSound_ThrustRTPCName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sShipTravelSound_FuelQtyRTPCName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sShipTravelSound_SystemClusterRTPCName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_pShipHalfFuelVO": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "m_pShipNoFuelClusterVO": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "m_pShipNoFuelClusterReturnVO": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "m_pShipNoFuelSystemVO": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "ClusterTravelShake": {
+      "type": "ScreenShakeStruct",
+      "documentation": null
+    },
+    "m_vShipDesiredDirection": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_vZoomLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_vZoomDelta": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_rZoomRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "m_vLastCameraLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_pGalaxyMap": {
+      "type": "SFXGalaxy",
+      "documentation": null
+    },
+    "m_pCurrentCluster": {
+      "type": "SFXCluster",
+      "documentation": null
+    },
+    "m_pCurrentSystem": {
+      "type": "SFXSystem",
+      "documentation": null
+    },
+    "m_pCurrentPlanet": {
+      "type": "BioPlanet",
+      "documentation": null
+    },
+    "m_pCenterObject": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_pCrossHairObject": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_pCameraObject": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_pLastSelectedObject": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_pSelectedObject": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_pSelectedCluster": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_pSelectedSystem": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_pSelectedPlanet": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_pMassRelaySystem": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_pFuelEllipseObject": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_pMassRelayObject": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_pRedMassRelayObject": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_pDepotObject": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_pTemplatePlanet": {
+      "type": "DynamicSMActor",
+      "documentation": null
+    },
+    "m_pMapTable": {
+      "type": "Bio2DA",
+      "documentation": null
+    },
+    "m_pPlotPlanetTable": {
+      "type": "Bio2DA",
+      "documentation": null
+    },
+    "ClusterTravelFF": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null
+    },
+    "m_pAudioComponent": {
+      "type": "WwiseAudioComponent",
+      "documentation": null
+    },
+    "m_pErrorSound": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "m_pBuyFuelSound": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "m_pBuyFuelSoundStop": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "m_pBuyFuelSound_Full": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "m_pBuyProbeSound": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "m_pShipTravelSound_Start": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "m_pShipTravelSound_Stop": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "m_pShipOutOfFuel_Start": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "m_pShipOutOfFuel_Stop": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "m_fMovementScalar": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMovementScalarGalaxy": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMovementScalarCluster": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMovementScalarSystem": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fRotationScalar": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fShipCurrentRotationSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fShipCurrentMovementSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fShipMinRotationSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fShipMaxRotationSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fShipControlDeadzone": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fShipSystemAccel": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fShipSystemDeccel": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fShipClusterAccel": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fShipClusterDeccel": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nCurrentState": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fMaxOrbitDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPlanarPitch": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fZoomTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nPlanetDescription": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nMissionDescription": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nPlanetImageIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nPlanetMap": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nButtonLabel": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nExitMap": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nActiveWorld": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nScanRange": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nHighlightWorld": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fPlanetRotation": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nPlanetEventConditional": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nPlanetEventParameter": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nPlanetEventTransition": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nPlanetEventTransParameter": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_srPlanetEventMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ClusterTravelShakeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ClusterTravelFFTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLastNoFuelMessageTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bTransitionDown": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bFirstStage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPlanetUsable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPlanetScanable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPaused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bRefreshPlanetUsable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bRebuildPlanetRingCache": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSelectedPlanetLastFrame": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUseInternalPlanetEvent": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCanExploreCluster": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSystemSunVisible": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "TriggerEvent": {
+      "documentation": null,
+      "signature_members": {
+        "sEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "nParameter": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TriggerEvent(Name sEvent, optional Name nParameter)"
+    },
+    "GetCameraLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetCameraLocation()"
+    },
+    "SetExplorationAchievementCompleted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetExplorationAchievementCompleted()"
+    },
+    "UpdateClusterTravelEffects": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateClusterTravelEffects(float TimeDelta)"
+    },
+    "OutOfFuelPenalty": {
+      "documentation": null,
+      "signature_members": {
+        "fDistToDepot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OutOfFuelPenalty(float fDistToDepot)"
+    },
+    "BurnFuel": {
+      "documentation": null,
+      "signature_members": {
+        "fFuel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BurnFuel(float fFuel)"
+    },
+    "GetFuelEfficiency": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetFuelEfficiency()"
+    },
+    "GetMaxFuel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMaxFuel()"
+    },
+    "GetRemainingFuel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetRemainingFuel()"
+    },
+    "GetNumCredits": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumCredits()"
+    },
+    "GetMaxProbes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMaxProbes()"
+    },
+    "GetRemainingProbes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetRemainingProbes()"
+    },
+    "HandleRevealLandingSite": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandleRevealLandingSite()"
+    },
+    "HandleSelectPlanet": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HandleSelectPlanet()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

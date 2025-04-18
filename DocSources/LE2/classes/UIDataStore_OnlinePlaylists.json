@@ -1,0 +1,151 @@
+{
+  "parent": "UIDataStore",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementProvider": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ProviderClassName": {
+      "type": "string",
+      "documentation": null
+    },
+    "ProviderClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "RankedDataProviders": {
+      "type": "UIResourceDataProvider",
+      "documentation": null
+    },
+    "UnRankedDataProviders": {
+      "type": "UIResourceDataProvider",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetOnlinePlaylistProvider": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": null,
+          "documentation": null
+        },
+        "PlaylistId": {
+          "type": null,
+          "documentation": null
+        },
+        "ProviderIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "OnlinePlaylistProvider",
+      "signature": "OnlinePlaylistProvider GetOnlinePlaylistProvider(Name ProviderTag, int PlaylistId, optional out int ProviderIndex)"
+    },
+    "GetPlaylistProvider": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": null,
+          "documentation": null
+        },
+        "ProviderIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "out_Provider": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPlaylistProvider(Name ProviderTag, int ProviderIndex, out UIResourceDataProvider out_Provider)"
+    },
+    "FindProviderIndexByFieldValue": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": null,
+          "documentation": null
+        },
+        "SearchField": {
+          "type": null,
+          "documentation": null
+        },
+        "ValueToSearchFor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindProviderIndexByFieldValue(Name ProviderTag, Name SearchField, const out UIProviderScriptFieldValue ValueToSearchFor)"
+    },
+    "GetProviderFieldValue": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": null,
+          "documentation": null
+        },
+        "SearchField": {
+          "type": null,
+          "documentation": null
+        },
+        "ProviderIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "out_FieldValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProviderFieldValue(Name ProviderTag, Name SearchField, int ProviderIndex, out UIProviderScriptFieldValue out_FieldValue)"
+    },
+    "GetResourceProviderFields": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": null,
+          "documentation": null
+        },
+        "ProviderFieldTags": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetResourceProviderFields(Name ProviderTag, out array<Name> ProviderFieldTags)"
+    },
+    "GetResourceProviders": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": null,
+          "documentation": null
+        },
+        "out_Providers": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetResourceProviders(Name ProviderTag, out array<UIResourceDataProvider> out_Providers)"
+    },
+    "GetProviderCount": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetProviderCount(Name ProviderTag)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

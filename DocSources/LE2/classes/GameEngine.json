@@ -1,0 +1,145 @@
+{
+  "parent": "Engine",
+  "package": "Engine",
+  "variables": {
+    "LastURL": {
+      "type": "URL",
+      "documentation": null
+    },
+    "LastRemoteURL": {
+      "type": "URL",
+      "documentation": null
+    },
+    "PendingLevelPlayerControllerClassName": {
+      "type": "string",
+      "documentation": null
+    },
+    "ServerActors": {
+      "type": "string",
+      "documentation": null
+    },
+    "TravelURL": {
+      "type": "string",
+      "documentation": null
+    },
+    "LevelsToLoadForPendingMapChange": {
+      "type": "Name",
+      "documentation": null
+    },
+    "LoadedLevelsForPendingMapChange": {
+      "type": "Level",
+      "documentation": null
+    },
+    "PendingMapChangeFailureDescription": {
+      "type": "string",
+      "documentation": null
+    },
+    "PendingLevelStreamingStatusUpdates": {
+      "type": "LevelStreamingStatus",
+      "documentation": null
+    },
+    "ObjectReferencers": {
+      "type": "ObjectReferencer",
+      "documentation": null
+    },
+    "PackagesToFullyLoad": {
+      "type": "FullyLoadedPackagesInfo",
+      "documentation": null
+    },
+    "NamedNetDrivers": {
+      "type": "NamedNetDriver",
+      "documentation": null
+    },
+    "GPendingLevel": {
+      "type": "PendingLevel",
+      "documentation": null
+    },
+    "OnlineSubsystem": {
+      "type": "OnlineSubsystem",
+      "documentation": null
+    },
+    "MaxDeltaTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nSkipFrames": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumPendingNonLatentOcclusionFrames": {
+      "type": "int",
+      "documentation": null
+    },
+    "bWorldWasLoadedThisTick": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShouldCommitPendingMapChange": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bClearAnimSetLinkupCachesOnLoadMap": {
+      "type": "bool",
+      "documentation": null
+    },
+    "TravelType": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetOnlineSubsystem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "OnlineSubsystem",
+      "signature": "OnlineSubsystem GetOnlineSubsystem()"
+    },
+    "ShouldUseNonLatentOcclusion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldUseNonLatentOcclusion()"
+    },
+    "TriggerLargeOcclusionChange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TriggerLargeOcclusionChange()"
+    },
+    "SkipFrames": {
+      "documentation": null,
+      "signature_members": {
+        "nFrames": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SkipFrames(int nFrames)"
+    },
+    "DestroyNamedNetDriver": {
+      "documentation": null,
+      "signature_members": {
+        "NetDriverName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DestroyNamedNetDriver(Name NetDriverName)"
+    },
+    "CreateNamedNetDriver": {
+      "documentation": null,
+      "signature_members": {
+        "NetDriverName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CreateNamedNetDriver(Name NetDriverName)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

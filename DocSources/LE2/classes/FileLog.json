@@ -1,0 +1,34 @@
+{
+  "parent": "FileWriter",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "CloseLog": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseLog()"
+    },
+    "OpenLog": {
+      "documentation": null,
+      "signature_members": {
+        "LogFilename": {
+          "type": null,
+          "documentation": null
+        },
+        "extension": {
+          "type": null,
+          "documentation": null
+        },
+        "bUnique": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OpenLog(coerce string LogFilename, optional string extension, optional bool bUnique)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

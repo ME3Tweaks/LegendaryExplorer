@@ -1,39 +1,39 @@
 {
   "Members": {
     "HitLocation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "HitNormal": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "Instigator": {
-      "type": null,
+      "type": "BioPawn",
       "documentation": null
     },
     "CustomActionType": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "ImpactCount": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "CustomActionReactionType": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "PowerCustomActionType": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bFirstTarget": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "TriggerCounter": {
-      "type": null,
+      "type": "byte",
       "documentation": null
     }
   },

@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "TM_Game": {
+      "value": 0,
+      "documentation": null
+    },
+    "TM_Real": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

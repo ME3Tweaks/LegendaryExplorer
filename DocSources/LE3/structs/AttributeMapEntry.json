@@ -1,11 +1,11 @@
 {
   "Members": {
     "Value": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "EntryId": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

@@ -1,35 +1,35 @@
 {
   "Members": {
     "Filename": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Tag": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "AudioEventPair": {
-      "type": null,
+      "type": "WwiseEventPairObject",
       "documentation": null
     },
     "FadeOutAudioEvent": {
-      "type": null,
+      "type": "WwiseEvent",
       "documentation": null
     },
     "LoopBackFrame": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "MinPlayTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "FadeInTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "FadeOutTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

@@ -1,0 +1,205 @@
+{
+  "parent": "DynamicLightEnvironmentComponent",
+  "package": "Engine",
+  "variables": {
+    "BioState": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "KeyLightScale": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "FillLightScale": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "AmbientLightScale": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "TargetBoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "SHAmbientScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "PopAngleLimit": {
+      "type": "float",
+      "documentation": null
+    },
+    "SurfaceBoundsRatio": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinPolarAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "BouncedKeyLightingIntensity": {
+      "type": "float",
+      "documentation": null
+    },
+    "BouncedKeyLightingDesaturation": {
+      "type": "float",
+      "documentation": null
+    },
+    "RimLightYaw": {
+      "type": "float",
+      "documentation": null
+    },
+    "RimLightPitch": {
+      "type": "float",
+      "documentation": null
+    },
+    "RimLightScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "RimLightColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "WrapLightingDirectMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "WrapLightingIndirectMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastFrameWeight_Cinematic": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastFrameWeight_Exploration": {
+      "type": "float",
+      "documentation": null
+    },
+    "LightAxisEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "DisplayDebugLines": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ForcePolarKeyFill": {
+      "type": "bool",
+      "documentation": null
+    },
+    "UseOptimizedLightingPath": {
+      "type": "bool",
+      "documentation": null
+    },
+    "UseTargetBoneAsOrigin": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLockEnvironment": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SmoothShadowLight_Cinematic": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SmoothShadowLight_Exploration": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasDirtyInterpProperties": {
+      "type": "bool",
+      "documentation": null
+    },
+    "QualityType": {
+      "type": "EDLEStateType",
+      "documentation": null
+    },
+    "RimLightControl": {
+      "type": "ERimLightControlType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnUpdatePropertyRimLightControl": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUpdatePropertyRimLightControl()"
+    },
+    "OnUpdatePropertyRimLightColor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUpdatePropertyRimLightColor()"
+    },
+    "OnUpdatePropertyRimLightScale": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUpdatePropertyRimLightScale()"
+    },
+    "OnUpdatePropertyRimLightPitch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUpdatePropertyRimLightPitch()"
+    },
+    "OnUpdatePropertyRimLightYaw": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUpdatePropertyRimLightYaw()"
+    },
+    "OnUpdatePropertyAmbientLightScale": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUpdatePropertyAmbientLightScale()"
+    },
+    "OnUpdatePropertyFillLightScale": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUpdatePropertyFillLightScale()"
+    },
+    "OnUpdatePropertyKeyLightScale": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUpdatePropertyKeyLightScale()"
+    },
+    "OnUpdatePropertyBouncedKeyLightingDesaturation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUpdatePropertyBouncedKeyLightingDesaturation()"
+    },
+    "OnUpdatePropertyBouncedKeyLightingIntensity": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUpdatePropertyBouncedKeyLightingIntensity()"
+    },
+    "SetQuality": {
+      "documentation": null,
+      "signature_members": {
+        "Quality": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetQuality(EDLEStateType Quality)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,27 +1,27 @@
 {
   "Members": {
     "location": {
-      "type": null,
+      "type": "RwVector3",
       "documentation": null
     },
     "Direction": {
-      "type": null,
+      "type": "RwVector3",
       "documentation": null
     },
     "Velocity": {
-      "type": null,
+      "type": "RwVector3",
       "documentation": null
     },
     "EventName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "Type": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "EmitterTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

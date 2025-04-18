@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "HeadIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "TailIndex": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

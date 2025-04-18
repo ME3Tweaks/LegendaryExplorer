@@ -1,27 +1,27 @@
 {
   "Members": {
     "UniqueStats": {
-      "type": null,
+      "type": "ETrilogyProfileSetting",
       "documentation": null
     },
     "Name": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "Index": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Threshold": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "AchievementId": {
-      "type": null,
+      "type": "EAchievementID",
       "documentation": null
     },
     "Stat": {
-      "type": null,
+      "type": "ETrilogyProfileSetting",
       "documentation": null
     }
   },

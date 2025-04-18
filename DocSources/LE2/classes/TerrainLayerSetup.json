@@ -1,0 +1,31 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Materials": {
+      "type": "TerrainFilteredMaterial",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "SetMaterials": {
+      "documentation": null,
+      "signature_members": {
+        "NewMaterials": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMaterials(array<TerrainFilteredMaterial> NewMaterials)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

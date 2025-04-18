@@ -1,0 +1,87 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "lstQuests": {
+      "type": "GuiQuestInfo",
+      "documentation": null
+    },
+    "lstSortLabels": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "lstSortTitles": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_fRScrollValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "srMarkAllCompleteMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srMarkAllCompleteMessageConfirm": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srMarkAllCompleteMessageCancel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_nUpStamp": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bAnalogScroll": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "MarkAllQuestsViewed": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MarkAllQuestsViewed(bool bAPressed, int nContext)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

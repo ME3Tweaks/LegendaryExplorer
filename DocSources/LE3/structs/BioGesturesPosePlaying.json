@@ -1,19 +1,19 @@
 {
   "Members": {
     "nmSetName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "nmAnimName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "bUseDynSets": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bLockedAsPoseCache": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

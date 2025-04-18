@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "DCS_StaticRoot": {
+      "value": 0,
+      "documentation": null
+    },
+    "DCS_StaticChild": {
+      "value": 1,
+      "documentation": null
+    },
+    "DCS_DynamicRoot": {
+      "value": 2,
+      "documentation": null
+    },
+    "DCS_DynamicChild": {
+      "value": 3,
+      "documentation": null
+    },
+    "DCS_Hidden": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

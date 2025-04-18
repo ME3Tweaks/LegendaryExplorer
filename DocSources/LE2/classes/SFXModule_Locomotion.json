@@ -1,0 +1,140 @@
+{
+  "parent": "SFXModule",
+  "package": "SFXGame",
+  "variables": {
+    "PawnDesiredRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "PawnAcceleration": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "MoveStartInitialPos": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Pawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "AnimNode": {
+      "type": "AnimNode",
+      "documentation": null
+    },
+    "MovingLeanYaw": {
+      "type": "float",
+      "documentation": null
+    },
+    "StateTag": {
+      "type": "int",
+      "documentation": null
+    },
+    "TickTag": {
+      "type": "int",
+      "documentation": null
+    },
+    "PawnMoveStartFwdAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "PawnMoveStartFwdSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "PawnMoveStartFwdAccelerationTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "PawnMoveStartSidewayAccelerationTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "PawnMoveStartStopTimerThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "PawnMoveStandTurnDistanceThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "PawnMoveStandTurnRotRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "PawnMoveStopTimerThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "PawnMoveStopRestartTimerThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "StateTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "StateSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "MovingLean": {
+      "type": "float",
+      "documentation": null
+    },
+    "MovingIncline": {
+      "type": "float",
+      "documentation": null
+    },
+    "MoveStartInitialYaw": {
+      "type": "float",
+      "documentation": null
+    },
+    "MoveStartRelYaw": {
+      "type": "float",
+      "documentation": null
+    },
+    "MoveStartLastYaw": {
+      "type": "float",
+      "documentation": null
+    },
+    "MoveStartIdleTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "MoveStartStopping": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CurrentState": {
+      "type": "ESFXLocomotionState",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetAcceleration": {
+      "documentation": null,
+      "signature_members": {
+        "Acceleration": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAcceleration(Vector Acceleration)"
+    },
+    "SetDesiredRotation": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDesiredRotation(Rotator DesiredRotation)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

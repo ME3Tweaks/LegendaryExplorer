@@ -1,0 +1,25 @@
+{
+  "parent": "SoundNode",
+  "package": "Engine",
+  "variables": {
+    "Weights": {
+      "type": "float",
+      "documentation": null
+    },
+    "HasBeenUsed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "NumRandomUsed": {
+      "type": "int",
+      "documentation": null
+    },
+    "bRandomizeWithoutReplacement": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

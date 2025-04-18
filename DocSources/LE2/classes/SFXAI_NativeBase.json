@@ -1,0 +1,216 @@
+{
+  "parent": "BioAiController",
+  "package": "SFXGame",
+  "variables": {
+    "CustomActionClasses": {
+      "type": "Class",
+      "documentation": null
+    },
+    "CustomActions": {
+      "type": "BioCustomAction",
+      "documentation": null
+    },
+    "m_AIGoHereTarget": {
+      "type": "NavigationPoint",
+      "documentation": null
+    },
+    "m_nMantleCostModifier": {
+      "type": "int",
+      "documentation": null
+    },
+    "LastShotAtTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nEnabledFlags": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fNextTimeForReachableCheck": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bAIGoHereTargetArrived": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisableAIOnRagdoll": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCanSkipNodes": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CurrentCustomAction": {
+      "type": "EAICustomAction",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DebugResetNavWeights": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DebugResetNavWeights()"
+    },
+    "SetMoveTimer": {
+      "documentation": null,
+      "signature_members": {
+        "vMove": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMoveTimer(out Vector vMove)"
+    },
+    "UpdateMovementActions": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateMovementActions()"
+    },
+    "IsSpecialMoveAfterMoveTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsSpecialMoveAfterMoveTarget()"
+    },
+    "CanSkipCurrentPathNode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanSkipCurrentPathNode()"
+    },
+    "SmoothPathMovement": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SmoothPathMovement()"
+    },
+    "MoveTowardLocation": {
+      "documentation": null,
+      "signature_members": {
+        "vLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "fOffset": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MoveTowardLocation(Vector vLocation, optional float fOffset)"
+    },
+    "AdjustSteeringMoveSpeed": {
+      "documentation": null,
+      "signature_members": {
+        "vSteering": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AdjustSteeringMoveSpeed(Vector vSteering)"
+    },
+    "GetSteeringVector": {
+      "documentation": null,
+      "signature_members": {
+        "vSteering": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetSteeringVector(out Vector vSteering)"
+    },
+    "GetActorToFollow": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        },
+        "vLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetActorToFollow(out Actor oActor, out Vector vLocation)"
+    },
+    "EnableAI": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": null,
+          "documentation": null
+        },
+        "nRequestedBy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EnableAI(bool bEnable, int nRequestedBy)"
+    },
+    "CanInterruptCurrentState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanInterruptCurrentState()"
+    },
+    "CanDoCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "CAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanDoCustomAction(EAICustomAction CAction)"
+    },
+    "GetCurrentCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "pAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCurrentCustomAction(out BioCustomAction pAction)"
+    },
+    "IsActorInLevel": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        },
+        "oLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsActorInLevel(Actor oActor, Level oLevel)"
+    },
+    "BioClearCrossLevelReferences": {
+      "documentation": null,
+      "signature_members": {
+        "oLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BioClearCrossLevelReferences(Level oLevel)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

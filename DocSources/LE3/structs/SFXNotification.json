@@ -1,79 +1,79 @@
 {
   "Members": {
     "sTitle": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sSubtitle": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sBody": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sImageResource": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "nmType": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "oImage": {
-      "type": null,
+      "type": "Texture",
       "documentation": null
     },
     "nmRemoteEvent": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "nmSound": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "nmStopSound": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "nmIcon": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "nID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nPriority": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "CreationTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "fDisplayTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "nFlourishID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nBarPercent": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Data1": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bIsMini": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "eLoadStatus": {
-      "type": null,
+      "type": "EAsyncLoadStatus",
       "documentation": null
     }
   },

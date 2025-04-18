@@ -1,0 +1,158 @@
+{
+  "parent": "BioPowerScriptDesign",
+  "package": "SFXGameContent_Powers",
+  "variables": {
+    "DetonationCameraShake": {
+      "type": "ScreenShakeStruct",
+      "documentation": null
+    },
+    "m_oPower": {
+      "type": "SFXPower_Overload",
+      "documentation": null
+    },
+    "m_oCrustEffect": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "PlayerIsMeleedWaveForm": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null
+    },
+    "NormalImpactSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "HeavyImpactSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ShouldUsePower": {
+      "documentation": null,
+      "signature_members": {
+        "Caster": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "sOptionalInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldUsePower(Actor Caster, Actor Target, out string sOptionalInfo)"
+    },
+    "SpawnBigImpactVFX": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnBigImpactVFX(Actor oImpacted)"
+    },
+    "ExplodeEnemy": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "oCaster": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExplodeEnemy(BioPawn oPawn, BioPawn oCaster)"
+    },
+    "CanEnemyBeExploded": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanEnemyBeExploded(BioPawn oPawn)"
+    },
+    "TurnOnDeathPower": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TurnOnDeathPower(Actor oImpacted)"
+    },
+    "StunRobot": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "fDuration": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StunRobot(BioPawn oPawn, float fDuration)"
+    },
+    "OnImpact": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": null,
+          "documentation": null
+        },
+        "fCasterStability": {
+          "type": null,
+          "documentation": null
+        },
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        },
+        "nPreviouslyImpacted": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnImpact(Actor oCaster, float fCasterStability, Actor oImpacted, int nPreviouslyImpacted)"
+    },
+    "StartPhase": {
+      "documentation": null,
+      "signature_members": {
+        "ePhase": {
+          "type": null,
+          "documentation": null
+        },
+        "oCaster": {
+          "type": null,
+          "documentation": null
+        },
+        "fDuration": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartPhase(EBioPowerState ePhase, Actor oCaster, float fDuration)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

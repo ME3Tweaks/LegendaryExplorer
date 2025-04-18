@@ -1,0 +1,269 @@
+{
+  "parent": "BioActive",
+  "package": "SFXGame",
+  "variables": {
+    "m_vOriginalCameraLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_rOriginalCameraRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "m_vLocationToAimAt": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_oPower": {
+      "type": "BioPower",
+      "documentation": null
+    },
+    "m_oCaster": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "m_oCasterAsBioPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "m_oCasterBehavior": {
+      "type": "BioEpicPawnBehavior",
+      "documentation": null
+    },
+    "m_oCasterAsPlayerController": {
+      "type": "BioPlayerController",
+      "documentation": null
+    },
+    "m_oAnimSet": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "m_oTargetToAimAt": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_nReservationID": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fPowerStateElapsed": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMaxWaitTimeForAnimation": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCurrentWaitTimeForAnimation": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCastingBeamTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nTag": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bCasterIsHenchman": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSkipPowerCooldown": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bManualIgnoreCooldown": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUsePowerReservation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInstantPowerUse": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPlayAnimations": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAnimationReadyForPowerRelease": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bReleaseAnimEnded": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bWaitingForAnimationToStart": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bShowPowerAiming": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bEnablePowerCooldown": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bShowPowerImpactText": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisplayingCastingBeam": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPlayerOrderedPowerUse": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIgnoreSuppression": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_ePowerState": {
+      "type": "EBioPowerState",
+      "documentation": null
+    },
+    "m_ePreviousCoverAction": {
+      "type": "ECoverAction",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ClearPreviousCoverAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearPreviousCoverAction()"
+    },
+    "OnCastAt": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "Caster": {
+          "type": null,
+          "documentation": null
+        },
+        "Power": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnCastAt(Actor Target, Actor Caster, BioPower Power)"
+    },
+    "ReleasedOnActor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReleasedOnActor()"
+    },
+    "TriggerPowerVocalization": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TriggerPowerVocalization()"
+    },
+    "SpawnProjectile": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Projectile",
+      "signature": "Projectile SpawnProjectile()"
+    },
+    "AimProjectilePower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AimProjectilePower()"
+    },
+    "OnAnimReleaseEnd": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnAnimReleaseEnd()"
+    },
+    "OnAnimReleaseBegin": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnAnimReleaseBegin()"
+    },
+    "OnAnimCastingEnd": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnAnimCastingEnd()"
+    },
+    "OnAnimCastingBegin": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnAnimCastingBegin()"
+    },
+    "UpdatePowerOrder": {
+      "documentation": null,
+      "signature_members": {
+        "bOrderedByPlayer": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnoreSuppression": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdatePowerOrder(bool bOrderedByPlayer, optional bool bIgnoreSuppression)"
+    },
+    "SetTargetLocation": {
+      "documentation": null,
+      "signature_members": {
+        "vLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTargetLocation(Vector vLocation)"
+    },
+    "SetTargetActor": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTargetActor(Actor oTarget)"
+    },
+    "CancelPower": {
+      "documentation": null,
+      "signature_members": {
+        "bOnlyCancelIfCasting": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CancelPower(bool bOnlyCancelIfCasting)"
+    },
+    "AnimationReadyForPowerRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AnimationReadyForPowerRelease()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

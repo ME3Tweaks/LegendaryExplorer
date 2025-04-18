@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "UIANIMMODE_Linear": {
+      "value": 0,
+      "documentation": null
+    },
+    "UIANIMMODE_EaseIn": {
+      "value": 1,
+      "documentation": null
+    },
+    "UIANIMMODE_EaseOut": {
+      "value": 2,
+      "documentation": null
+    },
+    "UIANIMMODE_EaseInOut": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

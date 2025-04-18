@@ -1,0 +1,61 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "EffectName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "NodePosY": {
+      "type": "int",
+      "documentation": null
+    },
+    "NodePosX": {
+      "type": "int",
+      "documentation": null
+    },
+    "DrawWidth": {
+      "type": "int",
+      "documentation": null
+    },
+    "DrawHeight": {
+      "type": "int",
+      "documentation": null
+    },
+    "OutDrawY": {
+      "type": "int",
+      "documentation": null
+    },
+    "InDrawY": {
+      "type": "int",
+      "documentation": null
+    },
+    "bShowInEditor": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowInGame": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseWorldSettings": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMergePostUber": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAffectsLightingOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SceneDPG": {
+      "type": "ESceneDepthPriorityGroup",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

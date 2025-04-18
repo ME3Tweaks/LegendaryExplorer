@@ -1,0 +1,13 @@
+{
+  "parent": "ApexAsset",
+  "package": "Engine",
+  "variables": {
+    "MApexAsset": {
+      "type": "Pointer",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

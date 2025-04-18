@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "NAVLINK_Automatic": {
+      "value": 0,
+      "documentation": null
+    },
+    "NAVLINK_Manual": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

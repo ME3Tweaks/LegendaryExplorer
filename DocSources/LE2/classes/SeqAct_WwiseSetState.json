@@ -1,0 +1,17 @@
+{
+  "parent": "SequenceAction",
+  "package": "WwiseAudio",
+  "variables": {
+    "StateGroup": {
+      "type": "string",
+      "documentation": null
+    },
+    "State": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

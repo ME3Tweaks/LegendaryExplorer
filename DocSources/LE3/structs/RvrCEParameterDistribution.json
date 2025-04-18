@@ -1,39 +1,39 @@
 {
   "Members": {
     "DistributionFloat": {
-      "type": null,
+      "type": "RawDistributionFloat",
       "documentation": null
     },
     "DistributionVector": {
-      "type": null,
+      "type": "RawDistributionVector",
       "documentation": null
     },
     "Parameter": {
-      "type": null,
+      "type": "RvrClientEffectParameter",
       "documentation": null
     },
     "bDistanceBased": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bNormalizeTime": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bSuppressDuringRegular": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bSuppressDuringCooldown": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "ValueModifierOperation": {
-      "type": null,
+      "type": "EValueModifierOperation",
       "documentation": null
     },
     "ValueModifierSelection": {
-      "type": null,
+      "type": "EValueModifierSelection",
       "documentation": null
     }
   },

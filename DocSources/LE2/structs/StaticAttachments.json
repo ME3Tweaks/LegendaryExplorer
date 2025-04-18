@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "BoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "StaticMesh": {
+      "type": "StaticMesh",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

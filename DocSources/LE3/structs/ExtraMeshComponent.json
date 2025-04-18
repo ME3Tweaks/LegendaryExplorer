@@ -1,11 +1,11 @@
 {
   "Members": {
     "ExtraMeshes": {
-      "type": null,
+      "type": "StaticMeshComponent",
       "documentation": null
     },
     "Mod": {
-      "type": null,
+      "type": "SFXWeaponMod",
       "documentation": null
     }
   },

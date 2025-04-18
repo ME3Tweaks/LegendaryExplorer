@@ -1,0 +1,53 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "bSpawnModule": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUpdateModule": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFinalUpdateModule": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCurvesAsColor": {
+      "type": "bool",
+      "documentation": null
+    },
+    "b3DDrawMode": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSupported3DDrawMode": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEditable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "LODDuplicate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSpawnRateModule": {
+      "type": "bool",
+      "documentation": null
+    },
+    "LODValidity": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "SDT_Empty": {
+      "value": 0,
+      "documentation": null
+    },
+    "SDT_Int32": {
+      "value": 1,
+      "documentation": null
+    },
+    "SDT_Int64": {
+      "value": 2,
+      "documentation": null
+    },
+    "SDT_Double": {
+      "value": 3,
+      "documentation": null
+    },
+    "SDT_String": {
+      "value": 4,
+      "documentation": null
+    },
+    "SDT_Float": {
+      "value": 5,
+      "documentation": null
+    },
+    "SDT_Blob": {
+      "value": 6,
+      "documentation": null
+    },
+    "SDT_DateTime": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

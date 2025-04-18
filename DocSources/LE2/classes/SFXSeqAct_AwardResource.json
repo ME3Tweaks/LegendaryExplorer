@@ -1,0 +1,38 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "ResourcePercent": {
+      "type": "int",
+      "documentation": null
+    },
+    "bAbsoluteAmount": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsSalvage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "TreasureType": {
+      "type": "ETreasureType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

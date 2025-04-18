@@ -1,11 +1,11 @@
 {
   "Members": {
     "m_aBlendTimeTo": {
-      "type": null,
+      "type": "BlendTimeTo",
       "documentation": null
     },
     "m_eAnimNode": {
-      "type": null,
+      "type": "EBioActionAnimNode",
       "documentation": null
     }
   },

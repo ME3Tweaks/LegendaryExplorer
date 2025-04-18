@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "TUT_Reload": {
+      "value": 0,
+      "documentation": null
+    },
+    "TUT_Melee": {
+      "value": 1,
+      "documentation": null
+    },
+    "TUT_Zoom": {
+      "value": 2,
+      "documentation": null
+    },
+    "TUT_QuickCast": {
+      "value": 3,
+      "documentation": null
+    },
+    "TUT_WeaponSwitch": {
+      "value": 4,
+      "documentation": null
+    },
+    "TUT_Storm": {
+      "value": 5,
+      "documentation": null
+    },
+    "TUT_OrderHenchmen": {
+      "value": 6,
+      "documentation": null
+    },
+    "TUT_WheelHidden": {
+      "value": 7,
+      "documentation": null
+    },
+    "TUT_AreaMapHidden": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

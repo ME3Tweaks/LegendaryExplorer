@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "BIO_ACTION_STATE_EXPLORE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_ACTION_STATE_COMBAT": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

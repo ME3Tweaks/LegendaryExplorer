@@ -1,0 +1,21 @@
+{
+  "parent": "PBRuleNodeBase",
+  "package": "Engine",
+  "variables": {
+    "DecisionSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "bUseTopLevelScopeSize": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SizeAxis": {
+      "type": "EProcBuildingAxis",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

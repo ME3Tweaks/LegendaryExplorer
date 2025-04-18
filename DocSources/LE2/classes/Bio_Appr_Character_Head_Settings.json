@@ -1,0 +1,21 @@
+{
+  "parent": "Bio_Appr_Character_Base_Settings",
+  "package": "SFXGame",
+  "variables": {
+    "m_oHairSettings": {
+      "type": "Bio_Appr_Character_Hair_Settings",
+      "documentation": null
+    },
+    "m_nMaterialConfig": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nHairAppearance": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

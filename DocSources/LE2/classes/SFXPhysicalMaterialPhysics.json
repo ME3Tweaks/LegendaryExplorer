@@ -1,0 +1,17 @@
+{
+  "parent": "SFXPhysicalMaterialBase",
+  "package": "SFXGame",
+  "variables": {
+    "Sound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "WwiseType": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

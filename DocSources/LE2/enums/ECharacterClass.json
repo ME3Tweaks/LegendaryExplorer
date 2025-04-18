@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "ClassType_Invalid": {
+      "value": 0,
+      "documentation": null
+    },
+    "ClassType_Soldier": {
+      "value": 1,
+      "documentation": null
+    },
+    "ClassType_Adept": {
+      "value": 2,
+      "documentation": null
+    },
+    "ClassType_Infiltrator": {
+      "value": 3,
+      "documentation": null
+    },
+    "ClassType_Engineer": {
+      "value": 4,
+      "documentation": null
+    },
+    "ClassType_Vanguard": {
+      "value": 5,
+      "documentation": null
+    },
+    "ClassType_Sentinel": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

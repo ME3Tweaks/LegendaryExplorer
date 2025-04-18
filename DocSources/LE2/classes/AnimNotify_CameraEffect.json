@@ -1,0 +1,13 @@
+{
+  "parent": "AnimNotify",
+  "package": "Engine",
+  "variables": {
+    "CameraLensEffect": {
+      "type": "Class",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

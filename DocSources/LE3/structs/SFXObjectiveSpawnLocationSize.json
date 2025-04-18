@@ -1,11 +1,11 @@
 {
   "Members": {
     "Extents": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "Type": {
-      "type": null,
+      "type": "EObjectiveLocation",
       "documentation": null
     }
   },

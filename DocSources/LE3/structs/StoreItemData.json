@@ -1,75 +1,75 @@
 {
   "Members": {
     "ChoiceEntry": {
-      "type": null,
+      "type": "SFXChoiceEntry",
       "documentation": null
     },
     "ItemClassName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "PlotPurchaseID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "LargeImage": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "SmallImage": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "PVsToIncrement": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "CustomTokens": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "ItemConditionals": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "BaseCost": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "PlotUnlockID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "PlotUnlockConditionalID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "ArmorID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "PlotPurchaseInt": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Priority": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "CurrentModRank": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Value": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bIsGameEffect": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "ItemType": {
-      "type": null,
+      "type": "EItemType",
       "documentation": null
     }
   },

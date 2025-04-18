@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "bAllowInvoke": {
+      "type": "bool",
+      "documentation": null
+    },
+    "eLabel": {
+      "type": "ESFPanelInvokeLabel",
+      "documentation": null
+    },
+    "eCategory": {
+      "type": "ESFPanelInvokeCategories",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

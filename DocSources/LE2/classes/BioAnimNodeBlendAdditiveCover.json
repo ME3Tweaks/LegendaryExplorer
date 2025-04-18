@@ -1,0 +1,17 @@
+{
+  "parent": "BioAnimNodeBlendAdditive",
+  "package": "SFXGame",
+  "variables": {
+    "BlendInDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendOutDuration": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

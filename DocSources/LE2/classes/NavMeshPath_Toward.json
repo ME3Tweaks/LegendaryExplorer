@@ -1,0 +1,54 @@
+{
+  "parent": "NavMeshPathConstraint",
+  "package": "Engine",
+  "variables": {
+    "GoalPoint": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "GoalActor": {
+      "type": "Actor",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "TowardPoint": {
+      "documentation": null,
+      "signature_members": {
+        "NavHandle": {
+          "type": null,
+          "documentation": null
+        },
+        "Point": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TowardPoint(NavigationHandle NavHandle, Vector Point)"
+    },
+    "TowardGoal": {
+      "documentation": null,
+      "signature_members": {
+        "NavHandle": {
+          "type": null,
+          "documentation": null
+        },
+        "Goal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TowardGoal(NavigationHandle NavHandle, Actor Goal)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

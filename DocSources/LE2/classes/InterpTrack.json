@@ -1,0 +1,49 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "VfTable_FInterpEdInputInterface": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "CurveEdVTable": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "TrackInstClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "ActiveCondition": {
+      "type": "ETrackActiveCondition",
+      "documentation": null
+    },
+    "TrackTitle": {
+      "type": "string",
+      "documentation": null
+    },
+    "bOnePerGroup": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDirGroupOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableTrack": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsAnimControlTrack": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bImportedTrack": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

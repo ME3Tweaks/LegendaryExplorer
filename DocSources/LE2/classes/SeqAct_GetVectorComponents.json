@@ -1,0 +1,25 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "InVector": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "X": {
+      "type": "float",
+      "documentation": null
+    },
+    "Y": {
+      "type": "float",
+      "documentation": null
+    },
+    "Z": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

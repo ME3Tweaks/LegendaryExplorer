@@ -1,0 +1,56 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "AppliedBonus": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "OnApplied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnApplied()"
+    },
+    "ComputeTotalEffectValue": {
+      "documentation": null,
+      "signature_members": {
+        "BaseValue": {
+          "type": null,
+          "documentation": null
+        },
+        "StackingValue": {
+          "type": null,
+          "documentation": null
+        },
+        "NonStackingValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float ComputeTotalEffectValue(float BaseValue, float StackingValue, float NonStackingValue)"
+    },
+    "ComputeEffectValue": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ComputeEffectValue(out float Value)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

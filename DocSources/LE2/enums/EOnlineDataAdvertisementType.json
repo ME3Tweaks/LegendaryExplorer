@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "ODAT_DontAdvertise": {
+      "value": 0,
+      "documentation": null
+    },
+    "ODAT_OnlineService": {
+      "value": 1,
+      "documentation": null
+    },
+    "ODAT_QoS": {
+      "value": 2,
+      "documentation": null
+    },
+    "ODAT_OnlineServiceAndQoS": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

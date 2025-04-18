@@ -1,0 +1,33 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "Brush": {
+      "type": "Model",
+      "documentation": null
+    },
+    "BrushAggGeom": {
+      "type": "KAggregateGeom",
+      "documentation": null
+    },
+    "BrushPhysDesc": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "CachedPhysBrushData": {
+      "type": "KCachedConvexData_Mirror",
+      "documentation": null
+    },
+    "CachedPhysBrushDataVersion": {
+      "type": "int",
+      "documentation": null
+    },
+    "bBlockComplexCollisionTrace": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

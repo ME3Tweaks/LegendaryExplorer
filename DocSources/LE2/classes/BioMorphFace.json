@@ -1,0 +1,134 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aVertexBuffers": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "m_oOtherMeshes": {
+      "type": "SkeletalMesh",
+      "documentation": null
+    },
+    "m_aMorphFeatures": {
+      "type": "MorphFeature",
+      "documentation": null
+    },
+    "m_aFinalSkeleton": {
+      "type": "OffsetBonePos",
+      "documentation": null
+    },
+    "ReleaseResourcesFence": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "m_oBaseHead": {
+      "type": "SkeletalMesh",
+      "documentation": null
+    },
+    "m_oHairMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null
+    },
+    "m_oMorphTargetSet": {
+      "type": "MorphTargetSet",
+      "documentation": null
+    },
+    "m_oAnimTree": {
+      "type": "AnimTree",
+      "documentation": null
+    },
+    "m_oMaterialOverrides": {
+      "type": "BioMaterialOverride",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ApplyMaterialOverridesToPawn": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyMaterialOverridesToPawn(BioPawn Pawn)"
+    },
+    "ApplyMaterialOverrides": {
+      "documentation": null,
+      "signature_members": {
+        "Mesh": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyMaterialOverrides(SkeletalMeshComponent Mesh)"
+    },
+    "SetPosition": {
+      "documentation": null,
+      "signature_members": {
+        "Buffer": {
+          "type": null,
+          "documentation": null
+        },
+        "vert": {
+          "type": null,
+          "documentation": null
+        },
+        "V": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPosition(int Buffer, int vert, Vector V)"
+    },
+    "GetPosition": {
+      "documentation": null,
+      "signature_members": {
+        "Buffer": {
+          "type": null,
+          "documentation": null
+        },
+        "vert": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetPosition(int Buffer, int vert)"
+    },
+    "GetNumVerts": {
+      "documentation": null,
+      "signature_members": {
+        "Buffer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetNumVerts(int Buffer)"
+    },
+    "GetNumVertexBuffers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumVertexBuffers()"
+    },
+    "RefreshBuffers": {
+      "documentation": null,
+      "signature_members": {
+        "BufferIndices": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RefreshBuffers(array<int> BufferIndices)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

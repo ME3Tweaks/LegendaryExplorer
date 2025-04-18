@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "eBioBlendStatePlayMode_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioBlendStatePlayMode_OneShot": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioBlendStatePlayMode_Looping": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioBlendStatePlayMode_Query": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

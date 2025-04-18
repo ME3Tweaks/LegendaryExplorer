@@ -1,55 +1,55 @@
 {
   "Members": {
     "MovieClass": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "GFxResource": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "HUDTypeToAutoLoadFor": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Tag": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "CurvePixelError": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "ZOrder": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "UseEdgeAA": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bAutoStart": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bAutoVisible": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bSwfDevAutoReopen": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bRequiresScaling": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "Platform": {
-      "type": null,
+      "type": "EConsoleType",
       "documentation": null
     },
     "StrokeStyle": {
-      "type": null,
+      "type": "SFMovieStrokeStyle",
       "documentation": null
     }
   },

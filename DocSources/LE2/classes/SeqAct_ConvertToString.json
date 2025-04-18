@@ -1,0 +1,28 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "VarSeparator": {
+      "type": "string",
+      "documentation": null
+    },
+    "NumberOfInputs": {
+      "type": "int",
+      "documentation": null
+    },
+    "bIncludeVarComment": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

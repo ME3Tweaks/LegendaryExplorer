@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "m_nmAPLState": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_VFXState": {
+      "type": "EBioVFXState",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

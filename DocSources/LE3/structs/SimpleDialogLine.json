@@ -1,11 +1,11 @@
 {
   "Members": {
     "pCue": {
-      "type": null,
+      "type": "WwiseBaseSoundObject",
       "documentation": null
     },
     "srText": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

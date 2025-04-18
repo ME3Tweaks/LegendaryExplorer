@@ -1,0 +1,49 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "InstanceData": {
+      "type": "RecogUserData",
+      "documentation": null
+    },
+    "Language": {
+      "type": "string",
+      "documentation": null
+    },
+    "Vocabularies": {
+      "type": "RecogVocabulary",
+      "documentation": null
+    },
+    "VoiceData": {
+      "type": "byte",
+      "documentation": null
+    },
+    "WorkingVoiceData": {
+      "type": "byte",
+      "documentation": null
+    },
+    "UserData": {
+      "type": "byte",
+      "documentation": null
+    },
+    "FnxVoiceData": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ConfidenceThreshhold": {
+      "type": "float",
+      "documentation": null
+    },
+    "bDirty": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInitialised": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

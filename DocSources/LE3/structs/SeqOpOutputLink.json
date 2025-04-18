@@ -1,27 +1,27 @@
 {
   "Members": {
     "Links": {
-      "type": null,
+      "type": "SeqOpOutputInputLink",
       "documentation": null
     },
     "LinkDesc": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "LinkAction": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "LinkedOp": {
-      "type": null,
+      "type": "SequenceOp",
       "documentation": null
     },
     "bHasImpulse": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bDisabled": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

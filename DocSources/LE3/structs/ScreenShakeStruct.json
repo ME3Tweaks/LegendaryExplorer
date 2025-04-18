@@ -1,71 +1,71 @@
 {
   "Members": {
     "RotAmplitude": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "RotFrequency": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "RotSinOffset": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "LocAmplitude": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "LocFrequency": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "LocSinOffset": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "ShakeName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "TimeToGo": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "TimeDuration": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "RotParam": {
-      "type": null,
+      "type": "ShakeParams",
       "documentation": null
     },
     "LocParam": {
-      "type": null,
+      "type": "ShakeParams",
       "documentation": null
     },
     "FOVAmplitude": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "FOVFrequency": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "FOVSinOffset": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "TargetingDampening": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bOverrideTargetingDampening": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "FOVParam": {
-      "type": null,
+      "type": "EShakeParam",
       "documentation": null
     }
   },

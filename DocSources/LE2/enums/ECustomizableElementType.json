@@ -1,0 +1,45 @@
+{
+  "EnumValues": {
+    "CustomizableType_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "CustomizableType_Torso": {
+      "value": 1,
+      "documentation": null
+    },
+    "CustomizableType_Shoulders": {
+      "value": 2,
+      "documentation": null
+    },
+    "CustomizableType_Arms": {
+      "value": 3,
+      "documentation": null
+    },
+    "CustomizableType_Legs": {
+      "value": 4,
+      "documentation": null
+    },
+    "CustomizableType_Helmet": {
+      "value": 5,
+      "documentation": null
+    },
+    "CustomizableType_Spec": {
+      "value": 6,
+      "documentation": null
+    },
+    "CustomizableType_Tint": {
+      "value": 7,
+      "documentation": null
+    },
+    "CustomizableType_Pattern": {
+      "value": 8,
+      "documentation": null
+    },
+    "CustomizableType_PatternColor": {
+      "value": 9,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,7 +1,7 @@
 {
   "Members": {
     "InviteDelegates": {
-      "type": null,
+      "type": "OnGameInviteAccepted",
       "documentation": null
     }
   },

@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "AI_Cancelled": {
+      "value": 0,
+      "documentation": null
+    },
+    "AI_Success": {
+      "value": 1,
+      "documentation": null
+    },
+    "AI_Failed": {
+      "value": 2,
+      "documentation": null
+    },
+    "AI_LOS": {
+      "value": 3,
+      "documentation": null
+    },
+    "AI_Cooldown": {
+      "value": 4,
+      "documentation": null
+    },
+    "AI_Disabled": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

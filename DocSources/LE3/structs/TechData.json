@@ -1,47 +1,47 @@
 {
   "Members": {
     "ChoiceEntry": {
-      "type": null,
+      "type": "SFXChoiceEntry",
       "documentation": null
     },
     "stTech": {
-      "type": null,
+      "type": "STech",
       "documentation": null
     },
     "stTreasure": {
-      "type": null,
+      "type": "STreasure",
       "documentation": null
     },
     "PlotName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "TechId": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "PlotId": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "TreasureId": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "UnlockId": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nContextId": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "RMode": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "DisableId": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

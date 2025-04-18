@@ -1,15 +1,15 @@
 {
   "Members": {
     "ParameterValue": {
-      "type": null,
+      "type": "LinearColor",
       "documentation": null
     },
     "ParameterName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "ColorName": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

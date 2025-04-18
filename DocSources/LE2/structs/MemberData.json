@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "vTarget": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "vHoldPosition": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "SquadMember": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "oDestinationIndicator": {
+      "type": "BioTacticalMoveToIndicator",
+      "documentation": null
+    },
+    "nmPower": {
+      "type": "Name",
+      "documentation": null
+    },
+    "oOrderedAttackTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "bMoveOrderAssigned": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

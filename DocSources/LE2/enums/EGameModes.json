@@ -1,0 +1,57 @@
+{
+  "EnumValues": {
+    "GameMode_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "GameMode_PowerWheel": {
+      "value": 1,
+      "documentation": null
+    },
+    "GameMode_WeaponWheel": {
+      "value": 2,
+      "documentation": null
+    },
+    "GameMode_Command": {
+      "value": 3,
+      "documentation": null
+    },
+    "GameMode_Vehicle": {
+      "value": 4,
+      "documentation": null
+    },
+    "GameMode_Conversation": {
+      "value": 5,
+      "documentation": null
+    },
+    "GameMode_Cinematic": {
+      "value": 6,
+      "documentation": null
+    },
+    "GameMode_GUI": {
+      "value": 7,
+      "documentation": null
+    },
+    "GameMode_Movie": {
+      "value": 8,
+      "documentation": null
+    },
+    "GameMode_Galaxy": {
+      "value": 9,
+      "documentation": null
+    },
+    "GameMode_Orbital": {
+      "value": 10,
+      "documentation": null
+    },
+    "GameMode_Photo": {
+      "value": 11,
+      "documentation": null
+    },
+    "GameMode_CheatMenu": {
+      "value": 12,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

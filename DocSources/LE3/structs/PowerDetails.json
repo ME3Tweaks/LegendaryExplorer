@@ -1,23 +1,23 @@
 {
   "Members": {
     "Name": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Desc": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Resource": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "State": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "IconFrame": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

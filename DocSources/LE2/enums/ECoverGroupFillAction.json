@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "CGFA_Overwrite": {
+      "value": 0,
+      "documentation": null
+    },
+    "CGFA_Add": {
+      "value": 1,
+      "documentation": null
+    },
+    "CGFA_Remove": {
+      "value": 2,
+      "documentation": null
+    },
+    "CGFA_Clear": {
+      "value": 3,
+      "documentation": null
+    },
+    "CGFA_Cylinder": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

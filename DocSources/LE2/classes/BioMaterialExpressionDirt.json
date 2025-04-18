@@ -1,0 +1,25 @@
+{
+  "parent": "MaterialExpression",
+  "package": "SFXGame",
+  "variables": {
+    "Input": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "GrimeScaleParamName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "GrimeTexParamName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "GrimeTex": {
+      "type": "Texture2D",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

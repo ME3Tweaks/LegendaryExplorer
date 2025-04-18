@@ -1,0 +1,433 @@
+{
+  "parent": "BioActorBehavior",
+  "package": "SFXGame",
+  "variables": {
+    "m_sConnectedObjectA": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sConnectedObjectB": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sVarName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_aBackupAnimSets": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "m_vLastImpactVector": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_nCurrentMaterialVar": {
+      "type": "Name",
+      "documentation": null
+    },
+    "StartingState": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_State0": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_State1": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bioWorld": {
+      "type": "BioWorldInfo",
+      "documentation": null
+    },
+    "m_nmCurrentActivity": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_oDoorMarker": {
+      "type": "BioWp_DoorMarker",
+      "documentation": null
+    },
+    "m_nmLastState": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_fSkillProgress": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nPrevRegionIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nPrevPlotIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bStartingStateOverride": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUseCaseOverride": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPlayerOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Enabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInPhysics": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPhysicsAffectableOverride": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPhysicsAffectable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUseCustomCollisionSettings": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDontInvalidatePaths": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bMonitorDoor": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoStateSave": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInMatinee": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSkillGameFailed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSkillGameXpAwarded": {
+      "type": "bool",
+      "documentation": null
+    },
+    "MaterialVariation": {
+      "type": "eMateralVariation",
+      "documentation": null
+    },
+    "m_eUseCase": {
+      "type": "eBioAPLUseCase",
+      "documentation": null
+    },
+    "m_SkillDifficulty": {
+      "type": "EBioSkillGameDifficulty",
+      "documentation": null
+    },
+    "Region": {
+      "type": "EBioRegionAutoSet",
+      "documentation": null
+    },
+    "Plot": {
+      "type": "EBioPlotAutoSet",
+      "documentation": null
+    },
+    "Conditional": {
+      "type": "EBioAutoSet",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ProceedWithMove": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ProceedWithMove(Pawn oPawn)"
+    },
+    "SetWaitingForMove": {
+      "documentation": null,
+      "signature_members": {
+        "bVal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWaitingForMove(bool bVal)"
+    },
+    "IsPhysicsAffectable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsPhysicsAffectable()"
+    },
+    "GetStateFailure": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetStateFailure()"
+    },
+    "GetStateSuccess": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetStateSuccess()"
+    },
+    "IsTransitioning": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsTransitioning()"
+    },
+    "OnTransitionCPP": {
+      "documentation": null,
+      "signature_members": {
+        "FromState": {
+          "type": null,
+          "documentation": null
+        },
+        "ToState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTransitionCPP(Name FromState, Name ToState)"
+    },
+    "ChangeStateMesh": {
+      "documentation": null,
+      "signature_members": {
+        "nmState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ChangeStateMesh(out Name nmState)"
+    },
+    "SetCollision": {
+      "documentation": null,
+      "signature_members": {
+        "bCollide": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCollision(bool bCollide)"
+    },
+    "GetCurrentState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetCurrentState()"
+    },
+    "ReactToImpulse": {
+      "documentation": null,
+      "signature_members": {
+        "vMomentum": {
+          "type": null,
+          "documentation": null
+        },
+        "vHitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReactToImpulse(Vector vMomentum, Vector vHitLocation)"
+    },
+    "OnTransition": {
+      "documentation": null,
+      "signature_members": {
+        "FromState": {
+          "type": null,
+          "documentation": null
+        },
+        "ToState": {
+          "type": null,
+          "documentation": null
+        },
+        "bCallCPP": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTransition(Name FromState, Name ToState, optional bool bCallCPP)"
+    },
+    "OnArtPlaceablePlotFail": {
+      "documentation": null,
+      "signature_members": {
+        "oUsingActor": {
+          "type": null,
+          "documentation": null
+        },
+        "nmToState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnArtPlaceablePlotFail(Actor oUsingActor, Name nmToState)"
+    },
+    "OnArtPlaceableUsed": {
+      "documentation": null,
+      "signature_members": {
+        "User": {
+          "type": null,
+          "documentation": null
+        },
+        "ToState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnArtPlaceableUsed(Actor User, Name ToState)"
+    },
+    "IsInteractive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsInteractive()"
+    },
+    "GetState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetState()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "GetStartingState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetStartingState()"
+    },
+    "DoDoorFinished": {
+      "documentation": null,
+      "signature_members": {
+        "ToState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoDoorFinished(Name ToState)"
+    },
+    "HasTransition": {
+      "documentation": null,
+      "signature_members": {
+        "ToState": {
+          "type": null,
+          "documentation": null
+        },
+        "Transition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasTransition(Name ToState, Name Transition)"
+    },
+    "SetState": {
+      "documentation": null,
+      "signature_members": {
+        "ToState": {
+          "type": null,
+          "documentation": null
+        },
+        "NamedTransition": {
+          "type": null,
+          "documentation": null
+        },
+        "IgnoreTransition": {
+          "type": null,
+          "documentation": null
+        },
+        "bRightNow": {
+          "type": null,
+          "documentation": null
+        },
+        "bApplyVFX": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetState(Name ToState, optional Name NamedTransition, optional bool IgnoreTransition, optional bool bRightNow, optional bool bApplyVFX)"
+    },
+    "RequiresProximityTimer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool RequiresProximityTimer()"
+    },
+    "VerifyNotEditor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "VerifyNotEditor()"
+    },
+    "ApplyVFXForState": {
+      "documentation": null,
+      "signature_members": {
+        "NewState": {
+          "type": null,
+          "documentation": null
+        },
+        "bForce": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyVFXForState(Name NewState, optional bool bForce)"
+    },
+    "PreloadVFX": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreloadVFX()"
+    },
+    "IsMeshPhysicsCapable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsMeshPhysicsCapable()"
+    },
+    "InitializeActionFramework": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeActionFramework()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

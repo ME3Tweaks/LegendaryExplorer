@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "EDS_Closed": {
+      "value": 0,
+      "documentation": null
+    },
+    "EDS_Open": {
+      "value": 1,
+      "documentation": null
+    },
+    "EDS_Hackable": {
+      "value": 2,
+      "documentation": null
+    },
+    "EDS_PlotLocked": {
+      "value": 3,
+      "documentation": null
+    },
+    "EDS_Disabled": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

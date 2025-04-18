@@ -1,0 +1,17 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_fFOV": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bRestoreCamera": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

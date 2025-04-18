@@ -1,27 +1,27 @@
 {
   "Members": {
     "location": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "Rotation": {
-      "type": null,
+      "type": "Rotator",
       "documentation": null
     },
     "Effect": {
-      "type": null,
+      "type": "ParticleSystem",
       "documentation": null
     },
     "Instigator": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "Lifetime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Scale": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

@@ -1,0 +1,59 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Owner": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_bIsPhysicsSleeping": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetWaitingForMove": {
+      "documentation": null,
+      "signature_members": {
+        "bVal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWaitingForMove(bool bVal)"
+    },
+    "OnAnimPlay": {
+      "documentation": null,
+      "signature_members": {
+        "oAnimNodeSequence": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnAnimPlay(AnimNodeSequence oAnimNodeSequence)"
+    },
+    "OnAnimEnd": {
+      "documentation": null,
+      "signature_members": {
+        "oAnimNodeSequence": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayedTime": {
+          "type": null,
+          "documentation": null
+        },
+        "ExcessTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnAnimEnd(AnimNodeSequence oAnimNodeSequence, float PlayedTime, float ExcessTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

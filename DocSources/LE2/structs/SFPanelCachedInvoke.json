@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "lstParams": {
+      "type": "ASParams",
+      "documentation": null
+    },
+    "lstQualifications": {
+      "type": "ESFPanelInvokeCategories",
+      "documentation": null
+    },
+    "nFramesTheSame": {
+      "type": "int",
+      "documentation": null
+    },
+    "bAutoSkip": {
+      "type": "bool",
+      "documentation": null
+    },
+    "eLabel": {
+      "type": "ESFPanelInvokeLabel",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

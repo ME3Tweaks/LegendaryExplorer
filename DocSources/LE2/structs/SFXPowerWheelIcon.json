@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "sPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "sID": {
+      "type": "string",
+      "documentation": null
+    },
+    "fBoundary": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

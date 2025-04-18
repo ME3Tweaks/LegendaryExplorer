@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "AffiliationType_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "AffiliationType_GenericMerc": {
+      "value": 1,
+      "documentation": null
+    },
+    "AffiliationType_BloodPack": {
+      "value": 2,
+      "documentation": null
+    },
+    "AffiliationType_BlueSuns": {
+      "value": 3,
+      "documentation": null
+    },
+    "AffiliationType_Eclipse": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

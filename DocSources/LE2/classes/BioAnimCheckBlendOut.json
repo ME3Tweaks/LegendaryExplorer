@@ -1,0 +1,17 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "PathsLL": {
+      "type": "BioAnimCheckBlendOutPath",
+      "documentation": null
+    },
+    "Parent": {
+      "type": "AnimNode",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

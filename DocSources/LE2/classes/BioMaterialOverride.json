@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aTextureOverrides": {
+      "type": "TextureParameter",
+      "documentation": null
+    },
+    "m_aColorOverrides": {
+      "type": "ColorParameter",
+      "documentation": null
+    },
+    "m_aScalarOverrides": {
+      "type": "ScalarParameter",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

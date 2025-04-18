@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "EVTA_Hide": {
+      "value": 0,
+      "documentation": null
+    },
+    "EVTA_Show": {
+      "value": 1,
+      "documentation": null
+    },
+    "EVTA_Toggle": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

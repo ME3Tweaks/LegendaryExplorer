@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "eBioAnimNodePower_Idle": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimNodePower_Casting": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimNodePower_Release": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioAnimNodePower_Using": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,11 +1,11 @@
 {
   "Members": {
     "EventCallback": {
-      "type": null,
+      "type": "OnEvent",
       "documentation": null
     },
     "EventType": {
-      "type": null,
+      "type": "SFXOnlineEventType",
       "documentation": null
     }
   },

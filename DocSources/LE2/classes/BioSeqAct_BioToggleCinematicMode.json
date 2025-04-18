@@ -1,0 +1,32 @@
+{
+  "parent": "SeqAct_ToggleCinematicMode",
+  "package": "SFXGame",
+  "variables": {
+    "sSkipEvent": {
+      "type": "string",
+      "documentation": null
+    },
+    "bCinematicInputMode": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableCinematicSkip": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bEnterCombatModeOnEnd": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

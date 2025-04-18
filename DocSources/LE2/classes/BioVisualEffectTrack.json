@@ -1,0 +1,17 @@
+{
+  "parent": "InterpTrack",
+  "package": "SFXGame",
+  "variables": {
+    "VisualEffects": {
+      "type": "BioVisualEffectTrackKey",
+      "documentation": null
+    },
+    "Properties": {
+      "type": "BioVisualEffect",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

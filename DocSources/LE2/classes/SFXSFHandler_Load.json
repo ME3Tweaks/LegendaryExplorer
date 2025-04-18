@@ -1,0 +1,327 @@
+{
+  "parent": "SFXSFHandler_Save",
+  "package": "SFXGame",
+  "variables": {
+    "CareerList": {
+      "type": "SaveGUICareerRecord",
+      "documentation": null
+    },
+    "CorruptedSaveGames": {
+      "type": "SFXSaveDescriptor",
+      "documentation": null
+    },
+    "LoadGameLoseProgressText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ConfirmLoadGameText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CancelLoadGameText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CharNameText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "DeleteCareerText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ConfirmDeleteCareerText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CancelDeleteCareerText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CorruptSaveWarningText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ConfirmDeleteCorruptText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CancelDeleteCorruptText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CurrentCareerIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "bFromMainMenu": {
+      "type": "bool",
+      "documentation": null
+    },
+    "LoadMode": {
+      "type": "ELoadGuiMode",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "GameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GameSessionEnded()"
+    },
+    "OnStorageDeviceChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStorageDeviceChanged()"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Command": {
+          "type": null,
+          "documentation": null
+        },
+        "lstArguments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte Command, const out array<string> lstArguments)"
+    },
+    "DeleteCareer": {
+      "documentation": null,
+      "signature_members": {
+        "SaveIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "GuiMan": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DeleteCareer(int SaveIdx, MassEffectGuiManager GuiMan)"
+    },
+    "LoadCareer": {
+      "documentation": null,
+      "signature_members": {
+        "SaveIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "GuiMan": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadCareer(int SaveIdx, MassEffectGuiManager GuiMan)"
+    },
+    "DeleteGame": {
+      "documentation": null,
+      "signature_members": {
+        "SaveIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "GuiMan": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DeleteGame(int SaveIdx, MassEffectGuiManager GuiMan)"
+    },
+    "LoadGame": {
+      "documentation": null,
+      "signature_members": {
+        "SaveIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "GuiMan": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadGame(int SaveIdx, MassEffectGuiManager GuiMan)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "CheckForCorruptSaves": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckForCorruptSaves()"
+    },
+    "Callback_ConfirmDeleteCorruptSaves": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_ConfirmDeleteCorruptSaves(bool bAPressed, int context)"
+    },
+    "ResetGui": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetGui(SFXSaveGameCommandEventArgs Args)"
+    },
+    "SaveCommandCallback_InitializeCareers": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveCommandCallback_InitializeCareers(SFXSaveGameCommandEventArgs Args)"
+    },
+    "Callback_ConfirmDeleteCareer": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "CareerIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_ConfirmDeleteCareer(bool bAPressed, int CareerIdx)"
+    },
+    "LoadGameCallback": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadGameCallback(SFXSaveGameCommandEventArgs Args)"
+    },
+    "Callback_ConfirmLoadGame": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_ConfirmLoadGame(bool bAPressed, int context)"
+    },
+    "FillCareerListCallback_InitializeLoadList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FillCareerListCallback_InitializeLoadList()"
+    },
+    "InitImportManager": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitImportManager()"
+    },
+    "EndInitializeLoadList": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EndInitializeLoadList(SFXSaveGameCommandEventArgs Args)"
+    },
+    "BeginInitializeLoadList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BeginInitializeLoadList()"
+    },
+    "InitializeLoadList": {
+      "documentation": null,
+      "signature_members": {
+        "CareerIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeLoadList(optional int CareerIdx)"
+    },
+    "EndInitializeCareers": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EndInitializeCareers(SFXSaveGameCommandEventArgs Args)"
+    },
+    "BeginInitializeCareers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BeginInitializeCareers()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

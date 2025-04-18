@@ -1,0 +1,153 @@
+{
+  "parent": "DamageType",
+  "package": "SFXGame",
+  "variables": {
+    "HitReactions": {
+      "type": "HitReaction",
+      "documentation": null
+    },
+    "Resistance": {
+      "type": "ResistanceInfo",
+      "documentation": null
+    },
+    "ShieldHitFFWaveform": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null
+    },
+    "DeathEffect": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "PlayerFrameBufferEffect": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "DamageRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "ShieldBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "ArmorBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "fChanceOfRagdoll": {
+      "type": "float",
+      "documentation": null
+    },
+    "fPhysicsReactionTimeScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "HeavyWeaponId": {
+      "type": "int",
+      "documentation": null
+    },
+    "bRadiusDamage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSpawnWeaponImpacts": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoShieldBreakVFX": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreShields": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreShieldHitLimit": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPartBasedDamageDisabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreArmor": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHealthDamage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDamagesFriends": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoresBleedout": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCausesPhysicsImpact": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCausesRagdoll": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bResearchBonus_SniperArmorDamage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bResearchBonus_HeavyPistolArmorDamage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bResearchBonus_AssaultRifleResistanceDamage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bResearchBonus_AutoPistolResistanceDamage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bResearchBonus_ShotgunResistanceDamage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bResearchBonus_SniperHeadShotBonus": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bImmediateDeath": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoresCoverDirection": {
+      "type": "bool",
+      "documentation": null
+    },
+    "FalloffType": {
+      "type": "ESFXDamageFalloffType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetWeaponRange": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        },
+        "Range": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetWeaponRange(Class<SFXWeapon> Weapon, EWeaponRange Range)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,27 +1,27 @@
 {
   "Members": {
     "Pawn": {
-      "type": null,
+      "type": "BioPawn",
       "documentation": null
     },
     "WeaponClassName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "AmmoPowerName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "AmmoPowerSourceTag": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "CurrentSpareAmmo": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "AmmoUsedCount": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

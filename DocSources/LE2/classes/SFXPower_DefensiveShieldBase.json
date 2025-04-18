@@ -1,0 +1,36 @@
+{
+  "parent": "SFXPower",
+  "package": "SFXGameContent_Powers",
+  "variables": {
+    "ShieldValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "ShieldClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "CrustEffect": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "AIShieldDestroyedDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "AIShotAtDelay": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetShieldValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetShieldValue()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

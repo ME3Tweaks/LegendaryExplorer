@@ -1,15 +1,15 @@
 {
   "Members": {
     "className": {
-      "type": null,
+      "type": "Class",
       "documentation": null
     },
     "PlatformName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "ComponentType": {
-      "type": null,
+      "type": "SFXOnlineComponentType",
       "documentation": null
     }
   },

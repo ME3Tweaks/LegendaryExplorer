@@ -1,0 +1,61 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "Weapons": {
+      "type": "Class",
+      "documentation": null
+    },
+    "ShieldLoadouts": {
+      "type": "ShieldLoadout",
+      "documentation": null
+    },
+    "Powers": {
+      "type": "Class",
+      "documentation": null
+    },
+    "PowerLevelUpInfo": {
+      "type": "PowerLevelUp",
+      "documentation": null
+    },
+    "Armor": {
+      "type": "Class",
+      "documentation": null
+    },
+    "ShieldOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "WeaponLevelRange": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "ArmorLevelRange": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "MaxHealth": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "HealthLevelRange": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "ShieldScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "TechResistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "BioticResistance": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,77 @@
+{
+  "EnumValues": {
+    "SFXONLINE_EVENT_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXONLINE_EVENT_TICK": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXONLINE_EVENT_TIMER": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXONLINE_EVENT_PLATFORM_CONTROLLERCHANGE_0": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXONLINE_EVENT_PLATFORM_CONTROLLERCHANGE_1": {
+      "value": 4,
+      "documentation": null
+    },
+    "SFXONLINE_EVENT_PLATFORM_CONTROLLERCHANGE_2": {
+      "value": 5,
+      "documentation": null
+    },
+    "SFXONLINE_EVENT_PLATFORM_CONTROLLERCHANGE_3": {
+      "value": 6,
+      "documentation": null
+    },
+    "SFXONLINE_EVENT_PLATFORM_CONNECT": {
+      "value": 7,
+      "documentation": null
+    },
+    "SFXONLINE_EVENT_PLATFORM_DISCONNECT": {
+      "value": 8,
+      "documentation": null
+    },
+    "SFXONLINE_EVENT_PLATFORM_LOGINCHANGE_0": {
+      "value": 9,
+      "documentation": null
+    },
+    "SFXONLINE_EVENT_PLATFORM_LOGINCHANGE_1": {
+      "value": 10,
+      "documentation": null
+    },
+    "SFXONLINE_EVENT_PLATFORM_LOGINCHANGE_2": {
+      "value": 11,
+      "documentation": null
+    },
+    "SFXONLINE_EVENT_PLATFORM_LOGINCHANGE_3": {
+      "value": 12,
+      "documentation": null
+    },
+    "SFXONLINE_EVENT_PLATFORM_UI_OPEN": {
+      "value": 13,
+      "documentation": null
+    },
+    "SFXONLINE_EVENT_PLATFORM_UI_CLOSE": {
+      "value": 14,
+      "documentation": null
+    },
+    "SFXONLINE_EVENT_PLATFORM_LOGINCANCEL": {
+      "value": 15,
+      "documentation": null
+    },
+    "SFXONLINE_EVENT_PLATFORM_LOGINSUCCESS": {
+      "value": 16,
+      "documentation": null
+    },
+    "SFXONLINE_EVENT_PLATFORM_UI_KEYBOARD": {
+      "value": 17,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

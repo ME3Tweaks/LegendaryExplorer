@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "srHeading": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srNames": {
+      "type": "stringref",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,91 +1,91 @@
 {
   "Members": {
     "TargetBoneName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "LightRig": {
-      "type": null,
+      "type": "SFXLightRig",
       "documentation": null
     },
     "KeyLight_Scale_Red": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "KeyLight_Scale_Green": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "KeyLight_Scale_Blue": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "FillLight_Scale_Red": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "FillLight_Scale_Green": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "FillLight_Scale_Blue": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "RimLightColor": {
-      "type": null,
+      "type": "Color",
       "documentation": null
     },
     "RimLightScale": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "RimLightYaw": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "RimLightPitch": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "BouncedLightingIntensity": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "WrapLightingDirectMultiplier": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "WrapLightingIndirectMultiplier": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "LightRigOrientation": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bLockEnvironment": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bTriggerFullUpdate": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bUseForNextCamera": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bCastShadows": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "RimLightControl": {
-      "type": null,
+      "type": "ERimLightControlType",
       "documentation": null
     },
     "LightingType": {
-      "type": null,
+      "type": "EConvLightingType",
       "documentation": null
     }
   },

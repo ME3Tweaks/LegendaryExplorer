@@ -1,0 +1,66 @@
+{
+  "parent": "RigidBodyBase",
+  "package": "Engine",
+  "variables": {
+    "Arrow": {
+      "type": "ArrowComponent",
+      "documentation": null
+    },
+    "ImpulseStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "ImpulseRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "bVelChange": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStopAtFirstHit": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCauseFracture": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ImpulseCount": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "inAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle inAction)"
+    },
+    "FireLineImpulse": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FireLineImpulse()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

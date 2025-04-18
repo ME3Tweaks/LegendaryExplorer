@@ -1,0 +1,37 @@
+{
+  "parent": "SkeletalMesh",
+  "package": "SFXGame",
+  "variables": {
+    "SourceMeshNames": {
+      "type": "string",
+      "documentation": null
+    },
+    "OverrideInfo": {
+      "type": "BoneOverrideInfo",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "MatchesMerge": {
+      "documentation": null,
+      "signature_members": {
+        "BaseMesh": {
+          "type": null,
+          "documentation": null
+        },
+        "AdditionalMeshes": {
+          "type": null,
+          "documentation": null
+        },
+        "HeadMeshComponent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool MatchesMerge(SkeletalMesh BaseMesh, array<SkeletalMesh> AdditionalMeshes, SkeletalMeshComponent HeadMeshComponent)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

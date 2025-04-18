@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "EHS_AddedBothDirs": {
+      "value": 0,
+      "documentation": null
+    },
+    "EHS_Added0to1": {
+      "value": 1,
+      "documentation": null
+    },
+    "EHS_Added1to0": {
+      "value": 2,
+      "documentation": null
+    },
+    "EHS_AddedNone": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,83 +1,83 @@
 {
   "Members": {
     "CurrentSlot": {
-      "type": null,
+      "type": "CoverSlot",
       "documentation": null
     },
     "LeftSlot": {
-      "type": null,
+      "type": "CoverSlot",
       "documentation": null
     },
     "RightSlot": {
-      "type": null,
+      "type": "CoverSlot",
       "documentation": null
     },
     "MantleStartLoc": {
-      "type": null,
+      "type": "BasedPosition",
       "documentation": null
     },
     "MantleEndLoc": {
-      "type": null,
+      "type": "BasedPosition",
       "documentation": null
     },
     "EstimatedLandingLoc": {
-      "type": null,
+      "type": "BasedPosition",
       "documentation": null
     },
     "DestLink": {
-      "type": null,
+      "type": "CoverLink",
       "documentation": null
     },
     "LeftLink": {
-      "type": null,
+      "type": "CoverLink",
       "documentation": null
     },
     "RightLink": {
-      "type": null,
+      "type": "CoverLink",
       "documentation": null
     },
     "CurrentLink": {
-      "type": null,
+      "type": "CoverLink",
       "documentation": null
     },
     "MantleDistance": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "CurrentSlotIdx": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "LeftSlotIdx": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "RightSlotIdx": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "CurrentSlotPct": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "FallForwardVelocity": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "RootMotionScaleFactor": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "DefaultMantleDistance": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bForced": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bIsOnASlot": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

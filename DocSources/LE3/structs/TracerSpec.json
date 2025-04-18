@@ -1,31 +1,31 @@
 {
   "Members": {
     "Scale3D": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "StaticMesh": {
-      "type": null,
+      "type": "StaticMesh",
       "documentation": null
     },
     "StandardPSTemplate": {
-      "type": null,
+      "type": "ParticleSystem",
       "documentation": null
     },
     "PlayerPSTemplate": {
-      "type": null,
+      "type": "ParticleSystem",
       "documentation": null
     },
     "AccelRate": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Speed": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "MaxSpeed": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

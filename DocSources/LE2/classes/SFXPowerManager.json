@@ -1,0 +1,274 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "Powers": {
+      "type": "SFXPower",
+      "documentation": null
+    },
+    "MyPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "RankUnlockText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "RequiredUnlockText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "PassiveRankIcon": {
+      "type": "int",
+      "documentation": null
+    },
+    "LockedRankIcon": {
+      "type": "int",
+      "documentation": null
+    },
+    "UnlockedRankIcon": {
+      "type": "int",
+      "documentation": null
+    },
+    "EvolveRank": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fSharedCooldownRemaining": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fSharedCooldownTotal": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetRefundAmount2": {
+      "documentation": null,
+      "signature_members": {
+        "Power": {
+          "type": null,
+          "documentation": null
+        },
+        "Rank": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetRefundAmount2(Class<SFXPower> Power, int Rank)"
+    },
+    "GetRefundAmount": {
+      "documentation": null,
+      "signature_members": {
+        "Power": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetRefundAmount(SFXPower Power)"
+    },
+    "RefundAllTalentPoints": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RefundAllTalentPoints()"
+    },
+    "ProcessWheelDisplayOrder": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProcessWheelDisplayOrder()"
+    },
+    "GetPowerWheelPowers": {
+      "documentation": null,
+      "signature_members": {
+        "PowerList": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetPowerWheelPowers(out array<SFXPower> PowerList)"
+    },
+    "StartFirstTimeDelay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartFirstTimeDelay()"
+    },
+    "OnSharedCooldownFinished": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnSharedCooldownFinished()"
+    },
+    "IsEvolvedPower": {
+      "documentation": null,
+      "signature_members": {
+        "nmClassName": {
+          "type": null,
+          "documentation": null
+        },
+        "PowerClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsEvolvedPower(Name nmClassName, out Class<Object> PowerClass)"
+    },
+    "LoadPowers": {
+      "documentation": null,
+      "signature_members": {
+        "PowerList": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadPowers(out array<PowerSaveInfo> PowerList)"
+    },
+    "SavePowers": {
+      "documentation": null,
+      "signature_members": {
+        "PowerList": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SavePowers(out array<PowerSaveInfo> PowerList)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float fDeltaTime)"
+    },
+    "SetSharedCooldownTotal": {
+      "documentation": null,
+      "signature_members": {
+        "fCooldown": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSharedCooldownTotal(float fCooldown)"
+    },
+    "GetSharedCooldownTotal": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetSharedCooldownTotal()"
+    },
+    "SetSharedCooldownRemaining": {
+      "documentation": null,
+      "signature_members": {
+        "fCooldown": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSharedCooldownRemaining(float fCooldown)"
+    },
+    "GetSharedCooldownRemaining": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetSharedCooldownRemaining()"
+    },
+    "HasPowerBeenEvolved": {
+      "documentation": null,
+      "signature_members": {
+        "Power": {
+          "type": null,
+          "documentation": null
+        },
+        "EvolvedPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasPowerBeenEvolved(SFXPower Power, out SFXPower EvolvedPower)"
+    },
+    "GetCharacterRecordPowers": {
+      "documentation": null,
+      "signature_members": {
+        "PowerList": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetCharacterRecordPowers(out array<SFXPower> PowerList)"
+    },
+    "GetPowerByClass": {
+      "documentation": null,
+      "signature_members": {
+        "PowerClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXPower",
+      "signature": "SFXPower GetPowerByClass(Class<Object> PowerClass)"
+    },
+    "GetPower": {
+      "documentation": null,
+      "signature_members": {
+        "nmPowerName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXPower",
+      "signature": "SFXPower GetPower(Name nmPowerName)"
+    },
+    "RemovePower": {
+      "documentation": null,
+      "signature_members": {
+        "PowerClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemovePower(Class<Object> PowerClass)"
+    },
+    "AddPowerByClassName": {
+      "documentation": null,
+      "signature_members": {
+        "PowerClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXPower",
+      "signature": "SFXPower AddPowerByClassName(Name PowerClassName)"
+    },
+    "AddPower": {
+      "documentation": null,
+      "signature_members": {
+        "PowerClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXPower",
+      "signature": "SFXPower AddPower(Class<Object> PowerClass)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

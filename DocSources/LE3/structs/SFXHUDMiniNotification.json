@@ -1,15 +1,15 @@
 {
   "Members": {
     "sText": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "nmIcon": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "fAnimTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

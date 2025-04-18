@@ -1,19 +1,19 @@
 {
   "Members": {
     "TargetCamGroup": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "Time": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "TransitionTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bSkipCameraReset": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

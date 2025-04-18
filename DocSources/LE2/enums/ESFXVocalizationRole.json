@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "SFXVocalizationRole_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXVocalizationRole_Instigator": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXVocalizationRole_Recipient": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXVocalizationRole_EnemyWitness": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXVocalizationRole_TeammateWitness": {
+      "value": 4,
+      "documentation": null
+    },
+    "SFXVocalizationRole_HenchmanWitness": {
+      "value": 5,
+      "documentation": null
+    },
+    "SFXVocalizationRole_ReferencedPawn": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

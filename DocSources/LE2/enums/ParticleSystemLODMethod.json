@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "PARTICLESYSTEMLODMETHOD_Automatic": {
+      "value": 0,
+      "documentation": null
+    },
+    "PARTICLESYSTEMLODMETHOD_DirectSet": {
+      "value": 1,
+      "documentation": null
+    },
+    "PARTICLESYSTEMLODMETHOD_ActivateAutomatic": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

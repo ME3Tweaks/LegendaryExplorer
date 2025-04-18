@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "ShadowProjTech_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "ShadowProjTech_PCF": {
+      "value": 1,
+      "documentation": null
+    },
+    "ShadowProjTech_VSM": {
+      "value": 2,
+      "documentation": null
+    },
+    "ShadowProjTech_BPCF_Low": {
+      "value": 3,
+      "documentation": null
+    },
+    "ShadowProjTech_BPCF_Medium": {
+      "value": 4,
+      "documentation": null
+    },
+    "ShadowProjTech_BPCF_High": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

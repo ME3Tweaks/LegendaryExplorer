@@ -1,0 +1,326 @@
+{
+  "parent": "SFXPRI_NativeBase",
+  "package": "SFXGame",
+  "variables": {
+    "PointsFor_SpecialKills": {
+      "type": "KillScore",
+      "documentation": null
+    },
+    "PointsFor_GameEffectKills": {
+      "type": "KillScore",
+      "documentation": null
+    },
+    "DamageRecord": {
+      "type": "DamageRecordStruct",
+      "documentation": null
+    },
+    "ScoreLog": {
+      "type": "ScoreEvent",
+      "documentation": null
+    },
+    "LastDamageCalculation": {
+      "type": "DamageCalculationAlgorithm",
+      "documentation": null
+    },
+    "CurrentTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "Multiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "PointsFor_DamageDealt": {
+      "type": "float",
+      "documentation": null
+    },
+    "PointsFor_DamageReceived": {
+      "type": "float",
+      "documentation": null
+    },
+    "PointsFor_HeadShot": {
+      "type": "float",
+      "documentation": null
+    },
+    "PointsFor_Kill_Minion": {
+      "type": "float",
+      "documentation": null
+    },
+    "PointsFor_Kill_Elite": {
+      "type": "float",
+      "documentation": null
+    },
+    "PointsFor_Kill_SubBoss": {
+      "type": "float",
+      "documentation": null
+    },
+    "PointsFor_Kill_Boss": {
+      "type": "float",
+      "documentation": null
+    },
+    "PointsFor_FlamethrowerTankKill": {
+      "type": "float",
+      "documentation": null
+    },
+    "ShotsFired": {
+      "type": "int",
+      "documentation": null
+    },
+    "ShotsHit": {
+      "type": "int",
+      "documentation": null
+    },
+    "RawDamage": {
+      "type": "float",
+      "documentation": null
+    },
+    "NetDamage": {
+      "type": "float",
+      "documentation": null
+    },
+    "HeadShots": {
+      "type": "int",
+      "documentation": null
+    },
+    "ShotsFiredCurrentTarget": {
+      "type": "int",
+      "documentation": null
+    },
+    "ShotsHitCurrentTarget": {
+      "type": "int",
+      "documentation": null
+    },
+    "RawDamageCurrentTarget": {
+      "type": "float",
+      "documentation": null
+    },
+    "NetDamageCurrentTarget": {
+      "type": "float",
+      "documentation": null
+    },
+    "DamageTakenRaw": {
+      "type": "float",
+      "documentation": null
+    },
+    "DamageTakenNet": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeInCombat": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeLastCombat": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastCombatTimestamp": {
+      "type": "float",
+      "documentation": null
+    },
+    "DifficultyScore": {
+      "type": "float",
+      "documentation": null
+    },
+    "LockedScore": {
+      "type": "float",
+      "documentation": null
+    },
+    "ChallengeModifier": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentHealthMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentShieldModifier": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentMaxAttackTickets": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentMaxAttackTicketsHench": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentMaxTargetTickets": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentMaxTargetTicketsHench": {
+      "type": "float",
+      "documentation": null
+    },
+    "AmmoPct": {
+      "type": "float",
+      "documentation": null
+    },
+    "RecoilBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "WeaponPassiveDamageBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "WeaponDamageBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "bCalculatedChallenge": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DivyPoints": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DivyPoints(Controller Other)"
+    },
+    "ResetDamageDealt": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetDamageDealt()"
+    },
+    "ScoreFinesseKill": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ScoreFinesseKill(BioPawn Other, Class<SFXDamageType> DamageType)"
+    },
+    "AddGrinderAchievement": {
+      "documentation": null,
+      "signature_members": {
+        "AchievementId": {
+          "type": null,
+          "documentation": null
+        },
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddGrinderAchievement(EAchievementID AchievementId, BioPawn oTarget)"
+    },
+    "AddScore": {
+      "documentation": null,
+      "signature_members": {
+        "Points": {
+          "type": null,
+          "documentation": null
+        },
+        "Message": {
+          "type": null,
+          "documentation": null
+        },
+        "bAddDifficultyScore": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddScore(int Points, optional string Message, optional bool bAddDifficultyScore)"
+    },
+    "LockScore": {
+      "documentation": null,
+      "signature_members": {
+        "fScore": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LockScore(float fScore)"
+    },
+    "DrawScore": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DrawScore()"
+    },
+    "RecordDamageDone": {
+      "documentation": null,
+      "signature_members": {
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        },
+        "Amount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RecordDamageDone(Controller DamageCauser, float Amount)"
+    },
+    "SwitchTarget": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SwitchTarget(Actor Target)"
+    },
+    "Clear": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Clear()"
+    },
+    "FindLocalPRI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXPRI",
+      "signature": "SFXPRI FindLocalPRI()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "UpdateScoreDifficulty": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateScoreDifficulty()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,53 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "ClassName": {
+      "type": "string",
+      "documentation": null
+    },
+    "MappedPowers": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Loadout": {
+      "type": "SFXLoadoutData",
+      "documentation": null
+    },
+    "BioticStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "TechStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "CombatStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "srClassName": {
+      "type": "int",
+      "documentation": null
+    },
+    "srClassDesc": {
+      "type": "int",
+      "documentation": null
+    },
+    "srClassPrimaryDesc": {
+      "type": "int",
+      "documentation": null
+    },
+    "srClassSecondaryDesc": {
+      "type": "int",
+      "documentation": null
+    },
+    "ClassType": {
+      "type": "ECharacterClass",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,224 @@
+{
+  "parent": "Camera",
+  "package": "SFXGame",
+  "variables": {
+    "CameraModes": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "m_aTraceInfo": {
+      "type": "SFXCameraNativeBaseTraceInfo",
+      "documentation": null
+    },
+    "AdditiveRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "SubtractiveRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "SlideTransition": {
+      "type": "SFXCameraMode_Interpolate",
+      "documentation": null
+    },
+    "InstantTransition": {
+      "type": "SFXCameraMode_Interpolate",
+      "documentation": null
+    },
+    "CurrentCameraMode": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "LastGoodMode": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "CameraStick": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "MovementStick": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "AspectRatio": {
+      "type": "float",
+      "documentation": null
+    },
+    "bDisabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFreeCamActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIgnoreSlowMo": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCameraSwitchEnabled": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddScreenShake": {
+      "documentation": null,
+      "signature_members": {
+        "Shake": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddScreenShake(ScreenShakeStruct Shake)"
+    },
+    "CreateIPECommands": {
+      "documentation": null,
+      "signature_members": {
+        "IPE": {
+          "type": null,
+          "documentation": null
+        },
+        "Parent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateIPECommands(BioInGamePropertyEditor IPE, BioPropertyEditorBaseNode Parent)"
+    },
+    "BioAdjustFOVForViewport": {
+      "documentation": null,
+      "signature_members": {
+        "inHorizFOV": {
+          "type": null,
+          "documentation": null
+        },
+        "CameraTargetPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float BioAdjustFOVForViewport(float inHorizFOV, Pawn CameraTargetPawn)"
+    },
+    "OnUnPossess": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUnPossess()"
+    },
+    "OnPossess": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnPossess(Pawn pPawn)"
+    },
+    "LineCheck": {
+      "documentation": null,
+      "signature_members": {
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "TraceEnd": {
+          "type": null,
+          "documentation": null
+        },
+        "TraceActors": {
+          "type": null,
+          "documentation": null
+        },
+        "Extent": {
+          "type": null,
+          "documentation": null
+        },
+        "ExtraTraceFlags": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor LineCheck(out TraceHitInfo HitInfo, out Vector HitLocation, out Vector HitNormal, const out Vector TraceEnd, optional bool TraceActors, optional Vector Extent, optional int ExtraTraceFlags)"
+    },
+    "ResetHiddenActors": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetHiddenActors()"
+    },
+    "TraceCamera": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TraceCamera()"
+    },
+    "WorldToScreenSnapToEdge": {
+      "documentation": null,
+      "signature_members": {
+        "vWorldLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "i_fSafeZoneX": {
+          "type": null,
+          "documentation": null
+        },
+        "i_fSafeZoneY": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector WorldToScreenSnapToEdge(const out Vector vWorldLoc, float i_fSafeZoneX, float i_fSafeZoneY)"
+    },
+    "WorldToCanonicalScreen": {
+      "documentation": null,
+      "signature_members": {
+        "vWorldLoc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector WorldToCanonicalScreen(const out Vector vWorldLoc)"
+    },
+    "GetTrace": {
+      "documentation": null,
+      "signature_members": {
+        "oHit": {
+          "type": null,
+          "documentation": null
+        },
+        "vLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "vNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetTrace(out Actor oHit, out Vector vLocation, out Vector vNormal)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

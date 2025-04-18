@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "TCO_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "TCO_SouthPaw": {
+      "value": 1,
+      "documentation": null
+    },
+    "TCO_DefaultSwapped": {
+      "value": 2,
+      "documentation": null
+    },
+    "TCO_SouthPawSwapped": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

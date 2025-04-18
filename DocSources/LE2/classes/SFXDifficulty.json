@@ -1,0 +1,149 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "PlayerHealthMultiplierLow": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "PlayerHealthMultiplierHigh": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "HenchHealthMultiplierLow": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "HenchHealthMultiplierHigh": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "EnemyHealthMultiplierLow": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "EnemyHealthMultiplierHigh": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "FriendlyHealthMultiplierLow": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "FriendlyHealthMultiplierHigh": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "EnemyShieldBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "EnemyAimMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "AmmoDecayMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "BleedOutInterval": {
+      "type": "float",
+      "documentation": null
+    },
+    "BreachDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "DifficultyLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "MinScore": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxScore": {
+      "type": "float",
+      "documentation": null
+    },
+    "PlayerShieldRechargeModifier": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxAttackTickets": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxAttackTicketsHench": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxTargetTickets": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxTargetTicketsHench": {
+      "type": "int",
+      "documentation": null
+    },
+    "AmmoPct": {
+      "type": "float",
+      "documentation": null
+    },
+    "EnemyPowerCooldownMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "SquadPowerDurationMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "SquadPowerCooldownMultiplier": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "UpdateDifficulty": {
+      "documentation": null,
+      "signature_members": {
+        "PRI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateDifficulty(SFXPRI PRI)"
+    },
+    "GetPlayerDifficultyScore": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetPlayerDifficultyScore()"
+    },
+    "GetDurationMultiplier": {
+      "documentation": null,
+      "signature_members": {
+        "Owner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetDurationMultiplier(Actor Owner)"
+    },
+    "GetCooldownMultiplier": {
+      "documentation": null,
+      "signature_members": {
+        "Owner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetCooldownMultiplier(Actor Owner)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

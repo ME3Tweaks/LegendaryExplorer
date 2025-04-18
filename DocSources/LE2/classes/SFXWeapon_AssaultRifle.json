@@ -1,0 +1,94 @@
+{
+  "parent": "SFXWeapon_AssaultRifle_Base",
+  "package": "SFXGameContent_Inventory",
+  "variables": {
+    "ShotsTillMissTracer": {
+      "type": "int",
+      "documentation": null
+    },
+    "bPlayingMuzzleFlashEffect": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetWeaponAnimNodeSeq": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "AnimNodeSequence",
+      "signature": "AnimNodeSequence GetWeaponAnimNodeSeq()"
+    },
+    "GetWeaponSpecificImpactSound": {
+      "documentation": null,
+      "signature_members": {
+        "ImpactSounds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "WwiseEvent",
+      "signature": "WwiseEvent GetWeaponSpecificImpactSound(SFXPhysicalMaterialImpactSounds ImpactSounds)"
+    },
+    "GetWeaponSpecificImpactEffect": {
+      "documentation": null,
+      "signature_members": {
+        "ImpactEffects": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ParticleSystem",
+      "signature": "ParticleSystem GetWeaponSpecificImpactEffect(SFXPhysicalMaterialImpactEffects ImpactEffects)"
+    },
+    "GetWeaponSpecificDecalData": {
+      "documentation": null,
+      "signature_members": {
+        "DecalEffects": {
+          "type": null,
+          "documentation": null
+        },
+        "FadeTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "DecalComponent",
+      "signature": "DecalComponent GetWeaponSpecificDecalData(SFXPhysicalMaterialDecals DecalEffects, out float FadeTime)"
+    },
+    "StopMuzzleFlashEffect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopMuzzleFlashEffect()"
+    },
+    "PlayFireEffects": {
+      "documentation": null,
+      "signature_members": {
+        "FiringMode": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayFireEffects(byte FiringMode, optional Vector HitLocation)"
+    },
+    "PlayMuzzleFlashEffect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayMuzzleFlashEffect()"
+    },
+    "ShouldSpawnTracerFX": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldSpawnTracerFX()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

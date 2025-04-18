@@ -1,0 +1,139 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "OnTransition": {
+      "type": "OnTransitionDelegate",
+      "documentation": null
+    },
+    "__OnTransitionDelegate__Delegate": {
+      "type": "OnTransitionDelegate",
+      "documentation": null
+    },
+    "FSMData": {
+      "type": "BioFSM",
+      "documentation": null
+    },
+    "CurrentState": {
+      "type": "BioState",
+      "documentation": null
+    },
+    "PendingState": {
+      "type": "BioState",
+      "documentation": null
+    },
+    "PendingTransition": {
+      "type": "BioTransition",
+      "documentation": null
+    },
+    "PendingStateChange": {
+      "type": "eBioPendingStateChange",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "IsTransitioning": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsTransitioning()"
+    },
+    "CallTransitionDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "From": {
+          "type": null,
+          "documentation": null
+        },
+        "To": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CallTransitionDelegate(Name From, Name To)"
+    },
+    "TransitionStarted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TransitionStarted()"
+    },
+    "HasState": {
+      "documentation": null,
+      "signature_members": {
+        "ToState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasState(Name ToState)"
+    },
+    "SetState": {
+      "documentation": null,
+      "signature_members": {
+        "ToState": {
+          "type": null,
+          "documentation": null
+        },
+        "NamedTransition": {
+          "type": null,
+          "documentation": null
+        },
+        "IgnoreTransition": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceStateNow": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioState",
+      "signature": "BioState SetState(Name ToState, optional Name NamedTransition, optional bool IgnoreTransition, optional bool bForceStateNow)"
+    },
+    "GetTransition": {
+      "documentation": null,
+      "signature_members": {
+        "ToState": {
+          "type": null,
+          "documentation": null
+        },
+        "NamedTransition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioTransition",
+      "signature": "BioTransition GetTransition(Name ToState, optional Name NamedTransition)"
+    },
+    "TransitionComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TransitionComplete()"
+    },
+    "OnTransitionDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "FromState": {
+          "type": null,
+          "documentation": null
+        },
+        "ToState": {
+          "type": null,
+          "documentation": null
+        },
+        "bCallCPP": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTransitionDelegate(Name FromState, Name ToState, bool bCallCPP)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

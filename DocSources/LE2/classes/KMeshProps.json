@@ -1,0 +1,17 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "COMNudge": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "AggGeom": {
+      "type": "KAggregateGeom",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

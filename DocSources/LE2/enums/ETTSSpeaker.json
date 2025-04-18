@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "TTSSPEAKER_Paul": {
+      "value": 0,
+      "documentation": null
+    },
+    "TTSSPEAKER_Harry": {
+      "value": 1,
+      "documentation": null
+    },
+    "TTSSPEAKER_Frank": {
+      "value": 2,
+      "documentation": null
+    },
+    "TTSSPEAKER_Dennis": {
+      "value": 3,
+      "documentation": null
+    },
+    "TTSSPEAKER_Kit": {
+      "value": 4,
+      "documentation": null
+    },
+    "TTSSPEAKER_Betty": {
+      "value": 5,
+      "documentation": null
+    },
+    "TTSSPEAKER_Ursula": {
+      "value": 6,
+      "documentation": null
+    },
+    "TTSSPEAKER_Rita": {
+      "value": 7,
+      "documentation": null
+    },
+    "TTSSPEAKER_Wendy": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

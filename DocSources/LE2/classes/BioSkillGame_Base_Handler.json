@@ -1,0 +1,156 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "m_sBackgroundMusic": {
+      "type": "string",
+      "documentation": null
+    },
+    "__OnSuccessCallback__Delegate": {
+      "type": "OnSuccessCallback",
+      "documentation": null
+    },
+    "__OnFailureCallback__Delegate": {
+      "type": "OnFailureCallback",
+      "documentation": null
+    },
+    "__OnCancelCallback__Delegate": {
+      "type": "OnCancelCallback",
+      "documentation": null
+    },
+    "m_oDependent": {
+      "type": "Object",
+      "documentation": null
+    },
+    "m_oUsingPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "m_sTecPlotStateName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_fTecTimeMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nStartingResource": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nPhase2Resource": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nPhase2Time": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bRewardOnTimeFail": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSuccessfulEndGame": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCanceled": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Cancel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Cancel()"
+    },
+    "ExIntGameOver": {
+      "documentation": null,
+      "signature_members": {
+        "bGameWon": {
+          "type": null,
+          "documentation": null
+        },
+        "nRemainingResource": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExIntGameOver(bool bGameWon, int nRemainingResource)"
+    },
+    "ExIntStartGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExIntStartGame()"
+    },
+    "ExIntInitGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExIntInitGame()"
+    },
+    "ExIntCancelGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExIntCancelGame()"
+    },
+    "ExIntStartLoopingSound": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExIntStartLoopingSound()"
+    },
+    "ExIntStopLoopingSound": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExIntStopLoopingSound()"
+    },
+    "ExIntInterruptGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExIntInterruptGame()"
+    },
+    "OnCancelCallback": {
+      "documentation": null,
+      "signature_members": {
+        "n_TimeTaken": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnCancelCallback(int n_TimeTaken)"
+    },
+    "OnFailureCallback": {
+      "documentation": null,
+      "signature_members": {
+        "n_TimeTaken": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnFailureCallback(int n_TimeTaken)"
+    },
+    "OnSuccessCallback": {
+      "documentation": null,
+      "signature_members": {
+        "n_TimeTaken": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSuccessCallback(int n_TimeTaken)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

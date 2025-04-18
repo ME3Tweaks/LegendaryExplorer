@@ -1,7 +1,7 @@
 {
   "Members": {
     "LoadDelegate": {
-      "type": null,
+      "type": "OnRefreshMPDataDelegate",
       "documentation": null
     }
   },

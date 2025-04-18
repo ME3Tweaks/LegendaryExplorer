@@ -1,0 +1,54 @@
+{
+  "parent": "SFXCameraMode_TightAim",
+  "package": "SFXGame",
+  "variables": {
+    "PosOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PosHookOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PosHookName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "LastPosition": {
+      "type": "Vector",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta)"
+    },
+    "GetCameraLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetCameraLocation()"
+    },
+    "SetPosition": {
+      "documentation": null,
+      "signature_members": {
+        "pos": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPosition(ECoverCameraPosition pos)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

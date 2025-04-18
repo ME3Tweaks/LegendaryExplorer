@@ -1,31 +1,31 @@
 {
   "Members": {
     "MemberTag": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "InfoId": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Ability1ID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Ability2ID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Ability3ID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Ability4ID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Ability5ID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

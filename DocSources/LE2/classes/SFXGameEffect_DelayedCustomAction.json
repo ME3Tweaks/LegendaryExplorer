@@ -1,0 +1,28 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "MaxRagdollPhysicsLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "bRagdollOnFail": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CustomAction": {
+      "type": "EAICustomAction",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

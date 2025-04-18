@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "ETAC_Always": {
+      "value": 0,
+      "documentation": null
+    },
+    "ETAC_GoreEnabled": {
+      "value": 1,
+      "documentation": null
+    },
+    "ETAC_GoreDisabled": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

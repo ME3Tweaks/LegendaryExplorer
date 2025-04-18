@@ -1,0 +1,53 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "TextureName": {
+      "type": "string",
+      "documentation": null
+    },
+    "CompressedData": {
+      "type": "byte",
+      "documentation": null
+    },
+    "SizeX": {
+      "type": "int",
+      "documentation": null
+    },
+    "SizeY": {
+      "type": "int",
+      "documentation": null
+    },
+    "Platform": {
+      "type": "int",
+      "documentation": null
+    },
+    "MipSize": {
+      "type": "int",
+      "documentation": null
+    },
+    "Format": {
+      "type": "EPixelFormat",
+      "documentation": null
+    },
+    "Filter": {
+      "type": "TextureFilter",
+      "documentation": null
+    },
+    "LODGroup": {
+      "type": "TextureGroup",
+      "documentation": null
+    },
+    "AddressX": {
+      "type": "TextureAddress",
+      "documentation": null
+    },
+    "AddressY": {
+      "type": "TextureAddress",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

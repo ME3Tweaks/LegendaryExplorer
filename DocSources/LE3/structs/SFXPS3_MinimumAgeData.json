@@ -1,11 +1,11 @@
 {
   "Members": {
     "Country": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "MinimumAge": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

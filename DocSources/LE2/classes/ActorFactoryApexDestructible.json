@@ -1,0 +1,13 @@
+{
+  "parent": "ActorFactory",
+  "package": "Engine",
+  "variables": {
+    "DestructibleAsset": {
+      "type": "ApexDestructibleAsset",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

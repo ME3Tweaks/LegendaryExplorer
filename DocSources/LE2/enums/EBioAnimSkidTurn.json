@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "eBioAnimSkidTurn_StartRight": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimSkidTurn_StartLeft": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimSkidTurn_TurnRightNear": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioAnimSkidTurn_TurnRightFar": {
+      "value": 3,
+      "documentation": null
+    },
+    "eBioAnimSkidTurn_TurnLeftNear": {
+      "value": 4,
+      "documentation": null
+    },
+    "eBioAnimSkidTurn_TurnLeftFar": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,29 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "ActivationTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "Time": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "IsValidUISequenceObject": {
+      "documentation": null,
+      "signature_members": {
+        "TargetObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidUISequenceObject(optional UIScreenObject TargetObject)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

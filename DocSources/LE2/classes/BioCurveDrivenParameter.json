@@ -1,0 +1,45 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_curve": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "sParameterName": {
+      "type": "string",
+      "documentation": null
+    },
+    "nmParameterName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bScaleToLifetime": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLoop": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetValue": {
+      "documentation": null,
+      "signature_members": {
+        "fTime": {
+          "type": null,
+          "documentation": null
+        },
+        "fScale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetValue(float fTime, optional float fScale)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "InstanceParameters": {
+      "type": "ParticleSysParam",
+      "documentation": null
+    },
+    "ScalarValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "bOverrideScalar": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

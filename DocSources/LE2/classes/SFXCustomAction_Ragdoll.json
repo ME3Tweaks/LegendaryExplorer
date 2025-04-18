@@ -1,0 +1,102 @@
+{
+  "parent": "SFXCustomAction_DamageReaction",
+  "package": "SFXGame",
+  "variables": {
+    "bHeldInRagdoll": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CheckEndRecovery": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckEndRecovery()"
+    },
+    "CheckBeginRecovery": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckBeginRecovery()"
+    },
+    "RegisterRagdollVocCallback": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RegisterRagdollVocCallback()"
+    },
+    "OnRagdollPhysicsImpact": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        },
+        "oImpactActor": {
+          "type": null,
+          "documentation": null
+        },
+        "vImpactDir": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRagdollPhysicsImpact(Pawn Pawn, Actor oImpactActor, Vector vImpactDir)"
+    },
+    "RestartScream": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RestartScream()"
+    },
+    "PlayScream": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayScream()"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "Init": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "bPlayImpact": {
+          "type": null,
+          "documentation": null
+        },
+        "Inst": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Init(Vector HitLocation, Vector HitNormal, TraceHitInfo HitInfo, bool bPlayImpact, optional Controller Inst)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

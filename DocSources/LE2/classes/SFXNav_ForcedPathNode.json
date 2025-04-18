@@ -1,0 +1,17 @@
+{
+  "parent": "NavigationPoint",
+  "package": "SFXGame",
+  "variables": {
+    "m_fForcedRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fForcedHeight": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,11 +1,11 @@
 {
   "Members": {
     "Resources": {
-      "type": null,
+      "type": "RvrClientEffectResource",
       "documentation": null
     },
     "MaxEffects": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

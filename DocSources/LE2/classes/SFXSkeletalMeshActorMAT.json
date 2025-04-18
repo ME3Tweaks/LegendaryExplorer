@@ -1,0 +1,41 @@
+{
+  "parent": "SkeletalMeshActorMAT",
+  "package": "SFXGame",
+  "variables": {
+    "VectorParameters": {
+      "type": "SMAVectorParameter",
+      "documentation": null
+    },
+    "ScalarParameters": {
+      "type": "SMAScalarParameter",
+      "documentation": null
+    },
+    "TextureParameters": {
+      "type": "SMATextureParameter",
+      "documentation": null
+    },
+    "HeadMesh": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "HairMesh": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "MorphHead": {
+      "type": "BioMorphFace",
+      "documentation": null
+    },
+    "UpdateSkelWhenNotRendered": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasWrinkles": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

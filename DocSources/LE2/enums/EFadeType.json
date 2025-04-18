@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "EFT_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "EFT_Fading": {
+      "value": 1,
+      "documentation": null
+    },
+    "EFT_Pulsing": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

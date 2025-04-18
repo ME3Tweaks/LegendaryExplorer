@@ -1,0 +1,28 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "FixedCamera": {
+      "documentation": null,
+      "signature_members": {
+        "stActorInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "stCameraInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "bInvert": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FixedCamera(ActorInfo stActorInfo, out CameraInfo stCameraInfo, bool bInvert)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

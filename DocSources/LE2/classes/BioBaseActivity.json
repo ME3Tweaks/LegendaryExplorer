@@ -1,0 +1,25 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aoActivityAnimSets": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "m_aProps": {
+      "type": "ActivityProp",
+      "documentation": null
+    },
+    "m_nAcitivityName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_bUseEnterExitAnims": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,65 @@
+{
+  "parent": "Object",
+  "package": "Core",
+  "variables": {
+    "HelpDescription": {
+      "type": "string",
+      "documentation": null
+    },
+    "HelpUsage": {
+      "type": "string",
+      "documentation": null
+    },
+    "HelpWebLink": {
+      "type": "string",
+      "documentation": null
+    },
+    "HelpParamNames": {
+      "type": "string",
+      "documentation": null
+    },
+    "HelpParamDescriptions": {
+      "type": "string",
+      "documentation": null
+    },
+    "IsServer": {
+      "type": "bool",
+      "documentation": null
+    },
+    "IsClient": {
+      "type": "bool",
+      "documentation": null
+    },
+    "IsEditor": {
+      "type": "bool",
+      "documentation": null
+    },
+    "LogToConsole": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ShowErrorCount": {
+      "type": "bool",
+      "documentation": null
+    },
+    "BioLoadConsoleSupport": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Main": {
+      "documentation": null,
+      "signature_members": {
+        "Params": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int Main(string Params)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

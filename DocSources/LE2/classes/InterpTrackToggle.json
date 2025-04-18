@@ -1,0 +1,29 @@
+{
+  "parent": "InterpTrack",
+  "package": "Engine",
+  "variables": {
+    "ToggleTrack": {
+      "type": "ToggleTrackKey",
+      "documentation": null
+    },
+    "bActivateSystemEachUpdate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFireEventsWhenForwards": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFireEventsWhenBackwards": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFireEventsWhenJumpingForwards": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "parent": "MorphNodeBase",
+  "package": "Engine",
+  "variables": {
+    "Target": {
+      "type": "MorphTarget",
+      "documentation": null
+    },
+    "MorphName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Weight": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetMorphTarget": {
+      "documentation": null,
+      "signature_members": {
+        "MorphTargetName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMorphTarget(Name MorphTargetName)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,75 +1,75 @@
 {
   "Members": {
     "OcclusionCurveLookupTable": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "StaticLightingLevelScale": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "NumIndirectLightingBounces": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "EnvironmentColor": {
-      "type": null,
+      "type": "Color",
       "documentation": null
     },
     "EnvironmentIntensity": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "EmissiveBoost": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "DiffuseBoost": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "SpecularBoost": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "IndirectNormalInfluenceBoost": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "LightEnvironmentIndirectContrastFactor": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "DirectIlluminationOcclusionFraction": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "IndirectIlluminationOcclusionFraction": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "OcclusionExponent": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "FullyOccludedSamplesFraction": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "MaxOcclusionDistance": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bUseAmbientOcclusion": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bVisualizeMaterialDiffuse": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bVisualizeAmbientOcclusion": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

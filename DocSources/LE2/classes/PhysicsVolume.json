@@ -1,0 +1,331 @@
+{
+  "parent": "Volume",
+  "package": "Engine",
+  "variables": {
+    "DamageType": {
+      "type": "Class",
+      "documentation": null
+    },
+    "ZoneVelocity": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PainTimer": {
+      "type": "Info",
+      "documentation": null
+    },
+    "DamageInstigator": {
+      "type": "Controller",
+      "documentation": null
+    },
+    "NextPhysicsVolume": {
+      "type": "PhysicsVolume",
+      "documentation": null
+    },
+    "GroundFriction": {
+      "type": "float",
+      "documentation": null
+    },
+    "TerminalVelocity": {
+      "type": "float",
+      "documentation": null
+    },
+    "DamagePerSec": {
+      "type": "float",
+      "documentation": null
+    },
+    "Priority": {
+      "type": "int",
+      "documentation": null
+    },
+    "FluidFriction": {
+      "type": "float",
+      "documentation": null
+    },
+    "PainInterval": {
+      "type": "float",
+      "documentation": null
+    },
+    "RigidBodyDamping": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxDampingForce": {
+      "type": "float",
+      "documentation": null
+    },
+    "bVelocityAffectsWalking": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPainCausing": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAIShouldIgnorePain": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEntryPain": {
+      "type": "bool",
+      "documentation": null
+    },
+    "BACKUP_bPainCausing": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDestructive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoInventory": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMoveProjectiles": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBounceVelocity": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNeutralZone": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCrowdAgentsPlayDeathAnim": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPhysicsOnContact": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWaterVolume": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ApplyCheckpointRecord": {
+      "documentation": null,
+      "signature_members": {
+        "Record": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyCheckpointRecord(const out CheckpointRecord Record)"
+    },
+    "CreateCheckpointRecord": {
+      "documentation": null,
+      "signature_members": {
+        "Record": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateCheckpointRecord(out CheckpointRecord Record)"
+    },
+    "ShouldSaveForCheckpoint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldSaveForCheckpoint()"
+    },
+    "OnSetDamageInstigator": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSetDamageInstigator(SeqAct_SetDamageInstigator Action)"
+    },
+    "NotifyPawnBecameViewTarget": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyPawnBecameViewTarget(Pawn P, PlayerController PC)"
+    },
+    "ModifyPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyPlayer(Pawn PlayerPawn)"
+    },
+    "CausePainTo": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CausePainTo(Actor Other)"
+    },
+    "Touch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        },
+        "OtherComp": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Touch(Actor Other, PrimitiveComponent OtherComp, Vector HitLocation, Vector HitNormal)"
+    },
+    "TimerPop": {
+      "documentation": null,
+      "signature_members": {
+        "T": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TimerPop(VolumeTimer T)"
+    },
+    "CollisionChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CollisionChanged()"
+    },
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "inAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle inAction)"
+    },
+    "PawnLeavingVolume": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PawnLeavingVolume(Pawn Other)"
+    },
+    "PawnEnteredVolume": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PawnEnteredVolume(Pawn Other)"
+    },
+    "ActorLeavingVolume": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActorLeavingVolume(Actor Other)"
+    },
+    "ActorEnteredVolume": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActorEnteredVolume(Actor Other)"
+    },
+    "PhysicsChangedFor": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PhysicsChangedFor(Actor Other)"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "GetRBPhysicsGravityScaling": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetRBPhysicsGravityScaling()"
+    },
+    "GetZoneVelocityForActor": {
+      "documentation": null,
+      "signature_members": {
+        "TheActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetZoneVelocityForActor(Actor TheActor)"
+    },
+    "GetGravityZ": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetGravityZ()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

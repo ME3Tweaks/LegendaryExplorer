@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "ALO_Off": {
+      "value": 0,
+      "documentation": null
+    },
+    "ALO_Squad": {
+      "value": 1,
+      "documentation": null
+    },
+    "ALO_All": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

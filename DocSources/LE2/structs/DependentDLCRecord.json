@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Name": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ModuleID": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

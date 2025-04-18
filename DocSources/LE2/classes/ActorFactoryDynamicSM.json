@@ -1,0 +1,41 @@
+{
+  "parent": "ActorFactory",
+  "package": "Engine",
+  "variables": {
+    "DrawScale3D": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "StaticMesh": {
+      "type": "StaticMesh",
+      "documentation": null
+    },
+    "bNoEncroachCheck": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNotifyRigidBodyCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBlockRigidBody": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseCompartment": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCastDynamicShadow": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CollisionType": {
+      "type": "ECollisionType",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

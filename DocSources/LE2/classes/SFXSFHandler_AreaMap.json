@@ -1,0 +1,107 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "m_DOFEffect": {
+      "type": "DOFAndBloomEffect",
+      "documentation": null
+    },
+    "m_bFromBrowserWheel": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "RemoveDOFEffect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveDOFEffect()"
+    },
+    "AddDOFEffect": {
+      "documentation": null,
+      "signature_members": {
+        "i_DOFEffect": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddDOFEffect(DOFAndBloomEffect i_DOFEffect)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "Close": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Close()"
+    },
+    "BeginClose": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BeginClose()"
+    },
+    "ProcessPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "oMapData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessPlayer(SFXAreaMapData oMapData)"
+    },
+    "SetMap": {
+      "documentation": null,
+      "signature_members": {
+        "oMapData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMap(SFXAreaMapData oMapData)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "bFromBrowserWheel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Initialize(bool bFromBrowserWheel)"
+    },
+    "PauseMenuAdditionalProcessing": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PauseMenuAdditionalProcessing()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

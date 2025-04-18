@@ -1,0 +1,530 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "Members": {
+      "type": "MemberData",
+      "documentation": null
+    },
+    "m_aPerceivedSquads": {
+      "type": "BioBaseSquad",
+      "documentation": null
+    },
+    "PlaypenVolumes": {
+      "type": "BioPlaypenVolume",
+      "documentation": null
+    },
+    "SquadFaction": {
+      "type": "Class",
+      "documentation": null
+    },
+    "m_pHackedSquad": {
+      "type": "BioBaseSquad",
+      "documentation": null
+    },
+    "PlaypenAdditiveVolumeColour": {
+      "type": "Color",
+      "documentation": null
+    },
+    "PlaypenSubtractiveVolumeColour": {
+      "type": "Color",
+      "documentation": null
+    },
+    "SquadMemberLineColour": {
+      "type": "Color",
+      "documentation": null
+    },
+    "ObjVersion": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fThreatModifier": {
+      "type": "float",
+      "documentation": null
+    },
+    "bSquadEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bEngagedHostileAction": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DisableSquad": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableSquad()"
+    },
+    "EnableSquad": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnableSquad()"
+    },
+    "GetMaxHazardLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMaxHazardLevel()"
+    },
+    "MakeHackable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioBaseSquad",
+      "signature": "BioBaseSquad MakeHackable()"
+    },
+    "IsBioPawnValid": {
+      "documentation": null,
+      "signature_members": {
+        "oTestActor": {
+          "type": null,
+          "documentation": null
+        },
+        "bRequiresTargetFlag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ePawnValidType",
+      "signature": "ePawnValidType IsBioPawnValid(Actor oTestActor, optional bool bRequiresTargetFlag)"
+    },
+    "MemberRemoved": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MemberRemoved(Pawn oPawn)"
+    },
+    "RemoveDyingMember": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveDyingMember(Pawn oPawn)"
+    },
+    "AddMember": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bCheckPlaypens": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int AddMember(Pawn Pawn, optional bool bCheckPlaypens)"
+    },
+    "GetNumberOfLiveMembers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumberOfLiveMembers()"
+    },
+    "GetPawnBehavior": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioEpicPawnBehavior",
+      "signature": "BioEpicPawnBehavior GetPawnBehavior(Actor oActor)"
+    },
+    "GetSquad": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioBaseSquad",
+      "signature": "BioBaseSquad GetSquad(Actor oActor)"
+    },
+    "FindSquadMemberByTag": {
+      "documentation": null,
+      "signature_members": {
+        "nmTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Pawn",
+      "signature": "Pawn FindSquadMemberByTag(Name nmTag)"
+    },
+    "Died": {
+      "documentation": null,
+      "signature_members": {
+        "member": {
+          "type": null,
+          "documentation": null
+        },
+        "Killer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Died(Pawn member, Controller Killer)"
+    },
+    "NotifyPlaypenChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyPlaypenChanged()"
+    },
+    "NotifyNoEnemiesPerceived": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyNoEnemiesPerceived()"
+    },
+    "NotifyEnemyPerceived": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyEnemyPerceived()"
+    },
+    "GetPlaypenReturnPoint": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor GetPlaypenReturnPoint(Pawn oPawn)"
+    },
+    "GetPlaypenNavOrigin": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor GetPlaypenNavOrigin(optional Pawn oPawn)"
+    },
+    "UpdatePlaypen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdatePlaypen()"
+    },
+    "IsVolumeInPlaypen": {
+      "documentation": null,
+      "signature_members": {
+        "Volume": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsVolumeInPlaypen(BioPlaypenVolume Volume)"
+    },
+    "RemoveVolumeFromPlaypen": {
+      "documentation": null,
+      "signature_members": {
+        "Volume": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveVolumeFromPlaypen(BioPlaypenVolume Volume)"
+    },
+    "AddVolumeToPlaypen": {
+      "documentation": null,
+      "signature_members": {
+        "Volume": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddVolumeToPlaypen(BioPlaypenVolume Volume)"
+    },
+    "HasPlaypen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasPlaypen()"
+    },
+    "IsActorInSubtractivePlaypen": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsActorInSubtractivePlaypen(Actor oActor)"
+    },
+    "IsActorInPlaypen": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsActorInPlaypen(Actor oActor)"
+    },
+    "IsPositionInSubtractivePlaypen": {
+      "documentation": null,
+      "signature_members": {
+        "vLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsPositionInSubtractivePlaypen(const out Vector vLocation)"
+    },
+    "IsPositionInPlaypen": {
+      "documentation": null,
+      "signature_members": {
+        "vLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsPositionInPlaypen(const out Vector vLocation)"
+    },
+    "PerceivedPawns": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PerceivedPawns(out Pawn oPawn)"
+    },
+    "SquadMembers": {
+      "documentation": null,
+      "signature_members": {
+        "oController": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SquadMembers(out BioAiController oController)"
+    },
+    "CanShoot": {
+      "documentation": null,
+      "signature_members": {
+        "oSource": {
+          "type": null,
+          "documentation": null
+        },
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanShoot(Pawn oSource, Actor oTarget)"
+    },
+    "CanShootExposed": {
+      "documentation": null,
+      "signature_members": {
+        "oSource": {
+          "type": null,
+          "documentation": null
+        },
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "bExposed": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanShootExposed(Pawn oSource, Actor oTarget, out int bExposed)"
+    },
+    "RemoveSquadFromPerception": {
+      "documentation": null,
+      "signature_members": {
+        "pSquad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveSquadFromPerception(BioBaseSquad pSquad)"
+    },
+    "IsPawnPerceived": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsPawnPerceived(Pawn pPawn)"
+    },
+    "IsSquadPerceived": {
+      "documentation": null,
+      "signature_members": {
+        "pSquad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsSquadPerceived(BioBaseSquad pSquad)"
+    },
+    "AddSquadToPerception": {
+      "documentation": null,
+      "signature_members": {
+        "pSquad": {
+          "type": null,
+          "documentation": null
+        },
+        "pSource": {
+          "type": null,
+          "documentation": null
+        },
+        "pTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddSquadToPerception(BioBaseSquad pSquad, optional Pawn pSource, optional Pawn pTarget)"
+    },
+    "SetMemberMoveIndicator": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "oIndicator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMemberMoveIndicator(int nIndex, BioTacticalMoveToIndicator oIndicator)"
+    },
+    "GetMemberMoveIndicator": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioTacticalMoveToIndicator",
+      "signature": "BioTacticalMoveToIndicator GetMemberMoveIndicator(int nIndex)"
+    },
+    "RemoveMemberByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveMemberByIndex(int nIndex)"
+    },
+    "RemoveMember": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveMember(Pawn pPawn)"
+    },
+    "ClearSquad": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearSquad()"
+    },
+    "GetMemberIndex": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetMemberIndex(Pawn pPawn)"
+    },
+    "GetMember": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Pawn",
+      "signature": "Pawn GetMember(int nIndex)"
+    },
+    "GetSquadLeader": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Pawn",
+      "signature": "Pawn GetSquadLeader()"
+    },
+    "GetHackedSquadSize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetHackedSquadSize()"
+    },
+    "GetSquadSize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetSquadSize()"
+    },
+    "IsInSquad": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsInSquad(Pawn pPawn)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,1093 @@
+{
+  "parent": "SFXAI_Core",
+  "package": "SFXGame",
+  "variables": {
+    "m_Orders": {
+      "type": "HenchmanOrder",
+      "documentation": null
+    },
+    "m_vHoldLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_OtherHenchman": {
+      "type": "SFXAI_Henchman",
+      "documentation": null
+    },
+    "m_ActorToDefend": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "AtCover_NearDefendGoal": {
+      "type": "Goal_AtCover",
+      "documentation": null
+    },
+    "TetherDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "TetherDistanceWhileExecutingOrder": {
+      "type": "float",
+      "documentation": null
+    },
+    "TetherDistanceForFollowOrder": {
+      "type": "float",
+      "documentation": null
+    },
+    "DistanceToStartCombatWhileFollowing": {
+      "type": "float",
+      "documentation": null
+    },
+    "AttackDelayAfterBeingShot": {
+      "type": "float",
+      "documentation": null
+    },
+    "DamagePercentToRemainInCover": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fHeadshotProbability": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fDistanceFromActorToDefend": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinDistanceFromTargetForCrouch": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nCoverEvaluationCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nBackingAwayCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxBackAwayDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bFollowPlayer": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bHoldingPosition": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bResetHenchman": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDelayPowerUse": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bTooFarToAttack": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bMeleeAttacker": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bEnemiesPerceived": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCheckPlayerReachability": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bOriginalStartRootMotion": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bOriginalStopRootMotion": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAllowInstantPowerWhileVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bBackingAwayFromTarget": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CheckThreatRadius": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckThreatRadius()"
+    },
+    "IsWithinThreatRadius": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsWithinThreatRadius()"
+    },
+    "NotifyKnockedOutOfCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyKnockedOutOfCover()"
+    },
+    "CanInstantlyUsePowers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanInstantlyUsePowers()"
+    },
+    "InstantUsePower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InstantUsePower()"
+    },
+    "OnCombatStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCombatStart()"
+    },
+    "IsPlayerReachable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsPlayerReachable()"
+    },
+    "ShouldWaitForPlayer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldWaitForPlayer()"
+    },
+    "AdjustEnemyRating": {
+      "documentation": null,
+      "signature_members": {
+        "EnemyPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "fRating": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AdjustEnemyRating(Pawn EnemyPawn, out float fRating)"
+    },
+    "AdjustRatingByTickets": {
+      "documentation": null,
+      "signature_members": {
+        "out_Rating": {
+          "type": null,
+          "documentation": null
+        },
+        "EnemyIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AdjustRatingByTickets(out float out_Rating, int EnemyIdx)"
+    },
+    "CheckInCombat": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckInCombat()"
+    },
+    "NotifyNewEnemy": {
+      "documentation": null,
+      "signature_members": {
+        "NewEnemy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyNewEnemy(Pawn NewEnemy)"
+    },
+    "ApplyOrderBonus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyOrderBonus()"
+    },
+    "ModifyBurstDelay": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        },
+        "BurstDelay": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyBurstDelay(SFXWeapon Weapon, out float BurstDelay)"
+    },
+    "OnTargetChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnTargetChanged()"
+    },
+    "CheckMeleeAttacker": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckMeleeAttacker()"
+    },
+    "CheckLineOfFireClear": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckLineOfFireClear()"
+    },
+    "CheckPlayerLineOfFire": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckPlayerLineOfFire()"
+    },
+    "IsInPlayerLineOfFire": {
+      "documentation": null,
+      "signature_members": {
+        "nPlayerIsFiring": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsInPlayerLineOfFire(out int nPlayerIsFiring)"
+    },
+    "StopDefendingActor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopDefendingActor()"
+    },
+    "StartDefendingActor": {
+      "documentation": null,
+      "signature_members": {
+        "ActorToDefend": {
+          "type": null,
+          "documentation": null
+        },
+        "fMaxDistanceFromActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartDefendingActor(Actor ActorToDefend, float fMaxDistanceFromActor)"
+    },
+    "StartFollowingActor": {
+      "documentation": null,
+      "signature_members": {
+        "ActorToFollow": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartFollowingActor(Actor ActorToFollow)"
+    },
+    "GetAimLocation": {
+      "documentation": null,
+      "signature_members": {
+        "EnemyIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "StartLoc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetAimLocation(int EnemyIdx, Vector StartLoc)"
+    },
+    "NotifyPowerDelayFinished": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyPowerDelayFinished()"
+    },
+    "NotifySharedCooldownFinished": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifySharedCooldownFinished()"
+    },
+    "ArePowersCoolingDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ArePowersCoolingDown()"
+    },
+    "NotifyHenchmenLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyHenchmenLoaded()"
+    },
+    "OnEnteringStasis": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnEnteringStasis()"
+    },
+    "ShouldAttack": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldAttack()"
+    },
+    "CanUsePowers": {
+      "documentation": null,
+      "signature_members": {
+        "bCheckProfileOption": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanUsePowers(bool bCheckProfileOption)"
+    },
+    "ChooseDefensivePower": {
+      "documentation": null,
+      "signature_members": {
+        "nmPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ChooseDefensivePower(out Name nmPower)"
+    },
+    "ChooseAttackPowerHelper": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "bPlayerRequest": {
+          "type": null,
+          "documentation": null
+        },
+        "nmPower": {
+          "type": null,
+          "documentation": null
+        },
+        "nRequiresAttackTicket": {
+          "type": null,
+          "documentation": null
+        },
+        "AttackOrigin": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ChooseAttackPowerHelper(Actor oTarget, bool bPlayerRequest, out Name nmPower, out int nRequiresAttackTicket, out Vector AttackOrigin)"
+    },
+    "ChooseAttackPower": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "nmPower": {
+          "type": null,
+          "documentation": null
+        },
+        "nRequiresAttackTicket": {
+          "type": null,
+          "documentation": null
+        },
+        "AttackOrigin": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ChooseAttackPower(Actor oTarget, out Name nmPower, out int nRequiresAttackTicket, out Vector AttackOrigin)"
+    },
+    "RespondToBump": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RespondToBump(Actor Other, Vector HitNormal)"
+    },
+    "NotifyBump": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotifyBump(Actor Other, Vector HitNormal)"
+    },
+    "WantsToRun": {
+      "documentation": null,
+      "signature_members": {
+        "fDistance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool WantsToRun(float fDistance)"
+    },
+    "SetSquadIntoCombat": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetSquadIntoCombat()"
+    },
+    "IsInCombat": {
+      "documentation": null,
+      "signature_members": {
+        "bForceCheck": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsInCombat(optional bool bForceCheck)"
+    },
+    "IsInMoveTo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsInMoveTo()"
+    },
+    "ShouldFollowPlayer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldFollowPlayer()"
+    },
+    "TeleportToActor": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceTeleport": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TeleportToActor(Actor oActor, optional bool bForceTeleport)"
+    },
+    "NotifyUnderAttack": {
+      "documentation": null,
+      "signature_members": {
+        "bHit": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyUnderAttack(bool bHit)"
+    },
+    "ResetFarAwayFlag": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetFarAwayFlag()"
+    },
+    "NotifyCoverClaimViolation": {
+      "documentation": null,
+      "signature_members": {
+        "NewClaim": {
+          "type": null,
+          "documentation": null
+        },
+        "Link": {
+          "type": null,
+          "documentation": null
+        },
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotifyCoverClaimViolation(Controller NewClaim, CoverLink Link, int SlotIdx)"
+    },
+    "HenchmanMoveToCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HenchmanMoveToCover()"
+    },
+    "BioClearCrossLevelReferences": {
+      "documentation": null,
+      "signature_members": {
+        "oLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BioClearCrossLevelReferences(Level oLevel)"
+    },
+    "NotifyChangedWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "PreviousWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "NewWeapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyChangedWeapon(Weapon PreviousWeapon, Weapon NewWeapon)"
+    },
+    "TriggerAttackVocalization": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TriggerAttackVocalization()"
+    },
+    "OutOfWorld": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OutOfWorld()"
+    },
+    "GetNextOrder": {
+      "documentation": null,
+      "signature_members": {
+        "eOrder": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "HenchmanOrder",
+      "signature": "HenchmanOrder GetNextOrder(HenchmanOrderType eOrder)"
+    },
+    "ExecuteOrders": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExecuteOrders()"
+    },
+    "RemoveOldSwitchWeaponOrders": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveOldSwitchWeaponOrders()"
+    },
+    "CanStartImmediateOrder": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanStartImmediateOrder()"
+    },
+    "CanQueueOrder": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanQueueOrder()"
+    },
+    "CancelOrder": {
+      "documentation": null,
+      "signature_members": {
+        "eOrder": {
+          "type": null,
+          "documentation": null
+        },
+        "nmPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CancelOrder(HenchmanOrderType eOrder, Name nmPower)"
+    },
+    "GetInstantOrderCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetInstantOrderCount()"
+    },
+    "AddOrder": {
+      "documentation": null,
+      "signature_members": {
+        "eOrder": {
+          "type": null,
+          "documentation": null
+        },
+        "oTargetActor": {
+          "type": null,
+          "documentation": null
+        },
+        "vTargetLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "nmPower": {
+          "type": null,
+          "documentation": null
+        },
+        "oWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "nQueue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddOrder(HenchmanOrderType eOrder, Actor oTargetActor, Vector vTargetLocation, Name nmPower, SFXWeapon oWeapon, optional int nQueue)"
+    }
+  },
+  "states": {
+    "BackingAwayFromTarget": {
+      "functions": {
+        "PoppedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "PushedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MovingToLocation": {
+      "functions": {
+        "ShouldCancelMove": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "WaitingForAnimatedTransition": {
+      "functions": {
+        "ExecuteOrders": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "FiringWeapon": {
+      "functions": {
+        "NotifyBump": {
+          "documentation": null,
+          "signature_members": {
+            "Other": {
+              "type": null,
+              "documentation": null
+            },
+            "HitNormal": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "ExecuteOrders": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MovingToHoldLocation": {
+      "functions": {
+        "PathfindToHoldLocation": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "MoveToCoverNearHoldLocation": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "ContinuedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "PoppedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "PushedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MovingAwayFromPlayer": {
+      "functions": {
+        "GetMoveLocation": {
+          "documentation": null,
+          "signature_members": {
+            "vLocation": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Resurrecting": {
+      "functions": {
+        "ResurrectHenchman": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Dying": {
+      "functions": {},
+      "documentation": null
+    },
+    "MovingToGoal": {
+      "functions": {
+        "CancelAction": {
+          "documentation": null,
+          "signature_members": {
+            "nReason": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "GetFirstMoveTarget": {
+          "documentation": null,
+          "signature_members": {
+            "FirstMoveTarget": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "FinishPathGeneration": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "ApplyPathConstraints": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GetPeriodicMoveInterval": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "PoppedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "FollowingActor": {
+      "functions": {
+        "ShouldCancelFollow": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Combat_Henchman": {
+      "functions": {
+        "NotifyBump": {
+          "documentation": null,
+          "signature_members": {
+            "Other": {
+              "type": null,
+              "documentation": null
+            },
+            "HitNormal": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "ContinuedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "PoppedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "PushedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "UsingPower": {
+      "functions": {
+        "ShouldCancelPower": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "WasPowerUseOrderedByPlayer": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "ChoosePowerTarget": {
+          "documentation": null,
+          "signature_members": {
+            "oTargetActor": {
+              "type": null,
+              "documentation": null
+            },
+            "vTargetLocation": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "ExecutingOrders": {
+      "functions": {
+        "ExecuteHoldPositionOrder": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "ExecuteSwitchWeaponOrder": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "ExecuteFollowOrder": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "ExecuteAttackOrder": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "ExecutePowerOrder": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "PoppedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "PushedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "ResetHenchman": {
+      "functions": {
+        "TeleportToPlayer": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Idle": {
+      "functions": {
+        "ChooseBehavior": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "NotifyNewEnemy": {
+          "documentation": null,
+          "signature_members": {
+            "NewEnemy": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "NotifyBump": {
+          "documentation": null,
+          "signature_members": {
+            "Other": {
+              "type": null,
+              "documentation": null
+            },
+            "HitNormal": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "ExecuteOrders": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

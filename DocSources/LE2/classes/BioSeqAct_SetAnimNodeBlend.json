@@ -1,0 +1,29 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "nmTargetNode": {
+      "type": "Name",
+      "documentation": null
+    },
+    "oPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "fWeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "fBlendTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "nTargetChild": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

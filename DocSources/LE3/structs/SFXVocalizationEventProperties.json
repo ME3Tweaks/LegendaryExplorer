@@ -1,47 +1,47 @@
 {
   "Members": {
     "Roles": {
-      "type": null,
+      "type": "ESFXVocalizationRole",
       "documentation": null
     },
     "ChanceToPlay": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "MinTimeBetweenSec": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "TimeLastPlayed": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Delay": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "MaxWitnessDistSq": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "MaxDelayedTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bQueueIfBlocked": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bCanInterrupt": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bCanPlayIfDead": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bCanPlayIfRagdolled": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

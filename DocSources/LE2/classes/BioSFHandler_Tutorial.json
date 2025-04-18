@@ -1,0 +1,43 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "__CompletionCallback__Delegate": {
+      "type": "CompletionCallback",
+      "documentation": null
+    },
+    "m_bGameWasPaused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInputModeCached": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": null,
+          "documentation": null
+        },
+        "lstArguments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    },
+    "CompletionCallback": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CompletionCallback()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,41 @@
+{
+  "parent": "DOFEffect",
+  "package": "Engine",
+  "variables": {
+    "BloomScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "BloomThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "BloomTint": {
+      "type": "Color",
+      "documentation": null
+    },
+    "BloomScreenBlendThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "SceneMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlurBloomKernelSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "bEnableSeparateBloom": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableReferenceDOF": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

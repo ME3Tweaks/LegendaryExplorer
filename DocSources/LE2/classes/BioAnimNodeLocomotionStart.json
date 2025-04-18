@@ -1,0 +1,53 @@
+{
+  "parent": "AnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "BlendOutRelPos": {
+      "type": "float",
+      "documentation": null
+    },
+    "FreeRotationRelPos": {
+      "type": "float",
+      "documentation": null
+    },
+    "SynchGroupName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "LeftFootNormalizedRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "MovementSync": {
+      "type": "BioAnimMovementSync",
+      "documentation": null
+    },
+    "BlendOut": {
+      "type": "BioAnimCheckBlendOut",
+      "documentation": null
+    },
+    "BlendAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "StateTag": {
+      "type": "int",
+      "documentation": null
+    },
+    "bBlendingOut": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOverrideRMM": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOverrideRMR": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

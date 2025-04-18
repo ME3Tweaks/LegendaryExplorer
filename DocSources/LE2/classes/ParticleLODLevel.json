@@ -1,0 +1,69 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "SpawningModules": {
+      "type": "ParticleModuleSpawnBase",
+      "documentation": null
+    },
+    "SpawnModules": {
+      "type": "ParticleModule",
+      "documentation": null
+    },
+    "UpdateModules": {
+      "type": "ParticleModule",
+      "documentation": null
+    },
+    "OrbitModules": {
+      "type": "ParticleModuleOrbit",
+      "documentation": null
+    },
+    "EventReceiverModules": {
+      "type": "ParticleModuleEventReceiverBase",
+      "documentation": null
+    },
+    "SpawnRateModules": {
+      "type": "ParticleModule",
+      "documentation": null
+    },
+    "Modules": {
+      "type": "ParticleModule",
+      "documentation": null
+    },
+    "TypeDataModule": {
+      "type": "ParticleModule",
+      "documentation": null
+    },
+    "SpawnModule": {
+      "type": "ParticleModuleSpawn",
+      "documentation": null
+    },
+    "EventGenerator": {
+      "type": "ParticleModuleEventGenerator",
+      "documentation": null
+    },
+    "RequiredModule": {
+      "type": "ParticleModuleRequired",
+      "documentation": null
+    },
+    "Level": {
+      "type": "int",
+      "documentation": null
+    },
+    "PeakActiveParticles": {
+      "type": "int",
+      "documentation": null
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ConvertedModules": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,15 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "ComputeCameraRotationDelta": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Rotator",
+      "signature": "Rotator ComputeCameraRotationDelta()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

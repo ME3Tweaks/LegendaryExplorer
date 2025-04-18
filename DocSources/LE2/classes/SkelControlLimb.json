@@ -1,0 +1,69 @@
+{
+  "parent": "SkelControlBase",
+  "package": "Engine",
+  "variables": {
+    "EffectorLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "JointTargetLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "EffectorSpaceBoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "JointTargetSpaceBoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "StretchLimits": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "StretchRollBoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bInvertBoneAxis": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInvertJointAxis": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMaintainEffectorRelRot": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTakeRotationFromEffectorSpace": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowStretching": {
+      "type": "bool",
+      "documentation": null
+    },
+    "EffectorLocationSpace": {
+      "type": "EBoneControlSpace",
+      "documentation": null
+    },
+    "JointTargetLocationSpace": {
+      "type": "EBoneControlSpace",
+      "documentation": null
+    },
+    "BoneAxis": {
+      "type": "EAxis",
+      "documentation": null
+    },
+    "JointAxis": {
+      "type": "EAxis",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

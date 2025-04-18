@@ -1,0 +1,25 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "bEnableAngularPositionDrive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableAngularVelocityDrive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableLinearPositionDrive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableLinearvelocityDrive": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

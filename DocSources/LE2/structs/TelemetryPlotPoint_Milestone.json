@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Moment": {
+      "type": "string",
+      "documentation": null
+    },
+    "Milestone": {
+      "type": "string",
+      "documentation": null
+    },
+    "PlotPointId": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

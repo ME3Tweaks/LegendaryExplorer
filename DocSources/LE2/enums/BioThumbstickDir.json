@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BTD_Centered": {
+      "value": 0,
+      "documentation": null
+    },
+    "BTD_Negative": {
+      "value": 1,
+      "documentation": null
+    },
+    "BTD_Positive": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

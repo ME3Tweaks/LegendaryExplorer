@@ -1,11 +1,11 @@
 {
   "Members": {
     "nmPoseName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "nWeighting": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

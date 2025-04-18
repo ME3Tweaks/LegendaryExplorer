@@ -1,0 +1,17 @@
+{
+  "parent": "SequenceEvent",
+  "package": "Engine",
+  "variables": {
+    "EventDesc": {
+      "type": "string",
+      "documentation": null
+    },
+    "ConsoleEventName": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

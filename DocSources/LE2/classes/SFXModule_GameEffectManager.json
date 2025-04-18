@@ -1,0 +1,235 @@
+{
+  "parent": "SFXModule",
+  "package": "SFXGame",
+  "variables": {
+    "GameEffects": {
+      "type": "SFXGameEffect",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "UnpauseEffectsByType": {
+      "documentation": null,
+      "signature_members": {
+        "EffectClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnpauseEffectsByType(Class<SFXGameEffect> EffectClass)"
+    },
+    "PauseEffectsByType": {
+      "documentation": null,
+      "signature_members": {
+        "EffectClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PauseEffectsByType(Class<SFXGameEffect> EffectClass)"
+    },
+    "GetFirstEffectOfType": {
+      "documentation": null,
+      "signature_members": {
+        "EffectClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXGameEffect",
+      "signature": "SFXGameEffect GetFirstEffectOfType(Class<SFXGameEffect> EffectClass)"
+    },
+    "OnCombatEnd": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCombatEnd()"
+    },
+    "GetEffectValue": {
+      "documentation": null,
+      "signature_members": {
+        "EffectClass": {
+          "type": null,
+          "documentation": null
+        },
+        "BaseValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetEffectValue(Class<SFXGameEffect> EffectClass, optional float BaseValue)"
+    },
+    "RemoveAllEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveAllEffects()"
+    },
+    "RemoveEffectsByTypeAndCategory": {
+      "documentation": null,
+      "signature_members": {
+        "EffectClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Category": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveEffectsByTypeAndCategory(Class<SFXGameEffect> EffectClass, Name Category)"
+    },
+    "UpdateEffectsByCategory": {
+      "documentation": null,
+      "signature_members": {
+        "EffectClasses": {
+          "type": null,
+          "documentation": null
+        },
+        "Category": {
+          "type": null,
+          "documentation": null
+        },
+        "Instigator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateEffectsByCategory(const out array<Class<SFXGameEffect>> EffectClasses, Name Category, Controller Instigator)"
+    },
+    "RemoveEffectsByCategory": {
+      "documentation": null,
+      "signature_members": {
+        "Category": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveEffectsByCategory(Name Category)"
+    },
+    "RemoveEffectsByType": {
+      "documentation": null,
+      "signature_members": {
+        "EffectClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveEffectsByType(Class<SFXGameEffect> EffectClass)"
+    },
+    "RemoveEffect": {
+      "documentation": null,
+      "signature_members": {
+        "Effect": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveEffect(SFXGameEffect Effect)"
+    },
+    "CreateEffect": {
+      "documentation": null,
+      "signature_members": {
+        "EffectClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Category": {
+          "type": null,
+          "documentation": null
+        },
+        "Duration": {
+          "type": null,
+          "documentation": null
+        },
+        "DurationType": {
+          "type": null,
+          "documentation": null
+        },
+        "EffectValue": {
+          "type": null,
+          "documentation": null
+        },
+        "Instigator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXGameEffect",
+      "signature": "SFXGameEffect CreateEffect(Class<SFXGameEffect> EffectClass, Name Category, float Duration, EDurationType DurationType, float EffectValue, optional Controller Instigator)"
+    },
+    "HasEffectOfTypeAndCategory": {
+      "documentation": null,
+      "signature_members": {
+        "EffectClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Category": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasEffectOfTypeAndCategory(Class<SFXGameEffect> EffectClass, Name Category)"
+    },
+    "HasEffectOfCategory": {
+      "documentation": null,
+      "signature_members": {
+        "Category": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasEffectOfCategory(Name Category)"
+    },
+    "HasEffectOfType": {
+      "documentation": null,
+      "signature_members": {
+        "EffectClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasEffectOfType(Class<SFXGameEffect> EffectClass)"
+    },
+    "FindBestEffect": {
+      "documentation": null,
+      "signature_members": {
+        "EffectClass": {
+          "type": null,
+          "documentation": null
+        },
+        "BestEffect": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindBestEffect(Class<SFXGameEffect> EffectClass, out SFXGameEffect BestEffect)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaSeconds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaSeconds)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

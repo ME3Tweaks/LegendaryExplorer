@@ -1,15 +1,15 @@
 {
   "Members": {
     "sKey": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sValue": {
-      "type": null,
+      "type": "string",
       "documentation": null
     }
   },

@@ -1,103 +1,103 @@
 {
   "Members": {
     "aChainedGestures": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nmPoseSet": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "nmPoseAnim": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "nmGestureSet": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "nmGestureAnim": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "nmTransitionSet": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "nmTransitionAnim": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "fPlayRate": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "fStartOffset": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "fEndOffset": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "fStartBlendDuration": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "fEndBlendDuration": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "fWeight": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "fTransBlendTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bInvalidData": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bOneShotAnim": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bChainToPrevious": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bPlayUntilNext": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bTerminateAllGestures": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bUseDynAnimSets": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bSnapToPose": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "ePoseFilter": {
-      "type": null,
+      "type": "EBioValidPoseGroups",
       "documentation": null
     },
     "ePose": {
-      "type": null,
+      "type": "EBioGestureValidPoses",
       "documentation": null
     },
     "eGestureFilter": {
-      "type": null,
+      "type": "EBioGestureGroups",
       "documentation": null
     },
     "eGesture": {
-      "type": null,
+      "type": "EBioGestureValidGestures",
       "documentation": null
     }
   },

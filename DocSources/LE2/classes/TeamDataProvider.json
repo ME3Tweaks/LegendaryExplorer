@@ -1,0 +1,33 @@
+{
+  "parent": "UIDynamicDataProvider",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementProvider": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "PlayerListFieldName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Players": {
+      "type": "PlayerDataProvider",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "RegeneratePlayerLists": {
+      "documentation": null,
+      "signature_members": {
+        "AllPlayers": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RegeneratePlayerLists(array<PlayerDataProvider> AllPlayers)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

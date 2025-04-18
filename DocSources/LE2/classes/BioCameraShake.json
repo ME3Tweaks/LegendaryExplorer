@@ -1,0 +1,65 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_rawIntensityVsDistanceDistribution": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "m_rawFadeInDistribution": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "m_rawFadeOutDistribution": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "m_database": {
+      "type": "Bio2DA",
+      "documentation": null
+    },
+    "m_recordId": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_startTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_duration": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_radius": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_intensity": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fadeInDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fadeOutDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_isRandomVariant": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Type": {
+      "type": "EBioCameraShakeType",
+      "documentation": null
+    },
+    "Variant": {
+      "type": "EBioCameraShakeVariant",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

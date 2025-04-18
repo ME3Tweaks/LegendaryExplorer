@@ -1,23 +1,23 @@
 {
   "Members": {
     "ScopeResource": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "ZoomFOV": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "FrictionMultiplier": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "AdhesionMultiplier": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bScoped": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

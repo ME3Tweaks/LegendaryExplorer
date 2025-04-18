@@ -1,0 +1,24 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "GesturesPackageName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_pRuntimeData": {
+      "type": "BioGestureRuntimeData",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "LoadRuntimeData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LoadRuntimeData()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

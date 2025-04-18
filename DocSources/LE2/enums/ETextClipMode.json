@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "CLIP_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "CLIP_Normal": {
+      "value": 1,
+      "documentation": null
+    },
+    "CLIP_Ellipsis": {
+      "value": 2,
+      "documentation": null
+    },
+    "CLIP_Wrap": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

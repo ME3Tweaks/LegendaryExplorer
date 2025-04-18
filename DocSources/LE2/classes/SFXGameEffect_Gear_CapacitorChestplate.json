@@ -1,0 +1,8 @@
+{
+  "parent": "SFXGameEffect_PassiveShieldRegenBonus",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

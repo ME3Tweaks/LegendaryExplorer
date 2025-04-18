@@ -1,0 +1,29 @@
+{
+  "parent": "MaterialExpression",
+  "package": "SFXGame",
+  "variables": {
+    "Coord": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "Time": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "FlipTex": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "FlipTexRows": {
+      "type": "int",
+      "documentation": null
+    },
+    "FlipTexCols": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

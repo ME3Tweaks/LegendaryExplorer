@@ -1,0 +1,145 @@
+{
+  "parent": "SoundNode",
+  "package": "Engine",
+  "variables": {
+    "RawData": {
+      "type": "UntypedBulkData_Mirror",
+      "documentation": null
+    },
+    "CompressedPCData": {
+      "type": "UntypedBulkData_Mirror",
+      "documentation": null
+    },
+    "CompressedXbox360Data": {
+      "type": "UntypedBulkData_Mirror",
+      "documentation": null
+    },
+    "CompressedPS3Data": {
+      "type": "UntypedBulkData_Mirror",
+      "documentation": null
+    },
+    "SpokenText": {
+      "type": "string",
+      "documentation": null
+    },
+    "ChannelOffsets": {
+      "type": "int",
+      "documentation": null
+    },
+    "ChannelSizes": {
+      "type": "int",
+      "documentation": null
+    },
+    "Subtitles": {
+      "type": "SubtitleCue",
+      "documentation": null
+    },
+    "LocalizedSubtitles": {
+      "type": "LocalizedSubtitle",
+      "documentation": null
+    },
+    "VorbisDecompressor": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "RawPCMData": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ResourceData": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "CompressionQuality": {
+      "type": "int",
+      "documentation": null
+    },
+    "Volume": {
+      "type": "float",
+      "documentation": null
+    },
+    "Pitch": {
+      "type": "float",
+      "documentation": null
+    },
+    "Duration": {
+      "type": "float",
+      "documentation": null
+    },
+    "NumChannels": {
+      "type": "int",
+      "documentation": null
+    },
+    "SampleRate": {
+      "type": "int",
+      "documentation": null
+    },
+    "RawPCMDataSize": {
+      "type": "int",
+      "documentation": null
+    },
+    "ResourceID": {
+      "type": "int",
+      "documentation": null
+    },
+    "ResourceSize": {
+      "type": "int",
+      "documentation": null
+    },
+    "bForceRealTimeDecompression": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLoopingSound": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDynamicResource": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseTTS": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bProcedural": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMature": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bManualWordWrap": {
+      "type": "bool",
+      "documentation": null
+    },
+    "TTSSpeaker": {
+      "type": "ETTSSpeaker",
+      "documentation": null
+    },
+    "DecompressionType": {
+      "type": "EDecompressionType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GeneratePCMData": {
+      "documentation": null,
+      "signature_members": {
+        "Buffer": {
+          "type": null,
+          "documentation": null
+        },
+        "SamplesNeeded": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GeneratePCMData(out array<byte> Buffer, int SamplesNeeded)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,11 +1,11 @@
 {
   "Members": {
     "Parts": {
-      "type": null,
+      "type": "SkeletalMesh",
       "documentation": null
     },
     "BaseMesh": {
-      "type": null,
+      "type": "SkeletalMesh",
       "documentation": null
     }
   },

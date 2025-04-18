@@ -1,0 +1,17 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Surfaces": {
+      "type": "int",
+      "documentation": null
+    },
+    "SourceModel": {
+      "type": "Model",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

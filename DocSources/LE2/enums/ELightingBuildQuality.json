@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "Quality_Preview": {
+      "value": 0,
+      "documentation": null
+    },
+    "Quality_Medium": {
+      "value": 1,
+      "documentation": null
+    },
+    "Quality_High": {
+      "value": 2,
+      "documentation": null
+    },
+    "Quality_Production": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

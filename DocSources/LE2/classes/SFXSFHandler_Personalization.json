@@ -1,0 +1,328 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "__ExternalCallback_OnComplete__Delegate": {
+      "type": "ExternalCallback_OnComplete",
+      "documentation": null
+    },
+    "m_WorldInfo": {
+      "type": "BioWorldInfo",
+      "documentation": null
+    },
+    "m_oUIWorldPawn": {
+      "type": "SFXPawn_Player",
+      "documentation": null
+    },
+    "m_oPlayerPawn": {
+      "type": "SFXPawn_Player",
+      "documentation": null
+    },
+    "m_nRotating": {
+      "type": "int",
+      "documentation": null
+    },
+    "RotationDegreesPerSecond": {
+      "type": "float",
+      "documentation": null
+    },
+    "TypeOptionTitle": {
+      "type": "int",
+      "documentation": null
+    },
+    "HelmetOptionTitle": {
+      "type": "int",
+      "documentation": null
+    },
+    "TorsoOptionTitle": {
+      "type": "int",
+      "documentation": null
+    },
+    "ShoulderOptionTitle": {
+      "type": "int",
+      "documentation": null
+    },
+    "ArmOptionTitle": {
+      "type": "int",
+      "documentation": null
+    },
+    "LegOptionTitle": {
+      "type": "int",
+      "documentation": null
+    },
+    "SpecOptionTitle": {
+      "type": "int",
+      "documentation": null
+    },
+    "Tint1OptionTitle": {
+      "type": "int",
+      "documentation": null
+    },
+    "Tint2OptionTitle": {
+      "type": "int",
+      "documentation": null
+    },
+    "PatternOptionTitle": {
+      "type": "int",
+      "documentation": null
+    },
+    "PatternColorOptionTitle": {
+      "type": "int",
+      "documentation": null
+    },
+    "CasualOptionTitle": {
+      "type": "int",
+      "documentation": null
+    },
+    "CasualID": {
+      "type": "int",
+      "documentation": null
+    },
+    "FullBodyID": {
+      "type": "int",
+      "documentation": null
+    },
+    "TorsoID": {
+      "type": "int",
+      "documentation": null
+    },
+    "ShoulderID": {
+      "type": "int",
+      "documentation": null
+    },
+    "ArmID": {
+      "type": "int",
+      "documentation": null
+    },
+    "LegID": {
+      "type": "int",
+      "documentation": null
+    },
+    "Tint1ID": {
+      "type": "int",
+      "documentation": null
+    },
+    "Tint2ID": {
+      "type": "int",
+      "documentation": null
+    },
+    "PatternID": {
+      "type": "int",
+      "documentation": null
+    },
+    "PatternColorID": {
+      "type": "int",
+      "documentation": null
+    },
+    "HelmetID": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bStopScroll": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "onExIntDetailItemChange": {
+      "documentation": null,
+      "signature_members": {
+        "nOptIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "nOptionIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "onExIntDetailItemChange(int nOptIndex, int nOptionIndex)"
+    },
+    "GetIdxByAppearanceID": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "AppearanceData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetIdxByAppearanceID(int Id, out array<CustomizableElement> AppearanceData)"
+    },
+    "GetAppearanceIDByIdx": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "AppearanceData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetAppearanceIDByIdx(int Index, out array<CustomizableElement> AppearanceData)"
+    },
+    "onExIntSelectCategory": {
+      "documentation": null,
+      "signature_members": {
+        "nCategory": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "onExIntSelectCategory(int nCategory)"
+    },
+    "onExIntExit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "onExIntExit()"
+    },
+    "onExIntDoInitialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "onExIntDoInitialize()"
+    },
+    "CancelChanges": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CancelChanges()"
+    },
+    "ApplyChanges": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyChanges()"
+    },
+    "AddDetailEntry": {
+      "documentation": null,
+      "signature_members": {
+        "nEntryIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "nTitleText": {
+          "type": null,
+          "documentation": null
+        },
+        "Elements": {
+          "type": null,
+          "documentation": null
+        },
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddDetailEntry(int nEntryIndex, int nTitleText, out array<CustomizableElement> Elements, int nIndex)"
+    },
+    "IsAvailable": {
+      "documentation": null,
+      "signature_members": {
+        "Element": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsAvailable(CustomizableElement Element)"
+    },
+    "GetCleanString": {
+      "documentation": null,
+      "signature_members": {
+        "nStringRef": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetCleanString(int nStringRef)"
+    },
+    "GetUIWorldPlayerPawn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXPawn_Player",
+      "signature": "SFXPawn_Player GetUIWorldPlayerPawn()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "InitializeUIWorld": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeUIWorld()"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "ClearDelegates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearDelegates()"
+    },
+    "SetExternalCallback_OnComplete": {
+      "documentation": null,
+      "signature_members": {
+        "pDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetExternalCallback_OnComplete(delegate<ExternalCallback_OnComplete> pDelegate)"
+    },
+    "ExternalCallback_OnComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExternalCallback_OnComplete()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

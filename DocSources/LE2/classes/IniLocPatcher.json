@@ -1,0 +1,118 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Files": {
+      "type": "IniLocFileEntry",
+      "documentation": null
+    },
+    "__OnReadTitleFileComplete__Delegate": {
+      "type": "OnReadTitleFileComplete",
+      "documentation": null
+    },
+    "SystemInterface": {
+      "type": "OnlineSystemInterface",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ClearCachedFiles": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearCachedFiles()"
+    },
+    "ClearReadFileDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ReadTitleFileCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearReadFileDelegate(delegate<OnReadTitleFileComplete> ReadTitleFileCompleteDelegate)"
+    },
+    "AddReadFileDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ReadTitleFileCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddReadFileDelegate(delegate<OnReadTitleFileComplete> ReadTitleFileCompleteDelegate)"
+    },
+    "AddFileToDownload": {
+      "documentation": null,
+      "signature_members": {
+        "Filename": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddFileToDownload(string Filename)"
+    },
+    "ProcessIniLocFile": {
+      "documentation": null,
+      "signature_members": {
+        "Filename": {
+          "type": null,
+          "documentation": null
+        },
+        "FileData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessIniLocFile(string Filename, out array<byte> FileData)"
+    },
+    "OnReadFileComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        },
+        "Filename": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnReadFileComplete(bool bWasSuccessful, string Filename)"
+    },
+    "DownloadFiles": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DownloadFiles()"
+    },
+    "Init": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Init()"
+    },
+    "OnReadTitleFileComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        },
+        "Filename": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnReadTitleFileComplete(bool bWasSuccessful, string Filename)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

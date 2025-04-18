@@ -1,95 +1,95 @@
 {
   "Members": {
     "m_mapTokenIDToActual": {
-      "type": null,
+      "type": "SFXTokenMapping",
       "documentation": null
     },
     "sChoiceName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sChoiceTitle": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sChoiceImageTitle": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sChoiceDescription": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sActionText": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "oChoiceImage": {
-      "type": null,
+      "type": "Texture2D",
       "documentation": null
     },
     "WeaponClassRef": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "WeaponModClassRef": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "srChoiceName": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "srChoiceTitle": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "srChoiceImageTitle": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "srChoiceDescription": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "nOptionalPaneItemValue": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nChoiceID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "srActionText": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "bDefaultSelection": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bDisabled": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bNested": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bOptionalPaneHideCost": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "ChoiceColor": {
-      "type": null,
+      "type": "SFXChoiceColors",
       "documentation": null
     },
     "eResource": {
-      "type": null,
+      "type": "EInventoryResourceTypes",
       "documentation": null
     },
     "eDisplayType": {
-      "type": null,
+      "type": "EChoiceDisplayType",
       "documentation": null
     }
   },

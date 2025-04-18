@@ -1,0 +1,20 @@
+{
+  "parent": "PathConstraint",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "AvoidPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AvoidPlayer(BioPawn Pawn)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

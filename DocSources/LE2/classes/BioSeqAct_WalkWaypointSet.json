@@ -1,0 +1,58 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_oRoute": {
+      "type": "Route",
+      "documentation": null
+    },
+    "m_fMoveTolerance": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nNextWaypoint": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bStartAtNearestPoint": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bWalking": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCountingUp": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSkipPathNodes": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDone": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eWalkType": {
+      "type": "eWalkWaypointsTypes",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

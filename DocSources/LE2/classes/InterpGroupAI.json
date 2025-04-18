@@ -1,0 +1,21 @@
+{
+  "parent": "InterpGroup",
+  "package": "Engine",
+  "variables": {
+    "StageMarkGroup": {
+      "type": "Name",
+      "documentation": null
+    },
+    "StageMarkActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "AllowDeferredActorAttach": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

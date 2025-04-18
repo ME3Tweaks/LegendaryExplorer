@@ -1,0 +1,21 @@
+{
+  "parent": "ParticleModuleKillBase",
+  "package": "Engine",
+  "variables": {
+    "Height": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "bAbsolute": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFloor": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

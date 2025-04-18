@@ -1,0 +1,859 @@
+{
+  "parent": "WorldInfo",
+  "package": "SFXGame",
+  "variables": {
+    "m_sFriendlyName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sCinematicSkipEvent": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_fLookAtDelays": {
+      "type": "float",
+      "documentation": null
+    },
+    "SelectableActors": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "RadarActors": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "PlotStreaming": {
+      "type": "PlotStreamingSet",
+      "documentation": null
+    },
+    "m_WorldStreamingStates": {
+      "type": "WorldStreamingState",
+      "documentation": null
+    },
+    "m_VFXTemplatePoolSizeOverride": {
+      "type": "VFXTemplatePoolSizeSpec",
+      "documentation": null
+    },
+    "m_BoughtVFXList": {
+      "type": "VFXListNode",
+      "documentation": null
+    },
+    "ConditionalClasses": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_lstCinematicsSeen": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sDestinationAreaMap": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_pScannedClusters": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_pScannedSystems": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_pScannedPlanets": {
+      "type": "int",
+      "documentation": null
+    },
+    "SubPageStateOverrides": {
+      "type": "SubPageState",
+      "documentation": null
+    },
+    "EffectsMaterialPriorities": {
+      "type": "EffectsMaterialPriority",
+      "documentation": null
+    },
+    "m_AutoPersistentObjects": {
+      "type": "Object",
+      "documentation": null
+    },
+    "m_mVFXPool": {
+      "type": "Object",
+      "documentation": null
+    },
+    "m_BoughtVFXMap": {
+      "type": "Object",
+      "documentation": null
+    },
+    "m_ActiveEnvironmentEffect": {
+      "type": "WorldEnvironmentEffect",
+      "documentation": null
+    },
+    "m_PendingEnvironmentEffect": {
+      "type": "WorldEnvironmentEffect",
+      "documentation": null
+    },
+    "m_aBoughtEffects": {
+      "type": "BoughtVFXListEnds",
+      "documentation": null
+    },
+    "m_vDestination": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_playerSquad": {
+      "type": "BioPlayerSquad",
+      "documentation": null
+    },
+    "TimerList": {
+      "type": "BioTimerList",
+      "documentation": null
+    },
+    "m_oGlobalVariables": {
+      "type": "BioGlobalVariableTable",
+      "documentation": null
+    },
+    "m_oQuestProgress": {
+      "type": "BioQuestProgressionMap",
+      "documentation": null
+    },
+    "m_oDiscoveredCodex": {
+      "type": "BioDiscoveredCodexMap",
+      "documentation": null
+    },
+    "m_oCurrentConversation": {
+      "type": "BioConversation",
+      "documentation": null
+    },
+    "m_pCurrentFaceOnlyVO": {
+      "type": "BioSeqAct_FaceOnlyVO",
+      "documentation": null
+    },
+    "m_pConvCondCheckOverride": {
+      "type": "BioConversation",
+      "documentation": null
+    },
+    "LocalPlayerController": {
+      "type": "BioPlayerController",
+      "documentation": null
+    },
+    "m_Subtitles": {
+      "type": "BioSubtitles",
+      "documentation": null
+    },
+    "m_oAreaMap": {
+      "type": "GFxMovieInfo",
+      "documentation": null
+    },
+    "m_oParentAreaMap": {
+      "type": "GFxMovieInfo",
+      "documentation": null
+    },
+    "m_oPropertyEditor": {
+      "type": "BioInGamePropertyEditor",
+      "documentation": null
+    },
+    "m_pEndGameMusicEvent": {
+      "type": "WwiseEventPairObject",
+      "documentation": null
+    },
+    "HighestPriorityAudioEnvVolume": {
+      "type": "WwiseEnvironmentVolume",
+      "documentation": null
+    },
+    "EventNotifier": {
+      "type": "BioEventNotifier",
+      "documentation": null
+    },
+    "m_oTreasure": {
+      "type": "SFXPlotTreasure",
+      "documentation": null
+    },
+    "m_PhysicsSound": {
+      "type": "BioPhysicsSounds",
+      "documentation": null
+    },
+    "m_UIWorld": {
+      "type": "BioUIWorld",
+      "documentation": null
+    },
+    "m_oPowerManager": {
+      "type": "BioPowerManager",
+      "documentation": null
+    },
+    "nMemoryBudgetDLC": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nJournalLastSelectedMission": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nJournalLastSelectedAssignment": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCodexLastSelectedPrimary": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCodexLastSelectedSecondary": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fConversationInterruptDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fIdleCameraSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fNoSkipBuffer": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLookAtNoticeMaxRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLookAtNoticeInitialDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLookAtNoticeDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLookAtNoticeSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_srProfileNotSignedInWarningMsg": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_fMaxVFXBudget": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fUsedVFXBudget": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fGameOverPauseTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bForceFullGarbageCollection": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nDesignerEnableDifficultyChecksPlotFlag": {
+      "type": "int",
+      "documentation": null
+    },
+    "bStreamingLevelsResorted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bJournalShowingMissions": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCodexShowingPrimary": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInvokesHintMessages": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCinematicSkip": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisableCinematicSkip": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bForceCinematicDamage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bFlushSFHud": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDebugCameras": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPartyMembersImmuneToExternalForce": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPausedByFocusLoss": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bWaitingForStreamingLoadIdle": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bWaitingForStreamingLoadVisibleComplete": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bGameWasPaused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bKismetShowHUD": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAllowBrowserWheel": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_lstBrowserAlerts": {
+      "type": "BioBrowserStates",
+      "documentation": null
+    },
+    "m_nJournalSortMethod": {
+      "type": "JournalSortMethods",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetPlayersControllerId": {
+      "documentation": null,
+      "signature_members": {
+        "Player": {
+          "type": null,
+          "documentation": null
+        },
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlayersControllerId(LocalPlayer Player, int ControllerId)"
+    },
+    "ClearBrowserWheelStateOverride": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearBrowserWheelStateOverride()"
+    },
+    "AddBrowserWheelStateOverride": {
+      "documentation": null,
+      "signature_members": {
+        "i_SubStateOverride": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddBrowserWheelStateOverride(SubPageState i_SubStateOverride)"
+    },
+    "StartMatch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartMatch()"
+    },
+    "GetGlobalEvents": {
+      "documentation": null,
+      "signature_members": {
+        "EventClass": {
+          "type": null,
+          "documentation": null
+        },
+        "aEvents": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetGlobalEvents(Class<Object> EventClass, out array<SequenceEvent> aEvents)"
+    },
+    "SetRenderStateOfPlayerToDefault": {
+      "documentation": null,
+      "signature_members": {
+        "RenderState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRenderStateOfPlayerToDefault(EPlayerRenderStateSetting RenderState)"
+    },
+    "SetRenderStateOfPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "RenderState": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRenderStateOfPlayer(EPlayerRenderStateSetting RenderState, float fValue)"
+    },
+    "GetRenderStateOfPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "RenderState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetRenderStateOfPlayer(EPlayerRenderStateSetting RenderState)"
+    },
+    "UpdateEnvironmentEffects": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateEnvironmentEffects(float fDeltaT)"
+    },
+    "GetSubtitles": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioSubtitles",
+      "signature": "BioSubtitles GetSubtitles()"
+    },
+    "SetGlobalTlk": {
+      "documentation": null,
+      "signature_members": {
+        "bMale": {
+          "type": null,
+          "documentation": null
+        },
+        "bPurge": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetGlobalTlk(bool bMale, optional bool bPurge)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "CheckState": {
+      "documentation": null,
+      "signature_members": {
+        "nState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckState(int nState)"
+    },
+    "InterruptConversation": {
+      "documentation": null,
+      "signature_members": {
+        "oConv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InterruptConversation(optional BioConversation oConv)"
+    },
+    "EndCurrentFaceOnlyVO": {
+      "documentation": null,
+      "signature_members": {
+        "pFOVO": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EndCurrentFaceOnlyVO(BioSeqAct_FaceOnlyVO pFOVO)"
+    },
+    "EndCurrentConversation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndCurrentConversation()"
+    },
+    "StartConversation": {
+      "documentation": null,
+      "signature_members": {
+        "oConv": {
+          "type": null,
+          "documentation": null
+        },
+        "Owner_": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartConversation(BioConversation oConv, Actor Owner_, Actor Target)"
+    },
+    "GetConversation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioConversation",
+      "signature": "BioConversation GetConversation()"
+    },
+    "ClearCurrentGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearCurrentGame()"
+    },
+    "GetGlobalVariables": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioGlobalVariableTable",
+      "signature": "BioGlobalVariableTable GetGlobalVariables()"
+    },
+    "IsDownloadableContentInitialized": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsDownloadableContentInitialized()"
+    },
+    "InitDownloadableContent": {
+      "documentation": null,
+      "signature_members": {
+        "bFinalAttempt": {
+          "type": null,
+          "documentation": null
+        },
+        "bBlocking": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitDownloadableContent(bool bFinalAttempt, bool bBlocking)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float fDeltaT)"
+    },
+    "HasFocus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasFocus()"
+    },
+    "TickLocal": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TickLocal(float DeltaTime)"
+    },
+    "GetLocalPlayerController": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioPlayerController",
+      "signature": "BioPlayerController GetLocalPlayerController()"
+    },
+    "GetCurrentStreamingChunkName": {
+      "documentation": null,
+      "signature_members": {
+        "nmStreamingChunkName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCurrentStreamingChunkName(out Name nmStreamingChunkName)"
+    },
+    "PlayEndGameMusic": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayEndGameMusic()"
+    },
+    "OverrideVFXPoolSize": {
+      "documentation": null,
+      "signature_members": {
+        "a_pEffect": {
+          "type": null,
+          "documentation": null
+        },
+        "a_nMaxPoolSize": {
+          "type": null,
+          "documentation": null
+        },
+        "a_nMinPoolSize": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OverrideVFXPoolSize(BioVFXTemplate a_pEffect, int a_nMaxPoolSize, int a_nMinPoolSize)"
+    },
+    "GetDefaultVFXPoolSize": {
+      "documentation": null,
+      "signature_members": {
+        "a_pEffect": {
+          "type": null,
+          "documentation": null
+        },
+        "a_rnMaxPoolSize": {
+          "type": null,
+          "documentation": null
+        },
+        "a_rnMinPoolSize": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetDefaultVFXPoolSize(BioVFXTemplate a_pEffect, out int a_rnMaxPoolSize, out int a_rnMinPoolSize)"
+    },
+    "GetVFXPool": {
+      "documentation": null,
+      "signature_members": {
+        "pEffect": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioVisualEffectPool",
+      "signature": "BioVisualEffectPool GetVFXPool(BioVFXTemplate pEffect)"
+    },
+    "GetDetailedVersionString": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetDetailedVersionString()"
+    },
+    "GetEpicVersionString": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetEpicVersionString()"
+    },
+    "GetVersionString": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetVersionString()"
+    },
+    "MoveToArea": {
+      "documentation": null,
+      "signature_members": {
+        "sAreaName": {
+          "type": null,
+          "documentation": null
+        },
+        "sNextAreaStartPoint": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MoveToArea(Name sAreaName, Name sNextAreaStartPoint)"
+    },
+    "GetLocalBoolVariable": {
+      "documentation": null,
+      "signature_members": {
+        "eObjectType": {
+          "type": null,
+          "documentation": null
+        },
+        "GetFunctionName": {
+          "type": null,
+          "documentation": null
+        },
+        "sTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetLocalBoolVariable(BioLocalVariableObjectType eObjectType, Name GetFunctionName, optional Name sTag)"
+    },
+    "GetLocalFloatVariable": {
+      "documentation": null,
+      "signature_members": {
+        "eObjectType": {
+          "type": null,
+          "documentation": null
+        },
+        "GetFunctionName": {
+          "type": null,
+          "documentation": null
+        },
+        "sTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetLocalFloatVariable(BioLocalVariableObjectType eObjectType, Name GetFunctionName, optional Name sTag)"
+    },
+    "GetLocalIntegerVariable": {
+      "documentation": null,
+      "signature_members": {
+        "eObjectType": {
+          "type": null,
+          "documentation": null
+        },
+        "GetFunctionName": {
+          "type": null,
+          "documentation": null
+        },
+        "sTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetLocalIntegerVariable(BioLocalVariableObjectType eObjectType, Name GetFunctionName, optional Name sTag)"
+    },
+    "ExecuteConsequence": {
+      "documentation": null,
+      "signature_members": {
+        "nConsequence": {
+          "type": null,
+          "documentation": null
+        },
+        "nParam": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExecuteConsequence(int nConsequence, optional int nParam)"
+    },
+    "ExecuteStateTransition": {
+      "documentation": null,
+      "signature_members": {
+        "nTransition": {
+          "type": null,
+          "documentation": null
+        },
+        "nParam": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExecuteStateTransition(int nTransition, optional int nParam)"
+    },
+    "CheckConditional": {
+      "documentation": null,
+      "signature_members": {
+        "nConditional": {
+          "type": null,
+          "documentation": null
+        },
+        "nParam": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckConditional(int nConditional, optional int nParam)"
+    },
+    "CauseEvent": {
+      "documentation": null,
+      "signature_members": {
+        "EventName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CauseEvent(Name EventName)"
+    },
+    "GetGuiInputPermission": {
+      "documentation": null,
+      "signature_members": {
+        "nEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetGuiInputPermission(byte nEvent)"
+    },
+    "RequestStartNewGame": {
+      "documentation": null,
+      "signature_members": {
+        "bFemale": {
+          "type": null,
+          "documentation": null
+        },
+        "RemoteEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RequestStartNewGame(optional bool bFemale, optional Name RemoteEvent)"
+    },
+    "OnNewGameStartRequest": {
+      "documentation": null,
+      "signature_members": {
+        "RemoteEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnNewGameStartRequest(Name RemoteEvent)"
+    },
+    "TriggerCinematicSkippedEvent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool TriggerCinematicSkippedEvent()"
+    },
+    "SetStreamingState": {
+      "documentation": null,
+      "signature_members": {
+        "StateName": {
+          "type": null,
+          "documentation": null
+        },
+        "bValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetStreamingState(Name StateName, bool bValue)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

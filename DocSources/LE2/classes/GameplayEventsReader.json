@@ -1,0 +1,118 @@
+{
+  "parent": "GameplayEvents",
+  "package": "Engine",
+  "variables": {
+    "EventIDFilter": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetSessionDuration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetSessionDuration()"
+    },
+    "GetSessionEnd": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetSessionEnd()"
+    },
+    "GetSessionStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetSessionStart()"
+    },
+    "GetSessionTimestamp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetSessionTimestamp()"
+    },
+    "GetPlatform": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetPlatform()"
+    },
+    "GetTitleID": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetTitleID()"
+    },
+    "GetSessionID": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetSessionID()"
+    },
+    "IsEventFiltered": {
+      "documentation": null,
+      "signature_members": {
+        "EventID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsEventFiltered(int EventID)"
+    },
+    "RemoveFilter": {
+      "documentation": null,
+      "signature_members": {
+        "EventID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveFilter(int EventID)"
+    },
+    "AddFilter": {
+      "documentation": null,
+      "signature_members": {
+        "EventID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddFilter(int EventID)"
+    },
+    "ProcessStream": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProcessStream()"
+    },
+    "SerializeHeader": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool SerializeHeader()"
+    },
+    "CloseStatsFile": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseStatsFile()"
+    },
+    "OpenStatsFile": {
+      "documentation": null,
+      "signature_members": {
+        "Filename": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OpenStatsFile(string Filename)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

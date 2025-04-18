@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "STDBY_Rx": {
+      "value": 0,
+      "documentation": null
+    },
+    "STDBY_Tx": {
+      "value": 1,
+      "documentation": null
+    },
+    "STDBY_BadPing": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

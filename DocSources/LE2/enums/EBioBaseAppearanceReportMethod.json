@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BIO_BASE_APPEARANCE_REPORT_METHOD_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_BASE_APPEARANCE_REPORT_METHOD_LOG": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_BASE_APPEARANCE_REPORT_METHOD_DIALOG": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

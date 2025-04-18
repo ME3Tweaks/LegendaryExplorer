@@ -1,11 +1,11 @@
 {
   "Members": {
     "vLoc": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "nmBoneName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     }
   },

@@ -1,0 +1,29 @@
+{
+  "parent": "BioSeqAct_StartConversation",
+  "package": "SFXGame",
+  "variables": {
+    "m_pStage": {
+      "type": "BioStage",
+      "documentation": null
+    },
+    "m_nbNodes": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ConversationStart": {
+      "documentation": null,
+      "signature_members": {
+        "fDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ConversationStart(float fDelta)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

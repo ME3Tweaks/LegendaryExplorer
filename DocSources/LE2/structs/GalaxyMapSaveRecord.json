@@ -1,0 +1,9 @@
+{
+  "Members": {
+    "Planets": {
+      "type": "PlanetSaveRecord",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

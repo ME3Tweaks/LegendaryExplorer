@@ -1,0 +1,177 @@
+{
+  "parent": "UIComp_ListComponentBase",
+  "package": "Engine",
+  "variables": {
+    "bReapplyFormatting": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetMaxElementsPerPage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMaxElementsPerPage()"
+    },
+    "SetMaxElementsPerPage": {
+      "documentation": null,
+      "signature_members": {
+        "NewMaxVisibleElements": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMaxElementsPerPage(int NewMaxVisibleElements)"
+    },
+    "GetElementValue": {
+      "documentation": null,
+      "signature_members": {
+        "ElementIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "CellIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetElementValue(int ElementIndex, optional int CellIndex)"
+    },
+    "EnableColumnHeaderRendering": {
+      "documentation": null,
+      "signature_members": {
+        "bShouldRenderColHeaders": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnableColumnHeaderRendering(optional bool bShouldRenderColHeaders)"
+    },
+    "ShouldRenderColumnHeaders": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldRenderColumnHeaders()"
+    },
+    "ShouldAdjustListBounds": {
+      "documentation": null,
+      "signature_members": {
+        "Orientation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldAdjustListBounds(EUIOrientation Orientation)"
+    },
+    "CalculateAutoSizeColumnWidth": {
+      "documentation": null,
+      "signature_members": {
+        "ColIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "out_ColWidth": {
+          "type": null,
+          "documentation": null
+        },
+        "out_StylePadding": {
+          "type": null,
+          "documentation": null
+        },
+        "bReturnUnformattedValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CalculateAutoSizeColumnWidth(int ColIndex, out float out_ColWidth, out float out_StylePadding, optional bool bReturnUnformattedValue)"
+    },
+    "CalculateAutoSizeRowHeight": {
+      "documentation": null,
+      "signature_members": {
+        "RowIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "out_RowHeight": {
+          "type": null,
+          "documentation": null
+        },
+        "out_StylePadding": {
+          "type": null,
+          "documentation": null
+        },
+        "bReturnUnformattedValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CalculateAutoSizeRowHeight(int RowIndex, out float out_RowHeight, out float out_StylePadding, optional bool bReturnUnformattedValue)"
+    },
+    "GetSchemaCellPosition": {
+      "documentation": null,
+      "signature_members": {
+        "SchemaCellIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetSchemaCellPosition(int SchemaCellIndex)"
+    },
+    "SetSchemaCellSize": {
+      "documentation": null,
+      "signature_members": {
+        "SchemaCellIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "NewCellSize": {
+          "type": null,
+          "documentation": null
+        },
+        "EvalType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetSchemaCellSize(int SchemaCellIndex, float NewCellSize, optional EUIExtentEvalType EvalType)"
+    },
+    "GetSchemaCellSize": {
+      "documentation": null,
+      "signature_members": {
+        "SchemaCellIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "EvalType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetSchemaCellSize(int SchemaCellIndex, optional EUIExtentEvalType EvalType)"
+    },
+    "GetSchemaCellCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetSchemaCellCount()"
+    },
+    "GetCellSchemaProvider": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UIListElementCellProvider",
+      "signature": "UIListElementCellProvider GetCellSchemaProvider()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

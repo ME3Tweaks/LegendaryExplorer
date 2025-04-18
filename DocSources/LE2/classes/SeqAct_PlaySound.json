@@ -1,0 +1,52 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "Engine",
+  "variables": {
+    "PlaySound": {
+      "type": "SoundCue",
+      "documentation": null
+    },
+    "ExtraDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "SoundDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadeInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadeOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "VolumeMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "PitchMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "bSuppressSubtitles": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStopped": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

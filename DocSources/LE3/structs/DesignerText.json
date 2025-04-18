@@ -1,35 +1,35 @@
 {
   "Members": {
     "Text": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Id": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "X": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Y": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Duration": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Scale": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "TimeStamp": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Center": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

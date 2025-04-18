@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "Items": {
+      "type": "FireLinkItem",
+      "documentation": null
+    },
+    "TargetActor": {
+      "type": "CoverReference",
+      "documentation": null
+    },
+    "bDynamicIndexInited": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFallbackLink": {
+      "type": "bool",
+      "documentation": null
+    },
+    "DynamicLinkInfoIndex": {
+      "type": "byte",
+      "documentation": null
+    },
+    "DynamicLinkInfoIndexHigh": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

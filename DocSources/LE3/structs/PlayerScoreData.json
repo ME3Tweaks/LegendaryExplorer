@@ -1,35 +1,35 @@
 {
   "Members": {
     "UniqueId": {
-      "type": null,
+      "type": "UniqueNetId",
       "documentation": null
     },
     "PlayerName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "PlayerMedalIDs": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "KitName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "PlayerID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "fScore": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "ClassLevel": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nTotalXP": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

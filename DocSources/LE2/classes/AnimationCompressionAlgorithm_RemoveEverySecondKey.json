@@ -1,0 +1,17 @@
+{
+  "parent": "AnimationCompressionAlgorithm",
+  "package": "Engine",
+  "variables": {
+    "MinKeys": {
+      "type": "int",
+      "documentation": null
+    },
+    "bStartAtSecondKey": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

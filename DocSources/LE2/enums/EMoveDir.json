@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "MD_Stationary": {
+      "value": 0,
+      "documentation": null
+    },
+    "MD_Forward": {
+      "value": 1,
+      "documentation": null
+    },
+    "MD_Backward": {
+      "value": 2,
+      "documentation": null
+    },
+    "MD_Left": {
+      "value": 3,
+      "documentation": null
+    },
+    "MD_Right": {
+      "value": 4,
+      "documentation": null
+    },
+    "MD_Up": {
+      "value": 5,
+      "documentation": null
+    },
+    "MD_Down": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

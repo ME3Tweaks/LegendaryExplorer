@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "sName": {
+      "type": "string",
+      "documentation": null
+    },
+    "sDescription": {
+      "type": "string",
+      "documentation": null
+    },
+    "sIconResource": {
+      "type": "string",
+      "documentation": null
+    },
+    "oWeaponClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "nWeaponIcon": {
+      "type": "int",
+      "documentation": null
+    },
+    "nAmmo": {
+      "type": "int",
+      "documentation": null
+    },
+    "bEquipped": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHenchIcon": {
+      "type": "bool",
+      "documentation": null
+    },
+    "eWeaponState": {
+      "type": "SFXPowerWheelWeaponState",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

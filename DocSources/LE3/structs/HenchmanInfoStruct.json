@@ -1,35 +1,35 @@
 {
   "Members": {
     "className": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "Tag": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "PrettyName": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "AlternatePrettyName": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "AlternateHenchNamePlotFlag": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "HenchAcquiredPlotID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "HenchInSquadPlotID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "HenchmanImage": {
-      "type": null,
+      "type": "string",
       "documentation": null
     }
   },

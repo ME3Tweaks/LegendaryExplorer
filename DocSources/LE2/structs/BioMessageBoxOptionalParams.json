@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "srAText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srBText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "nIconIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "bNoFade": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bModal": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForcePlayersOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "nIconSet": {
+      "type": "BioMessageBoxIconSets",
+      "documentation": null
+    },
+    "m_SkinType": {
+      "type": "SFX_MB_Skin",
+      "documentation": null
+    },
+    "m_TextAlign": {
+      "type": "SFX_MB_TextAlign",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,65 @@
+{
+  "Members": {
+    "RotAmplitude": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "RotFrequency": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "RotSinOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "LocAmplitude": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "LocFrequency": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "LocSinOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "ShakeName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "TimeToGo": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "RotParam": {
+      "type": "ShakeParams",
+      "documentation": null
+    },
+    "LocParam": {
+      "type": "ShakeParams",
+      "documentation": null
+    },
+    "FOVAmplitude": {
+      "type": "float",
+      "documentation": null
+    },
+    "FOVFrequency": {
+      "type": "float",
+      "documentation": null
+    },
+    "FOVSinOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "FOVParam": {
+      "type": "EShakeParam",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

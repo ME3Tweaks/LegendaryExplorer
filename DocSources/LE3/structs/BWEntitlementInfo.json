@@ -1,11 +1,11 @@
 {
   "Members": {
     "sTokens": {
-      "type": null,
+      "type": "BWEntitlementToken",
       "documentation": null
     },
     "Id": {
-      "type": null,
+      "type": "BWEntitlementId",
       "documentation": null
     }
   },

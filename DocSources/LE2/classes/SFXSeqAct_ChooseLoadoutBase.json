@@ -1,0 +1,369 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "ShepardImage": {
+      "type": "string",
+      "documentation": null
+    },
+    "LoadoutWeapons": {
+      "type": "Class",
+      "documentation": null
+    },
+    "SubMenuEnabledWeapons": {
+      "type": "LoadoutWeaponInfo",
+      "documentation": null
+    },
+    "AvailableHenchmen": {
+      "type": "Name",
+      "documentation": null
+    },
+    "WeaponMenuEnabledWeaponIDs": {
+      "type": "int",
+      "documentation": null
+    },
+    "TopMenu": {
+      "type": "BioSFHandler_ChoiceGUI",
+      "documentation": null
+    },
+    "SubMenu": {
+      "type": "BioSFHandler_ChoiceGUI",
+      "documentation": null
+    },
+    "SpecialWeaponToggleMenu": {
+      "type": "BioSFHandler_ChoiceGUI",
+      "documentation": null
+    },
+    "WeaponEquipSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "SubMenuWeaponIdx": {
+      "type": "int",
+      "documentation": null
+    },
+    "ButtonText_Choose": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ButtonText_Exit": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ButtonText_SquadWeapons": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ButtonText_CustomizeSquadWeapons": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ButtonText_CustomizeWeapons": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ButtonText_Accept": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ButtonText_Back": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "WeaponMenuSubHeading": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "LeftBracketToken": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "RightBracketToken": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "WeaponClassTokenString": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ClassDescriptionTokenString": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "PawnActiveWeaponsString": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ShepardNameString": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "SingleCustomToken": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "WeaponDescriptionTokenString": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CurrentPawn": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bFinished": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAllHenchmen": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Update(float DeltaTime)"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "GetHenchmanLoadoutData": {
+      "documentation": null,
+      "signature_members": {
+        "HenchClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "LoadoutInfo",
+      "signature": "LoadoutInfo GetHenchmanLoadoutData(Name HenchClassName)"
+    },
+    "GetHenchmanInfo": {
+      "documentation": null,
+      "signature_members": {
+        "HenchClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "HenchmanInfoStruct",
+      "signature": "HenchmanInfoStruct GetHenchmanInfo(Name HenchClassName)"
+    },
+    "PrepareHenchmanRecords": {
+      "documentation": null,
+      "signature_members": {
+        "Tag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrepareHenchmanRecords(Name Tag)"
+    },
+    "BuildPawnWeaponList": {
+      "documentation": null,
+      "signature_members": {
+        "PawnID": {
+          "type": null,
+          "documentation": null
+        },
+        "Entry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BuildPawnWeaponList(int PawnID, out SFXChoiceEntry Entry)"
+    },
+    "ShowCharacterMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowCharacterMenu()"
+    },
+    "CharacterMenuHandler": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CharacterMenuHandler(bool bAPressed, int nContext)"
+    },
+    "PreparePlayerLoadout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreparePlayerLoadout()"
+    },
+    "PrepareHenchmanLoadout": {
+      "documentation": null,
+      "signature_members": {
+        "HenchIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrepareHenchmanLoadout(int HenchIdx)"
+    },
+    "FindImage": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Texture2D",
+      "signature": "Texture2D FindImage(string Path)"
+    },
+    "ShowWeaponsTopMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowWeaponsTopMenu()"
+    },
+    "TopMenuHandler": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TopMenuHandler(bool bAPressed, int nContext)"
+    },
+    "ApplyHenchmanLoadout": {
+      "documentation": null,
+      "signature_members": {
+        "HenchIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyHenchmanLoadout(int HenchIdx)"
+    },
+    "ApplyPlayerLoadout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyPlayerLoadout()"
+    },
+    "GetWeaponClassUnlockedCount": {
+      "documentation": null,
+      "signature_members": {
+        "GroupIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetWeaponClassUnlockedCount(int GroupIdx)"
+    },
+    "CanPawnUseSpecialWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "PawnID": {
+          "type": null,
+          "documentation": null
+        },
+        "WeaponClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanPawnUseSpecialWeapon(int PawnID, Class<SFXWeapon> WeaponClass)"
+    },
+    "CanPawnUseWeaponClass": {
+      "documentation": null,
+      "signature_members": {
+        "PawnID": {
+          "type": null,
+          "documentation": null
+        },
+        "WeaponGroupID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanPawnUseWeaponClass(int PawnID, ELoadoutWeapons WeaponGroupID)"
+    },
+    "GetPlayerLoadoutData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "LoadoutInfo",
+      "signature": "LoadoutInfo GetPlayerLoadoutData()"
+    },
+    "ShowWeaponSubMenu": {
+      "documentation": null,
+      "signature_members": {
+        "GroupIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowWeaponSubMenu(int GroupIdx)"
+    },
+    "SubMenuHandler": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SubMenuHandler(bool bAPressed, int nContext)"
+    },
+    "PlayEquipSound": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayEquipSound()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "nTwitchAnim": {
+      "type": "int",
+      "documentation": null
+    },
+    "fDelay": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

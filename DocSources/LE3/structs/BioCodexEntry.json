@@ -1,27 +1,27 @@
 {
   "Members": {
     "VfTable": {
-      "type": null,
+      "type": "Pointer",
       "documentation": null
     },
     "CodexSound": {
-      "type": null,
+      "type": "WwiseEvent",
       "documentation": null
     },
     "srTitle": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "srDescription": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "nTextureIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nPriority": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

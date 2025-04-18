@@ -1,0 +1,45 @@
+{
+  "EnumValues": {
+    "INV_RESOURCE_CREDITS": {
+      "value": 0,
+      "documentation": null
+    },
+    "INV_RESOURCE_MEDIGEL": {
+      "value": 1,
+      "documentation": null
+    },
+    "INV_RESOURCE_SALVAGE": {
+      "value": 2,
+      "documentation": null
+    },
+    "INV_RESOURCE_GRENADES": {
+      "value": 3,
+      "documentation": null
+    },
+    "INV_RESOURCE_RARE1_EEZO": {
+      "value": 4,
+      "documentation": null
+    },
+    "INV_RESOURCE_RARE2_IRIDIUM": {
+      "value": 5,
+      "documentation": null
+    },
+    "INV_RESOURCE_RARE3_PALLADIUM": {
+      "value": 6,
+      "documentation": null
+    },
+    "INV_RESOURCE_RARE4_PLATINUM": {
+      "value": 7,
+      "documentation": null
+    },
+    "INV_RESOURCE_PROBES": {
+      "value": 8,
+      "documentation": null
+    },
+    "INV_RESOURCE_FUEL": {
+      "value": 9,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

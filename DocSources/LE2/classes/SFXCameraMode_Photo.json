@@ -1,0 +1,114 @@
+{
+  "parent": "SFXCameraMode",
+  "package": "SFXGame",
+  "variables": {
+    "ExternalModifyPPSettings": {
+      "type": "ModifyPostProcess",
+      "documentation": null
+    },
+    "__ModifyPostProcess__Delegate": {
+      "type": "ModifyPostProcess",
+      "documentation": null
+    },
+    "RotationInterpSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "FOVInterpSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentRoll": {
+      "type": "float",
+      "documentation": null
+    },
+    "TargetRoll": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentFOV": {
+      "type": "float",
+      "documentation": null
+    },
+    "TargetFOV": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "UpdateRollAndFOV": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateRollAndFOV(float DeltaTime)"
+    },
+    "UpdateOffset": {
+      "documentation": null,
+      "signature_members": {
+        "Location": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateOffset(Vector Location)"
+    },
+    "ModifyPostProcessSettings": {
+      "documentation": null,
+      "signature_members": {
+        "PPSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyPostProcessSettings(out PostProcessSettings PPSettings)"
+    },
+    "ResetRoll": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetRoll()"
+    },
+    "InitFromMode": {
+      "documentation": null,
+      "signature_members": {
+        "NewFOV": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitFromMode(float NewFOV)"
+    },
+    "ModifyPostProcess": {
+      "documentation": null,
+      "signature_members": {
+        "PPSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyPostProcess(out PostProcessSettings PPSettings)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

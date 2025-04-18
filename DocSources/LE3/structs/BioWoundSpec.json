@@ -1,47 +1,47 @@
 {
   "Members": {
     "m_mWoundEllipse": {
-      "type": null,
+      "type": "Matrix",
       "documentation": null
     },
     "HitBox": {
-      "type": null,
+      "type": "BoxSphereBounds",
       "documentation": null
     },
     "m_nmPart": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "HitBoxBone": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "m_pWoundModel": {
-      "type": null,
+      "type": "SkeletalMesh",
       "documentation": null
     },
     "m_pBloodTexture": {
-      "type": null,
+      "type": "Texture2D",
       "documentation": null
     },
     "m_pEffect": {
-      "type": null,
+      "type": "RvrClientEffectInterface",
       "documentation": null
     },
     "m_fEffectDuration": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "m_fEffectRadius": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bIsActive": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "m_eWoundSeverity": {
-      "type": null,
+      "type": "EWoundSeverity",
       "documentation": null
     }
   },

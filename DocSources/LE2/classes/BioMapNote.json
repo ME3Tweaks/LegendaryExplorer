@@ -1,0 +1,113 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "m_sVarName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sRefName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_oAreaMap": {
+      "type": "GFxMovieInfo",
+      "documentation": null
+    },
+    "m_fVisibleRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_sMapNoteName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_nLinkedQuest": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_sJournalTask": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "Argument": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nPrevRegionIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nPrevPlotIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fUpdateDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fUpdateTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bReducedVisibility": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bShowOnRadar": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bShowOnAreamap": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bLinkedToJournal": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSeen": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bRenderInWorld": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bRenderInWorld_LastTick": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Region": {
+      "type": "EBioRegionAutoSet",
+      "documentation": null
+    },
+    "Plot": {
+      "type": "EBioPlotAutoSet",
+      "documentation": null
+    },
+    "Conditional": {
+      "type": "EBioAutoSet",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ShowMapNote": {
+      "documentation": null,
+      "signature_members": {
+        "bAreaMap": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowMapNote(bool bAreaMap)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

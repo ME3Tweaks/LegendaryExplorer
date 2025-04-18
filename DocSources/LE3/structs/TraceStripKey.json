@@ -1,11 +1,11 @@
 {
   "Members": {
     "fTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "fValue": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

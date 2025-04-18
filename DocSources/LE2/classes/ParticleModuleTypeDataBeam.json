@@ -1,0 +1,61 @@
+{
+  "parent": "ParticleModuleTypeDataBase",
+  "package": "Engine",
+  "variables": {
+    "EndPointRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    },
+    "EndPointDirectionRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    },
+    "Distance": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "EmitterStrength": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "TargetStrength": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "TessellationFactor": {
+      "type": "int",
+      "documentation": null
+    },
+    "TextureTile": {
+      "type": "int",
+      "documentation": null
+    },
+    "RenderGeometry": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RenderDirectLine": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RenderLines": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RenderTessellation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "BeamMethod": {
+      "type": "EBeamMethod",
+      "documentation": null
+    },
+    "EndPointMethod": {
+      "type": "EBeamEndPointMethod",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

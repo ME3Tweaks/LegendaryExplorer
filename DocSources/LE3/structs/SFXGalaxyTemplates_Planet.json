@@ -1,55 +1,55 @@
 {
   "Members": {
     "Nebulae": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "Sunlight": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "Planet": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "PlanetSphere": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "Corona": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "Object": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "Clouds": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "Card": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "PlanetRing": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "BackgroundCloud": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "Citadel": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "Camera": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "Scanner": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     }
   },

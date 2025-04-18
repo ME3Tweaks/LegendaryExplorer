@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "eBioAnimAdd_Primary": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimAdd_Additive": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimAdd_BasePose": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

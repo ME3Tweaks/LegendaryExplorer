@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "EQUIPMENT_TYPE_INVALID": {
+      "value": 0,
+      "documentation": null
+    },
+    "EQUIPMENT_TYPE_ARMOR": {
+      "value": 1,
+      "documentation": null
+    },
+    "EQUIPMENT_TYPE_OMNITOOL": {
+      "value": 2,
+      "documentation": null
+    },
+    "EQUIPMENT_TYPE_WEAPON": {
+      "value": 3,
+      "documentation": null
+    },
+    "EQUIPMENT_TYPE_BIOAMP": {
+      "value": 4,
+      "documentation": null
+    },
+    "EQUIPMENT_TYPE_GRENADE": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

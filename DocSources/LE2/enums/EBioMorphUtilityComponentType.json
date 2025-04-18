@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "BMU_Component_Unknown": {
+      "value": 0,
+      "documentation": null
+    },
+    "BMU_Component_Picker": {
+      "value": 1,
+      "documentation": null
+    },
+    "BMU_Component_Slider": {
+      "value": 2,
+      "documentation": null
+    },
+    "BMU_Component_Combo": {
+      "value": 3,
+      "documentation": null
+    },
+    "BMU_Component_RGBA": {
+      "value": 4,
+      "documentation": null
+    },
+    "BMU_Component_Compound": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

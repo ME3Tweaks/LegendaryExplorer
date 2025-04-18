@@ -1,15 +1,15 @@
 {
   "Members": {
     "firstName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "faceCode": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Id": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

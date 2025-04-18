@@ -1,0 +1,316 @@
+{
+  "parent": "SFXGameActorInterpTrack",
+  "package": "SFXGame",
+  "variables": {
+    "m_aPropKeys": {
+      "type": "BioPropTrackData",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PropWepActionTimingDisableIK": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float PropWepActionTimingDisableIK(Object pWeaponIn)"
+    },
+    "PropWepActionExecuteDisableIK": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        },
+        "pActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PropWepActionExecuteDisableIK(Object pWeaponIn, BioPawn pActor)"
+    },
+    "PropWepActionTimingEnableIK": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float PropWepActionTimingEnableIK(Object pWeaponIn)"
+    },
+    "PropWepActionExecuteEnableIK": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        },
+        "pActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PropWepActionExecuteEnableIK(Object pWeaponIn, BioPawn pActor)"
+    },
+    "PropWepActionTimingFireWithTracer": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float PropWepActionTimingFireWithTracer(Object pWeaponIn)"
+    },
+    "PropWepActionExecuteFireWithTracer": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        },
+        "pActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PropWepActionExecuteFireWithTracer(Object pWeaponIn, BioPawn pActor)"
+    },
+    "PropWepActionTimingReload": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float PropWepActionTimingReload(Object pWeaponIn)"
+    },
+    "PropWepActionExecuteReload": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        },
+        "pActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PropWepActionExecuteReload(Object pWeaponIn, BioPawn pActor)"
+    },
+    "PropWepActionTimingCollapse": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float PropWepActionTimingCollapse(Object pWeaponIn)"
+    },
+    "PropWepActionExecuteCollapse": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        },
+        "pActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PropWepActionExecuteCollapse(Object pWeaponIn, BioPawn pActor)"
+    },
+    "PropWepActionTimingExpand": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float PropWepActionTimingExpand(Object pWeaponIn)"
+    },
+    "PropWepActionExecuteExpand": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        },
+        "pActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PropWepActionExecuteExpand(Object pWeaponIn, BioPawn pActor)"
+    },
+    "PropWepActionTimingFire": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float PropWepActionTimingFire(Object pWeaponIn)"
+    },
+    "PropWepActionExecuteFire": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        },
+        "pActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PropWepActionExecuteFire(Object pWeaponIn, BioPawn pActor)"
+    },
+    "FindPartSysMaxDuration": {
+      "documentation": null,
+      "signature_members": {
+        "pParticleSystem": {
+          "type": null,
+          "documentation": null
+        },
+        "nLooping": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float FindPartSysMaxDuration(ParticleSystem pParticleSystem, out int nLooping)"
+    },
+    "GetWeaponMesh": {
+      "documentation": null,
+      "signature_members": {
+        "cWeaponIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SkeletalMesh",
+      "signature": "SkeletalMesh GetWeaponMesh(Class<Object> cWeaponIn)"
+    },
+    "PropUnequipWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "pActor": {
+          "type": null,
+          "documentation": null
+        },
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        },
+        "nSpawned": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PropUnequipWeapon(BioPawn pActor, Object pWeaponIn, int nSpawned)"
+    },
+    "PropUnequipWeaponForInst": {
+      "documentation": null,
+      "signature_members": {
+        "cWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "pInst": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PropUnequipWeaponForInst(Class<Object> cWeapon, BioEvtSysTrackPropInst pInst)"
+    },
+    "PropEquipWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "cWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "pInst": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PropEquipWeapon(Class<Object> cWeapon, BioEvtSysTrackPropInst pInst)"
+    },
+    "PropGetPawnWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "cWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "pInst": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Object",
+      "signature": "Object PropGetPawnWeapon(Class<Object> cWeapon, BioEvtSysTrackPropInst pInst)"
+    },
+    "GetNewTrackSubMenuName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetNewTrackSubMenuName()"
+    },
+    "KeyDataDisplayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataDisplayName()"
+    },
+    "KeyDataArrayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataArrayName()"
+    },
+    "NewKeyDefaultName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string NewKeyDefaultName()"
+    },
+    "AllowKeyNaming": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AllowKeyNaming()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,19 +1,19 @@
 {
   "Members": {
     "ConstraintWeights": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Nav": {
-      "type": null,
+      "type": "NavigationPoint",
       "documentation": null
     },
     "Weight": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "FailedIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

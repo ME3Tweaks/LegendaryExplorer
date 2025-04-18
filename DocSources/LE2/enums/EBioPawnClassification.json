@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "BPC_General": {
+      "value": 0,
+      "documentation": null
+    },
+    "BPC_ActionStation": {
+      "value": 1,
+      "documentation": null
+    },
+    "BPC_Ambient": {
+      "value": 2,
+      "documentation": null
+    },
+    "BPC_UIWorld": {
+      "value": 3,
+      "documentation": null
+    },
+    "BPC_Combat": {
+      "value": 4,
+      "documentation": null
+    },
+    "BPC_Player": {
+      "value": 5,
+      "documentation": null
+    },
+    "BPC_Party": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

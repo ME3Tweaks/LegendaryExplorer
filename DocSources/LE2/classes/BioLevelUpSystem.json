@@ -1,0 +1,66 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aLevelUp2DA": {
+      "type": "Bio2DA",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AutoLevelUpPowers": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AutoLevelUpPowers(BioPawn Pawn)"
+    },
+    "AttemptLevelUp": {
+      "documentation": null,
+      "signature_members": {
+        "Squad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AttemptLevelUp(BioPlayerSquad Squad)"
+    },
+    "ExperienceNeededForLevel": {
+      "documentation": null,
+      "signature_members": {
+        "Level": {
+          "type": null,
+          "documentation": null
+        },
+        "experience": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ExperienceNeededForLevel(int Level, out int experience)"
+    },
+    "LevelUpPawn": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        },
+        "newLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LevelUpPawn(BioPawn Pawn, int newLevel)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

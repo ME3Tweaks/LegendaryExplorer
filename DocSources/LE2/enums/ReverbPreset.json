@@ -1,0 +1,97 @@
+{
+  "EnumValues": {
+    "REVERB_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "REVERB_Bathroom": {
+      "value": 1,
+      "documentation": null
+    },
+    "REVERB_StoneRoom": {
+      "value": 2,
+      "documentation": null
+    },
+    "REVERB_Auditorium": {
+      "value": 3,
+      "documentation": null
+    },
+    "REVERB_ConcertHall": {
+      "value": 4,
+      "documentation": null
+    },
+    "REVERB_Cave": {
+      "value": 5,
+      "documentation": null
+    },
+    "REVERB_Hallway": {
+      "value": 6,
+      "documentation": null
+    },
+    "REVERB_StoneCorridor": {
+      "value": 7,
+      "documentation": null
+    },
+    "REVERB_Alley": {
+      "value": 8,
+      "documentation": null
+    },
+    "REVERB_Forest": {
+      "value": 9,
+      "documentation": null
+    },
+    "REVERB_City": {
+      "value": 10,
+      "documentation": null
+    },
+    "REVERB_Mountains": {
+      "value": 11,
+      "documentation": null
+    },
+    "REVERB_Quarry": {
+      "value": 12,
+      "documentation": null
+    },
+    "REVERB_Plain": {
+      "value": 13,
+      "documentation": null
+    },
+    "REVERB_ParkingLot": {
+      "value": 14,
+      "documentation": null
+    },
+    "REVERB_SewerPipe": {
+      "value": 15,
+      "documentation": null
+    },
+    "REVERB_Underwater": {
+      "value": 16,
+      "documentation": null
+    },
+    "REVERB_SmallRoom": {
+      "value": 17,
+      "documentation": null
+    },
+    "REVERB_MediumRoom": {
+      "value": 18,
+      "documentation": null
+    },
+    "REVERB_LargeRoom": {
+      "value": 19,
+      "documentation": null
+    },
+    "REVERB_MediumHall": {
+      "value": 20,
+      "documentation": null
+    },
+    "REVERB_LargeHall": {
+      "value": 21,
+      "documentation": null
+    },
+    "REVERB_Plate": {
+      "value": 22,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

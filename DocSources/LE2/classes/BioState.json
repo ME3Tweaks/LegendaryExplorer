@@ -1,0 +1,56 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "StateTransitions": {
+      "type": "BioTransition",
+      "documentation": null
+    },
+    "StateName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "AnimationName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bFinishAnimationBeforeTransition": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetTransition": {
+      "documentation": null,
+      "signature_members": {
+        "ToState": {
+          "type": null,
+          "documentation": null
+        },
+        "NamedTransition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioTransition",
+      "signature": "BioTransition GetTransition(Name ToState, optional Name NamedTransition)"
+    },
+    "HasTransitionTo": {
+      "documentation": null,
+      "signature_members": {
+        "ToState": {
+          "type": null,
+          "documentation": null
+        },
+        "NamedTransition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasTransitionTo(Name ToState, optional Name NamedTransition)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

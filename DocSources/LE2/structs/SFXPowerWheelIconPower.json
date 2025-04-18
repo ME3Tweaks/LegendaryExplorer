@@ -1,0 +1,77 @@
+{
+  "Members": {
+    "oMappedIcon": {
+      "type": "SFXPowerWheelButtonIcon",
+      "documentation": null
+    },
+    "sName": {
+      "type": "string",
+      "documentation": null
+    },
+    "sDescription": {
+      "type": "string",
+      "documentation": null
+    },
+    "sMappedBGPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "pPower": {
+      "type": "SFXPower",
+      "documentation": null
+    },
+    "pPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "nmPowerName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nIcon": {
+      "type": "int",
+      "documentation": null
+    },
+    "nCooldownValue": {
+      "type": "int",
+      "documentation": null
+    },
+    "nPowerID": {
+      "type": "int",
+      "documentation": null
+    },
+    "bSelected": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDelayedFlash": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMapped": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDragHover": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bQuickSlotIcon": {
+      "type": "bool",
+      "documentation": null
+    },
+    "eState": {
+      "type": "SFXPowerWheelPowerState",
+      "documentation": null
+    },
+    "eDesiredState": {
+      "type": "SFXPowerWheelPowerState",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

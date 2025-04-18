@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "eBioAnimBlend_NOBLEND": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimBlend_BLENDUP": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimBlend_BLENDDOWN": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioAnimBlend_BLENDDIRECT": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

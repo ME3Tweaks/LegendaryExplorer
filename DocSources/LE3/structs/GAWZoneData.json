@@ -1,19 +1,19 @@
 {
   "Members": {
     "srZoneName": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "srZoneDescription": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "ZoneDisplayNumber": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "ZoneID": {
-      "type": null,
+      "type": "EGAWZone",
       "documentation": null
     }
   },

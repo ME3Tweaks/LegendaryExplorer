@@ -1,0 +1,43 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGameContent",
+  "variables": {},
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "HandleRestockAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "oInventory": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleRestockAmmo(SFXInventoryManager oInventory)"
+    },
+    "HandleRestockMediGel": {
+      "documentation": null,
+      "signature_members": {
+        "oInventory": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleRestockMediGel(SFXInventoryManager oInventory)"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

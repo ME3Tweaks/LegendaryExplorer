@@ -1,23 +1,23 @@
 {
   "Members": {
     "PlotIDSet": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "PlotIDClear": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "PlotInts": {
-      "type": null,
+      "type": "SetMissionPlotIntPair",
       "documentation": null
     },
     "PlotCond": {
-      "type": null,
+      "type": "SetMissionCondSetPair",
       "documentation": null
     },
     "Modifier": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     }
   },

@@ -1,0 +1,49 @@
+{
+  "parent": "SoundNode",
+  "package": "Engine",
+  "variables": {
+    "AmplitudeMin": {
+      "type": "float",
+      "documentation": null
+    },
+    "AmplitudeMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "FrequencyMin": {
+      "type": "float",
+      "documentation": null
+    },
+    "FrequencyMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "OffsetMin": {
+      "type": "float",
+      "documentation": null
+    },
+    "OffsetMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "CenterMin": {
+      "type": "float",
+      "documentation": null
+    },
+    "CenterMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "bModulateVolume": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bModulatePitch": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

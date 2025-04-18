@@ -1,0 +1,27 @@
+{
+  "parent": "SFXCameraMode_Cover",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "GetCameraLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetCameraLocation()"
+    },
+    "GetCollisionCameraHook": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetCollisionCameraHook()"
+    },
+    "Hack_IsViable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool Hack_IsViable()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

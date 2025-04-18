@@ -1,11 +1,11 @@
 {
   "Members": {
     "WeaponModClassNames": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "WeaponClassName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     }
   },

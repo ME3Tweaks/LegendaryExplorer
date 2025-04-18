@@ -1,0 +1,32 @@
+{
+  "parent": "SFXInterpTrackToggleBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_LightEnvSeq": {
+      "type": "BioSeqAct_ToggleLightEnv",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "KeyDataDisplayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataDisplayName()"
+    },
+    "NewKeyDefaultName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string NewKeyDefaultName()"
+    },
+    "AllowKeyNaming": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AllowKeyNaming()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

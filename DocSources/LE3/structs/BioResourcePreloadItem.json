@@ -1,23 +1,23 @@
 {
   "Members": {
     "BinkPreloader": {
-      "type": null,
+      "type": "BioBinkAsyncPreloader",
       "documentation": null
     },
     "pObject": {
-      "type": null,
+      "type": "Object",
       "documentation": null
     },
     "nKeyIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "fTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bPreloadFired": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

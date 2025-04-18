@@ -1,163 +1,163 @@
 {
   "Members": {
     "Appearance": {
-      "type": null,
+      "type": "AppearanceSaveRecord",
       "documentation": null
     },
     "firstName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Powers": {
-      "type": null,
+      "type": "PowerSaveRecord",
       "documentation": null
     },
     "Weapons": {
-      "type": null,
+      "type": "WeaponSaveRecord",
       "documentation": null
     },
     "GAWAssets": {
-      "type": null,
+      "type": "GAWAssetSaveInfo",
       "documentation": null
     },
     "WeaponMods": {
-      "type": null,
+      "type": "WeaponModSaveRecord",
       "documentation": null
     },
     "LoadoutWeaponGroups": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "HotKeys": {
-      "type": null,
+      "type": "HotKeySaveRecord",
       "documentation": null
     },
     "faceCode": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "PlayerClass": {
-      "type": null,
+      "type": "Class",
       "documentation": null
     },
     "LoadoutWeapons": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "ME1ImportBonuses": {
-      "type": null,
+      "type": "ME1ImportBonusSaveRecord",
       "documentation": null
     },
     "CharacterGUID": {
-      "type": null,
+      "type": "Guid",
       "documentation": null
     },
     "PlayerClassName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "MappedPower1": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "MappedPower2": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "MappedPower3": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "PrimaryWeapon": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "SecondaryWeapon": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "srClassFriendlyName": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Level": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "CurrentXP": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "LastName": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "TalentPoints": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "CurrentHealth": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Credits": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Medigel": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Grenades": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Eezo": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Iridium": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Palladium": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Platinum": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Probes": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "CurrentFuel": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bIsFemale": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bCombatPawn": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bInjuredPawn": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bUseCasualAppearance": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "Origin": {
-      "type": null,
+      "type": "EOriginType",
       "documentation": null
     },
     "Notoriety": {
-      "type": null,
+      "type": "ENotorietyType",
       "documentation": null
     }
   },

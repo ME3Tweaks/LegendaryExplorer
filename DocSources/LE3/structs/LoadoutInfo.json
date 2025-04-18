@@ -1,11 +1,11 @@
 {
   "Members": {
     "WeaponClasses": {
-      "type": null,
+      "type": "ELoadoutWeapons",
       "documentation": null
     },
     "className": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     }
   },

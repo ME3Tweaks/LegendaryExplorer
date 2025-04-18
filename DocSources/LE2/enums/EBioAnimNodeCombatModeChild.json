@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "BIO_ANIM_NODE_COMBAT_MODE_CHILD_NONCOMBAT": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_ANIM_NODE_COMBAT_MODE_CHILD_COMBAT": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_ANIM_NODE_COMBAT_MODE_CHILD_ENTERCOMBAT": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_ANIM_NODE_COMBAT_MODE_CHILD_EXITCOMBAT": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

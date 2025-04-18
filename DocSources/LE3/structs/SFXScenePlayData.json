@@ -1,23 +1,23 @@
 {
   "Members": {
     "fScenePosition": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bSceneNeedsStartup": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bSceneNeedsSmallTick": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bSceneFinished": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bSceneActive": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

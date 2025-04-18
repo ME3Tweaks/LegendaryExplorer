@@ -1,0 +1,29 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "Input": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "R": {
+      "type": "bool",
+      "documentation": null
+    },
+    "G": {
+      "type": "bool",
+      "documentation": null
+    },
+    "B": {
+      "type": "bool",
+      "documentation": null
+    },
+    "A": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

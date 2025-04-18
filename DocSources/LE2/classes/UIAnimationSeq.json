@@ -1,0 +1,77 @@
+{
+  "parent": "UIAnimation",
+  "package": "Engine",
+  "variables": {
+    "Tracks": {
+      "type": "UIAnimTrack",
+      "documentation": null
+    },
+    "SeqName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "LoopMode": {
+      "type": "EUIAnimationLoopMode",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetSequenceLength": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetSequenceLength()"
+    },
+    "GetTrackLength": {
+      "documentation": null,
+      "signature_members": {
+        "TrackIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "out_TrackLength": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetTrackLength(int TrackIndex, out float out_TrackLength)"
+    },
+    "GetFrameLength": {
+      "documentation": null,
+      "signature_members": {
+        "TrackIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "FrameIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "out_FrameLength": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFrameLength(int TrackIndex, int FrameIndex, out float out_FrameLength)"
+    },
+    "IsValidFrameIndex": {
+      "documentation": null,
+      "signature_members": {
+        "TrackIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "FrameIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidFrameIndex(int TrackIndex, int FrameIndex)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

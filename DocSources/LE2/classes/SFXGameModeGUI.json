@@ -1,0 +1,156 @@
+{
+  "parent": "SFXGameModeBase",
+  "package": "SFXGame",
+  "variables": {
+    "StackedGuis": {
+      "type": "Name",
+      "documentation": null
+    },
+    "DeathCam": {
+      "type": "BioCameraBehaviorFlourish",
+      "documentation": null
+    },
+    "InstantTransition": {
+      "type": "SFXCameraTransition_GalaxyMap",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "TryEnterPhotoMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TryEnterPhotoMode()"
+    },
+    "SlideshowExit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SlideshowExit()"
+    },
+    "SlideshowAdvance": {
+      "documentation": null,
+      "signature_members": {
+        "bForward": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SlideshowAdvance(bool bForward)"
+    },
+    "GetSlideshowHandler": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXSFHandler_Slideshow",
+      "signature": "SFXSFHandler_Slideshow GetSlideshowHandler()"
+    },
+    "HideAreaMap": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HideAreaMap()"
+    },
+    "DecryptSelect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DecryptSelect()"
+    },
+    "DecryptRight": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DecryptRight()"
+    },
+    "DecryptLeft": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DecryptLeft()"
+    },
+    "DecryptDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DecryptDown()"
+    },
+    "DecryptUp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DecryptUp()"
+    },
+    "PrevCerberusItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PrevCerberusItem()"
+    },
+    "NextCerberusItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NextCerberusItem()"
+    },
+    "DeactivateSpecifier": {
+      "documentation": null,
+      "signature_members": {
+        "ModeSpecifier": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DeactivateSpecifier(Name ModeSpecifier)"
+    },
+    "ActivateSpecifier": {
+      "documentation": null,
+      "signature_members": {
+        "ModeSpecifier": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivateSpecifier(Name ModeSpecifier)"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "GetCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "OldCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "PreserveTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Transition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCameraMode(SFXCameraMode OldCameraMode, out int PreserveTarget, out float TransitionTime, out SFXCameraMode_Interpolate Transition)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

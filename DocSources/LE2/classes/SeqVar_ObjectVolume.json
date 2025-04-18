@@ -1,0 +1,25 @@
+{
+  "parent": "SeqVar_Object",
+  "package": "Engine",
+  "variables": {
+    "ContainedObjects": {
+      "type": "Object",
+      "documentation": null
+    },
+    "ExcludeClassList": {
+      "type": "Class",
+      "documentation": null
+    },
+    "LastUpdateTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bCollidingOnly": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

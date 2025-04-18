@@ -1,0 +1,33 @@
+{
+  "parent": "SFXPower",
+  "package": "SFXGameContent_Powers",
+  "variables": {
+    "RobotStunChance": {
+      "type": "float",
+      "documentation": null
+    },
+    "RobotStunLength": {
+      "type": "float",
+      "documentation": null
+    },
+    "OverheatChance": {
+      "type": "float",
+      "documentation": null
+    },
+    "OverheatLength": {
+      "type": "float",
+      "documentation": null
+    },
+    "bSquadPower": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bExplodesRobots": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

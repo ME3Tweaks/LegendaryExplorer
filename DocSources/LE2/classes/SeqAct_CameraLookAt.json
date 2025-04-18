@@ -1,0 +1,88 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "TextDisplay": {
+      "type": "string",
+      "documentation": null
+    },
+    "InterpSpeedRange": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "InFocusFOV": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "FocusBoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "TotalTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "CameraFOV": {
+      "type": "float",
+      "documentation": null
+    },
+    "RemainingTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bAffectCamera": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAlwaysFocus": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTurnInPlace": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreTrace": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAffectHead": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRotatePlayerWithCamera": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bToggleGodMode": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLeaveCameraRotation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableInput": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUsedTimer": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCheckLineOfSight": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

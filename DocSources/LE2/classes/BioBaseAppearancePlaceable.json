@@ -1,0 +1,97 @@
+{
+  "parent": "BioBaseAppearance",
+  "package": "SFXGame",
+  "variables": {
+    "MaterialVariationList": {
+      "type": "Name",
+      "documentation": null
+    },
+    "AnimSets": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "VisualEffects": {
+      "type": "VisualEffectAttachment",
+      "documentation": null
+    },
+    "VFXOnInstigator": {
+      "type": "VisualEffectAttachment",
+      "documentation": null
+    },
+    "sThumbnailLabel": {
+      "type": "string",
+      "documentation": null
+    },
+    "sMenuLabel": {
+      "type": "string",
+      "documentation": null
+    },
+    "pNewActorClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "m_vTargetLocationOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PackageName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "PlaceablePrefix": {
+      "type": "Name",
+      "documentation": null
+    },
+    "PhysicsAsset": {
+      "type": "PhysicsAsset",
+      "documentation": null
+    },
+    "DestroyedPhysicsAsset": {
+      "type": "PhysicsAsset",
+      "documentation": null
+    },
+    "FSM": {
+      "type": "BioFSM",
+      "documentation": null
+    },
+    "m_oStaticMesh": {
+      "type": "StaticMesh",
+      "documentation": null
+    },
+    "m_oDestroyedStaticMesh": {
+      "type": "StaticMesh",
+      "documentation": null
+    },
+    "m_oSkeletalMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null
+    },
+    "m_oDestroyedSkeletalMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null
+    },
+    "AnimationTree": {
+      "type": "AnimTree",
+      "documentation": null
+    },
+    "MaterialPerVariation": {
+      "type": "int",
+      "documentation": null
+    },
+    "nInstigatorVFXOffset": {
+      "type": "int",
+      "documentation": null
+    },
+    "Scale": {
+      "type": "float",
+      "documentation": null
+    },
+    "bOneAnimFrameStates": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,105 @@
+{
+  "parent": "ReplicationInfo",
+  "package": "Engine",
+  "variables": {
+    "TeamName": {
+      "type": "string",
+      "documentation": null
+    },
+    "Size": {
+      "type": "int",
+      "documentation": null
+    },
+    "Score": {
+      "type": "float",
+      "documentation": null
+    },
+    "TeamIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "TeamColor": {
+      "type": "Color",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetTeamNum": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "byte",
+      "signature": "byte GetTeamNum()"
+    },
+    "GetTextColor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Color",
+      "signature": "Color GetTextColor()"
+    },
+    "GetHUDColor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Color",
+      "signature": "Color GetHUDColor()"
+    },
+    "GetHumanReadableName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetHumanReadableName()"
+    },
+    "RemoveFromTeam": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveFromTeam(Controller Other)"
+    },
+    "AddToTeam": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddToTeam(Controller Other)"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "UnbindTeamDataProvider": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnbindTeamDataProvider()"
+    },
+    "GetCurrentGameDS": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "CurrentGameDataStore",
+      "signature": "CurrentGameDataStore GetCurrentGameDS()"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

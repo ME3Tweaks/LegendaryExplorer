@@ -1,15 +1,15 @@
 {
   "Members": {
     "Brain": {
-      "type": null,
+      "type": "EEndGameOption",
       "documentation": null
     },
     "Heart": {
-      "type": null,
+      "type": "EEndGameOption",
       "documentation": null
     },
     "Threshold": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Outer": {
+      "type": "Object",
+      "documentation": null
+    },
+    "Offset": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

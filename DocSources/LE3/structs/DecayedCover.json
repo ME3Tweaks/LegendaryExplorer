@@ -1,11 +1,11 @@
 {
   "Members": {
     "CoverMarker": {
-      "type": null,
+      "type": "CoverSlotMarker",
       "documentation": null
     },
     "ExtraCoverCost": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

@@ -1,15 +1,15 @@
 {
   "Members": {
     "nmStageSpecificCam": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "bForceCrossingLineOfAction": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bUseForNextCamera": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

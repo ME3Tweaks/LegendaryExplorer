@@ -1,0 +1,113 @@
+{
+  "EnumValues": {
+    "TEXTUREGROUP_World": {
+      "value": 0,
+      "documentation": null
+    },
+    "TEXTUREGROUP_WorldNormalMap": {
+      "value": 1,
+      "documentation": null
+    },
+    "TEXTUREGROUP_Lightmap": {
+      "value": 2,
+      "documentation": null
+    },
+    "TEXTUREGROUP_Shadowmap": {
+      "value": 3,
+      "documentation": null
+    },
+    "TEXTUREGROUP_RenderTarget": {
+      "value": 4,
+      "documentation": null
+    },
+    "TEXTUREGROUP_Character_Diff": {
+      "value": 5,
+      "documentation": null
+    },
+    "TEXTUREGROUP_Character_Norm": {
+      "value": 6,
+      "documentation": null
+    },
+    "TEXTUREGROUP_Character_Spec": {
+      "value": 7,
+      "documentation": null
+    },
+    "TEXTUREGROUP_Environment_512": {
+      "value": 8,
+      "documentation": null
+    },
+    "TEXTUREGROUP_Environment_256": {
+      "value": 9,
+      "documentation": null
+    },
+    "TEXTUREGROUP_Environment_128": {
+      "value": 10,
+      "documentation": null
+    },
+    "TEXTUREGROUP_Environment_64": {
+      "value": 11,
+      "documentation": null
+    },
+    "TEXTUREGROUP_VFX_512": {
+      "value": 12,
+      "documentation": null
+    },
+    "TEXTUREGROUP_VFX_256": {
+      "value": 13,
+      "documentation": null
+    },
+    "TEXTUREGROUP_VFX_128": {
+      "value": 14,
+      "documentation": null
+    },
+    "TEXTUREGROUP_VFX_64": {
+      "value": 15,
+      "documentation": null
+    },
+    "TEXTUREGROUP_UI": {
+      "value": 16,
+      "documentation": null
+    },
+    "TEXTUREGROUP_AmbientLightMap": {
+      "value": 17,
+      "documentation": null
+    },
+    "TEXTUREGROUP_Environment_1024": {
+      "value": 18,
+      "documentation": null
+    },
+    "TEXTUREGROUP_VFX_1024": {
+      "value": 19,
+      "documentation": null
+    },
+    "TEXTUREGROUP_APL_128": {
+      "value": 20,
+      "documentation": null
+    },
+    "TEXTUREGROUP_APL_256": {
+      "value": 21,
+      "documentation": null
+    },
+    "TEXTUREGROUP_APL_512": {
+      "value": 22,
+      "documentation": null
+    },
+    "TEXTUREGROUP_APL_1024": {
+      "value": 23,
+      "documentation": null
+    },
+    "TEXTUREGROUP_Character_1024": {
+      "value": 24,
+      "documentation": null
+    },
+    "TEXTUREGROUP_Promotional": {
+      "value": 25,
+      "documentation": null
+    },
+    "TEXTUREGROUP_ColorLookupTable": {
+      "value": 26,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

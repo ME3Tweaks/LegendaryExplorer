@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "PRCLO_Behind": {
+      "value": 0,
+      "documentation": null
+    },
+    "PRCLO_Front": {
+      "value": 1,
+      "documentation": null
+    },
+    "PRCLO_Inside": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

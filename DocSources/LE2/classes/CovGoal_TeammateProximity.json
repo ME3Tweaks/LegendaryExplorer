@@ -1,0 +1,33 @@
+{
+  "parent": "CoverGoalConstraint",
+  "package": "SFXGame",
+  "variables": {
+    "fTeammateMinDistanceSq": {
+      "type": "float",
+      "documentation": null
+    },
+    "fProximityPenalty": {
+      "type": "float",
+      "documentation": null
+    },
+    "fSquadLeaderProximityPenalty": {
+      "type": "float",
+      "documentation": null
+    },
+    "fTeammateMaxDistanceSq": {
+      "type": "float",
+      "documentation": null
+    },
+    "fMaxDistancePenalty": {
+      "type": "float",
+      "documentation": null
+    },
+    "bRestrictMaxDistance": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

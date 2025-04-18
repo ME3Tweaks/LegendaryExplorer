@@ -1,0 +1,138 @@
+{
+  "parent": "AnimNodeBlend",
+  "package": "Engine",
+  "variables": {
+    "CustomPendingBlendOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bIsPlayingCustomAnim": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetRootBoneAxisOption": {
+      "documentation": null,
+      "signature_members": {
+        "AxisX": {
+          "type": null,
+          "documentation": null
+        },
+        "AxisY": {
+          "type": null,
+          "documentation": null
+        },
+        "AxisZ": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRootBoneAxisOption(optional ERootBoneAxis AxisX, optional ERootBoneAxis AxisY, optional ERootBoneAxis AxisZ)"
+    },
+    "GetCustomAnimNodeSeq": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "AnimNodeSequence",
+      "signature": "AnimNodeSequence GetCustomAnimNodeSeq()"
+    },
+    "SetActorAnimEndNotification": {
+      "documentation": null,
+      "signature_members": {
+        "bNewStatus": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetActorAnimEndNotification(bool bNewStatus)"
+    },
+    "SetCustomAnim": {
+      "documentation": null,
+      "signature_members": {
+        "AnimName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCustomAnim(Name AnimName)"
+    },
+    "StopCustomAnim": {
+      "documentation": null,
+      "signature_members": {
+        "BlendOutTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StopCustomAnim(float BlendOutTime)"
+    },
+    "PlayCustomAnimByDuration": {
+      "documentation": null,
+      "signature_members": {
+        "AnimName": {
+          "type": null,
+          "documentation": null
+        },
+        "Duration": {
+          "type": null,
+          "documentation": null
+        },
+        "BlendInTime": {
+          "type": null,
+          "documentation": null
+        },
+        "BlendOutTime": {
+          "type": null,
+          "documentation": null
+        },
+        "bLooping": {
+          "type": null,
+          "documentation": null
+        },
+        "bOverride": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayCustomAnimByDuration(Name AnimName, float Duration, optional float BlendInTime, optional float BlendOutTime, optional bool bLooping, optional bool bOverride)"
+    },
+    "PlayCustomAnim": {
+      "documentation": null,
+      "signature_members": {
+        "AnimName": {
+          "type": null,
+          "documentation": null
+        },
+        "Rate": {
+          "type": null,
+          "documentation": null
+        },
+        "BlendInTime": {
+          "type": null,
+          "documentation": null
+        },
+        "BlendOutTime": {
+          "type": null,
+          "documentation": null
+        },
+        "bLooping": {
+          "type": null,
+          "documentation": null
+        },
+        "bOverride": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float PlayCustomAnim(Name AnimName, float Rate, optional float BlendInTime, optional float BlendOutTime, optional bool bLooping, optional bool bOverride)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

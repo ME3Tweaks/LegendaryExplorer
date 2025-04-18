@@ -1,0 +1,53 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_oMember": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "m_nmTechnique": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nSubTechnique": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fRating": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMinRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMaxRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fBestRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fTmpRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bCanCasterMoveDuring": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_nCapType": {
+      "type": "EBioCapabilityTypes",
+      "documentation": null
+    },
+    "m_nCapMode": {
+      "type": "EBioCapMode",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,49 @@
+{
+  "EnumValues": {
+    "NOSCAN_PLANET": {
+      "value": 0,
+      "documentation": null
+    },
+    "ROCK_PLANET": {
+      "value": 1,
+      "documentation": null
+    },
+    "DESERT_PLANET": {
+      "value": 2,
+      "documentation": null
+    },
+    "OCEAN_PLANET": {
+      "value": 3,
+      "documentation": null
+    },
+    "GARDEN_PLANET": {
+      "value": 4,
+      "documentation": null
+    },
+    "GIANT_ICE_PLANET": {
+      "value": 5,
+      "documentation": null
+    },
+    "GIANT_JOVIAN_PLANET": {
+      "value": 6,
+      "documentation": null
+    },
+    "GIANT_PEGASID_PLANET": {
+      "value": 7,
+      "documentation": null
+    },
+    "POST_GARDEN": {
+      "value": 8,
+      "documentation": null
+    },
+    "BROWN_DWARF": {
+      "value": 9,
+      "documentation": null
+    },
+    "TIDAL_LOCK": {
+      "value": 10,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

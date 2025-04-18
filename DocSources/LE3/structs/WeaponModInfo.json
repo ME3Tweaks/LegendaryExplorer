@@ -1,11 +1,11 @@
 {
   "Members": {
     "ModClass": {
-      "type": null,
+      "type": "Class",
       "documentation": null
     },
     "ModLevel": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

@@ -1,0 +1,657 @@
+{
+  "parent": "BioEpicPawnBehavior",
+  "package": "SFXGame",
+  "variables": {
+    "m_aBackupAnimSets": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "STAT_dist": {
+      "type": "float",
+      "documentation": null
+    },
+    "STAT_boost": {
+      "type": "float",
+      "documentation": null
+    },
+    "STAT_AITime": {
+      "type": "float",
+      "documentation": null
+    },
+    "STAT_PathFindMode": {
+      "type": "int",
+      "documentation": null
+    },
+    "STAT_PathFindModeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "STAT_FollowState": {
+      "type": "Name",
+      "documentation": null
+    },
+    "STAT_GroundSpeed": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_vFixedRotation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_rLastStopRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "m_rSkidStartRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "m_rSkidTargetRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "m_oMeshAdjLastBase": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_nmDebugKey": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_fPowerUsePercent": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fTurningAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fAnimStartTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMoveStartElapsedTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMoveStopElapsedTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fAnimMoveSpeedSnapshot": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fAnimMoveStartSpeedSnapshot": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCurPhysSettleDownTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fInclineUpMod": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fInclineDownMod": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fSkidTurnThresh": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPawnStopDecelTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMeshAdjRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fManualMeshAdj": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMeshAdjCheckFrequency": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMeshAdjFarCheckFrequency": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMeshAdjFarCheckDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMeshAdjTimeTillCheck": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMeshAdjLastDistFound": {
+      "type": "float",
+      "documentation": null
+    },
+    "PawnMoveStartTimerThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "PawnMoveStopTimerThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fDesiredMaxSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCurrentInclineMoveMod": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fSkidDSDecelRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMoveStopDSDecelRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "PathFind_LastMovment_Mode": {
+      "type": "int",
+      "documentation": null
+    },
+    "STAT_boost_track": {
+      "type": "float",
+      "documentation": null
+    },
+    "STAT_Dist_track": {
+      "type": "float",
+      "documentation": null
+    },
+    "STAT_Samples": {
+      "type": "int",
+      "documentation": null
+    },
+    "STAT_ERRORS": {
+      "type": "int",
+      "documentation": null
+    },
+    "STAT_Teleports": {
+      "type": "int",
+      "documentation": null
+    },
+    "STAT_AbortedMoveTowards": {
+      "type": "int",
+      "documentation": null
+    },
+    "CAMHOOK_NORMAL_FRONTBACK": {
+      "type": "float",
+      "documentation": null
+    },
+    "CAMHOOK_NORMAL_RIGHTLEFT": {
+      "type": "float",
+      "documentation": null
+    },
+    "CAMHOOK_NORMAL_UPDOWN": {
+      "type": "float",
+      "documentation": null
+    },
+    "CAMHOOK_COLL_UPDOWN": {
+      "type": "float",
+      "documentation": null
+    },
+    "CAMHOOK_COLL_FRONTBACK": {
+      "type": "float",
+      "documentation": null
+    },
+    "CAMHOOK_COLL_RIGHTLEFT": {
+      "type": "float",
+      "documentation": null
+    },
+    "CAMHOOK_COMBAT_UPDOWN": {
+      "type": "float",
+      "documentation": null
+    },
+    "CAMHOOK_COMBAT_FRONTBACK": {
+      "type": "float",
+      "documentation": null
+    },
+    "CAMHOOK_COMBAT_RIGHTLEFT": {
+      "type": "float",
+      "documentation": null
+    },
+    "CAMHOOK_SNIPER_UPDOWN": {
+      "type": "float",
+      "documentation": null
+    },
+    "CAMHOOK_SNIPER_FRONTBACK": {
+      "type": "float",
+      "documentation": null
+    },
+    "CAMHOOK_SNIPER_RIGHTLEFT": {
+      "type": "float",
+      "documentation": null
+    },
+    "CAMHOOK_TACSEL_UPDOWN": {
+      "type": "float",
+      "documentation": null
+    },
+    "CAMHOOK_TACSEL_FRONTBACK": {
+      "type": "float",
+      "documentation": null
+    },
+    "CAMHOOK_TACSEL_RIGHTLEFT": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nRemainInRagdoll": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fDeathCapabilityActivationTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fVehicleExpScaleFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bPowerUsePercentOverride": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bReadyForCombat": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInMatinee": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bEnableStartAnim": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bEnableSkidAnim": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bEnableStopAnim": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAllowStartAnimInCombat": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAllowSkidAnimInCombat": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAllowStopAnimInCombat": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bMeshAdjOn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUseManualMeshAdj": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDoneYawInterpolation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDoneSpeedInterpolation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCanBePhysicsImpacted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCanBePhysicsImpactedOverride": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsFeigningDeath": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCanUseDeathCapabilities": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eCombatState": {
+      "type": "EBioAnimCombatState",
+      "documentation": null
+    },
+    "m_eTurningDirection": {
+      "type": "EBioAnimTurnDirState",
+      "documentation": null
+    },
+    "m_eAnimStartState": {
+      "type": "EBioAnimStartState",
+      "documentation": null
+    },
+    "m_eAnimSkidState": {
+      "type": "EBioAnimSkidTurnState",
+      "documentation": null
+    },
+    "m_eAnimStopState": {
+      "type": "EBioAnimStopState",
+      "documentation": null
+    },
+    "m_eGetUpState": {
+      "type": "EBioAnimGetUpState",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetActorTypeGameName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "stringref",
+      "signature": "stringref GetActorTypeGameName()"
+    },
+    "TEMP_HolsterWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TEMP_HolsterWeapon()"
+    },
+    "TEMP_DrawWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TEMP_DrawWeapon()"
+    },
+    "GetPowerUsePercent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetPowerUsePercent()"
+    },
+    "GetCanBePhysicsImpacted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetCanBePhysicsImpacted()"
+    },
+    "SetActionState": {
+      "documentation": null,
+      "signature_members": {
+        "eState": {
+          "type": null,
+          "documentation": null
+        },
+        "fDelay": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EActionStateVariable",
+      "signature": "EActionStateVariable SetActionState(EActionStateVariable eState, optional float fDelay)"
+    },
+    "DecrementRagdollCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DecrementRagdollCount()"
+    },
+    "IncrementRagdollCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IncrementRagdollCount()"
+    },
+    "FeignDeathKismet": {
+      "documentation": null,
+      "signature_members": {
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FeignDeathKismet(bool B)"
+    },
+    "FeignDeath": {
+      "documentation": null,
+      "signature_members": {
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FeignDeath(bool B, optional bool bForceState)"
+    },
+    "GetCharmSkill": {
+      "documentation": null,
+      "signature_members": {
+        "LevelUpHelper": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetCharmSkill(optional SFXPowerLevelUpHelper LevelUpHelper)"
+    },
+    "GetIntimidateSkill": {
+      "documentation": null,
+      "signature_members": {
+        "LevelUpHelper": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetIntimidateSkill(optional SFXPowerLevelUpHelper LevelUpHelper)"
+    },
+    "ProcessMeshAdj": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessMeshAdj(float fDeltaTime)"
+    },
+    "InPlayerParty": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool InPlayerParty()"
+    },
+    "GetBioticAmpEquipped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetBioticAmpEquipped()"
+    },
+    "GetClass": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetClass()"
+    },
+    "AdjustMediGel": {
+      "documentation": null,
+      "signature_members": {
+        "nAmt": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AdjustMediGel(int nAmt)"
+    },
+    "GetMediGel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMediGel()"
+    },
+    "AdjustCredits": {
+      "documentation": null,
+      "signature_members": {
+        "nAmt": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AdjustCredits(int nAmt)"
+    },
+    "GetCredits": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetCredits()"
+    },
+    "AdvanceTalkToCount": {
+      "documentation": null,
+      "signature_members": {
+        "nAmt": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AdvanceTalkToCount(int nAmt)"
+    },
+    "SetTalkToCount": {
+      "documentation": null,
+      "signature_members": {
+        "nValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTalkToCount(int nValue)"
+    },
+    "GetTalkToCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetTalkToCount()"
+    },
+    "SetBackground_Notoritey": {
+      "documentation": null,
+      "signature_members": {
+        "nValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBackground_Notoritey(int nValue)"
+    },
+    "GetBackground_Notoritey": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetBackground_Notoritey()"
+    },
+    "SetBackground_Childhood": {
+      "documentation": null,
+      "signature_members": {
+        "nValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBackground_Childhood(int nValue)"
+    },
+    "GetBackground_Childhood": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetBackground_Childhood()"
+    },
+    "HasKey": {
+      "documentation": null,
+      "signature_members": {
+        "Key": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasKey(Name Key)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "SoftResetMovementAndAnimationState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SoftResetMovementAndAnimationState()"
+    },
+    "HardResetActionAndAnimationState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HardResetActionAndAnimationState()"
+    },
+    "TickBehavior": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TickBehavior(float DeltaTime)"
+    },
+    "FindFirstValidPrimaryFloatAttribute": {
+      "documentation": null,
+      "signature_members": {
+        "table": {
+          "type": null,
+          "documentation": null
+        },
+        "nRankedLevel": {
+          "type": null,
+          "documentation": null
+        },
+        "ColumnName": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindFirstValidPrimaryFloatAttribute(Bio2DA table, int nRankedLevel, Name ColumnName, out float fValue)"
+    },
+    "InitializeActionFramework": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeActionFramework()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

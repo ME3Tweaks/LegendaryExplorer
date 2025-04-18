@@ -1,15 +1,15 @@
 {
   "Members": {
     "LevelName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Tip": {
-      "type": null,
+      "type": "LoadingTip",
       "documentation": null
     },
     "UseRandomTip": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

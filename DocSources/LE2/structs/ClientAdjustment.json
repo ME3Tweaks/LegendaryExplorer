@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "NewLoc": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "NewVel": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "NewFloor": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "NewBase": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "TimeStamp": {
+      "type": "float",
+      "documentation": null
+    },
+    "newPhysics": {
+      "type": "EPhysics",
+      "documentation": null
+    },
+    "bAckGoodMove": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "CHOICEHANDLER_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "CHOICEHANDLER_SELECTED": {
+      "value": 1,
+      "documentation": null
+    },
+    "CHOICEHANDLER_EXIT": {
+      "value": 2,
+      "documentation": null
+    },
+    "CHOICEHANDLER_UPDATE_IMAGE": {
+      "value": 3,
+      "documentation": null
+    },
+    "CHOICEHANDLER_SHOW_CREDITS": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

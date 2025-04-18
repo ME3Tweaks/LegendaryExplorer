@@ -1,0 +1,291 @@
+{
+  "parent": "Interface",
+  "package": "Engine",
+  "variables": {
+    "__OnFlushOnlineStatsComplete__Delegate": {
+      "type": "OnFlushOnlineStatsComplete",
+      "documentation": null
+    },
+    "__OnRegisterHostStatGuidComplete__Delegate": {
+      "type": "OnRegisterHostStatGuidComplete",
+      "documentation": null
+    },
+    "__OnReadOnlineStatsComplete__Delegate": {
+      "type": "OnReadOnlineStatsComplete",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "RegisterStatGuid": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientStatGuid": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RegisterStatGuid(UniqueNetId PlayerID, const out string ClientStatGuid)"
+    },
+    "GetClientStatGuid": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetClientStatGuid()"
+    },
+    "ClearRegisterHostStatGuidCompleteDelegateDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "RegisterHostStatGuidCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearRegisterHostStatGuidCompleteDelegateDelegate(delegate<OnRegisterHostStatGuidComplete> RegisterHostStatGuidCompleteDelegate)"
+    },
+    "AddRegisterHostStatGuidCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "RegisterHostStatGuidCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddRegisterHostStatGuidCompleteDelegate(delegate<OnRegisterHostStatGuidComplete> RegisterHostStatGuidCompleteDelegate)"
+    },
+    "OnRegisterHostStatGuidComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRegisterHostStatGuidComplete(bool bWasSuccessful)"
+    },
+    "RegisterHostStatGuid": {
+      "documentation": null,
+      "signature_members": {
+        "HostStatGuid": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RegisterHostStatGuid(const out string HostStatGuid)"
+    },
+    "GetHostStatGuid": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetHostStatGuid()"
+    },
+    "WriteOnlinePlayerScores": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        },
+        "LeaderboardId": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerScores": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool WriteOnlinePlayerScores(Name SessionName, int LeaderboardId, const out array<OnlinePlayerScore> PlayerScores)"
+    },
+    "ClearFlushOnlineStatsCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "FlushOnlineStatsCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearFlushOnlineStatsCompleteDelegate(delegate<OnFlushOnlineStatsComplete> FlushOnlineStatsCompleteDelegate)"
+    },
+    "AddFlushOnlineStatsCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "FlushOnlineStatsCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddFlushOnlineStatsCompleteDelegate(delegate<OnFlushOnlineStatsComplete> FlushOnlineStatsCompleteDelegate)"
+    },
+    "OnFlushOnlineStatsComplete": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnFlushOnlineStatsComplete(Name SessionName, bool bWasSuccessful)"
+    },
+    "FlushOnlineStats": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FlushOnlineStats(Name SessionName)"
+    },
+    "WriteOnlineStats": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        },
+        "Player": {
+          "type": null,
+          "documentation": null
+        },
+        "StatsWrite": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool WriteOnlineStats(Name SessionName, UniqueNetId Player, OnlineStatsWrite StatsWrite)"
+    },
+    "FreeStats": {
+      "documentation": null,
+      "signature_members": {
+        "StatsRead": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FreeStats(OnlineStatsRead StatsRead)"
+    },
+    "ClearReadOnlineStatsCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ReadOnlineStatsCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearReadOnlineStatsCompleteDelegate(delegate<OnReadOnlineStatsComplete> ReadOnlineStatsCompleteDelegate)"
+    },
+    "AddReadOnlineStatsCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ReadOnlineStatsCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddReadOnlineStatsCompleteDelegate(delegate<OnReadOnlineStatsComplete> ReadOnlineStatsCompleteDelegate)"
+    },
+    "OnReadOnlineStatsComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnReadOnlineStatsComplete(bool bWasSuccessful)"
+    },
+    "ReadOnlineStatsByRankAroundPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "StatsRead": {
+          "type": null,
+          "documentation": null
+        },
+        "NumRows": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadOnlineStatsByRankAroundPlayer(byte LocalUserNum, OnlineStatsRead StatsRead, optional int NumRows)"
+    },
+    "ReadOnlineStatsByRank": {
+      "documentation": null,
+      "signature_members": {
+        "StatsRead": {
+          "type": null,
+          "documentation": null
+        },
+        "StartIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "NumToRead": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadOnlineStatsByRank(OnlineStatsRead StatsRead, optional int StartIndex, optional int NumToRead)"
+    },
+    "ReadOnlineStatsForFriends": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "StatsRead": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadOnlineStatsForFriends(byte LocalUserNum, OnlineStatsRead StatsRead)"
+    },
+    "ReadOnlineStats": {
+      "documentation": null,
+      "signature_members": {
+        "Players": {
+          "type": null,
+          "documentation": null
+        },
+        "StatsRead": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadOnlineStats(const out array<UniqueNetId> Players, OnlineStatsRead StatsRead)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

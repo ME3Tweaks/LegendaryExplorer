@@ -1,43 +1,43 @@
 {
   "Members": {
     "sParticleSys": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sClientEffect": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "tSpawnParams": {
-      "type": null,
+      "type": "BioPropClientEffectParams",
       "documentation": null
     },
     "vOffsetLocation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "rOffsetRotation": {
-      "type": null,
+      "type": "Rotator",
       "documentation": null
     },
     "vOffsetScale": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "nmActionName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "nmAttachTo": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "bActivate": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bCooldown": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

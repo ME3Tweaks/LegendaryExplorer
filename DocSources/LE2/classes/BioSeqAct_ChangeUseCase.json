@@ -1,0 +1,40 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "oArtPlaceable": {
+      "type": "BioArtPlaceable",
+      "documentation": null
+    },
+    "nmNewState0": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nmNewState1": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nUseCase": {
+      "type": "int",
+      "documentation": null
+    },
+    "nSkillLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "bPlayerOnly": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

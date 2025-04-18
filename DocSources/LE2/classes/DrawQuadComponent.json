@@ -1,0 +1,21 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "Texture": {
+      "type": "Texture",
+      "documentation": null
+    },
+    "Width": {
+      "type": "float",
+      "documentation": null
+    },
+    "Height": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

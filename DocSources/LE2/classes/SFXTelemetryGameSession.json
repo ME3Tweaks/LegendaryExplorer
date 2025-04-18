@@ -1,0 +1,101 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "VfTable_FTickableObject": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "VfTable_FCallbackEventDevice": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "TelemetryInstance": {
+      "type": "SFXTelemetry",
+      "documentation": null
+    },
+    "bStarted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSentBootHooks": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSentBugSentryHook": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CareerTime": {
+      "type": "Double",
+      "documentation": null
+    },
+    "GameTime": {
+      "type": "Double",
+      "documentation": null
+    },
+    "SessionTime": {
+      "type": "Double",
+      "documentation": null
+    },
+    "IdleTime": {
+      "type": "Double",
+      "documentation": null
+    },
+    "Difficulty": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlayerXPGained": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlayerScore": {
+      "type": "int",
+      "documentation": null
+    },
+    "CombatScore": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlayerKills": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlayerDeaths": {
+      "type": "int",
+      "documentation": null
+    },
+    "TeamKills": {
+      "type": "int",
+      "documentation": null
+    },
+    "TeamDeaths": {
+      "type": "int",
+      "documentation": null
+    },
+    "MapName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ChunkName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Career": {
+      "type": "string",
+      "documentation": null
+    },
+    "Base64_CharacterID": {
+      "type": "string",
+      "documentation": null
+    },
+    "SessionStartMapExclusion": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

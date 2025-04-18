@@ -1,15 +1,15 @@
 {
   "Members": {
     "Score": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Credits": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Trigger": {
-      "type": null,
+      "type": "byte",
       "documentation": null
     }
   },

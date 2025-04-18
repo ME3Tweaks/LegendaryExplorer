@@ -1,0 +1,393 @@
+{
+  "parent": "PrefabInstance",
+  "package": "SFXGame",
+  "variables": {
+    "sStateNames": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_CachedInstanceParameters": {
+      "type": "CachedInstanceParameter",
+      "documentation": null
+    },
+    "m_SavedBaseData": {
+      "type": "BioActorReBase",
+      "documentation": null
+    },
+    "aDecalList": {
+      "type": "BioDecalComponent",
+      "documentation": null
+    },
+    "fStateDurations": {
+      "type": "float",
+      "documentation": null
+    },
+    "fStateStartTimes": {
+      "type": "float",
+      "documentation": null
+    },
+    "fStateEndTimes": {
+      "type": "float",
+      "documentation": null
+    },
+    "pTemplate": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "Matinee": {
+      "type": "SeqAct_Interp",
+      "documentation": null
+    },
+    "pLastDecal": {
+      "type": "BioDecalComponent",
+      "documentation": null
+    },
+    "oSoundCue": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "oCurrentWwisePair": {
+      "type": "WwiseEventPairObject",
+      "documentation": null
+    },
+    "m_cameraShake": {
+      "type": "BioCameraShake",
+      "documentation": null
+    },
+    "m_cameraShakenActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_pInstigator": {
+      "type": "Object",
+      "documentation": null
+    },
+    "fLifeDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_accruedTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fTotalDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "fCurrentTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "nMaxDecals": {
+      "type": "int",
+      "documentation": null
+    },
+    "nLastDecal": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nAttachedToBoneCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "bDeleteSelf": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPaused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLoopLife": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPauseOnDeath": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCancelSpawn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsComponentOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHideBaseOnComplete": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBaseHasValidPose": {
+      "type": "bool",
+      "documentation": null
+    },
+    "eCurrentState": {
+      "type": "EBioVFXState",
+      "documentation": null
+    },
+    "m_mObjectFloatPropertyMap": {
+      "type": "MultiMap_Mirror",
+      "documentation": null
+    },
+    "m_mTrackMaterialFloatMap": {
+      "type": "MultiMap_Mirror",
+      "documentation": null
+    },
+    "m_mObjectVectorPropertyMap": {
+      "type": "MultiMap_Mirror",
+      "documentation": null
+    },
+    "m_mTrackMaterialVectorMap": {
+      "type": "MultiMap_Mirror",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnComplete()"
+    },
+    "SetSound": {
+      "documentation": null,
+      "signature_members": {
+        "nIndexInSoundArray": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetSound(int nIndexInSoundArray)"
+    },
+    "CreateVFXOnPosition": {
+      "documentation": null,
+      "signature_members": {
+        "a_pTemplate": {
+          "type": null,
+          "documentation": null
+        },
+        "vPosition": {
+          "type": null,
+          "documentation": null
+        },
+        "rOrientation": {
+          "type": null,
+          "documentation": null
+        },
+        "fLifeTime": {
+          "type": null,
+          "documentation": null
+        },
+        "bUseVFXPool": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioVisualEffect",
+      "signature": "BioVisualEffect CreateVFXOnPosition(BioVFXTemplate a_pTemplate, Vector vPosition, Rotator rOrientation, optional float fLifeTime, optional bool bUseVFXPool)"
+    },
+    "CreateVFXOnMesh": {
+      "documentation": null,
+      "signature_members": {
+        "a_pTemplate": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "sBoneName": {
+          "type": null,
+          "documentation": null
+        },
+        "fLifeTime": {
+          "type": null,
+          "documentation": null
+        },
+        "mTargetMesh": {
+          "type": null,
+          "documentation": null
+        },
+        "bUseVFXPool": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioVisualEffect",
+      "signature": "BioVisualEffect CreateVFXOnMesh(BioVFXTemplate a_pTemplate, Actor Target, Name sBoneName, optional float fLifeTime, optional SkeletalMeshComponent mTargetMesh, optional bool bUseVFXPool)"
+    },
+    "CreateCrustEffect": {
+      "documentation": null,
+      "signature_members": {
+        "a_pTemplate": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "fLifeTime": {
+          "type": null,
+          "documentation": null
+        },
+        "bUseVFXPool": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioVisualEffect",
+      "signature": "BioVisualEffect CreateCrustEffect(BioVFXTemplate a_pTemplate, Actor Target, optional float fLifeTime, optional bool bUseVFXPool)"
+    },
+    "SetLifeTime": {
+      "documentation": null,
+      "signature_members": {
+        "fLife": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLifeTime(float fLife)"
+    },
+    "SetVectorParameter": {
+      "documentation": null,
+      "signature_members": {
+        "sParameter": {
+          "type": null,
+          "documentation": null
+        },
+        "vValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVectorParameter(Name sParameter, Vector vValue)"
+    },
+    "SetScalarParameter": {
+      "documentation": null,
+      "signature_members": {
+        "sParameter": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetScalarParameter(Name sParameter, float fValue)"
+    },
+    "GetStateDuration": {
+      "documentation": null,
+      "signature_members": {
+        "eState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetStateDuration(EBioVFXState eState)"
+    },
+    "GetEffectDuration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetEffectDuration()"
+    },
+    "DestroyInstance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DestroyInstance()"
+    },
+    "IsAttached": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsAttached()"
+    },
+    "SetBasePrefab": {
+      "documentation": null,
+      "signature_members": {
+        "pBase": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetBasePrefab(Prefab pBase)"
+    },
+    "SetState": {
+      "documentation": null,
+      "signature_members": {
+        "eState": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceSetState": {
+          "type": null,
+          "documentation": null
+        },
+        "bPlayAudio": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceKill": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetState(EBioVFXState eState, optional bool bForceSetState, optional bool bPlayAudio, optional bool bForceKill)"
+    },
+    "SetPaused": {
+      "documentation": null,
+      "signature_members": {
+        "bPause": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceRefresh": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetPaused(bool bPause, optional bool bForceRefresh)"
+    },
+    "PauseOnDeath": {
+      "documentation": null,
+      "signature_members": {
+        "bPause": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PauseOnDeath(bool bPause)"
+    },
+    "LoopDuration": {
+      "documentation": null,
+      "signature_members": {
+        "bLoop": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoopDuration(bool bLoop)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

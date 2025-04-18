@@ -1,0 +1,21 @@
+{
+  "parent": "BioAnimNodeBlendMultiAdditive",
+  "package": "SFXGame",
+  "variables": {
+    "m_aChildAnimsets": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_aChildPinData": {
+      "type": "BioChildPinData",
+      "documentation": null
+    },
+    "m_bGesturePlaying": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

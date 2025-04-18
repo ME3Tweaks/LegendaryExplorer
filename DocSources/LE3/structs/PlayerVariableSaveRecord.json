@@ -1,11 +1,11 @@
 {
   "Members": {
     "VariableName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "VariableValue": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

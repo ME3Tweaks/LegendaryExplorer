@@ -1,0 +1,76 @@
+{
+  "parent": "BioBaseAppearance",
+  "package": "SFXGame",
+  "variables": {
+    "m_aMaterialConfig": {
+      "type": "BioCharacterHeadAppearanceMaterialConfig",
+      "documentation": null
+    },
+    "MorphConstraints": {
+      "type": "string",
+      "documentation": null
+    },
+    "AnimSets": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "m_aHairAppearance": {
+      "type": "Bio_Appr_Character_Hair",
+      "documentation": null
+    },
+    "TextureOverrides": {
+      "type": "BioWrinkleConfig",
+      "documentation": null
+    },
+    "m_oSettings": {
+      "type": "Bio_Appr_Character_Head_Settings",
+      "documentation": null
+    },
+    "PhysicsAsset": {
+      "type": "PhysicsAsset",
+      "documentation": null
+    },
+    "WrinkleNormalMap": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "WrinkleNormalMask_1": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "WrinkleNormalMask_2": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "DefaultFaceFXAsset": {
+      "type": "FaceFXAsset",
+      "documentation": null
+    },
+    "m_oPortraitMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "m_oModelMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null
+    },
+    "HeadTrack": {
+      "type": "bool",
+      "documentation": null
+    },
+    "UseWrinkles": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetModel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SkeletalMesh",
+      "signature": "SkeletalMesh GetModel()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

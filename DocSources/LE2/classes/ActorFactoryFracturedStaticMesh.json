@@ -1,0 +1,17 @@
+{
+  "parent": "ActorFactory",
+  "package": "Engine",
+  "variables": {
+    "DrawScale3D": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "FracturedStaticMesh": {
+      "type": "FracturedStaticMesh",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

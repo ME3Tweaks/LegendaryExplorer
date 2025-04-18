@@ -1,0 +1,275 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "__InputCallback__Delegate": {
+      "type": "InputCallback",
+      "documentation": null
+    },
+    "__UpdateCallback__Delegate": {
+      "type": "UpdateCallback",
+      "documentation": null
+    },
+    "__UpdateCallbackEx__Delegate": {
+      "type": "UpdateCallbackEx",
+      "documentation": null
+    },
+    "m_oBackupSFMgr": {
+      "type": "BioSFManager",
+      "documentation": null
+    },
+    "nInputCallbackContext": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nHiddenDepth": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fRScrollValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "bHandleInput": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowMouse": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsModal": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bForcePlayersOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInitialPlayersOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCached": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bForceVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisplayingHint": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "DisplayHintMessage": {
+      "documentation": null,
+      "signature_members": {
+        "srGamepadMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "srPCMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        },
+        "nIcon": {
+          "type": null,
+          "documentation": null
+        },
+        "ePosition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayHintMessage(string srGamepadMessage, string srPCMessage, bool usingGamepad, int nIcon, SFXHintPosition ePosition)"
+    },
+    "HideMessageBox": {
+      "documentation": null,
+      "signature_members": {
+        "bRemove": {
+          "type": null,
+          "documentation": null
+        },
+        "bSkipFade": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HideMessageBox(optional bool bRemove, optional bool bSkipFade)"
+    },
+    "DisplayQuickMessageBoxEx": {
+      "documentation": null,
+      "signature_members": {
+        "sMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "stParams": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayQuickMessageBoxEx(string sMessage, const out BioMessageBoxOptionalParams stParams)"
+    },
+    "DisplayQuickMessageBox": {
+      "documentation": null,
+      "signature_members": {
+        "srMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "stParams": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayQuickMessageBox(stringref srMessage, const out BioMessageBoxOptionalParams stParams)"
+    },
+    "DisplayMessageBoxEx": {
+      "documentation": null,
+      "signature_members": {
+        "sMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "stParams": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayMessageBoxEx(string sMessage, const out BioMessageBoxOptionalParams stParams)"
+    },
+    "DisplayMessageBox": {
+      "documentation": null,
+      "signature_members": {
+        "srMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "stParams": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayMessageBox(stringref srMessage, const out BioMessageBoxOptionalParams stParams)"
+    },
+    "SetUpdateDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "pDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetUpdateDelegate(delegate<UpdateCallback> pDelegate)"
+    },
+    "SetInputDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "pDelegate": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInputDelegate(delegate<InputCallback> pDelegate, optional int nContext)"
+    },
+    "UpdateCallbackEx": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        },
+        "oMsgBox": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCallbackEx(float fDeltaT, Object oMsgBox)"
+    },
+    "UpdateCallback": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        },
+        "oMsgBox": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCallback(float fDeltaT, BioSFHandler_MessageBox oMsgBox)"
+    },
+    "InputCallback": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InputCallback(bool bAPressed, int nContext)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,15 +1,15 @@
 {
   "Members": {
     "pWeapon": {
-      "type": null,
+      "type": "Object",
       "documentation": null
     },
     "bSpawned": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bCurrentlyEquipped": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

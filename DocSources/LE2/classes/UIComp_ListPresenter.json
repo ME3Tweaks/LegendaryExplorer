@@ -1,0 +1,61 @@
+{
+  "parent": "UIComp_ListPresenterBase",
+  "package": "Engine",
+  "variables": {
+    "VfTable_ICustomPropertyItemHandler": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ElementSchema": {
+      "type": "UIElementCellSchema",
+      "documentation": null
+    },
+    "SelectionHintPadding": {
+      "type": "UIScreenValue_Extent",
+      "documentation": null
+    },
+    "ListItems": {
+      "type": "UIListItem",
+      "documentation": null
+    },
+    "ColumnHeaderBackground": {
+      "type": "UITexture",
+      "documentation": null
+    },
+    "ListItemOverlay": {
+      "type": "UITexture",
+      "documentation": null
+    },
+    "ColumnHeaderBackgroundCoordinates": {
+      "type": "TextureCoordinates",
+      "documentation": null
+    },
+    "ListItemOverlayCoordinates": {
+      "type": "TextureCoordinates",
+      "documentation": null
+    },
+    "MaxElementsPerPage": {
+      "type": "int",
+      "documentation": null
+    },
+    "bDisplayColumnHeaders": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "FindElementIndex": {
+      "documentation": null,
+      "signature_members": {
+        "DataSourceIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindElementIndex(int DataSourceIndex)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,49 @@
+{
+  "parent": "ActorFactoryDynamicSM",
+  "package": "Engine",
+  "variables": {
+    "InitialVelocity": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "AdditionalVelocity": {
+      "type": "DistributionVector",
+      "documentation": null
+    },
+    "InitialAngularVelocity": {
+      "type": "DistributionVector",
+      "documentation": null
+    },
+    "StayUprightTorqueFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "StayUprightMaxTorque": {
+      "type": "float",
+      "documentation": null
+    },
+    "bStartAwake": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDamageAppliesImpulse": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLocalSpaceInitialVelocity": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableStayUprightSpring": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RBChannel": {
+      "type": "ERBCollisionChannel",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

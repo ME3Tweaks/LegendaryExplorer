@@ -1,0 +1,118 @@
+{
+  "parent": "BioCameraBehavior",
+  "package": "SFXGame",
+  "variables": {
+    "m_aSpectateSpawnLocation": {
+      "type": "PlayerStart",
+      "documentation": null
+    },
+    "ViewSource": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "Target": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_fLockRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLockHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLockPitch": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLockYaw": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nSpectateCurrentLocation": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bSuppliedLocalizedParams": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta)"
+    },
+    "SetTarget": {
+      "documentation": null,
+      "signature_members": {
+        "NewTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTarget(Actor NewTarget)"
+    },
+    "MakeInactive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MakeInactive()"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "SetTargetLocalizedCameraParams": {
+      "documentation": null,
+      "signature_members": {
+        "vPosition": {
+          "type": null,
+          "documentation": null
+        },
+        "rRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "rLockRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTargetLocalizedCameraParams(Vector vPosition, Rotator rRotation, Rotator rLockRotation)"
+    },
+    "GetTargetLocalizedCameraParams": {
+      "documentation": null,
+      "signature_members": {
+        "vPosition": {
+          "type": null,
+          "documentation": null
+        },
+        "rRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "rLockRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetTargetLocalizedCameraParams(out Vector vPosition, out Rotator rRotation, out Rotator rLockRotation)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

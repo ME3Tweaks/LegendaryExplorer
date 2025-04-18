@@ -1,0 +1,221 @@
+{
+  "EnumValues": {
+    "SFP_INVOKELABEL_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_InitializeHUD": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_UpdateHUDMode": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_UpdateTargetStatus": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_ChangeSelectedWeapon": {
+      "value": 4,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_UpdateWeaponHeat": {
+      "value": 5,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_ShowSniper": {
+      "value": 6,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_HideSniper": {
+      "value": 7,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_UpdateVehicleStatus": {
+      "value": 8,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_UpdateVehicleStatusSquad": {
+      "value": 9,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_UpdateSquadStatus": {
+      "value": 10,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_ChangeSelectedSquadOrder": {
+      "value": 11,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_UpdateSquadFormation": {
+      "value": 12,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_setSquadVisible": {
+      "value": 13,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_showCoverElement": {
+      "value": 14,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_hideCoverElement": {
+      "value": 15,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_showClimbMantleElement": {
+      "value": 16,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_hideClimbMantleElement": {
+      "value": 17,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_UpdateStorm": {
+      "value": 18,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_addUpdateFiringDirection": {
+      "value": 19,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_removeFiringDirection": {
+      "value": 20,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_UpdatePowerPadMode": {
+      "value": 21,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_CreateIconDumpListItem": {
+      "value": 22,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_UpdateIconDumpListTotal": {
+      "value": 23,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_CreateMapPowerList": {
+      "value": 24,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_PopulateMapPowerItem": {
+      "value": 25,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_CreateMapCommandsList": {
+      "value": 26,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_UpdateCustomButtons": {
+      "value": 27,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_setRadarVisible": {
+      "value": 28,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_addRadarElement": {
+      "value": 29,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_removeRadarElement": {
+      "value": 30,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_setElementType": {
+      "value": 31,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_setElementLockedStatus": {
+      "value": 32,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_updateRadarElementBatch": {
+      "value": 33,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_updateRadarArrow": {
+      "value": 34,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_updateNorthIndicator": {
+      "value": 35,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_setRadarParameters": {
+      "value": 36,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_updateRadarBoundaries": {
+      "value": 37,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_RETICLE_updateCombatReticle": {
+      "value": 38,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_RETICLE_updateSelectionReticle": {
+      "value": 39,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_RETICLE_updateLosReticle": {
+      "value": 40,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_assignHotKeys": {
+      "value": 41,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_KEYMAP_assignKeyMap_0": {
+      "value": 42,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_KEYMAP_assignKeyMap_1": {
+      "value": 43,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_KEYMAP_assignKeyMap_2": {
+      "value": 44,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_KEYMAP_assignKeyMap_3": {
+      "value": 45,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_KEYMAP_assignKeyMap_4": {
+      "value": 46,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_KEYMAP_assignKeyMap_5": {
+      "value": 47,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_KEYMAP_assignKeyMap_6": {
+      "value": 48,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_KEYMAP_assignKeyMap_7": {
+      "value": 49,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_KEYMAP_assignKeyMap_8": {
+      "value": 50,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_KEYMAP_assignKeyMap_9": {
+      "value": 51,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_KEYMAP_assignKeyMap_10": {
+      "value": 52,
+      "documentation": null
+    },
+    "SFP_INVOKELABEL_HUD_KEYMAP_assignKeyMap_11": {
+      "value": 53,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

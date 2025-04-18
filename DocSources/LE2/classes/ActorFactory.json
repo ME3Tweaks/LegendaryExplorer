@@ -1,0 +1,49 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "MenuName": {
+      "type": "string",
+      "documentation": null
+    },
+    "GameplayActorClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "NewActorClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "MenuPriority": {
+      "type": "int",
+      "documentation": null
+    },
+    "AlternateMenuPriority": {
+      "type": "int",
+      "documentation": null
+    },
+    "bPlaceable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bNoCollisionFail": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PostCreateActor": {
+      "documentation": null,
+      "signature_members": {
+        "NewActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PostCreateActor(Actor NewActor)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

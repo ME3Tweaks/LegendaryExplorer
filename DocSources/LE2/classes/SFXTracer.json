@@ -1,0 +1,82 @@
+{
+  "parent": "SFXProjectile",
+  "package": "SFXGame",
+  "variables": {
+    "DesiredEndPoint": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "ScaleTimeFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "ScaleTimeCount": {
+      "type": "float",
+      "documentation": null
+    },
+    "ScaleMode": {
+      "type": "ESFXTracerScaling",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "ShutDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShutDown()"
+    },
+    "ScaleDownFinishedNotify": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ScaleDownFinishedNotify()"
+    },
+    "ScaleDownStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ScaleDownStart()"
+    },
+    "ScaleUpFinishedNotify": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ScaleUpFinishedNotify()"
+    },
+    "ScaleUpStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ScaleUpStart()"
+    },
+    "InitTracer": {
+      "documentation": null,
+      "signature_members": {
+        "Start": {
+          "type": null,
+          "documentation": null
+        },
+        "End": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitTracer(Vector Start, Vector End)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

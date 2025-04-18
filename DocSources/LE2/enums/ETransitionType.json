@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "TT_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "TT_Paused": {
+      "value": 1,
+      "documentation": null
+    },
+    "TT_Loading": {
+      "value": 2,
+      "documentation": null
+    },
+    "TT_Saving": {
+      "value": 3,
+      "documentation": null
+    },
+    "TT_Connecting": {
+      "value": 4,
+      "documentation": null
+    },
+    "TT_Precaching": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

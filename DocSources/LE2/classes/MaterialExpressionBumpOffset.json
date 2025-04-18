@@ -1,0 +1,25 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "Coordinate": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "Height": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "HeightRatio": {
+      "type": "float",
+      "documentation": null
+    },
+    "ReferencePlane": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

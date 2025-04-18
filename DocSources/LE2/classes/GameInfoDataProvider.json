@@ -1,0 +1,25 @@
+{
+  "parent": "UIDynamicDataProvider",
+  "package": "Engine",
+  "variables": {
+    "GameDataSource": {
+      "type": "GameReplicationInfo",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ProviderInstanceBound": {
+      "documentation": null,
+      "signature_members": {
+        "DataSourceInstance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProviderInstanceBound(Object DataSourceInstance)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

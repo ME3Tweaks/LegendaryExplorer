@@ -1,0 +1,452 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "PendingFire": {
+      "type": "int",
+      "documentation": null
+    },
+    "InventoryChain": {
+      "type": "Inventory",
+      "documentation": null
+    },
+    "PendingWeapon": {
+      "type": "Weapon",
+      "documentation": null
+    },
+    "LastAttemptedSwitchToWeapon": {
+      "type": "Weapon",
+      "documentation": null
+    },
+    "bMustHoldWeapon": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "UpdateController": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateController()"
+    },
+    "ClientSyncWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "NewWeapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientSyncWeapon(Weapon NewWeapon)"
+    },
+    "ClientWeaponSet": {
+      "documentation": null,
+      "signature_members": {
+        "NewWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "bOptionalSet": {
+          "type": null,
+          "documentation": null
+        },
+        "bDoNotActivate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientWeaponSet(Weapon NewWeapon, bool bOptionalSet, optional bool bDoNotActivate)"
+    },
+    "ChangedWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ChangedWeapon()"
+    },
+    "CancelWeaponChange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CancelWeaponChange()"
+    },
+    "SetPendingWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredWeapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPendingWeapon(Weapon DesiredWeapon)"
+    },
+    "InternalSetCurrentWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredWeapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InternalSetCurrentWeapon(Weapon DesiredWeapon)"
+    },
+    "ServerSetCurrentWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredWeapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerSetCurrentWeapon(Weapon DesiredWeapon)"
+    },
+    "SetCurrentWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredWeapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCurrentWeapon(Weapon DesiredWeapon)"
+    },
+    "NextWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NextWeapon()"
+    },
+    "PrevWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PrevWeapon()"
+    },
+    "SwitchToBestWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "bForceADifferentWeapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SwitchToBestWeapon(optional bool bForceADifferentWeapon)"
+    },
+    "GetBestWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "bForceADifferentWeapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Weapon",
+      "signature": "Weapon GetBestWeapon(optional bool bForceADifferentWeapon)"
+    },
+    "GetWeaponRatingFor": {
+      "documentation": null,
+      "signature_members": {
+        "W": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetWeaponRatingFor(Weapon W)"
+    },
+    "IsActiveWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "ThisWeapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsActiveWeapon(Weapon ThisWeapon)"
+    },
+    "StopFire": {
+      "documentation": null,
+      "signature_members": {
+        "FireModeNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StopFire(byte FireModeNum)"
+    },
+    "StartFire": {
+      "documentation": null,
+      "signature_members": {
+        "FireModeNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StartFire(byte FireModeNum)"
+    },
+    "DrawHUD": {
+      "documentation": null,
+      "signature_members": {
+        "H": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawHUD(HUD H)"
+    },
+    "OwnerEvent": {
+      "documentation": null,
+      "signature_members": {
+        "EventName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OwnerEvent(Name EventName)"
+    },
+    "OwnerDied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OwnerDied()"
+    },
+    "ModifyDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "InstigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int ModifyDamage(int Damage, Controller InstigatedBy, Vector HitLocation, Vector Momentum, Class<DamageType> DamageType)"
+    },
+    "DiscardInventory": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DiscardInventory()"
+    },
+    "RemoveClassFromInventory": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredClass": {
+          "type": null,
+          "documentation": null
+        },
+        "bAllowSubclass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveClassFromInventory(Class<Inventory> DesiredClass, optional bool bAllowSubclass)"
+    },
+    "RemoveFromInventory": {
+      "documentation": null,
+      "signature_members": {
+        "ItemToRemove": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveFromInventory(Inventory ItemToRemove)"
+    },
+    "AddInventory": {
+      "documentation": null,
+      "signature_members": {
+        "NewItem": {
+          "type": null,
+          "documentation": null
+        },
+        "bDoNotActivate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddInventory(Inventory NewItem, optional bool bDoNotActivate)"
+    },
+    "CreateInventory": {
+      "documentation": null,
+      "signature_members": {
+        "NewInventoryItemClass": {
+          "type": null,
+          "documentation": null
+        },
+        "bDoNotActivate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Inventory",
+      "signature": "Inventory CreateInventory(Class<Inventory> NewInventoryItemClass, optional bool bDoNotActivate)"
+    },
+    "FindInventoryType": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredClass": {
+          "type": null,
+          "documentation": null
+        },
+        "bAllowSubclass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Inventory",
+      "signature": "Inventory FindInventoryType(Class<Inventory> DesiredClass, optional bool bAllowSubclass)"
+    },
+    "HandlePickupQuery": {
+      "documentation": null,
+      "signature_members": {
+        "ItemClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Pickup": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandlePickupQuery(Class<Inventory> ItemClass, Actor Pickup)"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "SetupFor": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetupFor(Pawn P)"
+    },
+    "InventoryActors": {
+      "documentation": null,
+      "signature_members": {
+        "BaseClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Inv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InventoryActors(Class<Inventory> BaseClass, out Inventory Inv)"
+    },
+    "ClearAllPendingFire": {
+      "documentation": null,
+      "signature_members": {
+        "InWeapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearAllPendingFire(Weapon InWeapon)"
+    },
+    "IsPendingFire": {
+      "documentation": null,
+      "signature_members": {
+        "InWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "InFiringMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsPendingFire(Weapon InWeapon, int InFiringMode)"
+    },
+    "ClearPendingFire": {
+      "documentation": null,
+      "signature_members": {
+        "InWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "InFiringMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearPendingFire(Weapon InWeapon, int InFiringMode)"
+    },
+    "SetPendingFire": {
+      "documentation": null,
+      "signature_members": {
+        "InWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "InFiringMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPendingFire(Weapon InWeapon, int InFiringMode)"
+    },
+    "GetPendingFireLength": {
+      "documentation": null,
+      "signature_members": {
+        "InWeapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetPendingFireLength(Weapon InWeapon)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

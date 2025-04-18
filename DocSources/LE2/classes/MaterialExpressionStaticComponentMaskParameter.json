@@ -1,0 +1,33 @@
+{
+  "parent": "MaterialExpressionParameter",
+  "package": "Engine",
+  "variables": {
+    "InstanceOverride": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Input": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "DefaultR": {
+      "type": "bool",
+      "documentation": null
+    },
+    "DefaultG": {
+      "type": "bool",
+      "documentation": null
+    },
+    "DefaultB": {
+      "type": "bool",
+      "documentation": null
+    },
+    "DefaultA": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

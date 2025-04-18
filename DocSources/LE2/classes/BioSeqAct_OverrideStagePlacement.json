@@ -1,0 +1,71 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_aNode1": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_aNode2": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_aNode3": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_aNode4": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_aPuppet1_1": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_aPuppet1_2": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_aPuppet2_1": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_aPuppet2_2": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_aStage": {
+      "type": "Actor",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "SetNode": {
+      "documentation": null,
+      "signature_members": {
+        "oStage": {
+          "type": null,
+          "documentation": null
+        },
+        "aInput": {
+          "type": null,
+          "documentation": null
+        },
+        "nmNodeName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNode(BioStage oStage, Actor aInput, Name nmNodeName)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

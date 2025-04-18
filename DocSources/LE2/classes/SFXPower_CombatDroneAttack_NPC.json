@@ -1,0 +1,13 @@
+{
+  "parent": "SFXPower",
+  "package": "SFXGameContent_Powers",
+  "variables": {
+    "AnimatedReactions": {
+      "type": "EAICustomAction",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

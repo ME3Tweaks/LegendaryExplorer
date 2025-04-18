@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BIO_Relation_Friendly": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_Relation_Neutral": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_Relation_Hostile": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

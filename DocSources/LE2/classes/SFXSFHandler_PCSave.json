@@ -1,0 +1,15 @@
+{
+  "parent": "SFXSFHandler_Save",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

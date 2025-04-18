@@ -1,0 +1,81 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "ImportOptions": {
+      "type": "FontImportOptionsData",
+      "documentation": null
+    },
+    "Characters": {
+      "type": "FontCharacter",
+      "documentation": null
+    },
+    "Textures": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "MaxCharHeight": {
+      "type": "int",
+      "documentation": null
+    },
+    "CharRemap": {
+      "type": "Object",
+      "documentation": null
+    },
+    "IsRemapped": {
+      "type": "int",
+      "documentation": null
+    },
+    "Kerning": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumCharacters": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetMaxCharHeight": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMaxCharHeight()"
+    },
+    "GetAuthoredViewportHeight": {
+      "documentation": null,
+      "signature_members": {
+        "ViewportHeight": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetAuthoredViewportHeight(float ViewportHeight)"
+    },
+    "GetScalingFactor": {
+      "documentation": null,
+      "signature_members": {
+        "HeightTest": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetScalingFactor(float HeightTest)"
+    },
+    "GetResolutionPageIndex": {
+      "documentation": null,
+      "signature_members": {
+        "HeightTest": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetResolutionPageIndex(float HeightTest)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

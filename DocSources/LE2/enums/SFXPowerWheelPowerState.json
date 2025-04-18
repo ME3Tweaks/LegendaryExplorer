@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "PWPS_Selectable": {
+      "value": 0,
+      "documentation": null
+    },
+    "PWPS_Selected": {
+      "value": 1,
+      "documentation": null
+    },
+    "PWPS_Inactive": {
+      "value": 2,
+      "documentation": null
+    },
+    "PWPS_Activated": {
+      "value": 3,
+      "documentation": null
+    },
+    "PWPS_Overload": {
+      "value": 4,
+      "documentation": null
+    },
+    "PWPS_EmptySelectable": {
+      "value": 5,
+      "documentation": null
+    },
+    "PWPS_EmptySelected": {
+      "value": 6,
+      "documentation": null
+    },
+    "PWPS_NotSuggested": {
+      "value": 7,
+      "documentation": null
+    },
+    "PWPS_STATE_COUNT": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

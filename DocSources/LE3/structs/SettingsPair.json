@@ -1,11 +1,11 @@
 {
   "Members": {
     "Key": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Value": {
-      "type": null,
+      "type": "string",
       "documentation": null
     }
   },

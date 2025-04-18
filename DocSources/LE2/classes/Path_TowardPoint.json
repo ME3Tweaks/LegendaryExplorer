@@ -1,0 +1,35 @@
+{
+  "parent": "PathConstraint",
+  "package": "Engine",
+  "variables": {
+    "GoalPoint": {
+      "type": "Vector",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "TowardPoint": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        },
+        "Point": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TowardPoint(Pawn P, Vector Point)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

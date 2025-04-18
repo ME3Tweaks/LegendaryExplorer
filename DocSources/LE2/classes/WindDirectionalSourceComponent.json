@@ -1,0 +1,29 @@
+{
+  "parent": "ActorComponent",
+  "package": "Engine",
+  "variables": {
+    "SceneProxy": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Strength": {
+      "type": "float",
+      "documentation": null
+    },
+    "Phase": {
+      "type": "float",
+      "documentation": null
+    },
+    "Frequency": {
+      "type": "float",
+      "documentation": null
+    },
+    "Speed": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

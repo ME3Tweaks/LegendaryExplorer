@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "fShieldDamage": {
+      "type": "float",
+      "documentation": null
+    },
+    "fShieldDamageCapacity": {
+      "type": "float",
+      "documentation": null
+    },
+    "fHealthDamage": {
+      "type": "float",
+      "documentation": null
+    },
+    "fToxicDamage": {
+      "type": "float",
+      "documentation": null
+    },
+    "fStabilityDamage": {
+      "type": "float",
+      "documentation": null
+    },
+    "fDamageResistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "fToxicResistance": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

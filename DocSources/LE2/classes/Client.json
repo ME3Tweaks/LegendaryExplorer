@@ -1,0 +1,25 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "StartupResolutionX": {
+      "type": "int",
+      "documentation": null
+    },
+    "StartupResolutionY": {
+      "type": "int",
+      "documentation": null
+    },
+    "StartupFullscreen": {
+      "type": "bool",
+      "documentation": null
+    },
+    "UseHardwareCursor": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

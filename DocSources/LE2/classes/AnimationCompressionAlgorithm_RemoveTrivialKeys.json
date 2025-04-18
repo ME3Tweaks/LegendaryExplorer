@@ -1,0 +1,17 @@
+{
+  "parent": "AnimationCompressionAlgorithm",
+  "package": "Engine",
+  "variables": {
+    "MaxPosDiff": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxAngleDiff": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

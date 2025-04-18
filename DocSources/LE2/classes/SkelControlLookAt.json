@@ -1,0 +1,190 @@
+{
+  "parent": "SkelControlBase",
+  "package": "Engine",
+  "variables": {
+    "TargetLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "DesiredTargetLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "LimitLookDir": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "BaseLookDir": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "BaseBonePos": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "TargetSpaceBoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "AllowRotationOtherBoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "TargetLocationInterpSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "OuterMaxAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "DeadZoneAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "LookAtAlpha": {
+      "type": "float",
+      "documentation": null
+    },
+    "LookAtAlphaTarget": {
+      "type": "float",
+      "documentation": null
+    },
+    "LookAtAlphaBlendTimeToGo": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastCalcTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bInvertLookAtAxis": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDefineUpAxis": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInvertUpAxis": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableLimit": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLimitBasedOnRefPose": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableBeyondLimit": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNotifyBeyondLimit": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowLimit": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowRotationX": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowRotationY": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowRotationZ": {
+      "type": "bool",
+      "documentation": null
+    },
+    "TargetLocationSpace": {
+      "type": "EBoneControlSpace",
+      "documentation": null
+    },
+    "LookAtAxis": {
+      "type": "EAxis",
+      "documentation": null
+    },
+    "UpAxis": {
+      "type": "EAxis",
+      "documentation": null
+    },
+    "AllowRotationSpace": {
+      "type": "EBoneControlSpace",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CanLookAtPoint": {
+      "documentation": null,
+      "signature_members": {
+        "PointLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "bDrawDebugInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "bDebugUsePersistentLines": {
+          "type": null,
+          "documentation": null
+        },
+        "bDebugFlushLinesFirst": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanLookAtPoint(Vector PointLoc, optional bool bDrawDebugInfo, optional bool bDebugUsePersistentLines, optional bool bDebugFlushLinesFirst)"
+    },
+    "SetLookAtAlpha": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredAlpha": {
+          "type": null,
+          "documentation": null
+        },
+        "DesiredBlendTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLookAtAlpha(float DesiredAlpha, float DesiredBlendTime)"
+    },
+    "InterpolateTargetLocation": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InterpolateTargetLocation(float DeltaTime)"
+    },
+    "SetTargetLocation": {
+      "documentation": null,
+      "signature_members": {
+        "NewTargetLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTargetLocation(Vector NewTargetLocation)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

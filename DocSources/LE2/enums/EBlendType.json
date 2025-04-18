@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "EBT_ParentBoneSpace": {
+      "value": 0,
+      "documentation": null
+    },
+    "EBT_MeshSpace": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,47 +1,47 @@
 {
   "Members": {
     "m_fMaxFocusDistance": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "m_fNearClipFactor": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "m_fNearClipMax": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "m_fMinRate": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "m_fFocusFraction": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "m_fInnerRadiusFactor": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "m_fFalloffExponent": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "m_fBlurKernelSize": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "m_fMaxNearBlurAmount": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "m_fMaxFarBlurAmount": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "m_clrModulateBlur": {
-      "type": null,
+      "type": "Color",
       "documentation": null
     }
   },

@@ -1,0 +1,155 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "__EvolvePowerDelegate__Delegate": {
+      "type": "EvolvePowerDelegate",
+      "documentation": null
+    },
+    "__CancelEvolutionDelegate__Delegate": {
+      "type": "CancelEvolutionDelegate",
+      "documentation": null
+    },
+    "m_OriginalPower": {
+      "type": "SFXPower",
+      "documentation": null
+    },
+    "m_EvolvedPower1": {
+      "type": "SFXPower",
+      "documentation": null
+    },
+    "m_EvolvedPower2": {
+      "type": "SFXPower",
+      "documentation": null
+    },
+    "m_Description": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_fRScrollValue": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CancelEvolution": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CancelEvolution()"
+    },
+    "EvolvePower": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EvolvePower(int nIndex)"
+    },
+    "UpdatePowerList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdatePowerList()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": null,
+          "documentation": null
+        },
+        "Parameters": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> Parameters)"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "nmPowerName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Initialize(BioPawn oPawn, Name nmPowerName)"
+    },
+    "CancelEvolutionDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "OriginalPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CancelEvolutionDelegate(SFXPower OriginalPower)"
+    },
+    "EvolvePowerDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "OriginalPower": {
+          "type": null,
+          "documentation": null
+        },
+        "EvolvedPowerClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EvolvePowerDelegate(SFXPower OriginalPower, Class<Object> EvolvedPowerClass)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

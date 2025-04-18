@@ -1,0 +1,102 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "SingularityLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Caster": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "BoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ForceTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "InnerRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "ForceInterval": {
+      "type": "float",
+      "documentation": null
+    },
+    "SingularityRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "Force": {
+      "type": "float",
+      "documentation": null
+    },
+    "minHeightForBodyFallSound": {
+      "type": "float",
+      "documentation": null
+    },
+    "bApplied": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OutOfRangeCheck": {
+      "documentation": null,
+      "signature_members": {
+        "Distance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OutOfRangeCheck(float Distance)"
+    },
+    "IsStillInSingularity": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsStillInSingularity()"
+    },
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "MoveActor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MoveActor()"
+    },
+    "InitialMovement": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitialMovement()"
+    },
+    "OnUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaSeconds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUpdate(float DeltaSeconds)"
+    },
+    "OnApplied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnApplied()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

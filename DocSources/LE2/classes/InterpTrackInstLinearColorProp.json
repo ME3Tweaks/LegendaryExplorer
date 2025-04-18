@@ -1,0 +1,17 @@
+{
+  "parent": "InterpTrackInstProperty",
+  "package": "Engine",
+  "variables": {
+    "ColorProp": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ResetColor": {
+      "type": "LinearColor",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

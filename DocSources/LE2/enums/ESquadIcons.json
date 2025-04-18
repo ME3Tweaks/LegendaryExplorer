@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "BIO_SQUADICON_INVALID": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_SQUADICON_HOLD": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_SQUADICON_MOVETO": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_SQUADICON_FOLLOW": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_SQUADICON_DEAD": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_SQUADICON_INCOVER": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

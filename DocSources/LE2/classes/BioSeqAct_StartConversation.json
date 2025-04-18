@@ -1,0 +1,75 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "Conv": {
+      "type": "BioConversation",
+      "documentation": null
+    },
+    "m_oOwner": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_fInterruptRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "setTargetBusyForDuration": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bConvReRunDetected": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bNoGestures": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bLookAtActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisableLookAtRangeCheck": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisableDelayUntilPreload": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPreLoading": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPlayRequested": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bEnterCombatModeOnEnd": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "ConversationStart": {
+      "documentation": null,
+      "signature_members": {
+        "fDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ConversationStart(float fDelta)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,613 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "CamPostProcessSettings": {
+      "type": "PostProcessSettings",
+      "documentation": null
+    },
+    "ModifierList": {
+      "type": "CameraModifier",
+      "documentation": null
+    },
+    "CameraLensEffects": {
+      "type": "EmitterCameraLensEffectBase",
+      "documentation": null
+    },
+    "ActiveAnims": {
+      "type": "CameraAnimInst",
+      "documentation": null
+    },
+    "FreeAnims": {
+      "type": "CameraAnimInst",
+      "documentation": null
+    },
+    "CameraShakeCamModClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "AnimInstPool": {
+      "type": "CameraAnimInst",
+      "documentation": null
+    },
+    "ViewTarget": {
+      "type": "TViewTarget",
+      "documentation": null
+    },
+    "PendingViewTarget": {
+      "type": "TViewTarget",
+      "documentation": null
+    },
+    "CameraCache": {
+      "type": "TCameraCache",
+      "documentation": null
+    },
+    "ColorScale": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "DesiredColorScale": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "OriginalColorScale": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "BlendParams": {
+      "type": "ViewTargetTransitionParams",
+      "documentation": null
+    },
+    "FreeCamOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PCOwner": {
+      "type": "PlayerController",
+      "documentation": null
+    },
+    "CameraStyle": {
+      "type": "Name",
+      "documentation": null
+    },
+    "FadeAlpha": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "CameraShakeCamMod": {
+      "type": "CameraModifier_CameraShake",
+      "documentation": null
+    },
+    "AnimCameraActor": {
+      "type": "DynamicCameraActor",
+      "documentation": null
+    },
+    "DefaultFOV": {
+      "type": "float",
+      "documentation": null
+    },
+    "LockedFOV": {
+      "type": "float",
+      "documentation": null
+    },
+    "ConstrainedAspectRatio": {
+      "type": "float",
+      "documentation": null
+    },
+    "DefaultAspectRatio": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadeColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "FadeAmount": {
+      "type": "float",
+      "documentation": null
+    },
+    "CamOverridePostProcessAlpha": {
+      "type": "float",
+      "documentation": null
+    },
+    "ColorScaleInterpDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "ColorScaleInterpStartTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendTimeToGo": {
+      "type": "float",
+      "documentation": null
+    },
+    "FreeCamDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadeTimeRemaining": {
+      "type": "float",
+      "documentation": null
+    },
+    "bLockedFOV": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bConstrainAspectRatio": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableFading": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableColorScaling": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableColorScaleInterp": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "StopCameraAnim": {
+      "documentation": null,
+      "signature_members": {
+        "AnimInst": {
+          "type": null,
+          "documentation": null
+        },
+        "bImmediate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StopCameraAnim(CameraAnimInst AnimInst, optional bool bImmediate)"
+    },
+    "StopAllCameraAnimsByType": {
+      "documentation": null,
+      "signature_members": {
+        "Anim": {
+          "type": null,
+          "documentation": null
+        },
+        "bImmediate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StopAllCameraAnimsByType(CameraAnim Anim, optional bool bImmediate)"
+    },
+    "StopAllCameraAnims": {
+      "documentation": null,
+      "signature_members": {
+        "bImmediate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StopAllCameraAnims(optional bool bImmediate)"
+    },
+    "PlayCameraAnim": {
+      "documentation": null,
+      "signature_members": {
+        "Anim": {
+          "type": null,
+          "documentation": null
+        },
+        "Rate": {
+          "type": null,
+          "documentation": null
+        },
+        "Scale": {
+          "type": null,
+          "documentation": null
+        },
+        "BlendInTime": {
+          "type": null,
+          "documentation": null
+        },
+        "BlendOutTime": {
+          "type": null,
+          "documentation": null
+        },
+        "bLoop": {
+          "type": null,
+          "documentation": null
+        },
+        "bRandomStartTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Duration": {
+          "type": null,
+          "documentation": null
+        },
+        "bSingleInstance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "CameraAnimInst",
+      "signature": "CameraAnimInst PlayCameraAnim(CameraAnim Anim, optional float Rate, optional float Scale, optional float BlendInTime, optional float BlendOutTime, optional bool bLoop, optional bool bRandomStartTime, optional float Duration, optional bool bSingleInstance)"
+    },
+    "ClearAllCameraShakes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearAllCameraShakes()"
+    },
+    "PlayWorldCameraShake": {
+      "documentation": null,
+      "signature_members": {
+        "Shake": {
+          "type": null,
+          "documentation": null
+        },
+        "ShakeInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "Epicenter": {
+          "type": null,
+          "documentation": null
+        },
+        "InnerRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "OuterRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "Falloff": {
+          "type": null,
+          "documentation": null
+        },
+        "bTryForceFeedback": {
+          "type": null,
+          "documentation": null
+        },
+        "bOrientShakeTowardsEpicenter": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayWorldCameraShake(CameraShake Shake, Actor ShakeInstigator, Vector Epicenter, float InnerRadius, float OuterRadius, float Falloff, bool bTryForceFeedback, optional bool bOrientShakeTowardsEpicenter)"
+    },
+    "CalcRadialShakeScale": {
+      "documentation": null,
+      "signature_members": {
+        "Cam": {
+          "type": null,
+          "documentation": null
+        },
+        "Epicenter": {
+          "type": null,
+          "documentation": null
+        },
+        "InnerRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "OuterRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "Falloff": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float CalcRadialShakeScale(Camera Cam, Vector Epicenter, float InnerRadius, float OuterRadius, float Falloff)"
+    },
+    "StopCameraShake": {
+      "documentation": null,
+      "signature_members": {
+        "Shake": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StopCameraShake(CameraShake Shake)"
+    },
+    "PlayCameraShake": {
+      "documentation": null,
+      "signature_members": {
+        "Shake": {
+          "type": null,
+          "documentation": null
+        },
+        "Scale": {
+          "type": null,
+          "documentation": null
+        },
+        "PlaySpace": {
+          "type": null,
+          "documentation": null
+        },
+        "UserPlaySpaceRot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayCameraShake(CameraShake Shake, float Scale, optional ECameraAnimPlaySpace PlaySpace, optional Rotator UserPlaySpaceRot)"
+    },
+    "ClearCameraLensEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearCameraLensEffects()"
+    },
+    "RemoveCameraLensEffect": {
+      "documentation": null,
+      "signature_members": {
+        "Emitter": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveCameraLensEffect(EmitterCameraLensEffectBase Emitter)"
+    },
+    "AddCameraLensEffect": {
+      "documentation": null,
+      "signature_members": {
+        "LensEffectEmitterClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddCameraLensEffect(Class<EmitterCameraLensEffectBase> LensEffectEmitterClass)"
+    },
+    "FindCameraLensEffect": {
+      "documentation": null,
+      "signature_members": {
+        "LensEffectEmitterClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EmitterCameraLensEffectBase",
+      "signature": "EmitterCameraLensEffectBase FindCameraLensEffect(Class<EmitterCameraLensEffectBase> LensEffectEmitterClass)"
+    },
+    "DisplayDebug": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        },
+        "out_YL": {
+          "type": null,
+          "documentation": null
+        },
+        "out_YPos": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayDebug(HUD HUD, out float out_YL, out float out_YPos)"
+    },
+    "AllowPawnRotation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AllowPawnRotation()"
+    },
+    "ProcessViewRotation": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "OutViewRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "OutDeltaRot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessViewRotation(float DeltaTime, out Rotator OutViewRotation, out Rotator OutDeltaRot)"
+    },
+    "SetViewTarget": {
+      "documentation": null,
+      "signature_members": {
+        "NewViewTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionParams": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetViewTarget(Actor NewViewTarget, optional ViewTargetTransitionParams TransitionParams)"
+    },
+    "UpdateViewTarget": {
+      "documentation": null,
+      "signature_members": {
+        "OutVT": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateViewTarget(out TViewTarget OutVT, float DeltaTime)"
+    },
+    "CheckViewTarget": {
+      "documentation": null,
+      "signature_members": {
+        "VT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CheckViewTarget(out TViewTarget VT)"
+    },
+    "FillCameraCache": {
+      "documentation": null,
+      "signature_members": {
+        "NewPOV": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FillCameraCache(const out TPOV NewPOV)"
+    },
+    "BlendViewTargets": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "Alpha": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "TPOV",
+      "signature": "TPOV BlendViewTargets(const out TViewTarget A, const out TViewTarget B, float Alpha)"
+    },
+    "UpdateCamera": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCamera(float DeltaTime)"
+    },
+    "SetDesiredColorScale": {
+      "documentation": null,
+      "signature_members": {
+        "NewColorScale": {
+          "type": null,
+          "documentation": null
+        },
+        "InterpTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDesiredColorScale(Vector NewColorScale, float InterpTime)"
+    },
+    "GetCameraViewPoint": {
+      "documentation": null,
+      "signature_members": {
+        "OutCamLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "OutCamRot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetCameraViewPoint(out Vector OutCamLoc, out Rotator OutCamRot)"
+    },
+    "SetFOV": {
+      "documentation": null,
+      "signature_members": {
+        "NewFOV": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFOV(float NewFOV)"
+    },
+    "GetFOVAngle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetFOVAngle()"
+    },
+    "InitializeFor": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeFor(PlayerController PC)"
+    },
+    "ApplyCameraModifiers": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "OutPOV": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyCameraModifiers(float DeltaTime, out TPOV OutPOV)"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "CreateCameraModifier": {
+      "documentation": null,
+      "signature_members": {
+        "ModifierClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "CameraModifier",
+      "signature": "CameraModifier CreateCameraModifier(Class<CameraModifier> ModifierClass)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,51 +1,51 @@
 {
   "Members": {
     "Id": {
-      "type": null,
+      "type": "Guid",
       "documentation": null
     },
     "HitLocation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "RefinedHitLocation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "RefinedRayDir": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "HitNormal": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "RayDir": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "SpawnValue": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "Instigator": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "HitActor": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "HitBone": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "HitMaterial": {
-      "type": null,
+      "type": "PhysicalMaterial",
       "documentation": null
     },
     "bHasRefinedHitLocation": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

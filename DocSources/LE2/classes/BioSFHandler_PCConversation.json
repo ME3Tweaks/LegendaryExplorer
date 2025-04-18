@@ -1,0 +1,71 @@
+{
+  "parent": "SFXSFHandler_MultiAspectRatioConversation",
+  "package": "SFXGame",
+  "variables": {
+    "vMouseInput": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "AccumulationDivisor": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CalculateArrowPosition": {
+      "documentation": null,
+      "signature_members": {
+        "stParam": {
+          "type": null,
+          "documentation": null
+        },
+        "lstParams": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CalculateArrowPosition(out ASParams stParam, out array<ASParams> lstParams)"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "HighlightDefaultConvSegment": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HighlightDefaultConvSegment()"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "m_nMaterialConfigCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nMaterialCountPerConfig": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bIsHairHidden": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsHeadHidden": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSuppressFacePlate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSuppressVisor": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

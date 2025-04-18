@@ -1,27 +1,27 @@
 {
   "Members": {
     "UniqueName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "className": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Value": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Type": {
-      "type": null,
+      "type": "EPermanentGameEffect_Type",
       "documentation": null
     },
     "GAWAssetType": {
-      "type": null,
+      "type": "EGAWAssetType",
       "documentation": null
     },
     "GAWAssetSubType": {
-      "type": null,
+      "type": "EGAWAssetSubType",
       "documentation": null
     }
   },

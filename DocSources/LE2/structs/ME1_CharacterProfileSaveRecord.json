@@ -1,0 +1,81 @@
+{
+  "Members": {
+    "characterID": {
+      "type": "string",
+      "documentation": null
+    },
+    "FullName": {
+      "type": "string",
+      "documentation": null
+    },
+    "CharacterStatistics": {
+      "type": "ME1_CharacterStatisticsSaveRecord",
+      "documentation": null
+    },
+    "LastPlayedSlot": {
+      "type": "int",
+      "documentation": null
+    },
+    "CharacterLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "CreationYear": {
+      "type": "int",
+      "documentation": null
+    },
+    "CreationMonth": {
+      "type": "int",
+      "documentation": null
+    },
+    "CreationDayOfWeek": {
+      "type": "int",
+      "documentation": null
+    },
+    "CreationDay": {
+      "type": "int",
+      "documentation": null
+    },
+    "CreationHour": {
+      "type": "int",
+      "documentation": null
+    },
+    "CreationMin": {
+      "type": "int",
+      "documentation": null
+    },
+    "CreationSec": {
+      "type": "int",
+      "documentation": null
+    },
+    "CreationMSec": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlayedHours": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlayedMin": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlayedSec": {
+      "type": "int",
+      "documentation": null
+    },
+    "ClassBase": {
+      "type": "byte",
+      "documentation": null
+    },
+    "Origin": {
+      "type": "byte",
+      "documentation": null
+    },
+    "Reputation": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

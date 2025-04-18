@@ -1,27 +1,27 @@
 {
   "Members": {
     "ValueVector": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "Module": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "Variable": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "ValueFloat": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Type": {
-      "type": null,
+      "type": "EParameterType",
       "documentation": null
     },
     "DataType": {
-      "type": null,
+      "type": "EParameterDataType",
       "documentation": null
     }
   },

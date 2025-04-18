@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "EIET_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "EIET_Attacked": {
+      "value": 1,
+      "documentation": null
+    },
+    "EIET_Cast": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

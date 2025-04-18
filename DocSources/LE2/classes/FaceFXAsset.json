@@ -1,0 +1,60 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "RawFaceFXActorBytes": {
+      "type": "byte",
+      "documentation": null
+    },
+    "RawFaceFXSessionBytes": {
+      "type": "byte",
+      "documentation": null
+    },
+    "LoopingTrackAssets": {
+      "type": "FaceFXAsset",
+      "documentation": null
+    },
+    "MountedFaceFXAnimSets": {
+      "type": "FaceFXAnimSet",
+      "documentation": null
+    },
+    "ReferencedSoundCues": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "FaceFXActor": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "NumLoadErrors": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "UnmountFaceFXAnimSet": {
+      "documentation": null,
+      "signature_members": {
+        "AnimSet": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnmountFaceFXAnimSet(FaceFXAnimSet AnimSet)"
+    },
+    "MountFaceFXAnimSet": {
+      "documentation": null,
+      "signature_members": {
+        "AnimSet": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MountFaceFXAnimSet(FaceFXAnimSet AnimSet)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

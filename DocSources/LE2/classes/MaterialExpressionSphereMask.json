@@ -1,0 +1,25 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "A": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "B": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "AttenuationRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "HardnessPercent": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

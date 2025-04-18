@@ -1,0 +1,24 @@
+{
+  "parent": "BioSFHandler_Credits",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

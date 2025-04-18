@@ -1,0 +1,211 @@
+{
+  "parent": "PlayerController",
+  "package": "Engine",
+  "variables": {
+    "PrimaryKey": {
+      "type": "Name",
+      "documentation": null
+    },
+    "SecondaryKey": {
+      "type": "Name",
+      "documentation": null
+    },
+    "UnselectKey": {
+      "type": "Name",
+      "documentation": null
+    },
+    "OryginalControllerRef": {
+      "type": "PlayerController",
+      "documentation": null
+    },
+    "OryginalPlayer": {
+      "type": "Player",
+      "documentation": null
+    },
+    "DrawFrustum": {
+      "type": "DrawFrustumComponent",
+      "documentation": null
+    },
+    "SelectedActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "SelectedComponent": {
+      "type": "PrimitiveComponent",
+      "documentation": null
+    },
+    "bShowSelectedInfo": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsFrozenRendering": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ConsoleCommand": {
+      "documentation": null,
+      "signature_members": {
+        "Command": {
+          "type": null,
+          "documentation": null
+        },
+        "bWriteToLog": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string ConsoleCommand(string Command, optional bool bWriteToLog)"
+    },
+    "ShowDebugSelectedInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowDebugSelectedInfo()"
+    },
+    "NativeInputKey": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        },
+        "Key": {
+          "type": null,
+          "documentation": null
+        },
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "AmountDepressed": {
+          "type": null,
+          "documentation": null
+        },
+        "bGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NativeInputKey(int ControllerId, Name Key, EInputEvent Event, optional float AmountDepressed, optional bool bGamepad)"
+    },
+    "DisableDebugCamera": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableDebugCamera()"
+    },
+    "NormalSpeed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NormalSpeed()"
+    },
+    "MoreSpeed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MoreSpeed()"
+    },
+    "SetFreezeRendering": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetFreezeRendering()"
+    },
+    "OnDeactivate": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDeactivate(PlayerController PC)"
+    },
+    "OnActivate": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnActivate(PlayerController PC)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "Unselect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Unselect()"
+    },
+    "SecondarySelect": {
+      "documentation": null,
+      "signature_members": {
+        "HitLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SecondarySelect(Vector HitLoc, Vector HitNormal, TraceHitInfo HitInfo)"
+    },
+    "PrimarySelect": {
+      "documentation": null,
+      "signature_members": {
+        "HitLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrimarySelect(Vector HitLoc, Vector HitNormal, TraceHitInfo HitInfo)"
+    }
+  },
+  "states": {
+    "PlayerWaiting": {
+      "functions": {
+        "PlayerMove": {
+          "documentation": null,
+          "signature_members": {
+            "DeltaTime": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

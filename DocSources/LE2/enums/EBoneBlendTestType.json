@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BLENDTESTTYPE_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BLENDTESTTYPE_ANIM": {
+      "value": 1,
+      "documentation": null
+    },
+    "BLENDTESTTYPE_BONE": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,29 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "A": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "B": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "AGreaterThanB": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "AEqualsB": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "ALessThanB": {
+      "type": "ExpressionInput",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

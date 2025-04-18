@@ -1,11 +1,11 @@
 {
   "Members": {
     "Code": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Label": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

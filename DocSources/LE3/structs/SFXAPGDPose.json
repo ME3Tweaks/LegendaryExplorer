@@ -1,35 +1,35 @@
 {
   "Members": {
     "aTrans": {
-      "type": null,
+      "type": "SFXAPGDTransition",
       "documentation": null
     },
     "aGests": {
-      "type": null,
+      "type": "SFXAPGDGesture",
       "documentation": null
     },
     "nPoseChangeChance": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nPlayGestureChance": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "fChoiceTimeDelay": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bEnterEvent": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bExitEvent": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bEnterTransDoneEvent": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

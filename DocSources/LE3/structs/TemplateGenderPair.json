@@ -1,19 +1,19 @@
 {
   "Members": {
     "Placed": {
-      "type": null,
+      "type": "BioPawn",
       "documentation": null
     },
     "Spawned": {
-      "type": null,
+      "type": "BioPawn",
       "documentation": null
     },
     "UIWorldVar": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "BuildClass": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     }
   },

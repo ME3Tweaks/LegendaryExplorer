@@ -1,0 +1,64 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "m_ASPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_CurrentAlpha": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_AccumulatedFadeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_FadeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_eDisplayMode": {
+      "type": "BlackScreenDisplayModes",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "IsFading": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsFading()"
+    },
+    "Show": {
+      "documentation": null,
+      "signature_members": {
+        "bWithFade": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Show(bool bWithFade)"
+    },
+    "Hide": {
+      "documentation": null,
+      "signature_members": {
+        "bWithFade": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Hide(bool bWithFade)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

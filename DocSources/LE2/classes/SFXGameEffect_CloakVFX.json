@@ -1,0 +1,166 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGameContent_Powers",
+  "variables": {
+    "MaterialMap": {
+      "type": "MaterialMapStruct",
+      "documentation": null
+    },
+    "EyeInvisibleMaterial": {
+      "type": "MaterialInstance",
+      "documentation": null
+    },
+    "InvisibleMaterial": {
+      "type": "MaterialInstance",
+      "documentation": null
+    },
+    "StartCrustVFX": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "EndCrustVFX": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "StartCrust": {
+      "type": "BioVisualEffect",
+      "documentation": null
+    },
+    "CloakActivatedSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "CloakDeactivatedSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "TransitionPosition": {
+      "type": "float",
+      "documentation": null
+    },
+    "ParameterTransitionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "CrustEffectTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "EndTransitionDeltaTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaleEyesMaterialID": {
+      "type": "int",
+      "documentation": null
+    },
+    "FemaleEyesMaterialID": {
+      "type": "int",
+      "documentation": null
+    },
+    "bMaterialsSwapped": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bScaleDownParameter": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "EndStealthVFX": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndStealthVFX()"
+    },
+    "RestoreMeshMaterials": {
+      "documentation": null,
+      "signature_members": {
+        "Mesh": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RestoreMeshMaterials(SkeletalMeshComponent Mesh)"
+    },
+    "TransitionOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TransitionOff()"
+    },
+    "DelayedTransitionOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DelayedTransitionOff()"
+    },
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "OnUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaSeconds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUpdate(float DeltaSeconds)"
+    },
+    "StartTransition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartTransition()"
+    },
+    "SwapMeshMaterials": {
+      "documentation": null,
+      "signature_members": {
+        "oSkeletalMesh": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SwapMeshMaterials(SkeletalMeshComponent oSkeletalMesh)"
+    },
+    "SwapInvisibleMaterials": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SwapInvisibleMaterials()"
+    },
+    "StoreMeshMaterials": {
+      "documentation": null,
+      "signature_members": {
+        "oSkeletalMesh": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StoreMeshMaterials(SkeletalMeshComponent oSkeletalMesh)"
+    },
+    "StoreStartingMaterials": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StoreStartingMaterials()"
+    },
+    "OnApplied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnApplied()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

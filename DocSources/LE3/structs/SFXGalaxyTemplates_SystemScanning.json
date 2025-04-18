@@ -1,19 +1,19 @@
 {
   "Members": {
     "ScanPulse": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "ScanResult": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "Reaper": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     },
     "ReaperPing": {
-      "type": null,
+      "type": "SFXGalaxyTemplatePair",
       "documentation": null
     }
   },

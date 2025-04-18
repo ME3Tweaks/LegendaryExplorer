@@ -1,0 +1,49 @@
+{
+  "EnumValues": {
+    "eBioAnimStop_NoState": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimStop_StopLeftMove": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimStop_StopRightMove": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioAnimStop_FinishLeftMove": {
+      "value": 3,
+      "documentation": null
+    },
+    "eBioAnimStop_FinishRightMove": {
+      "value": 4,
+      "documentation": null
+    },
+    "eBioAnimStop_InterruptLeftMove": {
+      "value": 5,
+      "documentation": null
+    },
+    "eBioAnimStop_InterruptRightMove": {
+      "value": 6,
+      "documentation": null
+    },
+    "eBioAnimStop_DoneFinishLeftMove": {
+      "value": 7,
+      "documentation": null
+    },
+    "eBioAnimStop_DoneFinishRightMove": {
+      "value": 8,
+      "documentation": null
+    },
+    "eBioAnimStop_DoneIntLeftMove": {
+      "value": 9,
+      "documentation": null
+    },
+    "eBioAnimStop_DoneIntRightMove": {
+      "value": 10,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

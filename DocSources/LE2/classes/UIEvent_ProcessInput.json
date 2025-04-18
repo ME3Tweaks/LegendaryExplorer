@@ -1,0 +1,25 @@
+{
+  "parent": "UIEvent",
+  "package": "Engine",
+  "variables": {
+    "ActionMap": {
+      "type": "MultiMap_Mirror",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "IsValidUISequenceObject": {
+      "documentation": null,
+      "signature_members": {
+        "TargetObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidUISequenceObject(optional UIScreenObject TargetObject)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

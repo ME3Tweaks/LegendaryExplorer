@@ -1,0 +1,17 @@
+{
+  "parent": "InterpTrackVectorBase",
+  "package": "Engine",
+  "variables": {
+    "AffectedMaterialRefs": {
+      "type": "MeshMaterialRef",
+      "documentation": null
+    },
+    "ParamName": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

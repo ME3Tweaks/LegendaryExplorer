@@ -1,0 +1,25 @@
+{
+  "parent": "InterpTrack",
+  "package": "Engine",
+  "variables": {
+    "VisibilityTrack": {
+      "type": "VisibilityTrackKey",
+      "documentation": null
+    },
+    "bFireEventsWhenForwards": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFireEventsWhenBackwards": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFireEventsWhenJumpingForwards": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

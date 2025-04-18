@@ -1,0 +1,93 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_sGalaxyMapResource": {
+      "type": "string",
+      "documentation": null
+    },
+    "BuyFuelSound_PctFullRTPCName": {
+      "type": "string",
+      "documentation": null
+    },
+    "ShipTravelSound_SpeedRTPCName": {
+      "type": "string",
+      "documentation": null
+    },
+    "ShipTravelSound_ThrustRTPCName": {
+      "type": "string",
+      "documentation": null
+    },
+    "ShipTravelSound_FuelQtyRTPCName": {
+      "type": "string",
+      "documentation": null
+    },
+    "ShipTravelSound_SystemClusterRTPCName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_pShipHalfFuelVO": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "m_pShipNoFuelClusterVO": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "m_pShipNoFuelClusterReturnVO": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "m_pShipNoFuelSystemVO": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "m_oGalaxyMapReferenced": {
+      "type": "GFxMovieInfo",
+      "documentation": null
+    },
+    "m_pGalaxyMap": {
+      "type": "SFXGalaxy",
+      "documentation": null
+    },
+    "ErrorSound": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "BuyFuelSound": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "BuyFuelSoundStop": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "BuyFuelSound_Full": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "BuyProbeSound": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "ShipTravelSound_Start": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "ShipTravelSound_Stop": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "ShipOutOfFuel_Start": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "ShipOutOfFuel_Stop": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

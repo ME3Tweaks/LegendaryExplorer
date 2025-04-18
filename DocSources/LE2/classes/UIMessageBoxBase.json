@@ -1,0 +1,260 @@
+{
+  "parent": "UIScene",
+  "package": "Engine",
+  "variables": {
+    "__OnOptionSelected__Delegate": {
+      "type": "OnOptionSelected",
+      "documentation": null
+    },
+    "lblTitle": {
+      "type": "UILabel",
+      "documentation": null
+    },
+    "lblMessage": {
+      "type": "UILabel",
+      "documentation": null
+    },
+    "lblQuestion": {
+      "type": "UILabel",
+      "documentation": null
+    },
+    "imgQuestion": {
+      "type": "UIImage",
+      "documentation": null
+    },
+    "btnbarChoices": {
+      "type": "UICalloutButtonPanel",
+      "documentation": null
+    },
+    "TitleWidgetName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "MessageWidgetName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "QuestionWidgetName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ChoicesWidgetName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "QuestionWidgetImageName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ButtonBarButtonBGStyleName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ButtonBarButtonTextStyleName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bPerformAutomaticLayout": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HandleSceneActivated": {
+      "documentation": null,
+      "signature_members": {
+        "ActivatedScene": {
+          "type": null,
+          "documentation": null
+        },
+        "bInitialActivation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleSceneActivated(UIScene ActivatedScene, bool bInitialActivation)"
+    },
+    "OptionChosen": {
+      "documentation": null,
+      "signature_members": {
+        "EventObject": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OptionChosen(UIScreenObject EventObject, int PlayerIndex)"
+    },
+    "SetupDockingRelationships": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetupDockingRelationships()"
+    },
+    "LayoutControls": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LayoutControls()"
+    },
+    "GetButtonBar": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UICalloutButtonPanel",
+      "signature": "UICalloutButtonPanel GetButtonBar()"
+    },
+    "GetMessageLabel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UILabel",
+      "signature": "UILabel GetMessageLabel()"
+    },
+    "GetTitleLabel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UILabel",
+      "signature": "UILabel GetTitleLabel()"
+    },
+    "FindButtonIndex": {
+      "documentation": null,
+      "signature_members": {
+        "ButtonAlias": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindButtonIndex(Name ButtonAlias)"
+    },
+    "HasButton": {
+      "documentation": null,
+      "signature_members": {
+        "ButtonAlias": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasButton(Name ButtonAlias)"
+    },
+    "RemoveButton": {
+      "documentation": null,
+      "signature_members": {
+        "ButtonAlias": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveButton(Name ButtonAlias)"
+    },
+    "AddButton": {
+      "documentation": null,
+      "signature_members": {
+        "ButtonAlias": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddButton(Name ButtonAlias)"
+    },
+    "SetButtonCallback": {
+      "documentation": null,
+      "signature_members": {
+        "TargetButton": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetButtonCallback(UICalloutButton TargetButton)"
+    },
+    "SetQuestion": {
+      "documentation": null,
+      "signature_members": {
+        "NewMessageString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetQuestion(string NewMessageString)"
+    },
+    "SetMessage": {
+      "documentation": null,
+      "signature_members": {
+        "NewMessageString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMessage(string NewMessageString)"
+    },
+    "SetTitle": {
+      "documentation": null,
+      "signature_members": {
+        "NewTitleString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTitle(string NewTitleString)"
+    },
+    "SetupMessageBox": {
+      "documentation": null,
+      "signature_members": {
+        "Title": {
+          "type": null,
+          "documentation": null
+        },
+        "Message": {
+          "type": null,
+          "documentation": null
+        },
+        "Question": {
+          "type": null,
+          "documentation": null
+        },
+        "ButtonAliases": {
+          "type": null,
+          "documentation": null
+        },
+        "SelectionCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetupMessageBox(string Title, string Message, string Question, array<Name> ButtonAliases, optional delegate<OnOptionSelected> SelectionCallback)"
+    },
+    "OnOptionSelected": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "SelectedInputAlias": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnOptionSelected(UIMessageBoxBase Sender, Name SelectedInputAlias, int PlayerIndex)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

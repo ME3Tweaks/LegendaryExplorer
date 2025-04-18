@@ -1,11 +1,11 @@
 {
   "Members": {
     "sEntityName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "srMessage": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

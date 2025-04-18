@@ -1,0 +1,26 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "GetDamageType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Class",
+      "signature": "Class<SFXDamageType> GetDamageType()"
+    },
+    "OnUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaSeconds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUpdate(float DeltaSeconds)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

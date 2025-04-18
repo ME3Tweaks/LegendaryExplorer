@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "OACS_CreateSuccessful": {
+      "value": 0,
+      "documentation": null
+    },
+    "OACS_UnknownError": {
+      "value": 1,
+      "documentation": null
+    },
+    "OACS_InvalidUserName": {
+      "value": 2,
+      "documentation": null
+    },
+    "OACS_InvalidPassword": {
+      "value": 3,
+      "documentation": null
+    },
+    "OACS_InvalidUniqueUserName": {
+      "value": 4,
+      "documentation": null
+    },
+    "OACS_UniqueUserNameInUse": {
+      "value": 5,
+      "documentation": null
+    },
+    "OACS_ServiceUnavailable": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

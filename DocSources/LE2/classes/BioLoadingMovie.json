@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "MovieName": {
+      "type": "string",
+      "documentation": null
+    },
+    "LoadingMovieWwisePair": {
+      "type": "WwiseEventPairObject",
+      "documentation": null
+    },
+    "LoopBackFrame": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

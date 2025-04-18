@@ -1,0 +1,28 @@
+{
+  "parent": "SFXWeapon",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "ModifyDamage": {
+      "documentation": null,
+      "signature_members": {
+        "BaseDamage": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyDamage(out float BaseDamage, Vector HitLocation, optional Actor HitActor)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

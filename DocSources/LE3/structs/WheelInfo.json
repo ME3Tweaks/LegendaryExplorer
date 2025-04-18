@@ -1,39 +1,39 @@
 {
   "Members": {
     "LocationOffset": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "RotationOffset": {
-      "type": null,
+      "type": "Rotator",
       "documentation": null
     },
     "LastFramePosition": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "TravelRotation": {
-      "type": null,
+      "type": "Rotator",
       "documentation": null
     },
     "Wheel": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "GroundLevelIndicator": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "Radius": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bRightWheel": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bCanTurn": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

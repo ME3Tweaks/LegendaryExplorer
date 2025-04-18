@@ -1,23 +1,23 @@
 {
   "Members": {
     "PowerClassName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "BonusPowerID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "PlotConditionalID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "PlotStateID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "srTitle": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

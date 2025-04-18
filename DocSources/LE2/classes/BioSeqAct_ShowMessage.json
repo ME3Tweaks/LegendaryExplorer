@@ -1,0 +1,109 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "srText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srAButton": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srBButton": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "fDisplayTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "nIconIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fRemainingDisplayTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bNoFade": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bFinished": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAPressed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bWasPaused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "nIconSet": {
+      "type": "BioMessageBoxIconSets",
+      "documentation": null
+    },
+    "m_Skin": {
+      "type": "SFX_MB_Skin",
+      "documentation": null
+    },
+    "m_TextAlign": {
+      "type": "SFX_MB_TextAlign",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "MessageBoxUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        },
+        "oMsgBox": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MessageBoxUpdate(float fDeltaT, BioSFHandler_MessageBox oMsgBox)"
+    },
+    "MessageInputPressed": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MessageInputPressed(bool bAPressed, int nContext)"
+    },
+    "UpdateOp": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateOp(float fDeltaT)"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

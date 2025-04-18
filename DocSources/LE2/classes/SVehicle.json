@@ -1,0 +1,636 @@
+{
+  "parent": "Vehicle",
+  "package": "Engine",
+  "variables": {
+    "VState": {
+      "type": "VehicleState",
+      "documentation": null
+    },
+    "Wheels": {
+      "type": "SVehicleWheel",
+      "documentation": null
+    },
+    "COMOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "InertiaTensorMultiplier": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "BaseOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "SimObj": {
+      "type": "SVehicleSimBase",
+      "documentation": null
+    },
+    "EngineSound": {
+      "type": "AudioComponent",
+      "documentation": null
+    },
+    "SquealSound": {
+      "type": "AudioComponent",
+      "documentation": null
+    },
+    "CollisionSound": {
+      "type": "SoundCue",
+      "documentation": null
+    },
+    "EnterVehicleSound": {
+      "type": "SoundCue",
+      "documentation": null
+    },
+    "ExitVehicleSound": {
+      "type": "SoundCue",
+      "documentation": null
+    },
+    "StayUprightConstraintSetup": {
+      "type": "RB_StayUprightSetup",
+      "documentation": null
+    },
+    "StayUprightConstraintInstance": {
+      "type": "RB_ConstraintInstance",
+      "documentation": null
+    },
+    "StayUprightRollResistAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "StayUprightPitchResistAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "StayUprightStiffness": {
+      "type": "float",
+      "documentation": null
+    },
+    "StayUprightDamping": {
+      "type": "float",
+      "documentation": null
+    },
+    "HeavySuspensionShiftPercent": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxAngularVelocity": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeOffGround": {
+      "type": "float",
+      "documentation": null
+    },
+    "UprightLiftStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "UprightTorqueStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "UprightTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "UprightStartTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "CollisionIntervalSecs": {
+      "type": "float",
+      "documentation": null
+    },
+    "SquealThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "SquealLatThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "LatAngleVolumeMult": {
+      "type": "float",
+      "documentation": null
+    },
+    "EngineStartOffsetSecs": {
+      "type": "float",
+      "documentation": null
+    },
+    "EngineStopOffsetSecs": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastCollisionSoundTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "OutputBrake": {
+      "type": "float",
+      "documentation": null
+    },
+    "OutputGas": {
+      "type": "float",
+      "documentation": null
+    },
+    "OutputSteering": {
+      "type": "float",
+      "documentation": null
+    },
+    "OutputRise": {
+      "type": "float",
+      "documentation": null
+    },
+    "ForwardVel": {
+      "type": "float",
+      "documentation": null
+    },
+    "NumPoweredWheels": {
+      "type": "int",
+      "documentation": null
+    },
+    "CamDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "DriverViewPitch": {
+      "type": "int",
+      "documentation": null
+    },
+    "DriverViewYaw": {
+      "type": "int",
+      "documentation": null
+    },
+    "AngErrorAccumulator": {
+      "type": "float",
+      "documentation": null
+    },
+    "RadialImpulseScaling": {
+      "type": "float",
+      "documentation": null
+    },
+    "bStayUpright": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseSuspensionAxis": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUpdateWheelShapes": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bVehicleOnGround": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bVehicleOnWater": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsInverted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bChassisTouchingGround": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWasChassisTouchingGroundLastTick": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanFlip": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFlipRight": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsUprighting": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOutputHandbrake": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHoldingDownHandbrake": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetAllWheelParticleSystem": {
+      "documentation": null,
+      "signature_members": {
+        "NewSystem": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAllWheelParticleSystem(ParticleSystem NewSystem)"
+    },
+    "GetSVehicleDebug": {
+      "documentation": null,
+      "signature_members": {
+        "DebugInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetSVehicleDebug(out array<string> DebugInfo)"
+    },
+    "HermiteEval": {
+      "documentation": null,
+      "signature_members": {
+        "Slip": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float HermiteEval(float Slip)"
+    },
+    "DisplayWheelsDebug": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        },
+        "YL": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayWheelsDebug(HUD HUD, float YL)"
+    },
+    "DisplayDebug": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        },
+        "out_YL": {
+          "type": null,
+          "documentation": null
+        },
+        "out_YPos": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayDebug(HUD HUD, out float out_YL, out float out_YPos)"
+    },
+    "PostTeleport": {
+      "documentation": null,
+      "signature_members": {
+        "OutTeleporter": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PostTeleport(Teleporter OutTeleporter)"
+    },
+    "SuspensionHeavyShift": {
+      "documentation": null,
+      "signature_members": {
+        "Delta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SuspensionHeavyShift(float Delta)"
+    },
+    "RigidBodyCollision": {
+      "documentation": null,
+      "signature_members": {
+        "HitComponent": {
+          "type": null,
+          "documentation": null
+        },
+        "OtherComponent": {
+          "type": null,
+          "documentation": null
+        },
+        "RigidCollisionData": {
+          "type": null,
+          "documentation": null
+        },
+        "ContactIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RigidBodyCollision(PrimitiveComponent HitComponent, PrimitiveComponent OtherComponent, const out CollisionImpactData RigidCollisionData, int ContactIndex)"
+    },
+    "DrivingStatusChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DrivingStatusChanged()"
+    },
+    "VehiclePlayExitSound": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "VehiclePlayExitSound()"
+    },
+    "VehiclePlayEnterSound": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "VehiclePlayEnterSound()"
+    },
+    "StopEngineSoundTimed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopEngineSoundTimed()"
+    },
+    "StopEngineSound": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopEngineSound()"
+    },
+    "StartEngineSoundTimed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartEngineSoundTimed()"
+    },
+    "StartEngineSound": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartEngineSound()"
+    },
+    "HasWheelsOnGround": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasWheelsOnGround()"
+    },
+    "TryToDrive": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TryToDrive(Pawn P)"
+    },
+    "GetDefaultCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "RequestedBy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetDefaultCameraMode(PlayerController RequestedBy)"
+    },
+    "CalcCamera": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "out_CamLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "out_CamRot": {
+          "type": null,
+          "documentation": null
+        },
+        "out_FOV": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CalcCamera(float fDeltaTime, out Vector out_CamLoc, out Rotator out_CamRot, out float out_FOV)"
+    },
+    "Died": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Died(Controller Killer, Class<DamageType> DamageType, Vector HitLocation)"
+    },
+    "AddVelocity": {
+      "documentation": null,
+      "signature_members": {
+        "NewVelocity": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddVelocity(Vector NewVelocity, Vector HitLocation, Class<DamageType> DamageType, optional TraceHitInfo HitInfo)"
+    },
+    "InitVehicleRagdoll": {
+      "documentation": null,
+      "signature_members": {
+        "RagdollMesh": {
+          "type": null,
+          "documentation": null
+        },
+        "RagdollPhysAsset": {
+          "type": null,
+          "documentation": null
+        },
+        "ActorMove": {
+          "type": null,
+          "documentation": null
+        },
+        "bClearAnimTree": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitVehicleRagdoll(SkeletalMesh RagdollMesh, PhysicsAsset RagdollPhysAsset, Vector ActorMove, bool bClearAnimTree)"
+    },
+    "TakeRadiusDamage": {
+      "documentation": null,
+      "signature_members": {
+        "InstigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "BaseDamage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "HurtOrigin": {
+          "type": null,
+          "documentation": null
+        },
+        "bFullDamage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageFalloffExponent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TakeRadiusDamage(Controller InstigatedBy, float BaseDamage, float DamageRadius, Class<DamageType> DamageType, float Momentum, Vector HurtOrigin, bool bFullDamage, Actor DamageCauser, optional float DamageFalloffExponent)"
+    },
+    "StopVehicleSounds": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopVehicleSounds()"
+    },
+    "TurnOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TurnOff()"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "PostInitAnimTree": {
+      "documentation": null,
+      "signature_members": {
+        "SkelComp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PostInitAnimTree(SkeletalMeshComponent SkelComp)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "SetWheelCollision": {
+      "documentation": null,
+      "signature_members": {
+        "WheelNum": {
+          "type": null,
+          "documentation": null
+        },
+        "bCollision": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWheelCollision(int WheelNum, bool bCollision)"
+    },
+    "IsSleeping": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsSleeping()"
+    },
+    "AddTorque": {
+      "documentation": null,
+      "signature_members": {
+        "Torque": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddTorque(Vector Torque)"
+    },
+    "AddImpulse": {
+      "documentation": null,
+      "signature_members": {
+        "Impulse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddImpulse(Vector Impulse)"
+    },
+    "AddForce": {
+      "documentation": null,
+      "signature_members": {
+        "Force": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddForce(Vector Force)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

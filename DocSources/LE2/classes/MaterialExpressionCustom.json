@@ -1,0 +1,25 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "Code": {
+      "type": "string",
+      "documentation": null
+    },
+    "Description": {
+      "type": "string",
+      "documentation": null
+    },
+    "Inputs": {
+      "type": "CustomInput",
+      "documentation": null
+    },
+    "OutputType": {
+      "type": "ECustomMaterialOutputType",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

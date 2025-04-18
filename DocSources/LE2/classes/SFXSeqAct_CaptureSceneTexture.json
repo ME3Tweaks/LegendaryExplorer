@@ -1,0 +1,21 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "Destination": {
+      "type": "TextureRenderTarget2D",
+      "documentation": null
+    },
+    "ViewId": {
+      "type": "int",
+      "documentation": null
+    },
+    "FilterFactor": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

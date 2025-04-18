@@ -1,0 +1,41 @@
+{
+  "parent": "Volume",
+  "package": "Engine",
+  "variables": {
+    "Meshes": {
+      "type": "FoliageMesh",
+      "documentation": null
+    },
+    "VolumeFalloffRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "VolumeFalloffExponent": {
+      "type": "float",
+      "documentation": null
+    },
+    "SurfaceDensityUpFacing": {
+      "type": "float",
+      "documentation": null
+    },
+    "SurfaceDensityDownFacing": {
+      "type": "float",
+      "documentation": null
+    },
+    "SurfaceDensitySideFacing": {
+      "type": "float",
+      "documentation": null
+    },
+    "FacingFalloffExponent": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxInstanceCount": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

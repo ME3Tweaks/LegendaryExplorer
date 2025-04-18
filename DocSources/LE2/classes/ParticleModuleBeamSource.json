@@ -1,0 +1,49 @@
+{
+  "parent": "ParticleModuleBeamBase",
+  "package": "Engine",
+  "variables": {
+    "SourceRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    },
+    "SourceTangentRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    },
+    "SourceStrength": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "SourceName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bSourceAbsolute": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLockSource": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLockSourceTangent": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLockSourceStength": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SourceMethod": {
+      "type": "Beam2SourceTargetMethod",
+      "documentation": null
+    },
+    "SourceTangentMethod": {
+      "type": "Beam2SourceTargetTangentMethod",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

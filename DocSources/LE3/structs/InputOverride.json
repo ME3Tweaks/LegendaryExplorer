@@ -1,19 +1,19 @@
 {
   "Members": {
     "Alias": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "InputDelegate": {
-      "type": null,
+      "type": "InputDelegate",
       "documentation": null
     },
     "bPress": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bExclusive": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

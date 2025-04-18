@@ -1,0 +1,309 @@
+{
+  "parent": "Interface",
+  "package": "Engine",
+  "variables": {
+    "__OnProfileDataChanged__Delegate": {
+      "type": "OnProfileDataChanged",
+      "documentation": null
+    },
+    "__OnDeviceSelectionComplete__Delegate": {
+      "type": "OnDeviceSelectionComplete",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ShowCustomPlayersUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "Players": {
+          "type": null,
+          "documentation": null
+        },
+        "Title": {
+          "type": null,
+          "documentation": null
+        },
+        "Description": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowCustomPlayersUI(byte LocalUserNum, const out array<UniqueNetId> Players, string Title, string Description)"
+    },
+    "ShowPlayersUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowPlayersUI(byte LocalUserNum)"
+    },
+    "ShowFriendsInviteUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowFriendsInviteUI(byte LocalUserNum, UniqueNetId PlayerID)"
+    },
+    "ClearProfileDataChangedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "ProfileDataChangedDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearProfileDataChangedDelegate(byte LocalUserNum, delegate<OnProfileDataChanged> ProfileDataChangedDelegate)"
+    },
+    "AddProfileDataChangedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "ProfileDataChangedDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddProfileDataChangedDelegate(byte LocalUserNum, delegate<OnProfileDataChanged> ProfileDataChangedDelegate)"
+    },
+    "OnProfileDataChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnProfileDataChanged()"
+    },
+    "UnlockGamerPicture": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "PictureId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UnlockGamerPicture(byte LocalUserNum, int PictureId)"
+    },
+    "IsDeviceValid": {
+      "documentation": null,
+      "signature_members": {
+        "DeviceID": {
+          "type": null,
+          "documentation": null
+        },
+        "SizeNeeded": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsDeviceValid(int DeviceID, optional int SizeNeeded)"
+    },
+    "GetDeviceSelectionResults": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "DeviceName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetDeviceSelectionResults(byte LocalUserNum, out string DeviceName)"
+    },
+    "ClearDeviceSelectionDoneDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "DeviceDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearDeviceSelectionDoneDelegate(byte LocalUserNum, delegate<OnDeviceSelectionComplete> DeviceDelegate)"
+    },
+    "AddDeviceSelectionDoneDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "DeviceDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddDeviceSelectionDoneDelegate(byte LocalUserNum, delegate<OnDeviceSelectionComplete> DeviceDelegate)"
+    },
+    "OnDeviceSelectionComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDeviceSelectionComplete(bool bWasSuccessful)"
+    },
+    "ShowDeviceSelectionUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "SizeNeeded": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceShowUI": {
+          "type": null,
+          "documentation": null
+        },
+        "bManageStorage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowDeviceSelectionUI(byte LocalUserNum, int SizeNeeded, optional bool bForceShowUI, optional bool bManageStorage)"
+    },
+    "ShowMembershipMarketplaceUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowMembershipMarketplaceUI(byte LocalUserNum)"
+    },
+    "ShowContentMarketplaceUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "CategoryMask": {
+          "type": null,
+          "documentation": null
+        },
+        "OfferId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowContentMarketplaceUI(byte LocalUserNum, optional int CategoryMask, optional int OfferId)"
+    },
+    "ShowInviteUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "InviteText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowInviteUI(byte LocalUserNum, optional string InviteText)"
+    },
+    "ShowAchievementsUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowAchievementsUI(byte LocalUserNum)"
+    },
+    "ShowMessagesUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowMessagesUI(byte LocalUserNum)"
+    },
+    "ShowGamerCardUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowGamerCardUI(byte LocalUserNum, UniqueNetId PlayerID)"
+    },
+    "ShowFeedbackUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowFeedbackUI(byte LocalUserNum, UniqueNetId PlayerID)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

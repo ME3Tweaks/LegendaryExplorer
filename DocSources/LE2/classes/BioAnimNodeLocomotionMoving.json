@@ -1,0 +1,65 @@
+{
+  "parent": "AnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "SynchGroupName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "MovementSync": {
+      "type": "BioAnimMovementSync",
+      "documentation": null
+    },
+    "BlendSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendSpeedLeanIn": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendSpeedLeanOut": {
+      "type": "float",
+      "documentation": null
+    },
+    "AngleLeanLeft": {
+      "type": "float",
+      "documentation": null
+    },
+    "AngleLeanRight": {
+      "type": "float",
+      "documentation": null
+    },
+    "AngleAscend": {
+      "type": "float",
+      "documentation": null
+    },
+    "AngleDescend": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "MidSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "Lean": {
+      "type": "float",
+      "documentation": null
+    },
+    "Incline": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

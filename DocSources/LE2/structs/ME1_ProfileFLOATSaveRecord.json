@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "PMIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "Value": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

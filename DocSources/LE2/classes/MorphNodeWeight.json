@@ -1,0 +1,25 @@
+{
+  "parent": "MorphNodeWeightBase",
+  "package": "Engine",
+  "variables": {
+    "NodeWeight": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetNodeWeight": {
+      "documentation": null,
+      "signature_members": {
+        "NewWeight": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNodeWeight(float NewWeight)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

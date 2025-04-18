@@ -1,0 +1,94 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "m_aObjComment": {
+      "type": "string",
+      "documentation": null
+    },
+    "ParentSequence": {
+      "type": "Sequence",
+      "documentation": null
+    },
+    "ObjInstanceVersion": {
+      "type": "int",
+      "documentation": null
+    },
+    "ObjPosX": {
+      "type": "int",
+      "documentation": null
+    },
+    "ObjPosY": {
+      "type": "int",
+      "documentation": null
+    },
+    "bDeletable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOutputObjCommentToScreen": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "IsPastingIntoUISequenceAllowed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsPastingIntoUISequenceAllowed()"
+    },
+    "IsValidUISequenceObject": {
+      "documentation": null,
+      "signature_members": {
+        "TargetObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidUISequenceObject(optional UIScreenObject TargetObject)"
+    },
+    "IsPastingIntoLevelSequenceAllowed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsPastingIntoLevelSequenceAllowed()"
+    },
+    "IsValidLevelSequenceObject": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsValidLevelSequenceObject()"
+    },
+    "GetWorldInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "WorldInfo",
+      "signature": "WorldInfo GetWorldInfo()"
+    },
+    "ScriptLog": {
+      "documentation": null,
+      "signature_members": {
+        "LogText": {
+          "type": null,
+          "documentation": null
+        },
+        "bWarning": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ScriptLog(string LogText, optional bool bWarning)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

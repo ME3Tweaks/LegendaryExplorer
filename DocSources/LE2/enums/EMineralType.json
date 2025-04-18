@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "MINERAL_RED": {
+      "value": 0,
+      "documentation": null
+    },
+    "MINERAL_BLUE": {
+      "value": 1,
+      "documentation": null
+    },
+    "MINERAL_GREEN": {
+      "value": 2,
+      "documentation": null
+    },
+    "MINERAL_ALPHA": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "PEB2MT_Source": {
+      "value": 0,
+      "documentation": null
+    },
+    "PEB2MT_Target": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

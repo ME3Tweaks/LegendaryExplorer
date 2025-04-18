@@ -1,0 +1,17 @@
+{
+  "parent": "AnimNodeRandom",
+  "package": "SFXGame",
+  "variables": {
+    "nChildOnActive": {
+      "type": "int",
+      "documentation": null
+    },
+    "bForceChildOnActive": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

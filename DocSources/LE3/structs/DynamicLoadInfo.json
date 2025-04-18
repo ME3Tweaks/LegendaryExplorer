@@ -1,35 +1,35 @@
 {
   "Members": {
     "ObjectName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "RemotePlayerWithHandle": {
-      "type": null,
+      "type": "PlayerController",
       "documentation": null
     },
     "SeekFreePackageName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "CachedObjectHandle": {
-      "type": null,
+      "type": "Object",
       "documentation": null
     },
     "LoadedLinkerRoot": {
-      "type": null,
+      "type": "Object",
       "documentation": null
     },
     "ObjectNetID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bReplicate": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bNetIDHasBeenSet": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

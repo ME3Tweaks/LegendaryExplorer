@@ -1,11 +1,11 @@
 {
   "Members": {
     "SwatchID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "SwatchColor": {
-      "type": null,
+      "type": "LinearColor",
       "documentation": null
     }
   },

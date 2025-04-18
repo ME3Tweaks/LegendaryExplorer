@@ -1,0 +1,234 @@
+{
+  "parent": "BioBaseSquad",
+  "package": "SFXGame",
+  "variables": {
+    "m_aSquadTargets": {
+      "type": "SquadTargetData",
+      "documentation": null
+    },
+    "m_aSimpleSquadTargets": {
+      "type": "SquadTargetData",
+      "documentation": null
+    },
+    "m_playerPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "m_InitialPlayerPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "m_oSquadLeader": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "m_oCreditsTable": {
+      "type": "Bio2DA",
+      "documentation": null
+    },
+    "m_CoverWaveForm": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null
+    },
+    "m_fPerceptionTolerance": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fRevivalRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPercentHealthOnResurrection": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPercentHealthOnEndOfCombat": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bSquadHasVehicle": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCombatEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eGameOverCondition": {
+      "type": "EBioGameOverCondition",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "MemberRemoved": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MemberRemoved(Pawn oPawn)"
+    },
+    "GetSquadSizeFromScript": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetSquadSizeFromScript()"
+    },
+    "GetSquadSize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetSquadSize()"
+    },
+    "AddMember": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bCheckPlaypens": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int AddMember(Pawn Pawn, optional bool bCheckPlaypens)"
+    },
+    "IsFieldingInitialPlayerPawn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsFieldingInitialPlayerPawn()"
+    },
+    "GetPercentHealthOnResurrection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetPercentHealthOnResurrection()"
+    },
+    "GetSquadLeader": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Pawn",
+      "signature": "Pawn GetSquadLeader()"
+    },
+    "SetSquadLeader": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetSquadLeader(Pawn pPawn)"
+    },
+    "SquadExitCombatMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SquadExitCombatMode()"
+    },
+    "SquadEnterCombatMode": {
+      "documentation": null,
+      "signature_members": {
+        "bEngageEnemy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SquadEnterCombatMode(optional bool bEngageEnemy)"
+    },
+    "GetSquadScanAbility": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetSquadScanAbility()"
+    },
+    "RemoveDyingMember": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveDyingMember(Pawn oPawn)"
+    },
+    "Died": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "Killer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Died(Pawn pPawn, Controller Killer)"
+    },
+    "LookupCredits": {
+      "documentation": null,
+      "signature_members": {
+        "nPlayerSquadLevel": {
+          "type": null,
+          "documentation": null
+        },
+        "nmCREDClass": {
+          "type": null,
+          "documentation": null
+        },
+        "nCredits": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LookupCredits(int nPlayerSquadLevel, Name nmCREDClass, out int nCredits)"
+    },
+    "NotifyNoEnemiesPerceived": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyNoEnemiesPerceived()"
+    },
+    "NotifyEnemyPerceived": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyEnemyPerceived()"
+    },
+    "onPlayerEnterCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "onPlayerEnterCover()"
+    },
+    "OnPlayerSwitchStance": {
+      "documentation": null,
+      "signature_members": {
+        "FromState": {
+          "type": null,
+          "documentation": null
+        },
+        "ToState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnPlayerSwitchStance(byte FromState, byte ToState)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

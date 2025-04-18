@@ -1,0 +1,21 @@
+{
+  "parent": "SequenceCondition",
+  "package": "Engine",
+  "variables": {
+    "IncrementAmount": {
+      "type": "float",
+      "documentation": null
+    },
+    "ValueA": {
+      "type": "float",
+      "documentation": null
+    },
+    "ValueB": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

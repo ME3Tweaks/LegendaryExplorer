@@ -1,15 +1,15 @@
 {
   "Members": {
     "srLocation": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "nIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Floor": {
-      "type": null,
+      "type": "SFXAreaMapLayout",
       "documentation": null
     }
   },

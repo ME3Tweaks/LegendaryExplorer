@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "pConversation": {
+      "type": "BioConversation",
+      "documentation": null
+    },
+    "nLineStrRef": {
+      "type": "int",
+      "documentation": null
+    },
+    "fPadLineLength": {
+      "type": "float",
+      "documentation": null
+    },
+    "srActorNameOverride": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "bForceHideSubtitles": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPlaySoundOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableDelayUntilPreload": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowInConversation": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

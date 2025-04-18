@@ -1,31 +1,31 @@
 {
   "Members": {
     "VfTable": {
-      "type": null,
+      "type": "Pointer",
       "documentation": null
     },
     "lstPlotItemIndices": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "sWaypointTag": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "nmPlanet": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "srName": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "srDescription": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "bQuestCompleteTask": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

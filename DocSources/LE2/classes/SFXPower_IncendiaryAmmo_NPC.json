@@ -1,0 +1,26 @@
+{
+  "parent": "SFXPower_IncendiaryAmmo",
+  "package": "SFXGameContent_Powers",
+  "variables": {
+    "DamageNPC": {
+      "type": "Vector2D",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetFlameDuration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetFlameDuration()"
+    },
+    "GetDamage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDamage()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

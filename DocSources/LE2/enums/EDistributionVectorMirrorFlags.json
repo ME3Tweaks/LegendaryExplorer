@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "EDVMF_Same": {
+      "value": 0,
+      "documentation": null
+    },
+    "EDVMF_Different": {
+      "value": 1,
+      "documentation": null
+    },
+    "EDVMF_Mirror": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,31 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "OnUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaSeconds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUpdate(float DeltaSeconds)"
+    },
+    "ComputeEffectValue": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ComputeEffectValue(out float Value)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

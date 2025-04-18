@@ -1,0 +1,376 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "PlayerRecord": {
+      "type": "PlayerSaveRecord",
+      "documentation": null
+    },
+    "PlotRecord": {
+      "type": "PlotTableSaveRecord",
+      "documentation": null
+    },
+    "ME1PlotRecord": {
+      "type": "ME1PlotTableRecord",
+      "documentation": null
+    },
+    "DependentDLC": {
+      "type": "DependentDLCRecord",
+      "documentation": null
+    },
+    "Filename": {
+      "type": "string",
+      "documentation": null
+    },
+    "DebugName": {
+      "type": "string",
+      "documentation": null
+    },
+    "DisplayName": {
+      "type": "string",
+      "documentation": null
+    },
+    "characterID": {
+      "type": "string",
+      "documentation": null
+    },
+    "LevelRecords": {
+      "type": "LevelSaveRecord",
+      "documentation": null
+    },
+    "StreamingRecords": {
+      "type": "StreamingStateSaveRecord",
+      "documentation": null
+    },
+    "KismetRecords": {
+      "type": "KismetBoolSaveRecord",
+      "documentation": null
+    },
+    "DoorRecords": {
+      "type": "DoorSaveRecord",
+      "documentation": null
+    },
+    "PawnRecords": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "HenchmanRecords": {
+      "type": "HenchmanSaveRecord",
+      "documentation": null
+    },
+    "GalaxyMapRecord": {
+      "type": "GalaxyMapSaveRecord",
+      "documentation": null
+    },
+    "TimeStamp": {
+      "type": "SaveTimeStamp",
+      "documentation": null
+    },
+    "CreatedDate": {
+      "type": "SaveTimeStamp",
+      "documentation": null
+    },
+    "SaveLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "SaveRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "BaseLevelName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "SerializedSize": {
+      "type": "int",
+      "documentation": null
+    },
+    "FileVersion": {
+      "type": "int",
+      "documentation": null
+    },
+    "SecondsPlayed": {
+      "type": "float",
+      "documentation": null
+    },
+    "Disc": {
+      "type": "int",
+      "documentation": null
+    },
+    "EndGameState": {
+      "type": "int",
+      "documentation": null
+    },
+    "CurrentLoadingTip": {
+      "type": "int",
+      "documentation": null
+    },
+    "bIsValid": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsGamerProfile": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Difficulty": {
+      "type": "EDifficultyOptions",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "LoadPower": {
+      "documentation": null,
+      "signature_members": {
+        "PowerClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Class",
+      "signature": "Class<SFXPower> LoadPower(string PowerClassName)"
+    },
+    "LoadHotKeys": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        },
+        "Records": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadHotKeys(BioPlayerController PC, out array<HotKeySaveRecord> Records)"
+    },
+    "LoadWeapons": {
+      "documentation": null,
+      "signature_members": {
+        "Player": {
+          "type": null,
+          "documentation": null
+        },
+        "Records": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadWeapons(SFXPawn_Player Player, out array<WeaponSaveRecord> Records)"
+    },
+    "LoadPowers": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        },
+        "Records": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadPowers(SFXPawn Pawn, out array<PowerSaveRecord> Records)"
+    },
+    "LoadMorphHead": {
+      "documentation": null,
+      "signature_members": {
+        "ThePlayerRecord": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioMorphFace",
+      "signature": "BioMorphFace LoadMorphHead(out PlayerSaveRecord ThePlayerRecord)"
+    },
+    "LoadAppearance": {
+      "documentation": null,
+      "signature_members": {
+        "Player": {
+          "type": null,
+          "documentation": null
+        },
+        "Record": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadAppearance(SFXPawn_Player Player, out PlayerSaveRecord Record)"
+    },
+    "LoadHenchman": {
+      "documentation": null,
+      "signature_members": {
+        "Hench": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadHenchman(SFXPawn_Henchman Hench)"
+    },
+    "LoadPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadPlayer(int PlayerID)"
+    },
+    "GetSpawnData": {
+      "documentation": null,
+      "signature_members": {
+        "IsFemale": {
+          "type": null,
+          "documentation": null
+        },
+        "CharacterClass": {
+          "type": null,
+          "documentation": null
+        },
+        "FirstName": {
+          "type": null,
+          "documentation": null
+        },
+        "Origin": {
+          "type": null,
+          "documentation": null
+        },
+        "Notoriety": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetSpawnData(out int IsFemale, out Class<SFXPawn_Player> CharacterClass, out string FirstName, out EOriginType Origin, out ENotorietyType Notoriety)"
+    },
+    "SaveHotKeys": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        },
+        "Records": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveHotKeys(BioPlayerController PC, out array<HotKeySaveRecord> Records)"
+    },
+    "SaveWeapons": {
+      "documentation": null,
+      "signature_members": {
+        "Player": {
+          "type": null,
+          "documentation": null
+        },
+        "Records": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveWeapons(SFXPawn_Player Player, out array<WeaponSaveRecord> Records)"
+    },
+    "SavePowers": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        },
+        "Records": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SavePowers(SFXPawn Pawn, out array<PowerSaveRecord> Records)"
+    },
+    "SaveMorphHead": {
+      "documentation": null,
+      "signature_members": {
+        "Morph": {
+          "type": null,
+          "documentation": null
+        },
+        "Record": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SaveMorphHead(BioMorphFace Morph, out MorphHeadSaveRecord Record)"
+    },
+    "SaveAppearance": {
+      "documentation": null,
+      "signature_members": {
+        "Player": {
+          "type": null,
+          "documentation": null
+        },
+        "Record": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveAppearance(SFXPawn_Player Player, out AppearanceSaveRecord Record)"
+    },
+    "SaveHenchmen": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveHenchmen(int PlayerID)"
+    },
+    "EnsureHenchmanRecordExists": {
+      "documentation": null,
+      "signature_members": {
+        "Hench": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnsureHenchmanRecordExists(SFXPawn_Henchman Hench)"
+    },
+    "SavePlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SavePlayer(int PlayerID)"
+    },
+    "GetPlayerRecord": {
+      "documentation": null,
+      "signature_members": {
+        "Record": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPlayerRecord(out PlayerSaveRecord Record)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

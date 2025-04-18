@@ -1,0 +1,129 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "EditorStreamingVolumes": {
+      "type": "LevelStreamingVolume",
+      "documentation": null
+    },
+    "Keywords": {
+      "type": "string",
+      "documentation": null
+    },
+    "Offset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "OldOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PackageName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "LoadedLevel": {
+      "type": "Level",
+      "documentation": null
+    },
+    "OwningWorldName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "VirtualChunkName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Priority": {
+      "type": "int",
+      "documentation": null
+    },
+    "Tier": {
+      "type": "int",
+      "documentation": null
+    },
+    "DrawColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "MinTimeBetweenVolumeUnloadRequests": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastVolumeUnloadRequestTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bIsVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasCookingErrors": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInPurpleLevelTest": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWasLoadedBlocking": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWasSlowStreaming": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasLoadRequestPending": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasUnloadRequestPending": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShouldBeVisibleInEditor": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBoundingBoxVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLocked": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsFullyStatic": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShouldBeLoaded": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShouldBeVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShouldBlockOnLoad": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDrawOnLevelStatusMap": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsRequestingUnloadAndRemoval": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShouldTestForPurpleLevels": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

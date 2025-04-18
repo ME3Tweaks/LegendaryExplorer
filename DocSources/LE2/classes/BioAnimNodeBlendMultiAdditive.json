@@ -1,0 +1,17 @@
+{
+  "parent": "BioAnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_mapActivateTimes": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "m_nNumAdditiveChildren": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

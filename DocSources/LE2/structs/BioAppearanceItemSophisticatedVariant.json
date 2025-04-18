@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "m_aMaterials": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "m_oWeaponAnimSet": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "m_oWeaponAnimTree": {
+      "type": "AnimTree",
+      "documentation": null
+    },
+    "m_oPhysicsAsset": {
+      "type": "PhysicsAsset",
+      "documentation": null
+    },
+    "m_oModelMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null
+    },
+    "m_Label": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,37 @@
+{
+  "parent": "ParticleModuleAttractorBase",
+  "package": "Engine",
+  "variables": {
+    "PositionRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    },
+    "Range": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "Strength": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "StrengthByDistance": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAffectBaseVelocity": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOverrideVelocity": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseWorldSpacePosition": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

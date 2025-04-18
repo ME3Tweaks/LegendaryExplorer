@@ -1,0 +1,214 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "lstFlashingCredits": {
+      "type": "BioCreditsDetails",
+      "documentation": null
+    },
+    "lstScrollingCredits": {
+      "type": "BioCreditsDetails",
+      "documentation": null
+    },
+    "lstDLCScrollingCredits": {
+      "type": "BioCreditsDetails",
+      "documentation": null
+    },
+    "__OnCloseCallback__Delegate": {
+      "type": "OnCloseCallback",
+      "documentation": null
+    },
+    "fFadeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fHoldTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fScrollTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "srConfirmExitMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srExitYes": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srExitNo": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "nCreditIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "bFromMainMenu": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFromAdditionalContent": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFromPRCChoiceGUI": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFromKismet": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetFromPRCChoiceGUI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetFromPRCChoiceGUI()"
+    },
+    "SetFromAdditionalContent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetFromAdditionalContent()"
+    },
+    "SetFromMainMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetFromMainMenu()"
+    },
+    "PopulateScrollingCredits": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PopulateScrollingCredits()"
+    },
+    "SendFlashingCredit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SendFlashingCredit()"
+    },
+    "SetupCreditDetails": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetupCreditDetails()"
+    },
+    "EndCredits": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndCredits()"
+    },
+    "ConfirmButtonPressed": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ConfirmButtonPressed(bool bAPressed, int nContext)"
+    },
+    "OnCancel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCancel()"
+    },
+    "Pause": {
+      "documentation": null,
+      "signature_members": {
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Pause(bool B)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": null,
+          "documentation": null
+        },
+        "lstArguments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    },
+    "SetDataFromIniFile": {
+      "documentation": null,
+      "signature_members": {
+        "a_sSection": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetDataFromIniFile(string a_sSection)"
+    },
+    "SetOnCloseCallback": {
+      "documentation": null,
+      "signature_members": {
+        "fn_OnCloseDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOnCloseCallback(delegate<OnCloseCallback> fn_OnCloseDelegate)"
+    },
+    "OnCloseCallback": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCloseCallback()"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

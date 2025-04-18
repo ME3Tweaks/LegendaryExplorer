@@ -1,11 +1,11 @@
 {
   "Members": {
     "Play": {
-      "type": null,
+      "type": "WwiseEvent",
       "documentation": null
     },
     "Stop": {
-      "type": null,
+      "type": "WwiseEvent",
       "documentation": null
     }
   },

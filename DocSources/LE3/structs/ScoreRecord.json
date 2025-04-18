@@ -1,23 +1,23 @@
 {
   "Members": {
     "Player": {
-      "type": null,
+      "type": "SFXPawn_Player",
       "documentation": null
     },
     "TotalDamage": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "TotalPowerAssistValue": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "LastScoreTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "LastScoreSourceName": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

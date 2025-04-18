@@ -1,0 +1,15 @@
+{
+  "parent": "SFXCustomAction_DamageReaction",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

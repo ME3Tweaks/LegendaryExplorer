@@ -1,0 +1,120 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGameContent_Powers",
+  "variables": {
+    "HologramTemplate": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "IconTemplate": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "OwnerWeapon": {
+      "type": "SFXWeapon",
+      "documentation": null
+    },
+    "OwnerPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "NormalImpactSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "WeaponFireSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "BulletsPerSecond": {
+      "type": "float",
+      "documentation": null
+    },
+    "bWeaponUnequipped": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "RemoveWeaponHologram": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveWeaponHologram()"
+    },
+    "EnableWeaponHologram": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnableWeaponHologram()"
+    },
+    "OnWeaponUnequip": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnWeaponUnequip(SFXWeapon Weapon)"
+    },
+    "OnWeaponEquip": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnWeaponEquip(SFXWeapon Weapon)"
+    },
+    "OnWeaponReload": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnWeaponReload(SFXWeapon Weapon)"
+    },
+    "GetDamageVocProbabilityMod": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDamageVocProbabilityMod()"
+    },
+    "OnWeaponImpact": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        },
+        "Impact": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnWeaponImpact(SFXWeapon Weapon, ImpactInfo Impact)"
+    },
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "OnApplied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnApplied()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

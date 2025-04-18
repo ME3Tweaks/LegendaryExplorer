@@ -1,0 +1,59 @@
+{
+  "parent": "BioSFHandler_Conversation",
+  "package": "SFXGame",
+  "variables": {
+    "m_bEnforce16x9": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "UpdateAspectRatio_PanelAndSubtitles": {
+      "documentation": null,
+      "signature_members": {
+        "bForceRecalculate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateAspectRatio_PanelAndSubtitles(bool bForceRecalculate)"
+    },
+    "Enforce16x9_PanelAndSubtitles": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Enforce16x9_PanelAndSubtitles()"
+    },
+    "UpdateEnforce16x9": {
+      "documentation": null,
+      "signature_members": {
+        "bVal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateEnforce16x9(bool bVal)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

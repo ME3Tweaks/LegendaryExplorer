@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "EBioSeqActSetWeaponLinks_Success": {
+      "value": 0,
+      "documentation": null
+    },
+    "EBioSeqActSetWeaponLinks_Failure": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

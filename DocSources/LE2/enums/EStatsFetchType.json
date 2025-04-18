@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "SFT_Player": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFT_CenteredOnPlayer": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFT_Friends": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFT_TopRankings": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

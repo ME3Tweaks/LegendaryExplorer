@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "PEB2STTM_Direct": {
+      "value": 0,
+      "documentation": null
+    },
+    "PEB2STTM_UserSet": {
+      "value": 1,
+      "documentation": null
+    },
+    "PEB2STTM_Distribution": {
+      "value": 2,
+      "documentation": null
+    },
+    "PEB2STTM_Emitter": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

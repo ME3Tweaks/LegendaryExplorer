@@ -1,0 +1,65 @@
+{
+  "parent": "SFXGalaxyMapObject",
+  "package": "SFXGame",
+  "variables": {
+    "RTPCName": {
+      "type": "string",
+      "documentation": null
+    },
+    "Position": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "StartEvent": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "StopEvent": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "ParticleComponent": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "Amount": {
+      "type": "float",
+      "documentation": null
+    },
+    "FeatureTransition": {
+      "type": "int",
+      "documentation": null
+    },
+    "FeatureTransitionParameter": {
+      "type": "int",
+      "documentation": null
+    },
+    "ScaledAmount": {
+      "type": "int",
+      "documentation": null
+    },
+    "FeatureType": {
+      "type": "EFeatureType",
+      "documentation": null
+    },
+    "MineralType": {
+      "type": "EMineralType",
+      "documentation": null
+    },
+    "FeatureTransitionRegion": {
+      "type": "EBioRegionAutoSet",
+      "documentation": null
+    },
+    "FeatureTransitionPlot": {
+      "type": "ESFXPlanetFeatureEventTransitionPlotAutoSet",
+      "documentation": null
+    },
+    "FeatureTransitionName": {
+      "type": "ESFXPlanetFeatureEventTransitionAutoSet",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

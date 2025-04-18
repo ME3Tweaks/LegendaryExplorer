@@ -1,0 +1,118 @@
+{
+  "parent": "SFXGameEffect_GiveShield",
+  "package": "SFXGame",
+  "variables": {
+    "AnimatedReactions": {
+      "type": "EAICustomAction",
+      "documentation": null
+    },
+    "ShieldCrust_Male": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "ShieldCrust_Female": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "ShieldDeathCrust": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "PlayerVFX": {
+      "type": "BioVisualEffect",
+      "documentation": null
+    },
+    "HenchVFX": {
+      "type": "BioVisualEffect",
+      "documentation": null
+    },
+    "OwnerPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "ShieldExplosion": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "ExplosionRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "ExplosionDamage": {
+      "type": "float",
+      "documentation": null
+    },
+    "ExplosionForce": {
+      "type": "float",
+      "documentation": null
+    },
+    "ExplosionVFXParameter": {
+      "type": "float",
+      "documentation": null
+    },
+    "ExplosionShieldBoost": {
+      "type": "float",
+      "documentation": null
+    },
+    "bShieldDestroyed": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "AreaExplosion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AreaExplosion()"
+    },
+    "OnShieldDestroyed": {
+      "documentation": null,
+      "signature_members": {
+        "PlayDeathCrust": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnShieldDestroyed(bool PlayDeathCrust)"
+    },
+    "TurnVFXOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TurnVFXOff()"
+    },
+    "TurnVFXOn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TurnVFXOn()"
+    },
+    "OnUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaSeconds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUpdate(float DeltaSeconds)"
+    },
+    "OnApplied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnApplied()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

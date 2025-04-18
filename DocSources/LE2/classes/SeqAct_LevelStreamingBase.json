@@ -1,0 +1,21 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "Engine",
+  "variables": {
+    "bMakeVisibleAfterLoad": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShouldBlockOnLoad": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNeverAutoStreamOut": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

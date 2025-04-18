@@ -1,11 +1,11 @@
 {
   "Members": {
     "DamageType": {
-      "type": null,
+      "type": "Class",
       "documentation": null
     },
     "Trigger": {
-      "type": null,
+      "type": "byte",
       "documentation": null
     }
   },

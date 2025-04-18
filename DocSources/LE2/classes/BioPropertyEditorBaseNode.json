@@ -1,0 +1,148 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_sNodeDisplayName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_aChildren": {
+      "type": "BioPropertyEditorBaseNode",
+      "documentation": null
+    },
+    "m_aTraversedStack": {
+      "type": "BioPropertyEditorBaseNode",
+      "documentation": null
+    },
+    "m_sParentGenName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_oTop": {
+      "type": "BioInGamePropertyEditor",
+      "documentation": null
+    },
+    "m_oParent": {
+      "type": "BioPropertyEditorBaseNode",
+      "documentation": null
+    },
+    "m_nCurrentlySelectedChild": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nScrollBoxFirstIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nScrollBoxSize": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_colour": {
+      "type": "Color",
+      "documentation": null
+    },
+    "m_nGeneration": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "getTop": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioInGamePropertyEditor",
+      "signature": "BioInGamePropertyEditor getTop()"
+    },
+    "getDisplayText": {
+      "documentation": null,
+      "signature_members": {
+        "selectable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string getDisplayText(bool selectable)"
+    },
+    "getColour": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Color",
+      "signature": "Color getColour()"
+    },
+    "setColour": {
+      "documentation": null,
+      "signature_members": {
+        "Col": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "setColour(Color Col)"
+    },
+    "RightShoulderAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RightShoulderAction()"
+    },
+    "LeftShoulderAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LeftShoulderAction()"
+    },
+    "RightTriggerAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RightTriggerAction()"
+    },
+    "LeftTriggerAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LeftTriggerAction()"
+    },
+    "DecrementCurrentSelection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DecrementCurrentSelection()"
+    },
+    "IncrementCurrentSelection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IncrementCurrentSelection()"
+    },
+    "GetSelectablesParent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioPropertyEditorBaseNode",
+      "signature": "BioPropertyEditorBaseNode GetSelectablesParent()"
+    },
+    "GetSelectedChildOnStackTop": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioPropertyEditorBaseNode",
+      "signature": "BioPropertyEditorBaseNode GetSelectedChildOnStackTop()"
+    },
+    "GetSelectedChild": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioPropertyEditorBaseNode",
+      "signature": "BioPropertyEditorBaseNode GetSelectedChild()"
+    },
+    "SelectionAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool SelectionAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

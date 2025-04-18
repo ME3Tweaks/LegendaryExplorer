@@ -1,0 +1,21 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "Slots": {
+      "type": "int",
+      "documentation": null
+    },
+    "bManualAdjustPlayersOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ManualCoverType": {
+      "type": "ECoverType",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

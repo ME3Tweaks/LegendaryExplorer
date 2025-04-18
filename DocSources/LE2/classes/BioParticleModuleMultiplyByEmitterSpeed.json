@@ -1,0 +1,29 @@
+{
+  "parent": "ParticleModule",
+  "package": "SFXGame",
+  "variables": {
+    "MinUsedSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxUsedSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "MultiplierAtMin": {
+      "type": "float",
+      "documentation": null
+    },
+    "MultiplierAtMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "MultipliedProperty": {
+      "type": "MultiplyByEmitterSpeedProperty",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

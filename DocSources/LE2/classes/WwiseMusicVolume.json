@@ -1,0 +1,117 @@
+{
+  "parent": "WwiseVolume",
+  "package": "WwiseAudio",
+  "variables": {
+    "MusicID": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_pWwiseComponent": {
+      "type": "WwiseAudioComponent",
+      "documentation": null
+    },
+    "m_oTrackPawn": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "m_pMusicEventPair": {
+      "type": "WwiseEventPairObject",
+      "documentation": null
+    },
+    "MusicPriority": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCurrentMusicState": {
+      "type": "int",
+      "documentation": null
+    },
+    "InitiallyEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "AllowOcclusion": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bContainsPawn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bMyMusicIsPlaying": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bEnabled": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "myTimerPop": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "myTimerPop()"
+    },
+    "SetContainsPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "bContainsPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetContainsPlayer(bool bContainsPlayer)"
+    },
+    "SetEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEnabled(bool bEnabled)"
+    },
+    "StopMusic": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopMusic()"
+    },
+    "StartMusic": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartMusic()"
+    },
+    "CheckPriority": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CheckPriority()"
+    },
+    "TimerPop": {
+      "documentation": null,
+      "signature_members": {
+        "T": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TimerPop(WwiseVolumeTimer T)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,705 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_mapPawnProps": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "m_StartingList": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_EntryList": {
+      "type": "BioDialogEntryNode",
+      "documentation": null
+    },
+    "m_ReplyList": {
+      "type": "BioDialogReplyNode",
+      "documentation": null
+    },
+    "m_SpeakerList": {
+      "type": "BioDialogSpeaker",
+      "documentation": null
+    },
+    "m_LookAtList": {
+      "type": "BioDialogLookat",
+      "documentation": null
+    },
+    "m_ScriptList": {
+      "type": "BioDialogScript",
+      "documentation": null
+    },
+    "m_lstCurrentReplyIndices": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_sAreaCode": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_aFSPrevPositions": {
+      "type": "BioSavedActorPos",
+      "documentation": null
+    },
+    "m_sCurrentSubTitle": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sCurrentFaceFXAnim": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_aMaleFaceSets": {
+      "type": "FaceFXAnimSet",
+      "documentation": null
+    },
+    "m_aFemaleFaceSets": {
+      "type": "FaceFXAnimSet",
+      "documentation": null
+    },
+    "m_aMaleSoundObjects": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "m_aFemaleSoundObjects": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "m_aPreLoadNodesVisited": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_aExtraParticipants": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "PreloadAnimations": {
+      "type": "AnimSequence",
+      "documentation": null
+    },
+    "m_CachedLightingState": {
+      "type": "Object",
+      "documentation": null
+    },
+    "m_tNextLightingOverride": {
+      "type": "BioNextLightingData",
+      "documentation": null
+    },
+    "m_tNextCamOverride": {
+      "type": "BioNextCamData",
+      "documentation": null
+    },
+    "m_tInterruptInfo": {
+      "type": "BioInterruptReplyInfo",
+      "documentation": null
+    },
+    "vLineOfAction": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_pConversationOwner": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_pConversationPlayer": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_pSpeaker": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_oPreviousSpeaker": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_pListener": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_pKismetStart": {
+      "type": "BioSeqAct_StartConversation",
+      "documentation": null
+    },
+    "m_stage": {
+      "type": "BioStage",
+      "documentation": null
+    },
+    "m_pCurrentSound": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "MatineeSequence": {
+      "type": "Sequence",
+      "documentation": null
+    },
+    "FaceFXSet": {
+      "type": "FaceFXAnimSet",
+      "documentation": null
+    },
+    "m_pNonSpeakerFaceFXSet": {
+      "type": "FaceFXAnimSet",
+      "documentation": null
+    },
+    "m_pPreLoadingSoundCue": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "m_nResRefID": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCurrentEntry": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fStartTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nSelectedReply": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCurrentReply": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_intimacy": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fShowRepliesOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fShowLastLineOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fNodePlayTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fInterruptRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fSubtitleTimingModifier": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fSubtitleTimingMinimum": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fVOPreloadDelayTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nNodeStateFlags": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fRemainingVOLength": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fRemainingLastLineSubtitleDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nDelayedReplyChoice": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_colSubtitleColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "m_fAudioHitchBuffer": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPreLoadTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPreLoadStartDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_srPreLoadedStrRef": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_fDefaultInterruptWindowDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fDefaultInterruptWindowStart": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nTeleLinesHit": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nTeleLinesSkipped": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fTeleAverageSkipTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bOneLinerConversation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseFixedCameras": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bConversationEnded": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bHasAttachedCameraTrack": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bHasAttachedDOFTrack": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSkipRequested": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bForceUnskippable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisplayNonAmbientName": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSkipProtectionDisabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAmbient": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPutPlayerIntoCombat": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisableTargeting": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSkippable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bFailed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInterrupted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bKismetInitiated": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bConversationOver": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bEnableLookAtWithStage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPlayerIsFemale": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bNoGestures": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bForceShowReplies": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCleanupNeeded": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bEarlyTermination": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bRemoveWeapons": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPlayingNonTextLine": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bNextLinePreLoadEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPlayerSexIsValid": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bVerifyPreLoadingCorrectness": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAutoAdvanceSkippableLinesWithNoVO": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DisableCamera": {
+      "documentation": null,
+      "signature_members": {
+        "bDisableCamera": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisableCamera(bool bDisableCamera)"
+    },
+    "SelectInterruption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool SelectInterruption()"
+    },
+    "NeedToDisplayInterrupt": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool NeedToDisplayInterrupt()"
+    },
+    "SetCustomInterruptWindow": {
+      "documentation": null,
+      "signature_members": {
+        "fStart": {
+          "type": null,
+          "documentation": null
+        },
+        "fDuraton": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCustomInterruptWindow(float fStart, optional float fDuraton)"
+    },
+    "EnableCustomInterruptWindow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnableCustomInterruptWindow()"
+    },
+    "TickInterruptionData": {
+      "documentation": null,
+      "signature_members": {
+        "fDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TickInterruptionData(float fDelta)"
+    },
+    "MissingLipSync": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MissingLipSync()"
+    },
+    "MissingVO": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MissingVO()"
+    },
+    "GetReplyGUIStyle": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EConvGUIStyles",
+      "signature": "EConvGUIStyles GetReplyGUIStyle(int nIndex)"
+    },
+    "FinishEntryNode": {
+      "documentation": null,
+      "signature_members": {
+        "nEntryIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FinishEntryNode(int nEntryIndex)"
+    },
+    "NeedToDisplayReplies": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool NeedToDisplayReplies()"
+    },
+    "StopScript": {
+      "documentation": null,
+      "signature_members": {
+        "Script": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StopScript(string Script)"
+    },
+    "GetReplyExportID": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetReplyExportID(int nIndex)"
+    },
+    "GetReplyCategory": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetReplyCategory(int nIndex)"
+    },
+    "GetReplyParaphraseText": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetReplyParaphraseText(int nIndex)"
+    },
+    "GetReplyText": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bParse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetReplyText(int nIndex, optional bool bParse)"
+    },
+    "GetEntryText": {
+      "documentation": null,
+      "signature_members": {
+        "bParse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetEntryText(optional bool bParse)"
+    },
+    "GetSpeaker": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor GetSpeaker(int nIndex)"
+    },
+    "UpdateFacing": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateFacing()"
+    },
+    "UpdateLookAtTargets": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateLookAtTargets(float fDeltaT)"
+    },
+    "UpdateLookAtList": {
+      "documentation": null,
+      "signature_members": {
+        "pBioPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateLookAtList(BioPawn pBioPawn)"
+    },
+    "switchToAmbient": {
+      "documentation": null,
+      "signature_members": {
+        "bWasNonAmbient": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "switchToAmbient(bool bWasNonAmbient)"
+    },
+    "IsAmbient": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsAmbient()"
+    },
+    "WaitingForReply": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool WaitingForReply()"
+    },
+    "SkipNode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool SkipNode()"
+    },
+    "FinishSelectedReply": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool FinishSelectedReply()"
+    },
+    "QueueReply": {
+      "documentation": null,
+      "signature_members": {
+        "nReply": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool QueueReply(int nReply)"
+    },
+    "SelectReply": {
+      "documentation": null,
+      "signature_members": {
+        "nReply": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SelectReply(int nReply)"
+    },
+    "UpdateConversation": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateConversation(float fDeltaT)"
+    },
+    "EndConversation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndConversation()"
+    },
+    "StartConversation": {
+      "documentation": null,
+      "signature_members": {
+        "aOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "aPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartConversation(Actor aOwner, Actor aPlayer)"
+    },
+    "GetConversationObject": {
+      "documentation": null,
+      "signature_members": {
+        "nObjectIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bNoisyErrors": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor GetConversationObject(int nObjectIndex, optional bool bNoisyErrors)"
+    },
+    "SetPositionRotator": {
+      "documentation": null,
+      "signature_members": {
+        "pActor": {
+          "type": null,
+          "documentation": null
+        },
+        "Position": {
+          "type": null,
+          "documentation": null
+        },
+        "facing": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPositionRotator(Actor pActor, Vector Position, Rotator facing)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

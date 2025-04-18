@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "AnimTreeTemplate": {
+      "type": "AnimTree",
+      "documentation": null
+    },
+    "eClassification": {
+      "type": "EBioPawnClassification",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

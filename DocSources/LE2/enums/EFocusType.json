@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "FOCUS_Distance": {
+      "value": 0,
+      "documentation": null
+    },
+    "FOCUS_Position": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "parent": "SequenceEvent",
+  "package": "GFxUI",
+  "variables": {
+    "FSCommand": {
+      "type": "string",
+      "documentation": null
+    },
+    "Movie": {
+      "type": "GFxMovie",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,23 +1,23 @@
 {
   "Members": {
     "sPreviousFriendRankBlob": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "aRankResults": {
-      "type": null,
+      "type": "LeaderboardRecord",
       "documentation": null
     },
     "nPreviousLocalUserRank": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "srFriendBeatMe": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "srFriendBeatByMe": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

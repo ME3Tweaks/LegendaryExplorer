@@ -1,0 +1,77 @@
+{
+  "EnumValues": {
+    "BSMove_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "BSMove_SpeedVelocity": {
+      "value": 1,
+      "documentation": null
+    },
+    "BSMove_SpeedTacticalVelocity": {
+      "value": 2,
+      "documentation": null
+    },
+    "BSMove_ScaleRate": {
+      "value": 3,
+      "documentation": null
+    },
+    "BSMove_ScaleRateByWalkSpeed": {
+      "value": 4,
+      "documentation": null
+    },
+    "BSMove_ScaleRateByRunSpeed": {
+      "value": 5,
+      "documentation": null
+    },
+    "BSMove_ScaleRateBySprintSpeed": {
+      "value": 6,
+      "documentation": null
+    },
+    "BSMove_ScaleRateByTacticalWalkSpeed": {
+      "value": 7,
+      "documentation": null
+    },
+    "BSMove_ScaleRateByTacticalRunSpeed": {
+      "value": 8,
+      "documentation": null
+    },
+    "BSMove_LookAtTurning": {
+      "value": 9,
+      "documentation": null
+    },
+    "BSMove_TurningDirection": {
+      "value": 10,
+      "documentation": null
+    },
+    "BSMove_AxisDirection": {
+      "value": 11,
+      "documentation": null
+    },
+    "BSMove_FlyingState": {
+      "value": 12,
+      "documentation": null
+    },
+    "BSMove_StopSwitch": {
+      "value": 13,
+      "documentation": null
+    },
+    "BSMove_StopOnFoot": {
+      "value": 14,
+      "documentation": null
+    },
+    "BSMove_StartSwitch": {
+      "value": 15,
+      "documentation": null
+    },
+    "BSMove_ScaleRateByWalkRunRatio": {
+      "value": 16,
+      "documentation": null
+    },
+    "BSMove_SkidTurnSwitch": {
+      "value": 17,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

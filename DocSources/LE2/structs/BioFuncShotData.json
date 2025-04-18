@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "sActor1": {
+      "type": "string",
+      "documentation": null
+    },
+    "sActor2": {
+      "type": "string",
+      "documentation": null
+    },
+    "sStage": {
+      "type": "string",
+      "documentation": null
+    },
+    "nmShotName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nActor1PosNode": {
+      "type": "int",
+      "documentation": null
+    },
+    "bUseCamera": {
+      "type": "bool",
+      "documentation": null
+    },
+    "eShotType": {
+      "type": "EBioFuncShotType",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

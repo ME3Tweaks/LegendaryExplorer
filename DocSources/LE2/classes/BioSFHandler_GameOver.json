@@ -1,0 +1,89 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "GameOverString": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "GameOverStringOverride": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "BadResumeGameText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "AcceptBadResumeGameText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "bWaitingOnLoad": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GotoMainMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GotoMainMenu()"
+    },
+    "DisplayResumeFailure": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisplayResumeFailure()"
+    },
+    "GameOverResume_Callback": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GameOverResume_Callback(bool bWasSuccessful)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": null,
+          "documentation": null
+        },
+        "lstArguments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    },
+    "Callback_GotoMainMenu": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_GotoMainMenu(bool bAPressed, int context)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

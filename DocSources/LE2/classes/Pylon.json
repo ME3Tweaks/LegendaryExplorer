@@ -1,0 +1,169 @@
+{
+  "parent": "NavigationPoint",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IEditorLinkSelectionInterface": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "NavMeshPtr": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ObstacleMesh": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "DynamicObstacleMesh": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "WorkingSetPtr": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "PathObjectsThatAffectThisPylon": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "NextPassSeedList": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "OctreeId": {
+      "type": "OctreeElementId",
+      "documentation": null
+    },
+    "OctreeIWasAddedTo": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "NextPylon": {
+      "type": "Pylon",
+      "documentation": null
+    },
+    "ExpansionVolumes": {
+      "type": "Volume",
+      "documentation": null
+    },
+    "ExpansionRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxExpansionRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "PylonRadiusPreview": {
+      "type": "DrawPylonRadiusComponent",
+      "documentation": null
+    },
+    "bImportedMesh": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseExpansionSphereOverride": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNeedsCostCheck": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDrawEdgePolys": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDrawPolyBounds": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRenderInShowPaths": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDrawWalkableSurface": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDrawObstacleSurface": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBuildThisPylon": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceObstacleMeshCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ExpansionSphereCenter": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "RenderingComp": {
+      "type": "NavMeshRenderingComponent",
+      "documentation": null
+    },
+    "BrokenSprite": {
+      "type": "SpriteComponent",
+      "documentation": null
+    },
+    "DebugEdgeCount": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CanReachPylon": {
+      "documentation": null,
+      "signature_members": {
+        "DestPylon": {
+          "type": null,
+          "documentation": null
+        },
+        "C": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanReachPylon(Pylon DestPylon, Controller C)"
+    },
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle Action)"
+    },
+    "IsEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsEnabled()"
+    },
+    "SetEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEnabled(bool bEnabled)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

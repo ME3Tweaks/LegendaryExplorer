@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "AMMO_TREASURE": {
+      "value": 0,
+      "documentation": null
+    },
+    "MEDIGEL_TREASURE": {
+      "value": 1,
+      "documentation": null
+    },
+    "CREDITS_TREASURE": {
+      "value": 2,
+      "documentation": null
+    },
+    "EEZO_TREASURE": {
+      "value": 3,
+      "documentation": null
+    },
+    "PALLADIUM_TREASURE": {
+      "value": 4,
+      "documentation": null
+    },
+    "IRIDIUM_TREASURE": {
+      "value": 5,
+      "documentation": null
+    },
+    "PLATINUM_TREASURE": {
+      "value": 6,
+      "documentation": null
+    },
+    "PROBES_TREASURE": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

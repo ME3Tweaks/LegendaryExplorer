@@ -1,23 +1,23 @@
 {
   "Members": {
     "location": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "Up": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "Right": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "Front": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "PortalVolume": {
-      "type": null,
+      "type": "PortalVolume",
       "documentation": null
     }
   },

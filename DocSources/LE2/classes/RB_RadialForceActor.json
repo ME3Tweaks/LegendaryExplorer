@@ -1,0 +1,73 @@
+{
+  "parent": "RigidBodyBase",
+  "package": "Engine",
+  "variables": {
+    "RenderComponent": {
+      "type": "DrawSphereComponent",
+      "documentation": null
+    },
+    "ForceStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "ForceRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "SwirlStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "SpinTorque": {
+      "type": "float",
+      "documentation": null
+    },
+    "CollideWithChannels": {
+      "type": "RBCollisionChannelContainer",
+      "documentation": null
+    },
+    "bForceActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceApplyToCloth": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceApplyToFluid": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceApplyToRigidBodies": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceApplyToProjectiles": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ForceFalloff": {
+      "type": "ERadialImpulseFalloff",
+      "documentation": null
+    },
+    "RadialForceMode": {
+      "type": "ERadialForceType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "inAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle inAction)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,29 @@
+{
+  "parent": "PhysicalMaterialPropertyBase",
+  "package": "SFXGame",
+  "variables": {
+    "PhysicalMaterialDecals": {
+      "type": "SFXPhysicalMaterialDecals",
+      "documentation": null
+    },
+    "PhysicalMaterialImpactEffects": {
+      "type": "SFXPhysicalMaterialImpactEffects",
+      "documentation": null
+    },
+    "PhysicalMaterialImpactSounds": {
+      "type": "SFXPhysicalMaterialImpactSounds",
+      "documentation": null
+    },
+    "PhysicalMaterialFootSteps": {
+      "type": "SFXPhysicalMaterialFootSteps",
+      "documentation": null
+    },
+    "PhysicalMaterialPhysics": {
+      "type": "SFXPhysicalMaterialPhysics",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

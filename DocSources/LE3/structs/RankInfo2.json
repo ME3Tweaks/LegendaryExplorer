@@ -1,31 +1,31 @@
 {
   "Members": {
     "Icon": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Name": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Description": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Evolved1Name": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Evolved1Description": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Evolved2Name": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Evolved2Description": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

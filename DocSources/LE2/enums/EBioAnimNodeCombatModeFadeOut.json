@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "BIO_ANIM_NODE_COMBAT_MODE_FADEOUT_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_ANIM_NODE_COMBAT_MODE_FADEOUT_ANIMATING_ENTER": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_ANIM_NODE_COMBAT_MODE_FADEOUT_ENTER": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_ANIM_NODE_COMBAT_MODE_FADEOUT_ANIMATING_EXIT": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_ANIM_NODE_COMBAT_MODE_FADEOUT_EXIT": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

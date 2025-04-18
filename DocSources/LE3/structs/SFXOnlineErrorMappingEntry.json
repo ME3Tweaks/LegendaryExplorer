@@ -1,15 +1,15 @@
 {
   "Members": {
     "LocalizationKey": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "ErrorContext": {
-      "type": null,
+      "type": "SFXOnlineErrorContext",
       "documentation": null
     },
     "errorCode": {
-      "type": null,
+      "type": "SFXOnlineError",
       "documentation": null
     }
   },

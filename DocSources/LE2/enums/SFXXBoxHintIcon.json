@@ -1,0 +1,157 @@
+{
+  "EnumValues": {
+    "XBICON_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "XBICON_XBOX_A": {
+      "value": 1,
+      "documentation": null
+    },
+    "XBICON_XBOX_B": {
+      "value": 2,
+      "documentation": null
+    },
+    "XBICON_XBOX_Y": {
+      "value": 3,
+      "documentation": null
+    },
+    "XBICON_XBOX_X": {
+      "value": 4,
+      "documentation": null
+    },
+    "XBICON_XBOX_Right_Thumb": {
+      "value": 5,
+      "documentation": null
+    },
+    "XBICON_XBOX_Right_Thumb_Pressed": {
+      "value": 6,
+      "documentation": null
+    },
+    "XBICON_XBOX_Right_Thumb_Released": {
+      "value": 7,
+      "documentation": null
+    },
+    "XBICON_XBOX_Left_Thumb": {
+      "value": 8,
+      "documentation": null
+    },
+    "XBICON_XBOX_Left_Thumb_Pressed": {
+      "value": 9,
+      "documentation": null
+    },
+    "XBICON_XBOX_Left_Thumb_Released": {
+      "value": 10,
+      "documentation": null
+    },
+    "XBICON_XBOX_Right_Thumb_Up": {
+      "value": 11,
+      "documentation": null
+    },
+    "XBICON_XBOX_Right_Thumb_UpRight": {
+      "value": 12,
+      "documentation": null
+    },
+    "XBICON_XBOX_Right_Thumb_Right": {
+      "value": 13,
+      "documentation": null
+    },
+    "XBICON_XBOX_Right_Thumb_DownRight": {
+      "value": 14,
+      "documentation": null
+    },
+    "XBICON_XBOX_Right_Thumb_Down": {
+      "value": 15,
+      "documentation": null
+    },
+    "XBICON_XBOX_Right_Thumb_DownLeft": {
+      "value": 16,
+      "documentation": null
+    },
+    "XBICON_XBOX_Right_Thumb_Left": {
+      "value": 17,
+      "documentation": null
+    },
+    "XBICON_XBOX_Right_Thumb_UpLeft": {
+      "value": 18,
+      "documentation": null
+    },
+    "XBICON_XBOX_Left_Thumb_Up": {
+      "value": 19,
+      "documentation": null
+    },
+    "XBICON_XBOX_Left_Thumb_UpRight": {
+      "value": 20,
+      "documentation": null
+    },
+    "XBICON_XBOX_Left_Thumb_Right": {
+      "value": 21,
+      "documentation": null
+    },
+    "XBICON_XBOX_Left_Thumb_DownRight": {
+      "value": 22,
+      "documentation": null
+    },
+    "XBICON_XBOX_Left_Thumb_Down": {
+      "value": 23,
+      "documentation": null
+    },
+    "XBICON_XBOX_Left_Thumb_DownLeft": {
+      "value": 24,
+      "documentation": null
+    },
+    "XBICON_XBOX_Left_Thumb_Left": {
+      "value": 25,
+      "documentation": null
+    },
+    "XBICON_XBOX_Left_Thumb_UpLeft": {
+      "value": 26,
+      "documentation": null
+    },
+    "XBICON_XBOX_DPad": {
+      "value": 27,
+      "documentation": null
+    },
+    "XBICON_XBOX_DPad_Up": {
+      "value": 28,
+      "documentation": null
+    },
+    "XBICON_XBOX_DPad_Right": {
+      "value": 29,
+      "documentation": null
+    },
+    "XBICON_XBOX_DPad_Down": {
+      "value": 30,
+      "documentation": null
+    },
+    "XBICON_XBOX_DPad_Left": {
+      "value": 31,
+      "documentation": null
+    },
+    "XBICON_XBOX_Start": {
+      "value": 32,
+      "documentation": null
+    },
+    "XBICON_XBOX_Back": {
+      "value": 33,
+      "documentation": null
+    },
+    "XBICON_XBOX_Right_Shoulder": {
+      "value": 34,
+      "documentation": null
+    },
+    "XBICON_XBOX_Right_Trigger": {
+      "value": 35,
+      "documentation": null
+    },
+    "XBICON_XBOX_Left_Shoulder": {
+      "value": 36,
+      "documentation": null
+    },
+    "XBICON_XBOX_Left_Trigger": {
+      "value": 37,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

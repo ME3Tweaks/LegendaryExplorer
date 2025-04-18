@@ -1,0 +1,8 @@
+{
+  "parent": "SFXDamageType_AssaultRifle",
+  "package": "SFXGameContent_Inventory",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "parent": "Volume",
+  "package": "Engine",
+  "variables": {
+    "Portals": {
+      "type": "PortalTeleporter",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

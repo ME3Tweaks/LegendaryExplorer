@@ -1,19 +1,19 @@
 {
   "Members": {
     "GenericTip": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "PCOverrideTip": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "PS3OverrideTip": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "XBoxOverrideTip": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

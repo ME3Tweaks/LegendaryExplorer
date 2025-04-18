@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "PVT_Invalid": {
+      "value": 0,
+      "documentation": null
+    },
+    "PVT_ValidPawn": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

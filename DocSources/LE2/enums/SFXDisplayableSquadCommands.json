@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "SFX_DSC_READY": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFX_DSC_ATTACK": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFX_DSC_MOVETO": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFX_DSC_FOLLOW": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

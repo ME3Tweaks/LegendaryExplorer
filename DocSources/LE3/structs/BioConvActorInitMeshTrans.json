@@ -1,11 +1,11 @@
 {
   "Members": {
     "vOrigTranslation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "pActor": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     }
   },

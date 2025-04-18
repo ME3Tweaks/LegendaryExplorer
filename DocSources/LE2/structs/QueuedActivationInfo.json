@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "ActivateIndices": {
+      "type": "int",
+      "documentation": null
+    },
+    "ActivatedEvent": {
+      "type": "SequenceEvent",
+      "documentation": null
+    },
+    "InOriginator": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "InInstigator": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "bPushTop": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

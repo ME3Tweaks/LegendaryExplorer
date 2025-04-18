@@ -1,0 +1,118 @@
+{
+  "parent": "ActorComponent",
+  "package": "Engine",
+  "variables": {
+    "PostProcessProxies": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "CaptureInfo": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ViewState": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "UmbraCamera": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "PostProcess": {
+      "type": "PostProcessChain",
+      "documentation": null
+    },
+    "ClearColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "SceneLOD": {
+      "type": "int",
+      "documentation": null
+    },
+    "FrameRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxUpdateDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxViewDistanceOverride": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxStreamingUpdateDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnablePostProcess": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableFog": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseMainScenePostProcessSettings": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSkipUpdateIfTextureUsersOccluded": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSkipUpdateIfOwnerOccluded": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSkipRenderingDepthPrepass": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNeedsSceneUpdate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ViewMode": {
+      "type": "ESceneCaptureViewMode",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEnabled(bool bEnable)"
+    },
+    "NeedsUpdate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool NeedsUpdate()"
+    },
+    "SetFrameRate": {
+      "documentation": null,
+      "signature_members": {
+        "NewFrameRate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFrameRate(float NewFrameRate)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

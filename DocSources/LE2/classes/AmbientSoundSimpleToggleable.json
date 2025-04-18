@@ -1,0 +1,96 @@
+{
+  "parent": "AmbientSoundSimple",
+  "package": "Engine",
+  "variables": {
+    "FadeInDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadeInVolumeLevel": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadeOutDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadeOutVolumeLevel": {
+      "type": "float",
+      "documentation": null
+    },
+    "bCurrentlyPlaying": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFadeOnToggle": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ApplyCheckpointRecord": {
+      "documentation": null,
+      "signature_members": {
+        "Record": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyCheckpointRecord(const out CheckpointRecord Record)"
+    },
+    "CreateCheckpointRecord": {
+      "documentation": null,
+      "signature_members": {
+        "Record": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateCheckpointRecord(out CheckpointRecord Record)"
+    },
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle Action)"
+    },
+    "StopPlaying": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopPlaying()"
+    },
+    "StartPlaying": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartPlaying()"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "PSUVIM_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "PSUVIM_Linear": {
+      "value": 1,
+      "documentation": null
+    },
+    "PSUVIM_Linear_Blend": {
+      "value": 2,
+      "documentation": null
+    },
+    "PSUVIM_Random": {
+      "value": 3,
+      "documentation": null
+    },
+    "PSUVIM_Random_Blend": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

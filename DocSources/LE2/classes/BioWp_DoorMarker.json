@@ -1,0 +1,83 @@
+{
+  "parent": "BioPathPoint",
+  "package": "SFXGame",
+  "variables": {
+    "m_nmClosedStates": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmOpenedStates": {
+      "type": "Name",
+      "documentation": null
+    },
+    "oMyDoor": {
+      "type": "BioDoor",
+      "documentation": null
+    },
+    "m_nmGotoStateToOpen": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bWaitUntilCompletelyOpened": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAICanOpenDoor": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTempDisabledCollision": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SuggestMovePreparation": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SuggestMovePreparation(Pawn Other)"
+    },
+    "ProceedWithMove": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ProceedWithMove(Pawn Other)"
+    },
+    "SpecialHandling": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor SpecialHandling(Pawn Other)"
+    },
+    "IsDoorClosed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsDoorClosed()"
+    },
+    "IsDoorOpen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsDoorOpen()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

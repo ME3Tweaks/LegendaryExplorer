@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BIO_PST_Done": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_PST_Pending": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_PST_Started": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

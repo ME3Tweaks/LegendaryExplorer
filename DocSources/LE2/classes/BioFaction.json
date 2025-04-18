@@ -1,0 +1,48 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "SquadRelations": {
+      "type": "EBioFactionRelationship",
+      "documentation": null
+    },
+    "SquadIcon": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "m_bIsImmuneToPhysics": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SquadFaction": {
+      "type": "EBioFactionTypes",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "IsFriendly": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsFriendly(EBioFactionTypes Type)"
+    },
+    "IsHostile": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsHostile(EBioFactionTypes Type)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

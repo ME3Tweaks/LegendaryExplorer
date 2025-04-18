@@ -1,0 +1,85 @@
+{
+  "Members": {
+    "m_mapTokenIDToActual": {
+      "type": "SFXTokenMapping",
+      "documentation": null
+    },
+    "sChoiceName": {
+      "type": "string",
+      "documentation": null
+    },
+    "sChoiceTitle": {
+      "type": "string",
+      "documentation": null
+    },
+    "sChoiceImageTitle": {
+      "type": "string",
+      "documentation": null
+    },
+    "sChoiceDescription": {
+      "type": "string",
+      "documentation": null
+    },
+    "sActionText": {
+      "type": "string",
+      "documentation": null
+    },
+    "oChoiceImage": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "srChoiceName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srChoiceTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srChoiceImageTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srChoiceDescription": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "nOptionalPaneItemValue": {
+      "type": "int",
+      "documentation": null
+    },
+    "nChoiceID": {
+      "type": "int",
+      "documentation": null
+    },
+    "srActionText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "bDefaultSelection": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNested": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOptionalPaneHideCost": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ChoiceColor": {
+      "type": "SFXChoiceColors",
+      "documentation": null
+    },
+    "eResource": {
+      "type": "EInventoryResourceTypes",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

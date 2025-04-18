@@ -1,15 +1,15 @@
 {
   "Members": {
     "Label": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Story": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Value": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

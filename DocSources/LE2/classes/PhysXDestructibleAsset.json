@@ -1,0 +1,25 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "ChunkTree": {
+      "type": "PhysXDestructibleAssetChunk",
+      "documentation": null
+    },
+    "Meshes": {
+      "type": "SkeletalMesh",
+      "documentation": null
+    },
+    "Assets": {
+      "type": "PhysicsAsset",
+      "documentation": null
+    },
+    "MaxDepth": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

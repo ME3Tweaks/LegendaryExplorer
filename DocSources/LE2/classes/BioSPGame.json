@@ -1,0 +1,52 @@
+{
+  "parent": "SFXGame",
+  "package": "SFXGame",
+  "variables": {
+    "srGameOverString": {
+      "type": "stringref",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SpawnGameOverGUI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SpawnGameOverGUI()"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "SetupPartyMemberAttributes": {
+      "documentation": null,
+      "signature_members": {
+        "Behavior": {
+          "type": null,
+          "documentation": null
+        },
+        "attributesClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetupPartyMemberAttributes(BioPawnBehavior Behavior, Class<Object> attributesClass)"
+    },
+    "StartMatch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartMatch()"
+    }
+  },
+  "states": {
+    "PendingMatch": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

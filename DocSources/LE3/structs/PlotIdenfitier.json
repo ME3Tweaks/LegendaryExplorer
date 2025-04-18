@@ -1,11 +1,11 @@
 {
   "Members": {
     "nIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nType": {
-      "type": null,
+      "type": "SFXPlotType",
       "documentation": null
     }
   },

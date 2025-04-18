@@ -1,0 +1,21 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "DeathEffect": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "DeathSoundEffect": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "Priority": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

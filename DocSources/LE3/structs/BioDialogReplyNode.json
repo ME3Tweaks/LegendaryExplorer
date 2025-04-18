@@ -1,31 +1,31 @@
 {
   "Members": {
     "EntryList": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nListenerIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bUnskippable": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bIllegal": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bIsDefaultAction": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bIsMajorDecision": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "ReplyType": {
-      "type": null,
+      "type": "EReplyTypes",
       "documentation": null
     }
   },

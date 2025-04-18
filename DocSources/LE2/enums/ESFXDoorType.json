@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "EDT_Manual": {
+      "value": 0,
+      "documentation": null
+    },
+    "EDT_Proximity": {
+      "value": 1,
+      "documentation": null
+    },
+    "EDT_AutoEntrance": {
+      "value": 2,
+      "documentation": null
+    },
+    "EDT_AutoExit": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

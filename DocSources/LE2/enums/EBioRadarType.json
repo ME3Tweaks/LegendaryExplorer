@@ -1,0 +1,69 @@
+{
+  "EnumValues": {
+    "BRT_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "BRT_Pawn_Friendly": {
+      "value": 1,
+      "documentation": null
+    },
+    "BRT_Pawn_Neutral": {
+      "value": 2,
+      "documentation": null
+    },
+    "BRT_Pawn_Hostile": {
+      "value": 3,
+      "documentation": null
+    },
+    "BRT_Vehicle": {
+      "value": 4,
+      "documentation": null
+    },
+    "BRT_Store": {
+      "value": 5,
+      "documentation": null
+    },
+    "BRT_Destination": {
+      "value": 6,
+      "documentation": null
+    },
+    "BRT_Plot": {
+      "value": 7,
+      "documentation": null
+    },
+    "BRT_Mineral": {
+      "value": 8,
+      "documentation": null
+    },
+    "BRT_Anomaly": {
+      "value": 9,
+      "documentation": null
+    },
+    "BRT_Point_Of_Interest": {
+      "value": 10,
+      "documentation": null
+    },
+    "BRT_Debris": {
+      "value": 11,
+      "documentation": null
+    },
+    "BRT_Surveyed": {
+      "value": 12,
+      "documentation": null
+    },
+    "BRT_Henchmen": {
+      "value": 13,
+      "documentation": null
+    },
+    "BRT_Transition": {
+      "value": 14,
+      "documentation": null
+    },
+    "BRT_TextNote": {
+      "value": 15,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

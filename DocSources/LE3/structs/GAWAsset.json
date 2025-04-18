@@ -1,75 +1,75 @@
 {
   "Members": {
     "AssetName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "ImagePath": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "NotificationImagePath": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "ModTargets": {
-      "type": null,
+      "type": "GAWAssetModificationTarget",
       "documentation": null
     },
     "UnlockPlotStates": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "DebugConditionalDescription": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Id": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "GUICategoryID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "StartingStrength": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "GUIName": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "GUIDescription": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "CurrentStrength": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "MaxStrength": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "ConflictZoneID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bIsExploration": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bShowNotificationOnAward": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "Type": {
-      "type": null,
+      "type": "EGAWAssetType",
       "documentation": null
     },
     "SubType": {
-      "type": null,
+      "type": "EGAWAssetSubType",
       "documentation": null
     }
   },

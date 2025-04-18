@@ -1,63 +1,63 @@
 {
   "Members": {
     "AccomplishmentName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Title": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Description": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "IconTextureRef": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "ParentName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "SecondDescription": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "nIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nPoints": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nInitialValue": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nFinalValue": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nSecondInitialValue": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nSecondFinalValue": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bIsCompleted": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bIsGrinder": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bIsDoubleGrinder": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

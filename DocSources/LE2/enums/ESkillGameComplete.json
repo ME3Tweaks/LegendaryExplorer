@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "SK_CANCEL": {
+      "value": 0,
+      "documentation": null
+    },
+    "SK_SUCCESS": {
+      "value": 1,
+      "documentation": null
+    },
+    "SK_FAIL": {
+      "value": 2,
+      "documentation": null
+    },
+    "SK_UNDEFINED": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

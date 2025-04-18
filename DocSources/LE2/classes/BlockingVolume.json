@@ -1,0 +1,33 @@
+{
+  "parent": "Volume",
+  "package": "Engine",
+  "variables": {
+    "lstAffectedActors": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bBlockCamera": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInclusionaryList": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle Action)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

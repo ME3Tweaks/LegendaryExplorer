@@ -1,35 +1,35 @@
 {
   "Members": {
     "tDOFData": {
-      "type": null,
+      "type": "BioStageDOFData",
       "documentation": null
     },
     "nmCameraTag": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "fFov": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "fNearPlane": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "fHeightDelta": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "fPitchDelta": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "fYawDelta": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bDisableHeightAdjustment": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

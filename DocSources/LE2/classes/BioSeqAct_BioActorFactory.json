@@ -1,0 +1,13 @@
+{
+  "parent": "SeqAct_ActorFactory",
+  "package": "SFXGame",
+  "variables": {
+    "m_oActorType": {
+      "type": "BioActorType",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

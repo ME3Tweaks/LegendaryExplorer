@@ -1,19 +1,19 @@
 {
   "Members": {
     "sName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sListTag": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "nIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

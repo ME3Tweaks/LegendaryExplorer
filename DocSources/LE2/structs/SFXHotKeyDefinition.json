@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "nmPawn": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nPowerID": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

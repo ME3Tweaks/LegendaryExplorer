@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "LookAt_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "LookAt_Snap": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

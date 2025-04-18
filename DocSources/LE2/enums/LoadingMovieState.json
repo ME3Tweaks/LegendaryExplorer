@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "LMS_NotPlaying": {
+      "value": 0,
+      "documentation": null
+    },
+    "LMS_Playing": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

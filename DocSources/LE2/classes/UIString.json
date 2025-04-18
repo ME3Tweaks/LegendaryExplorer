@@ -1,0 +1,73 @@
+{
+  "parent": "UIRoot",
+  "package": "Engine",
+  "variables": {
+    "Nodes": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "StringStyleData": {
+      "type": "UICombinedStyleData",
+      "documentation": null
+    },
+    "StringExtent": {
+      "type": "Vector2D",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ContainsMarkup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ContainsMarkup()"
+    },
+    "GetAutoScaleValue": {
+      "documentation": null,
+      "signature_members": {
+        "BoundingRegionSize": {
+          "type": null,
+          "documentation": null
+        },
+        "StringSize": {
+          "type": null,
+          "documentation": null
+        },
+        "out_AutoScalePercent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAutoScaleValue(Vector2D BoundingRegionSize, Vector2D StringSize, out Vector2D out_AutoScalePercent)"
+    },
+    "GetValue": {
+      "documentation": null,
+      "signature_members": {
+        "bReturnProcessedText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetValue(optional bool bReturnProcessedText)"
+    },
+    "SetValue": {
+      "documentation": null,
+      "signature_members": {
+        "InputString": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnoreMarkup": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetValue(string InputString, bool bIgnoreMarkup)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

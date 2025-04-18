@@ -1,39 +1,39 @@
 {
   "Members": {
     "Id": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "X": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Y": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Width": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Lifetime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "SpawnTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Color": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Grows": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "Shrinks": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

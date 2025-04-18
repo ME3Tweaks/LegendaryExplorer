@@ -1,0 +1,50 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "DamageType": {
+      "type": "Class",
+      "documentation": null
+    },
+    "InstigatorController": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "DamageAmount": {
+      "type": "float",
+      "documentation": null
+    },
+    "DamageRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "MomentumScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "bDamageFalloff": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceCinematicDamage": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

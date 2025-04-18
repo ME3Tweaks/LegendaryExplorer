@@ -1,0 +1,167 @@
+{
+  "parent": "SFXAI_Core",
+  "package": "SFXGame",
+  "variables": {
+    "m_oCurrentWaypoint": {
+      "type": "SFXNav_WayPoint",
+      "documentation": null
+    },
+    "m_WaypointAnimName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nWaypointIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nWaypointBodyStance": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bPaused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCountingUp": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eWalkOrder": {
+      "type": "eWalkWaypointsTypes",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PlayWaypointAnim": {
+      "documentation": null,
+      "signature_members": {
+        "AnimName": {
+          "type": null,
+          "documentation": null
+        },
+        "eStance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayWaypointAnim(Name AnimName, int eStance)"
+    },
+    "ResumeWalking": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResumeWalking()"
+    },
+    "MoveOnScriptedRoute": {
+      "documentation": null,
+      "signature_members": {
+        "oRoute": {
+          "type": null,
+          "documentation": null
+        },
+        "nNearestWaypoint": {
+          "type": null,
+          "documentation": null
+        },
+        "bWalking": {
+          "type": null,
+          "documentation": null
+        },
+        "eWalkOrder": {
+          "type": null,
+          "documentation": null
+        },
+        "bSkipNodes": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MoveOnScriptedRoute(Route oRoute, int nNearestWaypoint, bool bWalking, eWalkWaypointsTypes eWalkOrder, bool bSkipNodes)"
+    },
+    "FindNearestRoutePoint": {
+      "documentation": null,
+      "signature_members": {
+        "vLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "oRoute": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindNearestRoutePoint(Vector vLoc, Route oRoute)"
+    },
+    "SetMovementSpeed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetMovementSpeed()"
+    }
+  },
+  "states": {
+    "Idle": {
+      "functions": {},
+      "documentation": null
+    },
+    "CustomAction_WaypointAnimation": {
+      "functions": {
+        "ExecuteCustomAction": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "PausedOnWaypoint": {
+      "functions": {
+        "ResumeWalking": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "WalkingWaypoints": {
+      "functions": {
+        "MaintainVelocity": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "PoppedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "UpdateNextWaypoint": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "SetNextWayPoint": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "StandingIdle": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

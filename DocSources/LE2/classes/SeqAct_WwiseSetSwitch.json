@@ -1,0 +1,17 @@
+{
+  "parent": "SequenceAction",
+  "package": "WwiseAudio",
+  "variables": {
+    "SwitchGroup": {
+      "type": "string",
+      "documentation": null
+    },
+    "Switch": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

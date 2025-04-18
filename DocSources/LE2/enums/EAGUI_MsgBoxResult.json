@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "EAG_MSGBOX_BTN_1": {
+      "value": 0,
+      "documentation": null
+    },
+    "EAG_MSGBOX_BTN_2": {
+      "value": 1,
+      "documentation": null
+    },
+    "EAG_MSGBOX_BTN_3": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

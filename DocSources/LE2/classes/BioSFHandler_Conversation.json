@@ -1,0 +1,313 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "m_aReplyLocations": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_aInvestigateLocations": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nSlotsUsed": {
+      "type": "int",
+      "documentation": null
+    },
+    "vInput": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_srTextInvestigate": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srTextReturn": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_nReplyLocationMiddleLeft": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nReplyLocationTopLeft": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nReplyLocationBottomLeft": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nReplyLocationTopRight": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nReplyLocationBottomRight": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nReplyLocationMiddleRight": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nInvestigateLocationMiddleLeft": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nInvestigateLocationTopLeft": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nInvestigateLocationBottomLeft": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nInvestigateLocationTopRight": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nInvestigateLocationBottomRight": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nInvestigateLocationMiddleRight": {
+      "type": "int",
+      "documentation": null
+    },
+    "fLastRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bDisplayInvestigateSubMenu": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisplayingWheel": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisplayingParagonInterrupt": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDIsplayingRenegadeInterrupt": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSFScreenInitialized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bWasTriggered": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "IsVisible": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsVisible()"
+    },
+    "SetVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bVal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVisible(bool bVal)"
+    },
+    "GetInvestigateReplyCount": {
+      "documentation": null,
+      "signature_members": {
+        "oConversation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetInvestigateReplyCount(BioConversation oConversation)"
+    },
+    "GetReplyLocation": {
+      "documentation": null,
+      "signature_members": {
+        "nReplyCategory": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioConvWheelPositions",
+      "signature": "BioConvWheelPositions GetReplyLocation(int nReplyCategory)"
+    },
+    "GetInvestigateReplyLocation": {
+      "documentation": null,
+      "signature_members": {
+        "nInvestigateSlot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioConvWheelPositions",
+      "signature": "BioConvWheelPositions GetInvestigateReplyLocation(int nInvestigateSlot)"
+    },
+    "SelectConversationEntry": {
+      "documentation": null,
+      "signature_members": {
+        "nWheelLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SelectConversationEntry(BioConvWheelPositions nWheelLocation)"
+    },
+    "MapGuiStyleToOptionMode": {
+      "documentation": null,
+      "signature_members": {
+        "eGUIStyle": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int MapGuiStyleToOptionMode(EConvGUIStyles eGUIStyle)"
+    },
+    "UpdateConversationOptions": {
+      "documentation": null,
+      "signature_members": {
+        "oConversation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateConversationOptions(BioConversation oConversation)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "CalculateArrowPosition": {
+      "documentation": null,
+      "signature_members": {
+        "stParam": {
+          "type": null,
+          "documentation": null
+        },
+        "lstParams": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CalculateArrowPosition(out ASParams stParam, out array<ASParams> lstParams)"
+    },
+    "UpdateInterruptVisuals": {
+      "documentation": null,
+      "signature_members": {
+        "oConversation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateInterruptVisuals(BioConversation oConversation)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": null,
+          "documentation": null
+        },
+        "lstArguments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "GetNumReplies": {
+      "documentation": null,
+      "signature_members": {
+        "oConversation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetNumReplies(BioConversation oConversation)"
+    },
+    "InterruptRenegade": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InterruptRenegade()"
+    },
+    "InterruptParagon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InterruptParagon()"
+    },
+    "SkipConversation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SkipConversation()"
+    },
+    "SelectConversationSegment": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SelectConversationSegment()"
+    },
+    "HighlightDefaultConvSegment": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HighlightDefaultConvSegment()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

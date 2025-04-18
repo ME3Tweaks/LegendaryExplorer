@@ -1,19 +1,19 @@
 {
   "Members": {
     "Callback": {
-      "type": null,
+      "type": "Pointer",
       "documentation": null
     },
     "Context": {
-      "type": null,
+      "type": "Pointer",
       "documentation": null
     },
     "PreloadMovieHandle": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "CurrentState": {
-      "type": null,
+      "type": "EBioBinkAsyncState",
       "documentation": null
     }
   },

@@ -1,0 +1,99 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "Sprite": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "ScreenSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "U": {
+      "type": "float",
+      "documentation": null
+    },
+    "UL": {
+      "type": "float",
+      "documentation": null
+    },
+    "V": {
+      "type": "float",
+      "documentation": null
+    },
+    "VL": {
+      "type": "float",
+      "documentation": null
+    },
+    "bIsScreenSizeScaled": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetSpriteAndUV": {
+      "documentation": null,
+      "signature_members": {
+        "NewSprite": {
+          "type": null,
+          "documentation": null
+        },
+        "NewU": {
+          "type": null,
+          "documentation": null
+        },
+        "NewUL": {
+          "type": null,
+          "documentation": null
+        },
+        "NewV": {
+          "type": null,
+          "documentation": null
+        },
+        "NewVL": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSpriteAndUV(Texture2D NewSprite, int NewU, int NewUL, int NewV, int NewVL)"
+    },
+    "SetUV": {
+      "documentation": null,
+      "signature_members": {
+        "NewU": {
+          "type": null,
+          "documentation": null
+        },
+        "NewUL": {
+          "type": null,
+          "documentation": null
+        },
+        "NewV": {
+          "type": null,
+          "documentation": null
+        },
+        "NewVL": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetUV(int NewU, int NewUL, int NewV, int NewVL)"
+    },
+    "SetSprite": {
+      "documentation": null,
+      "signature_members": {
+        "NewSprite": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSprite(Texture2D NewSprite)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,328 @@
+{
+  "parent": "SFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "VfTable_IISFXOnlineComponentPlatform": {
+      "type": "Pointer",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetRebootUserData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetRebootUserData()"
+    },
+    "WasRebootedFromOSCodeRedemptionUI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool WasRebootedFromOSCodeRedemptionUI()"
+    },
+    "ShowCodeRedemptionUI": {
+      "documentation": null,
+      "signature_members": {
+        "UserData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowCodeRedemptionUI(int UserData)"
+    },
+    "ShowStoreUI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShowStoreUI()"
+    },
+    "GetOnlineXuid": {
+      "documentation": null,
+      "signature_members": {
+        "nUserIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "oPlayerXuid": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetOnlineXuid(int nUserIndex, out UniqueNetId oPlayerXuid)"
+    },
+    "GetOfflineXuid": {
+      "documentation": null,
+      "signature_members": {
+        "nUserIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "oPlayerXuid": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetOfflineXuid(int nUserIndex, out UniqueNetId oPlayerXuid)"
+    },
+    "ShowKeyboardUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "sTitleText": {
+          "type": null,
+          "documentation": null
+        },
+        "sDescriptionText": {
+          "type": null,
+          "documentation": null
+        },
+        "nKeyboardType": {
+          "type": null,
+          "documentation": null
+        },
+        "bShouldValidate": {
+          "type": null,
+          "documentation": null
+        },
+        "bRouteThroughConsole": {
+          "type": null,
+          "documentation": null
+        },
+        "sDefaultText": {
+          "type": null,
+          "documentation": null
+        },
+        "nMaxResultLength": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowKeyboardUI(byte LocalUserNum, string sTitleText, string sDescriptionText, optional EKeyboardType nKeyboardType, optional bool bShouldValidate, optional bool bRouteThroughConsole, optional string sDefaultText, optional int nMaxResultLength)"
+    },
+    "ShowFriendsInviteUI": {
+      "documentation": null,
+      "signature_members": {
+        "eLocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "oPlayerXuid": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowFriendsInviteUI(byte eLocalUserNum, UniqueNetId oPlayerXuid)"
+    },
+    "ShowFriendsUI": {
+      "documentation": null,
+      "signature_members": {
+        "eLocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowFriendsUI(byte eLocalUserNum)"
+    },
+    "ShowAchievementsUI": {
+      "documentation": null,
+      "signature_members": {
+        "byLocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowAchievementsUI(byte byLocalUserNum)"
+    },
+    "ShowFeedbackUI": {
+      "documentation": null,
+      "signature_members": {
+        "eLocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "oPlayerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowFeedbackUI(byte eLocalUserNum, UniqueNetId oPlayerId)"
+    },
+    "ShowGamerCardUI": {
+      "documentation": null,
+      "signature_members": {
+        "eLocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "oPlayerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowGamerCardUI(byte eLocalUserNum, UniqueNetId oPlayerId)"
+    },
+    "CanShowPresenceInformation": {
+      "documentation": null,
+      "signature_members": {
+        "eLocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EFeaturePrivilegeLevel",
+      "signature": "EFeaturePrivilegeLevel CanShowPresenceInformation(byte eLocalUserNum)"
+    },
+    "CanViewPlayerProfiles": {
+      "documentation": null,
+      "signature_members": {
+        "eLocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EFeaturePrivilegeLevel",
+      "signature": "EFeaturePrivilegeLevel CanViewPlayerProfiles(byte eLocalUserNum)"
+    },
+    "CanPurchaseContent": {
+      "documentation": null,
+      "signature_members": {
+        "eLocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EFeaturePrivilegeLevel",
+      "signature": "EFeaturePrivilegeLevel CanPurchaseContent(byte eLocalUserNum)"
+    },
+    "CanDownloadUserContent": {
+      "documentation": null,
+      "signature_members": {
+        "eLocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EFeaturePrivilegeLevel",
+      "signature": "EFeaturePrivilegeLevel CanDownloadUserContent(byte eLocalUserNum)"
+    },
+    "CanCommunicate": {
+      "documentation": null,
+      "signature_members": {
+        "eLocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EFeaturePrivilegeLevel",
+      "signature": "EFeaturePrivilegeLevel CanCommunicate(byte eLocalUserNum)"
+    },
+    "CanPlayOnline": {
+      "documentation": null,
+      "signature_members": {
+        "eLocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EFeaturePrivilegeLevel",
+      "signature": "EFeaturePrivilegeLevel CanPlayOnline(byte eLocalUserNum)"
+    },
+    "SetRichPresence": {
+      "documentation": null,
+      "signature_members": {
+        "eLocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "nPresenceMode": {
+          "type": null,
+          "documentation": null
+        },
+        "aLocalizedStringSettings": {
+          "type": null,
+          "documentation": null
+        },
+        "aProperties": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRichPresence(byte eLocalUserNum, int nPresenceMode, const out array<LocalizedStringSetting> aLocalizedStringSettings, const out array<SettingsProperty> aProperties)"
+    },
+    "ShowLoginUI": {
+      "documentation": null,
+      "signature_members": {
+        "bShowOnlineOnly": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowLoginUI(optional bool bShowOnlineOnly)"
+    },
+    "GetLoginStatus": {
+      "documentation": null,
+      "signature_members": {
+        "eLocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ELoginStatus",
+      "signature": "ELoginStatus GetLoginStatus(byte eLocalUserNum)"
+    },
+    "AddRecentPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "oPlayerId": {
+          "type": null,
+          "documentation": null
+        },
+        "sDescription": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddRecentPlayer(UniqueNetId oPlayerId, optional string sDescription)"
+    },
+    "GetAPIName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetAPIName()"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "OnInitialize": {
+      "documentation": null,
+      "signature_members": {
+        "oOnlineSubsystem": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnInitialize(SFXOnlineSubsystem oOnlineSubsystem)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

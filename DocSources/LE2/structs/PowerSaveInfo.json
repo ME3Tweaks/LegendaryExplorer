@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "PowerName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "PowerClassName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "CurrentRank": {
+      "type": "float",
+      "documentation": null
+    },
+    "WheelDisplayIndex": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

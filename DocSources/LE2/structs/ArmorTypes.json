@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "Variations": {
+      "type": "ModelVariation",
+      "documentation": null
+    },
+    "m_meshPackageName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_materialPackageName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ArmorPhysicsAsset": {
+      "type": "PhysicsAsset",
+      "documentation": null
+    },
+    "ArmorType": {
+      "type": "EBioArmorType",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

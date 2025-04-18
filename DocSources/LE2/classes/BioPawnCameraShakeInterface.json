@@ -1,0 +1,24 @@
+{
+  "parent": "BioCameraShakeInterface",
+  "package": "SFXGame",
+  "variables": {
+    "m_pendingRequests": {
+      "type": "BioVisualEffect",
+      "documentation": null
+    },
+    "m_NodeToEffectMap": {
+      "type": "Object",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnPawnDestroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPawnDestroyed()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "m_sString1": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sString2": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_iInt1": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_iInt2": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bIsPartyMember": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eEventType": {
+      "type": "eventEnumID",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

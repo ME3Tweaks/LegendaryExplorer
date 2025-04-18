@@ -1,0 +1,13 @@
+{
+  "parent": "Info",
+  "package": "Engine",
+  "variables": {
+    "Component": {
+      "type": "WindPointSourceComponent",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

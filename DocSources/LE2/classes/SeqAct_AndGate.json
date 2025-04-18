@@ -1,0 +1,21 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "LinkedOutputs": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "LinkedOutputFiredStatus": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOpen": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

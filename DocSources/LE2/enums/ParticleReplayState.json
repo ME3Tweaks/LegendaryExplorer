@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "PRS_Disabled": {
+      "value": 0,
+      "documentation": null
+    },
+    "PRS_Capturing": {
+      "value": 1,
+      "documentation": null
+    },
+    "PRS_Replaying": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

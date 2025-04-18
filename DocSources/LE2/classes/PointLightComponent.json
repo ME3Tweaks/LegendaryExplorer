@@ -1,0 +1,77 @@
+{
+  "parent": "LightComponent",
+  "package": "Engine",
+  "variables": {
+    "CachedParentToWorld": {
+      "type": "Matrix",
+      "documentation": null
+    },
+    "LightmassSettings": {
+      "type": "LightmassPointLightSettings",
+      "documentation": null
+    },
+    "Translation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PreviewLightRadius": {
+      "type": "DrawLightRadiusComponent",
+      "documentation": null
+    },
+    "PreviewLightSourceRadius": {
+      "type": "DrawLightRadiusComponent",
+      "documentation": null
+    },
+    "ShadowRadiusMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "Radius": {
+      "type": "float",
+      "documentation": null
+    },
+    "FalloffExponent": {
+      "type": "float",
+      "documentation": null
+    },
+    "ShadowFalloffExponent": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinShadowFalloffRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "bAllowedInBasePass": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnUpdatePropertyBrightness": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUpdatePropertyBrightness()"
+    },
+    "OnUpdatePropertyLightColor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUpdatePropertyLightColor()"
+    },
+    "SetTranslation": {
+      "documentation": null,
+      "signature_members": {
+        "NewTranslation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTranslation(Vector NewTranslation)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

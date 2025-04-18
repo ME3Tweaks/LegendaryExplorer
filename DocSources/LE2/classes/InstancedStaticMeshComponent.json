@@ -1,0 +1,29 @@
+{
+  "parent": "StaticMeshComponent",
+  "package": "Engine",
+  "variables": {
+    "PerInstanceData": {
+      "type": "InstancedStaticMeshInstanceData",
+      "documentation": null
+    },
+    "CachedMappings": {
+      "type": "InstancedStaticMeshMappingInfo",
+      "documentation": null
+    },
+    "NumPendingLightmaps": {
+      "type": "int",
+      "documentation": null
+    },
+    "ComponentJoinKey": {
+      "type": "int",
+      "documentation": null
+    },
+    "InstancingRandomSeed": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

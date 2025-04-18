@@ -1,27 +1,27 @@
 {
   "Members": {
     "PlayerVariableGranted": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Name": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "AccomplishmentName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "EntitlementIDGranted": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "RewardIDGranted": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bUseNucleusCheck": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

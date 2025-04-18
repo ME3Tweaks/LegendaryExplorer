@@ -1,0 +1,72 @@
+{
+  "parent": "SceneCaptureComponent",
+  "package": "Engine",
+  "variables": {
+    "TextureTarget": {
+      "type": "TextureRenderTarget2D",
+      "documentation": null
+    },
+    "SkeletalMeshComp": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "RenderSection": {
+      "type": "int",
+      "documentation": null
+    },
+    "ForceLOD": {
+      "type": "int",
+      "documentation": null
+    },
+    "FadingStartTimeAfterHit": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadingPercentage": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadingDurationTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadingIntervalTime": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetCaptureParameters": {
+      "documentation": null,
+      "signature_members": {
+        "InMaskPosition": {
+          "type": null,
+          "documentation": null
+        },
+        "InMaskRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "InStartupPosition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCaptureParameters(const Vector InMaskPosition, const float InMaskRadius, const Vector InStartupPosition)"
+    },
+    "SetCaptureTargetTexture": {
+      "documentation": null,
+      "signature_members": {
+        "InTextureTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCaptureTargetTexture(const TextureRenderTarget2D InTextureTarget)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

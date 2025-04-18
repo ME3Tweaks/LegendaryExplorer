@@ -1,0 +1,776 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "sStartMap": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sMaleName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sFemaleName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sCode": {
+      "type": "string",
+      "documentation": null
+    },
+    "lstClassAnimSetRefs": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "lstCharacterClasses": {
+      "type": "Class",
+      "documentation": null
+    },
+    "lstSpawnableClasses": {
+      "type": "Class",
+      "documentation": null
+    },
+    "BonusTalents": {
+      "type": "BonusTalentData",
+      "documentation": null
+    },
+    "UnlockedBonusTalents": {
+      "type": "BonusTalentData",
+      "documentation": null
+    },
+    "MalePregeneratedHeadCodes": {
+      "type": "string",
+      "documentation": null
+    },
+    "FemalePregeneratedHeadCodes": {
+      "type": "string",
+      "documentation": null
+    },
+    "__OnCloseCallback__Delegate": {
+      "type": "OnCloseCallback",
+      "documentation": null
+    },
+    "lstTemplates": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "lstStoredVarNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "lstCurrentClass": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmAllianceComputerPleaseLogin": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmClassAnimSet": {
+      "type": "Name",
+      "documentation": null
+    },
+    "MaleDataSource": {
+      "type": "SFXMorphFaceFrontEndDataSource",
+      "documentation": null
+    },
+    "FemaleDataSource": {
+      "type": "SFXMorphFaceFrontEndDataSource",
+      "documentation": null
+    },
+    "IconicTemplateName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "CustomTemplateName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "SchematicVisualEffect": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "SchematicAnimSet": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "oKeyboard": {
+      "type": "BioSFHandler_Keyboard",
+      "documentation": null
+    },
+    "m_oBioMorphFrontEnd": {
+      "type": "BioMorphFaceFrontEnd",
+      "documentation": null
+    },
+    "fLookAtUpDownValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "fLookAtLeftRightValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "srCustomMaleName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srCustomFemaleName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srNewCharConfirm": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srNewCharCancel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srNewCharQuestion": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srFacialCategoryDescription": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srConfirm": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_nDefaultOrigin": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nDefaultNotoriety": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nDefaultClass": {
+      "type": "int",
+      "documentation": null
+    },
+    "srNameTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "nMaxNameLength": {
+      "type": "int",
+      "documentation": null
+    },
+    "srCodeTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "nMaxCodeLength": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nInfoScrollSpeed": {
+      "type": "int",
+      "documentation": null
+    },
+    "NoSaveDevice": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ConfirmSelectDevice": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CancelSelectDevice": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CurrentPregeneratedHeadIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "bLookAtLeftRightNulling": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLookAtUpDownNulling": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bZoomedInOnFace": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOpenedFromMainMenu": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bImportingCharacter": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bMaleSelected": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bEnteringCode": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bStopScroll": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_nDataOrigin": {
+      "type": "EDataOrigin",
+      "documentation": null
+    },
+    "m_nCurrentTemplate": {
+      "type": "BioNewCharacterTemplate",
+      "documentation": null
+    },
+    "m_nLastInitializedTemplate": {
+      "type": "BioNewCharacterTemplate",
+      "documentation": null
+    },
+    "CurrentLookAtTarget": {
+      "type": "NewCharacterLookAtTarget",
+      "documentation": null
+    },
+    "NextLookAtTarget": {
+      "type": "NewCharacterLookAtTarget",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "UpdateLookAtTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateLookAtTarget()"
+    },
+    "Callback_NoDevice": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_NoDevice(bool bAPressed, int context)"
+    },
+    "OnDeviceSelectionComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDeviceSelectionComplete(bool bWasSuccessful)"
+    },
+    "ChooseStorageDevice": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ChooseStorageDevice()"
+    },
+    "ProcessExternalStates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProcessExternalStates()"
+    },
+    "TriggerClassOverlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TriggerClassOverlay()"
+    },
+    "SelectPreviousPregeneratedHead": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SelectPreviousPregeneratedHead()"
+    },
+    "SelectNextPregeneratedHead": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SelectNextPregeneratedHead()"
+    },
+    "ConfirmButtonPressed": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ConfirmButtonPressed(bool bAPressed, int nContext)"
+    },
+    "ConfirmComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ConfirmComplete()"
+    },
+    "ClearModels": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearModels()"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "PopulateCustomFaceList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PopulateCustomFaceList()"
+    },
+    "HandleSliderChange": {
+      "documentation": null,
+      "signature_members": {
+        "nCategory": {
+          "type": null,
+          "documentation": null
+        },
+        "nSlider": {
+          "type": null,
+          "documentation": null
+        },
+        "nValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleSliderChange(int nCategory, int nSlider, int nValue)"
+    },
+    "DoCategoryReset": {
+      "documentation": null,
+      "signature_members": {
+        "nCategory": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoCategoryReset(int nCategory)"
+    },
+    "SetSliderPositions": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetSliderPositions()"
+    },
+    "SetCustomModel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetCustomModel()"
+    },
+    "Update3DModel": {
+      "documentation": null,
+      "signature_members": {
+        "nTemplate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update3DModel(BioNewCharacterTemplate nTemplate)"
+    },
+    "Update3DModelState": {
+      "documentation": null,
+      "signature_members": {
+        "nTemplate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update3DModelState(BioNewCharacterTemplate nTemplate)"
+    },
+    "StartNewGameEx": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartNewGameEx()"
+    },
+    "StartNewGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartNewGame()"
+    },
+    "RefitBonusTalent": {
+      "documentation": null,
+      "signature_members": {
+        "BonusTalent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RefitBonusTalent(Name BonusTalent)"
+    },
+    "GetAllUnlockedBonusTalentInfo": {
+      "documentation": null,
+      "signature_members": {
+        "aUnlockedBonusTalentInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAllUnlockedBonusTalentInfo(out array<BonusTalentData> aUnlockedBonusTalentInfo)"
+    },
+    "UpdateBonusTalentList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateBonusTalentList()"
+    },
+    "StartGameWithCustomCharacter": {
+      "documentation": null,
+      "signature_members": {
+        "playerSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StartGameWithCustomCharacter(const out array<string> playerSettings)"
+    },
+    "StartGameWithIconicCharacter": {
+      "documentation": null,
+      "signature_members": {
+        "lstSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StartGameWithIconicCharacter(const out array<string> lstSettings)"
+    },
+    "UpdateCustomClassChoice": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Row": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCustomClassChoice(Class<SFXCharacterClass> PlayerClass, int Row)"
+    },
+    "UpdateCustomClassList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateCustomClassList()"
+    },
+    "SetupSummary": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetupSummary()"
+    },
+    "SetCustomName": {
+      "documentation": null,
+      "signature_members": {
+        "sMaleName": {
+          "type": null,
+          "documentation": null
+        },
+        "sFemaleName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCustomName(string sMaleName, string sFemaleName)"
+    },
+    "UpdateCode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateCode()"
+    },
+    "ApplyNewCode": {
+      "documentation": null,
+      "signature_members": {
+        "sInputCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyNewCode(string sInputCode)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "ResetLookAt": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetLookAt()"
+    },
+    "HandleLookAtLeftRight": {
+      "documentation": null,
+      "signature_members": {
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleLookAtLeftRight(float fValue)"
+    },
+    "HandleLookAtUpDown": {
+      "documentation": null,
+      "signature_members": {
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleLookAtUpDown(float fValue)"
+    },
+    "HandleRotate": {
+      "documentation": null,
+      "signature_members": {
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleRotate(float fValue)"
+    },
+    "ScrollText": {
+      "documentation": null,
+      "signature_members": {
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ScrollText(float fValue)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "SetUIPawnCasual": {
+      "documentation": null,
+      "signature_members": {
+        "bCasual": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetUIPawnCasual(bool bCasual)"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": null,
+          "documentation": null
+        },
+        "lstArguments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    },
+    "SetBackgroundMaterial": {
+      "documentation": null,
+      "signature_members": {
+        "Material": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBackgroundMaterial(MaterialInterface Material)"
+    },
+    "SetSchematicResources": {
+      "documentation": null,
+      "signature_members": {
+        "in_SchematicEffectTemplate": {
+          "type": null,
+          "documentation": null
+        },
+        "in_SchematicAnimSet": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSchematicResources(BioVFXTemplate in_SchematicEffectTemplate, AnimSet in_SchematicAnimSet)"
+    },
+    "SetClassVFXTemplates": {
+      "documentation": null,
+      "signature_members": {
+        "FullBioticEffectTemplate": {
+          "type": null,
+          "documentation": null
+        },
+        "HalfBioticEffectTemplate": {
+          "type": null,
+          "documentation": null
+        },
+        "TechToolEffectTemplate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClassVFXTemplates(BioVFXTemplate FullBioticEffectTemplate, BioVFXTemplate HalfBioticEffectTemplate, BioVFXTemplate TechToolEffectTemplate)"
+    },
+    "AddKismetNamedObject": {
+      "documentation": null,
+      "signature_members": {
+        "KismetVariableName": {
+          "type": null,
+          "documentation": null
+        },
+        "ObjectValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddKismetNamedObject(Name KismetVariableName, Object ObjectValue)"
+    },
+    "SetMaleSelected": {
+      "documentation": null,
+      "signature_members": {
+        "bSelected": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMaleSelected(bool bSelected)"
+    },
+    "GetCharacterClassByName": {
+      "documentation": null,
+      "signature_members": {
+        "nmClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Class",
+      "signature": "Class<Object> GetCharacterClassByName(Name nmClass)"
+    },
+    "Update3DModelByClass": {
+      "documentation": null,
+      "signature_members": {
+        "nmClass": {
+          "type": null,
+          "documentation": null
+        },
+        "pTemplate": {
+          "type": null,
+          "documentation": null
+        },
+        "nTemplate": {
+          "type": null,
+          "documentation": null
+        },
+        "bUpdate": {
+          "type": null,
+          "documentation": null
+        },
+        "bForce": {
+          "type": null,
+          "documentation": null
+        },
+        "bAttachVFXandUpdatePose": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update3DModelByClass(Name nmClass, BioPawn pTemplate, BioNewCharacterTemplate nTemplate, bool bUpdate, optional bool bForce, optional bool bAttachVFXandUpdatePose)"
+    },
+    "Setup3DModel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Setup3DModel()"
+    },
+    "SetOnCloseCallback": {
+      "documentation": null,
+      "signature_members": {
+        "fn_OnCloseDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOnCloseCallback(delegate<OnCloseCallback> fn_OnCloseDelegate)"
+    },
+    "OnCloseCallback": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCloseCallback()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

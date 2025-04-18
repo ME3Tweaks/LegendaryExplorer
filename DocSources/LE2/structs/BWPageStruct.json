@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Tag": {
+      "type": "Name",
+      "documentation": null
+    },
+    "oHandler": {
+      "type": "BioSFHandler",
+      "documentation": null
+    },
+    "srLabel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "Type": {
+      "type": "MEBrowserWheelSubPages",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

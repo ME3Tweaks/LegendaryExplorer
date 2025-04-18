@@ -1,0 +1,45 @@
+{
+  "parent": "BioAnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_fSkidHeading": {
+      "type": "float",
+      "documentation": null
+    },
+    "RightNearAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "RightFarAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "LeftNearAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "LeftFarAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "LeftStartTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "RightStartTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bIsSkidding": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bFinishSkidStarted": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

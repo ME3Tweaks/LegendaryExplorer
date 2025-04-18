@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "eBioAnim_SpeedStandard": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnim_SpeedStarting": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnim_SpeedSnapshot": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

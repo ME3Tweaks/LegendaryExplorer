@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "ECS_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "ECS_FromExplore": {
+      "value": 1,
+      "documentation": null
+    },
+    "ECS_FromCombat": {
+      "value": 2,
+      "documentation": null
+    },
+    "ECS_FromCover": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

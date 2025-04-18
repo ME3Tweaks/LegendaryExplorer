@@ -1,55 +1,55 @@
 {
   "Members": {
     "HitLocation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "HitNormal": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "Material": {
-      "type": null,
+      "type": "MaterialInterface",
       "documentation": null
     },
     "HitComponent": {
-      "type": null,
+      "type": "PrimitiveComponent",
       "documentation": null
     },
     "HitBoneName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "Instigator": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "FadeTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Width": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Height": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "FarPlane": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "HitItem": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "HitLevelIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bNoClip": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

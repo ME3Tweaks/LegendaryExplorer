@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "CombatReaction_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "CombatReaction_Twitch": {
+      "value": 1,
+      "documentation": null
+    },
+    "CombatReaction_Standard": {
+      "value": 2,
+      "documentation": null
+    },
+    "CombatReaction_Stagger": {
+      "value": 3,
+      "documentation": null
+    },
+    "CombatReaction_Ragdoll": {
+      "value": 4,
+      "documentation": null
+    },
+    "CombatReaction_GreatPain": {
+      "value": 5,
+      "documentation": null
+    },
+    "CombatReaction_OnFire": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

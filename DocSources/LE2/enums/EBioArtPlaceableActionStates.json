@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "APAS_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "APAS_Matinee": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,19 +1,19 @@
 {
   "Members": {
     "Title": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "TotalTitle": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Pct": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "BonusPct": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

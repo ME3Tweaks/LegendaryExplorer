@@ -1,0 +1,120 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_mapUsedEnums": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "m_aStrRefs": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_sSubtitle": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sFaceFXAnim": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_pConversation": {
+      "type": "BioConversation",
+      "documentation": null
+    },
+    "m_nmSpeakerTag": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_pActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_pAudioObject": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "m_pFaceFXSet": {
+      "type": "FaceFXAnimSet",
+      "documentation": null
+    },
+    "m_srLineStrRef": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_fPadLineLength": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_srActorNameOverride": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_nPickedSpeakerIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fLineLength": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPreLoadTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bForceHideSubtitles": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIgnoreHenchmanSquadCheck": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPlaySoundOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisableDelayUntilPreload": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bErrorInActivation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bKilledVO": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPreLoadRequested": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPlayRequested": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAllowInConversation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eSpeakerList": {
+      "type": "EBioFOVOSpeakers",
+      "documentation": null
+    },
+    "m_eConvLine": {
+      "type": "EBioFOVOLines",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

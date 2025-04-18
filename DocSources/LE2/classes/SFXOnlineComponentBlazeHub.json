@@ -1,0 +1,74 @@
+{
+  "parent": "SFXOnlineComponentBlaze",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "VfTable_IISFXOnlineComponentAPI": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "BlazeServiceName": {
+      "type": "string",
+      "documentation": null
+    },
+    "BlazeClientName": {
+      "type": "string",
+      "documentation": null
+    },
+    "BlazeEnv": {
+      "type": "SFXOnlineComponentBlazeHubEnvironment",
+      "documentation": null
+    },
+    "CurrentBlazeHub": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "BlazeNetworkAdapter": {
+      "type": "Pointer",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnTick": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTick(SFXOnlineEvent oEvent)"
+    },
+    "GetAPIName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetAPIName()"
+    },
+    "ConnectDirtySock": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ConnectDirtySock()"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "OnInitialize": {
+      "documentation": null,
+      "signature_members": {
+        "oOnlineSubsystem": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnInitialize(SFXOnlineSubsystem oOnlineSubsystem)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "m_nMeshIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nMaterialIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bUseBodyMaterialConfig": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsHidden": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsLoaded": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

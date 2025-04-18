@@ -1,43 +1,43 @@
 {
   "Members": {
     "HitLocation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "HitNormal": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "VectorParameter": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "Template": {
-      "type": null,
+      "type": "ParticleSystem",
       "documentation": null
     },
     "HitActor": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "HitComponent": {
-      "type": null,
+      "type": "PrimitiveComponent",
       "documentation": null
     },
     "HitBoneName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "VectorParameterName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "Instigator": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "Scale": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

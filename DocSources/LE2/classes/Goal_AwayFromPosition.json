@@ -1,0 +1,55 @@
+{
+  "parent": "PathGoalEvaluator",
+  "package": "SFXGame",
+  "variables": {
+    "AvoidPos": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "AvoidDir": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "BestNode": {
+      "type": "NavigationPoint",
+      "documentation": null
+    },
+    "MaxDist": {
+      "type": "int",
+      "documentation": null
+    },
+    "BestRating": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "FleeFrom": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        },
+        "InAvoidPos": {
+          "type": null,
+          "documentation": null
+        },
+        "InMaxDist": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FleeFrom(Pawn P, Vector InAvoidPos, int InMaxDist)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

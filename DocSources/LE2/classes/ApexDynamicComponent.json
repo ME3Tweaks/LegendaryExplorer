@@ -1,0 +1,13 @@
+{
+  "parent": "ApexComponentBase",
+  "package": "Engine",
+  "variables": {
+    "ComponentDynamicResources": {
+      "type": "Pointer",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

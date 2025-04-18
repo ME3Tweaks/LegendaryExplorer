@@ -1,31 +1,31 @@
 {
   "Members": {
     "Prefix": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "GameType": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "AdditionalGameTypes": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "ForcedObjects": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "OverrideCommonPackage": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "bUsesCommonPackage": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bIsMultiplayer": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

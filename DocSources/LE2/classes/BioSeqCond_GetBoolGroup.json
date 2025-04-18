@@ -1,0 +1,24 @@
+{
+  "parent": "SequenceCondition",
+  "package": "SFXGame",
+  "variables": {
+    "nBoolGroup": {
+      "type": "int",
+      "documentation": null
+    },
+    "nBoolID": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

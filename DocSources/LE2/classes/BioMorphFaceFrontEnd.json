@@ -1,0 +1,352 @@
+{
+  "parent": "BioMorphUtility",
+  "package": "SFXGame",
+  "variables": {
+    "m_pModifierData": {
+      "type": "Slider",
+      "documentation": null
+    },
+    "m_oFaceData": {
+      "type": "FaceData",
+      "documentation": null
+    },
+    "m_sPlayerName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_oBaseSettings": {
+      "type": "BaseHeads",
+      "documentation": null
+    },
+    "m_aBaseHeads": {
+      "type": "BaseHeads",
+      "documentation": null
+    },
+    "m_oHeadMeshComp": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "m_oHairMeshComp": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "m_oOriginalFace": {
+      "type": "BioMorphFace",
+      "documentation": null
+    },
+    "m_oMorphFace": {
+      "type": "BioMorphFace",
+      "documentation": null
+    },
+    "m_oOriginalMaterial": {
+      "type": "MaterialInstanceConstant",
+      "documentation": null
+    },
+    "m_oOriginalMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null
+    },
+    "m_oBehavior": {
+      "type": "BioPawnBehavior",
+      "documentation": null
+    },
+    "m_oPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "m_iCurrentBaseHead": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bDebugStrings": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "LogSliders": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LogSliders()"
+    },
+    "SelectPreviousBaseHead": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SelectPreviousBaseHead()"
+    },
+    "SelectNextBaseHead": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SelectNextBaseHead()"
+    },
+    "SetPlayerName": {
+      "documentation": null,
+      "signature_members": {
+        "sPlayerName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlayerName(string sPlayerName)"
+    },
+    "Cleanup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Cleanup()"
+    },
+    "HandleSliderChange": {
+      "documentation": null,
+      "signature_members": {
+        "categoryIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "sliderIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "sliderValue": {
+          "type": null,
+          "documentation": null
+        },
+        "bUpdate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleSliderChange(int categoryIndex, int sliderIndex, int sliderValue, optional bool bUpdate)"
+    },
+    "GetSliderNotched": {
+      "documentation": null,
+      "signature_members": {
+        "categoryIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "sliderIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetSliderNotched(int categoryIndex, int sliderIndex)"
+    },
+    "GetSliderValue": {
+      "documentation": null,
+      "signature_members": {
+        "categoryIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "sliderIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetSliderValue(int categoryIndex, int sliderIndex)"
+    },
+    "GetSliderStep": {
+      "documentation": null,
+      "signature_members": {
+        "categoryIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "sliderIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetSliderStep(int categoryIndex, int sliderIndex)"
+    },
+    "GetSliderMax": {
+      "documentation": null,
+      "signature_members": {
+        "categoryIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "sliderIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetSliderMax(int categoryIndex, int sliderIndex)"
+    },
+    "GetSliderMin": {
+      "documentation": null,
+      "signature_members": {
+        "categoryIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "sliderIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetSliderMin(int categoryIndex, int sliderIndex)"
+    },
+    "GetSliderDesc": {
+      "documentation": null,
+      "signature_members": {
+        "categoryIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "sliderIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetSliderDesc(int categoryIndex, int sliderIndex)"
+    },
+    "GetSliderLabel": {
+      "documentation": null,
+      "signature_members": {
+        "categoryIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "sliderIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetSliderLabel(int categoryIndex, int sliderIndex)"
+    },
+    "GetNumSlidersInCategory": {
+      "documentation": null,
+      "signature_members": {
+        "categoryIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetNumSlidersInCategory(int categoryIndex)"
+    },
+    "GetCategoryDescription": {
+      "documentation": null,
+      "signature_members": {
+        "categoryIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetCategoryDescription(int categoryIndex)"
+    },
+    "GetCategoryString": {
+      "documentation": null,
+      "signature_members": {
+        "categoryIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetCategoryString(int categoryIndex)"
+    },
+    "GetNumberOfFeatureCategories": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumberOfFeatureCategories()"
+    },
+    "CalibrateToPawn": {
+      "documentation": null,
+      "signature_members": {
+        "pSrcPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bUpdate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CalibrateToPawn(BioPawn pSrcPawn, optional bool bUpdate)"
+    },
+    "ResetCategory": {
+      "documentation": null,
+      "signature_members": {
+        "nCategory": {
+          "type": null,
+          "documentation": null
+        },
+        "bUpdate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetCategory(int nCategory, optional bool bUpdate)"
+    },
+    "ResetAll": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetAll()"
+    },
+    "RandomizeCategory": {
+      "documentation": null,
+      "signature_members": {
+        "nCategory": {
+          "type": null,
+          "documentation": null
+        },
+        "bUpdate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RandomizeCategory(int nCategory, optional bool bUpdate)"
+    },
+    "RandomizeAll": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RandomizeAll()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        },
+        "pThePlayer": {
+          "type": null,
+          "documentation": null
+        },
+        "bPlayerIsMale": {
+          "type": null,
+          "documentation": null
+        },
+        "bReset": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(SFXMorphFaceFrontEndDataSource Data, BioPawn pThePlayer, bool bPlayerIsMale, optional bool bReset)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

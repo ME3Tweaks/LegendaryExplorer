@@ -1,0 +1,37 @@
+{
+  "parent": "SFXAI_Core",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "ClearForcedTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearForcedTarget()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    }
+  },
+  "states": {
+    "MovingToGoal": {
+      "functions": {
+        "PeriodicMoveCheck": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Combat_TechDrone": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

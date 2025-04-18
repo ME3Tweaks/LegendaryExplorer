@@ -1,0 +1,31 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {
+    "m_bIsInitialized": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetCurrentFloatValue": {
+      "documentation": null,
+      "signature_members": {
+        "attribute": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetCurrentFloatValue(out BioComplexFloatStructAttribute attribute)"
+    },
+    "EnsureInitialized": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnsureInitialized()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

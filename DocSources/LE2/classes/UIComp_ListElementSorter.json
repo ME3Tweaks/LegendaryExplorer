@@ -1,0 +1,106 @@
+{
+  "parent": "UIComp_ListComponentBase",
+  "package": "Engine",
+  "variables": {
+    "__OverrideListSort__Delegate": {
+      "type": "OverrideListSort",
+      "documentation": null
+    },
+    "InitialSortColumn": {
+      "type": "int",
+      "documentation": null
+    },
+    "InitialSecondarySortColumn": {
+      "type": "int",
+      "documentation": null
+    },
+    "PrimarySortColumn": {
+      "type": "int",
+      "documentation": null
+    },
+    "SecondarySortColumn": {
+      "type": "int",
+      "documentation": null
+    },
+    "bAllowCompoundSorting": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReversePrimarySorting": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReverseSecondarySorting": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ResortItems": {
+      "documentation": null,
+      "signature_members": {
+        "bCaseSensitive": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ResortItems(optional bool bCaseSensitive)"
+    },
+    "SortItems": {
+      "documentation": null,
+      "signature_members": {
+        "ColumnIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bSecondarySort": {
+          "type": null,
+          "documentation": null
+        },
+        "bCaseSensitive": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SortItems(int ColumnIndex, optional bool bSecondarySort, optional bool bCaseSensitive)"
+    },
+    "ResetSortColumns": {
+      "documentation": null,
+      "signature_members": {
+        "bResort": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetSortColumns(optional bool bResort)"
+    },
+    "OverrideListSort": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "CollectionFieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "SortParameters": {
+          "type": null,
+          "documentation": null
+        },
+        "OrderedIndices": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OverrideListSort(UIList Sender, Name CollectionFieldName, const out UIListSortingParameters SortParameters, out array<int> OrderedIndices)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

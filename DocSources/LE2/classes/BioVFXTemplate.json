@@ -1,0 +1,188 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_rawIntensityVsDistanceDistribution": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "m_aSoundsForIntensityLevels": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "aPostProcessParameters": {
+      "type": "BioCurveDrivenParameter",
+      "documentation": null
+    },
+    "aInstanceParameters": {
+      "type": "BioCurveDrivenParameter",
+      "documentation": null
+    },
+    "Decals": {
+      "type": "BioDecalComponent",
+      "documentation": null
+    },
+    "m_afCostTable": {
+      "type": "float",
+      "documentation": null
+    },
+    "oPrefab": {
+      "type": "Prefab",
+      "documentation": null
+    },
+    "oSoundCue": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "oFrameBufferEffect": {
+      "type": "PostProcessChain",
+      "documentation": null
+    },
+    "oSharedFramebufferEffect": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "oInstancedSharedFrameBufferEffect": {
+      "type": "BioVisualEffect",
+      "documentation": null
+    },
+    "m_nmEffectsMaterial": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_cameraShake": {
+      "type": "BioCameraShake",
+      "documentation": null
+    },
+    "fLifeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fFadeInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fFadeOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fImpactRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "fParticleTimeout": {
+      "type": "float",
+      "documentation": null
+    },
+    "fEffectMaterialTimeout": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fInstancePoolRechargePeriod": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nInstancePoolMax": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nDefaultPoolMax": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nDefaultPoolMin": {
+      "type": "int",
+      "documentation": null
+    },
+    "nMaxInstancesAllowed": {
+      "type": "int",
+      "documentation": null
+    },
+    "nNumActiveInstances": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fMaxRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "fPercentageOfDirection": {
+      "type": "float",
+      "documentation": null
+    },
+    "bCreateNewSoundEverySpawn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bFadeOnPause": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseActorScale": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsCrustEffect": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsImpactCrustEffect": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowParticlesToFinish": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAttachToNearestBone": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsInitialized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInstancePoolEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisableBoolDecay": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPlayerOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSharedBetweenInstances": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUseIntensityCurve": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ePriority": {
+      "type": "EBioVFXPriority",
+      "documentation": null
+    },
+    "eCost": {
+      "type": "EBioVFXCost",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "InitializeTemplate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeTemplate()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "pWeaponClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "nmProp": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nmAction": {
+      "type": "Name",
+      "documentation": null
+    },
+    "pPropMesh": {
+      "type": "Object",
+      "documentation": null
+    },
+    "pActionPartSys": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "bEquip": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

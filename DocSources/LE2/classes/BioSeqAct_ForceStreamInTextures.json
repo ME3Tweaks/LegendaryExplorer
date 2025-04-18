@@ -1,0 +1,13 @@
+{
+  "parent": "SeqAct_StreamInTextures",
+  "package": "SFXGame",
+  "variables": {
+    "bBlockOnWait": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

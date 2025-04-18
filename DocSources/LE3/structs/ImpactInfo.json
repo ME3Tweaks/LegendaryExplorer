@@ -1,31 +1,31 @@
 {
   "Members": {
     "HitInfo": {
-      "type": null,
+      "type": "TraceHitInfo",
       "documentation": null
     },
     "HitLocation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "HitNormal": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "RayDir": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "StartTrace": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "HitActor": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "PenetrationDepth": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

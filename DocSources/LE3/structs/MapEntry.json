@@ -1,11 +1,11 @@
 {
   "Members": {
     "EntryId": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "IncreaseValue": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

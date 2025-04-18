@@ -1,19 +1,19 @@
 {
   "Members": {
     "BlendTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "BlendExp": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bSkipCameraReset": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "BlendFunction": {
-      "type": null,
+      "type": "EViewTargetBlendFunction",
       "documentation": null
     }
   },

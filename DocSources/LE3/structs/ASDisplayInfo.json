@@ -1,91 +1,91 @@
 {
   "Members": {
     "X": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Y": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Z": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Rotation": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "XRotation": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "YRotation": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "XScale": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "YScale": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "ZScale": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Alpha": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "visible": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "hasX": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "hasY": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "hasZ": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "hasRotation": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "hasXRotation": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "hasYRotation": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "hasXScale": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "hasYScale": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "hasZScale": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "hasAlpha": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "hasVisible": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Ref": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "Type": {
+      "type": "EOriginType",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

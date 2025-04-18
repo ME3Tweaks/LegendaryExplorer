@@ -1,0 +1,37 @@
+{
+  "parent": "UIPropertyDataProvider",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementProvider": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "VfTable_IUIListElementCellProvider": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "bDataBindingPropertiesOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSkipDuringEnumeration": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "InitializeProvider": {
+      "documentation": null,
+      "signature_members": {
+        "bIsEditor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeProvider(bool bIsEditor)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

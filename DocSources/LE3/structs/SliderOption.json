@@ -1,39 +1,39 @@
 {
   "Members": {
     "TelemetryKey": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "AddTelemFunc": {
-      "type": null,
+      "type": "AddTelem",
       "documentation": null
     },
     "UClass": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Label": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Story": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Max": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "StepSize": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "DefaultVal": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Id": {
-      "type": null,
+      "type": "EGuiOptions",
       "documentation": null
     }
   },

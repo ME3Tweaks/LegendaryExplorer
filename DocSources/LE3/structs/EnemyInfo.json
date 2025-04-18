@@ -1,47 +1,47 @@
 {
   "Members": {
     "KnownLocation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "InterpLocation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "Cover": {
-      "type": null,
+      "type": "CoverInfo",
       "documentation": null
     },
     "Pawn": {
-      "type": null,
+      "type": "Pawn",
       "documentation": null
     },
     "InterpTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "InitialSeenTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "LastSeenTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "LastFailedPathTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "LastKnownLocUpdateTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "LastHurtByTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bVisible": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

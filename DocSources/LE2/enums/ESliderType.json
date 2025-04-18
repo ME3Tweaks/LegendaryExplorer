@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "ST_1D": {
+      "value": 0,
+      "documentation": null
+    },
+    "ST_2D": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

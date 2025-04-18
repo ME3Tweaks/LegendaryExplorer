@@ -1,39 +1,39 @@
 {
   "Members": {
     "m_PlotNames": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "m_GalaxyMapObject": {
-      "type": null,
+      "type": "SFXGalaxyMapObject",
       "documentation": null
     },
     "m_actor": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "m_Name": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "m_nPctExplored": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "m_State": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "m_Visible": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "m_Visited": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "m_HasCritPath": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

@@ -1,0 +1,42 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_oPawn": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_fShieldPct": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fShieldMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fShieldCurrent": {
+      "type": "float",
+      "documentation": null
+    },
+    "eType": {
+      "type": "EShieldType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,376 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "CheckingDataStartTime": {
+      "type": "Double",
+      "documentation": null
+    },
+    "AreaData": {
+      "type": "SaveGUIAreaInfo",
+      "documentation": null
+    },
+    "DefaultImageName": {
+      "type": "string",
+      "documentation": null
+    },
+    "SaveList": {
+      "type": "SaveGUIRecord",
+      "documentation": null
+    },
+    "ImagePackageName": {
+      "type": "string",
+      "documentation": null
+    },
+    "DefaultAreaImage": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "MaxSaves": {
+      "type": "int",
+      "documentation": null
+    },
+    "PendingOverwriteIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "PreparedSaveSize": {
+      "type": "int",
+      "documentation": null
+    },
+    "DefaultAreaNameText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "AutoSaveText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ChapterSaveText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "QuickSaveText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "SaveGameText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "SaveDisplayText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NewGameText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TimePlayedText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "LastPlayedText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "LastPlayedTimeText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "OverwriteSaveGameText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ConfirmOverwriteSaveGameText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CancelOverwriteSaveGameText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "DeleteGameText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ConfirmDeleteGameText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CancelDeleteGameText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "InsufficentSpaceText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "InsufficentSpaceTextPC": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "InsufficentSpaceTextPS3": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "InsufficentSpaceOverwriteTextPS3": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "InsufficentSpaceAcknowledgedText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CheckingSaveDataText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CheckingDataMessageDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "CheckingDataMessageMinimum": {
+      "type": "float",
+      "documentation": null
+    },
+    "bWaitingOnMsgBox": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnumeratingSaves": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCheckingDataComplete": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCheckingDataMessageVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "GuiMode": {
+      "type": "ESaveGuiMode",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "UpdateCheckingDataMessage": {
+      "documentation": null,
+      "signature_members": {
+        "Message": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateCheckingDataMessage(stringref Message)"
+    },
+    "DisplayInsufficientSpaceMessage": {
+      "documentation": null,
+      "signature_members": {
+        "AdditionalBytesNeeded": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayInsufficientSpaceMessage(int AdditionalBytesNeeded)"
+    },
+    "CheckFreeSpace": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CheckFreeSpace(SFXSaveGameCommandEventArgs Args)"
+    },
+    "QueryFreeSpace": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "QueryFreeSpace(SFXSaveGameCommandEventArgs Args)"
+    },
+    "SetInputEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInputEnabled(bool B)"
+    },
+    "PrepareSaveGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PrepareSaveGame()"
+    },
+    "GetNewSaveIdx": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNewSaveIdx()"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "GetPlayerData": {
+      "documentation": null,
+      "signature_members": {
+        "FirstName": {
+          "type": null,
+          "documentation": null
+        },
+        "LastName": {
+          "type": null,
+          "documentation": null
+        },
+        "ClassName": {
+          "type": null,
+          "documentation": null
+        },
+        "Level": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPlayerData(out string FirstName, out stringref LastName, out stringref ClassName, out int Level)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Command": {
+          "type": null,
+          "documentation": null
+        },
+        "lstArguments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte Command, const out array<string> lstArguments)"
+    },
+    "Callback_DeviceSelectionComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_DeviceSelectionComplete(bool bWasSuccessful)"
+    },
+    "ResetGui": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetGui(SFXSaveGameCommandEventArgs Args)"
+    },
+    "DeleteGameCallback": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DeleteGameCallback(SFXSaveGameCommandEventArgs Args)"
+    },
+    "Callback_ConfirmDelete": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_ConfirmDelete(bool bAPressed, int context)"
+    },
+    "Callback_ConfirmOverwrite": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_ConfirmOverwrite(bool bAPressed, int context)"
+    },
+    "EndInitializeSaveList": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EndInitializeSaveList(SFXSaveGameCommandEventArgs Args)"
+    },
+    "BeginInitializeSaveList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BeginInitializeSaveList()"
+    },
+    "GetEngine": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXEngine",
+      "signature": "SFXEngine GetEngine()"
+    },
+    "GetBioPlayerController": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioPlayerController",
+      "signature": "BioPlayerController GetBioPlayerController()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

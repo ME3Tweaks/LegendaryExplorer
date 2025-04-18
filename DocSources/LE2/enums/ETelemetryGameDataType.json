@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "GameDataType_Load": {
+      "value": 0,
+      "documentation": null
+    },
+    "GameDataType_Save": {
+      "value": 1,
+      "documentation": null
+    },
+    "GameDataType_AutoSave": {
+      "value": 2,
+      "documentation": null
+    },
+    "GameDataType_ChapterSave": {
+      "value": 3,
+      "documentation": null
+    },
+    "GameDataType_EndGame": {
+      "value": 4,
+      "documentation": null
+    },
+    "GameDataType_Unknown": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

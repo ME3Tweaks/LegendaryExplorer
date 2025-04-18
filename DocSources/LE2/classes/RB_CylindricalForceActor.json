@@ -1,0 +1,85 @@
+{
+  "parent": "RigidBodyBase",
+  "package": "Engine",
+  "variables": {
+    "RenderComponent": {
+      "type": "DrawCylinderComponent",
+      "documentation": null
+    },
+    "RadialStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "RotationalStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "LiftStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "LiftFalloffHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "EscapeVelocity": {
+      "type": "float",
+      "documentation": null
+    },
+    "ForceRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "ForceTopRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "ForceHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "HeightOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "CollideWithChannels": {
+      "type": "RBCollisionChannelContainer",
+      "documentation": null
+    },
+    "bForceActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceApplyToCloth": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceApplyToFluid": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceApplyToRigidBodies": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceApplyToProjectiles": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "inAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle inAction)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,11 +1,11 @@
 {
   "Members": {
     "SocketOverrideNames": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "SocketName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     }
   },

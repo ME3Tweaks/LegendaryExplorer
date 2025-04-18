@@ -1,27 +1,27 @@
 {
   "Members": {
     "Career": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "firstName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "className": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "SaveTypes": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Origin": {
-      "type": null,
+      "type": "EOriginType",
       "documentation": null
     },
     "Notoriety": {
-      "type": null,
+      "type": "ENotorietyType",
       "documentation": null
     }
   },

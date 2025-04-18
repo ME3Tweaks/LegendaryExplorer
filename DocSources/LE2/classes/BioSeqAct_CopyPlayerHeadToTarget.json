@@ -1,0 +1,21 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "UpdateScars": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateScars()"
+    },
+    "ApplyFemaleSkinToneOverride": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyFemaleSkinToneOverride()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

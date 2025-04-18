@@ -1,0 +1,359 @@
+{
+  "parent": "BioPlotTreasure",
+  "package": "SFXGame",
+  "variables": {
+    "fFullPriceMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "nLastUnlockedTech": {
+      "type": "int",
+      "documentation": null
+    },
+    "srMultiLevelUpgradeName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "nProfessorInPartyId": {
+      "type": "int",
+      "documentation": null
+    },
+    "nProfessorIsDeadId": {
+      "type": "int",
+      "documentation": null
+    },
+    "srLabOpenResearchMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srLabClosedResearchMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StateNewResearchAvailable": {
+      "type": "int",
+      "documentation": null
+    },
+    "StateNewUpgradesAvailable": {
+      "type": "int",
+      "documentation": null
+    },
+    "srCanAffordResearch": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "TriggerResourceHint": {
+      "documentation": null,
+      "signature_members": {
+        "InvType": {
+          "type": null,
+          "documentation": null
+        },
+        "nAmount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TriggerResourceHint(EInventoryResourceTypes InvType, int nAmount)"
+    },
+    "SetNewUpgradesAvailable": {
+      "documentation": null,
+      "signature_members": {
+        "bUpgadesAvailable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNewUpgradesAvailable(bool bUpgadesAvailable)"
+    },
+    "SetNewResearchAvailable": {
+      "documentation": null,
+      "signature_members": {
+        "bResearchAvailable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNewResearchAvailable(bool bResearchAvailable)"
+    },
+    "FindImage": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Texture2D",
+      "signature": "Texture2D FindImage(string Path)"
+    },
+    "GetTechImageResourcePath": {
+      "documentation": null,
+      "signature_members": {
+        "nmTech": {
+          "type": null,
+          "documentation": null
+        },
+        "sImagePath": {
+          "type": null,
+          "documentation": null
+        },
+        "sLargeImagePath": {
+          "type": null,
+          "documentation": null
+        },
+        "bNoLookup": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetTechImageResourcePath(Name nmTech, out string sImagePath, out string sLargeImagePath, optional bool bNoLookup)"
+    },
+    "GetTreasureLargeImageResourcePath": {
+      "documentation": null,
+      "signature_members": {
+        "nTreasureId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetTreasureLargeImageResourcePath(int nTreasureId)"
+    },
+    "GetTreasureImageResourcePath": {
+      "documentation": null,
+      "signature_members": {
+        "nTreasureId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetTreasureImageResourcePath(int nTreasureId)"
+    },
+    "Price": {
+      "documentation": null,
+      "signature_members": {
+        "nTreasureId": {
+          "type": null,
+          "documentation": null
+        },
+        "bDiscount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float Price(int nTreasureId, optional bool bDiscount)"
+    },
+    "CalculateResearchLevelMultiplier": {
+      "documentation": null,
+      "signature_members": {
+        "nmTech": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int CalculateResearchLevelMultiplier(Name nmTech)"
+    },
+    "ChargeForTreasure": {
+      "documentation": null,
+      "signature_members": {
+        "nTreasureId": {
+          "type": null,
+          "documentation": null
+        },
+        "bDiscount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ChargeForTreasure(int nTreasureId, optional bool bDiscount)"
+    },
+    "QualifiesForTreasure": {
+      "documentation": null,
+      "signature_members": {
+        "nTreasureId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool QualifiesForTreasure(int nTreasureId)"
+    },
+    "DiscoveredResearch": {
+      "documentation": null,
+      "signature_members": {
+        "nTreasureId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DiscoveredResearch(int nTreasureId)"
+    },
+    "CanAffordTreasure": {
+      "documentation": null,
+      "signature_members": {
+        "nTreasureId": {
+          "type": null,
+          "documentation": null
+        },
+        "bDiscount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanAffordTreasure(int nTreasureId, optional bool bDiscount)"
+    },
+    "GetTechName": {
+      "documentation": null,
+      "signature_members": {
+        "stTech": {
+          "type": null,
+          "documentation": null
+        },
+        "bAddOne": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetTechName(STech stTech, optional bool bAddOne)"
+    },
+    "CheckForUpgradedWeaponAchievement": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckForUpgradedWeaponAchievement()"
+    },
+    "ReLockTech": {
+      "documentation": null,
+      "signature_members": {
+        "stTech": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReLockTech(STech stTech)"
+    },
+    "AwardTech": {
+      "documentation": null,
+      "signature_members": {
+        "nmTech": {
+          "type": null,
+          "documentation": null
+        },
+        "bNoAnimation": {
+          "type": null,
+          "documentation": null
+        },
+        "bStorePurchase": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AwardTech(Name nmTech, optional bool bNoAnimation, optional bool bStorePurchase)"
+    },
+    "FindTechByResearch": {
+      "documentation": null,
+      "signature_members": {
+        "nmTech": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name FindTechByResearch(Name nmTech)"
+    },
+    "AwardTreasure": {
+      "documentation": null,
+      "signature_members": {
+        "nTreasureId": {
+          "type": null,
+          "documentation": null
+        },
+        "bDiscount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AwardTreasure(int nTreasureId, optional bool bDiscount)"
+    },
+    "LogWarning": {
+      "documentation": null,
+      "signature_members": {
+        "msg": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LogWarning(string msg)"
+    },
+    "CurrentLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name CurrentLevel()"
+    },
+    "Tech": {
+      "documentation": null,
+      "signature_members": {
+        "nmTech": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "STech",
+      "signature": "STech Tech(Name nmTech)"
+    },
+    "TREASURE": {
+      "documentation": null,
+      "signature_members": {
+        "nTreasureId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "STreasure",
+      "signature": "STreasure TREASURE(int nTreasureId)"
+    },
+    "Budget": {
+      "documentation": null,
+      "signature_members": {
+        "nmLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SResourceBudget",
+      "signature": "SResourceBudget Budget(optional Name nmLevel)"
+    },
+    "BudgetFromId": {
+      "documentation": null,
+      "signature_members": {
+        "nID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SResourceBudget",
+      "signature": "SResourceBudget BudgetFromId(int nID)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

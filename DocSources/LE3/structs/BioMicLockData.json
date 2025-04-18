@@ -1,15 +1,15 @@
 {
   "Members": {
     "m_nmFindActor": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "m_bLock": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "m_eFindActorMode": {
-      "type": null,
+      "type": "ESFXFindByTagTypes",
       "documentation": null
     }
   },

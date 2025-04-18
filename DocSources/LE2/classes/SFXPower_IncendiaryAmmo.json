@@ -1,0 +1,41 @@
+{
+  "parent": "SFXPower",
+  "package": "SFXGameContent_Powers",
+  "variables": {
+    "ReactionChance": {
+      "type": "float",
+      "documentation": null
+    },
+    "AreaExplosionRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "AreaExplosionChance": {
+      "type": "float",
+      "documentation": null
+    },
+    "AreaExplosionDamage": {
+      "type": "float",
+      "documentation": null
+    },
+    "RobotDamageMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "fFlameDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "bSquadPower": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSpawnImpactFlames": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

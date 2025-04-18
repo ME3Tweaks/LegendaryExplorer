@@ -1,43 +1,43 @@
 {
   "Members": {
     "srKBMText": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "srAText": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "srBText": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "nIconIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bNoFade": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bModal": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bForcePlayersOnly": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "nIconSet": {
-      "type": null,
+      "type": "BioMessageBoxIconSets",
       "documentation": null
     },
     "m_SkinType": {
-      "type": null,
+      "type": "SFX_MB_Skin",
       "documentation": null
     },
     "m_TextAlign": {
-      "type": null,
+      "type": "SFX_MB_TextAlign",
       "documentation": null
     }
   },

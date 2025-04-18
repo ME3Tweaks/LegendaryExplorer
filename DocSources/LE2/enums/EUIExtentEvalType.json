@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "UIEXTENTEVAL_Pixels": {
+      "value": 0,
+      "documentation": null
+    },
+    "UIEXTENTEVAL_PercentSelf": {
+      "value": 1,
+      "documentation": null
+    },
+    "UIEXTENTEVAL_PercentOwner": {
+      "value": 2,
+      "documentation": null
+    },
+    "UIEXTENTEVAL_PercentScene": {
+      "value": 3,
+      "documentation": null
+    },
+    "UIEXTENTEVAL_PercentViewport": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

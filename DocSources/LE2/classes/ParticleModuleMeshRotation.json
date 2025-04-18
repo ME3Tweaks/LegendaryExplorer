@@ -1,0 +1,17 @@
+{
+  "parent": "ParticleModuleRotationBase",
+  "package": "Engine",
+  "variables": {
+    "StartRotationRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    },
+    "bInheritParent": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

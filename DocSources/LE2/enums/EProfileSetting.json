@@ -1,0 +1,333 @@
+{
+  "EnumValues": {
+    "Setting_Unknown": {
+      "value": 0,
+      "documentation": null
+    },
+    "Setting_ControllerVibration": {
+      "value": 1,
+      "documentation": null
+    },
+    "Setting_YInversion": {
+      "value": 2,
+      "documentation": null
+    },
+    "Setting_GamerCred": {
+      "value": 3,
+      "documentation": null
+    },
+    "Setting_GamerRep": {
+      "value": 4,
+      "documentation": null
+    },
+    "Setting_VoiceMuted": {
+      "value": 5,
+      "documentation": null
+    },
+    "Setting_VoiceThruSpeakers": {
+      "value": 6,
+      "documentation": null
+    },
+    "Setting_VoiceVolume": {
+      "value": 7,
+      "documentation": null
+    },
+    "Setting_GamerPictureKey": {
+      "value": 8,
+      "documentation": null
+    },
+    "Setting_GamerMotto": {
+      "value": 9,
+      "documentation": null
+    },
+    "Setting_GamerTitlesPlayed": {
+      "value": 10,
+      "documentation": null
+    },
+    "Setting_GamerAchievementsEarned": {
+      "value": 11,
+      "documentation": null
+    },
+    "Setting_GameDifficulty": {
+      "value": 12,
+      "documentation": null
+    },
+    "Setting_ControllerSensitivity": {
+      "value": 13,
+      "documentation": null
+    },
+    "Setting_PreferredColor1": {
+      "value": 14,
+      "documentation": null
+    },
+    "Setting_PreferredColor2": {
+      "value": 15,
+      "documentation": null
+    },
+    "Setting_AutoAim": {
+      "value": 16,
+      "documentation": null
+    },
+    "Setting_AutoCenter": {
+      "value": 17,
+      "documentation": null
+    },
+    "Setting_MovementControl": {
+      "value": 18,
+      "documentation": null
+    },
+    "Setting_RaceTransmission": {
+      "value": 19,
+      "documentation": null
+    },
+    "Setting_RaceCameraLocation": {
+      "value": 20,
+      "documentation": null
+    },
+    "Setting_RaceBrakeControl": {
+      "value": 21,
+      "documentation": null
+    },
+    "Setting_RaceAcceleratorControl": {
+      "value": 22,
+      "documentation": null
+    },
+    "Setting_GameCredEarned": {
+      "value": 23,
+      "documentation": null
+    },
+    "Setting_GameAchievementsEarned": {
+      "value": 24,
+      "documentation": null
+    },
+    "Setting_EndLiveIds": {
+      "value": 25,
+      "documentation": null
+    },
+    "Setting_ProfileVersionNum": {
+      "value": 26,
+      "documentation": null
+    },
+    "Setting_ProfileSaveCount": {
+      "value": 27,
+      "documentation": null
+    },
+    "Setting_StickConfiguration": {
+      "value": 28,
+      "documentation": null
+    },
+    "Setting_TriggerConfiguration": {
+      "value": 29,
+      "documentation": null
+    },
+    "Setting_Subtitles": {
+      "value": 30,
+      "documentation": null
+    },
+    "Setting_AimAssist": {
+      "value": 31,
+      "documentation": null
+    },
+    "Setting_Difficulty": {
+      "value": 32,
+      "documentation": null
+    },
+    "Setting_AutoLevel": {
+      "value": 33,
+      "documentation": null
+    },
+    "Setting_SquadPowers": {
+      "value": 34,
+      "documentation": null
+    },
+    "Setting_AutoSave": {
+      "value": 35,
+      "documentation": null
+    },
+    "Setting_MusicVolume": {
+      "value": 36,
+      "documentation": null
+    },
+    "Setting_FXVolume": {
+      "value": 37,
+      "documentation": null
+    },
+    "Setting_DialogVolume": {
+      "value": 38,
+      "documentation": null
+    },
+    "Setting_MotionBlur": {
+      "value": 39,
+      "documentation": null
+    },
+    "Setting_FilmGrain": {
+      "value": 40,
+      "documentation": null
+    },
+    "Setting_SelectedDeviceID": {
+      "value": 41,
+      "documentation": null
+    },
+    "Setting_CurrentCareer": {
+      "value": 42,
+      "documentation": null
+    },
+    "Setting_DaysSinceRegistration": {
+      "value": 43,
+      "documentation": null
+    },
+    "Setting_AutoLogin": {
+      "value": 44,
+      "documentation": null
+    },
+    "Setting_LoginInfo": {
+      "value": 45,
+      "documentation": null
+    },
+    "Setting_PersonaID": {
+      "value": 46,
+      "documentation": null
+    },
+    "Setting_NucleusRefused": {
+      "value": 47,
+      "documentation": null
+    },
+    "Setting_NucleusSuccessful": {
+      "value": 48,
+      "documentation": null
+    },
+    "Setting_CerberusRefused": {
+      "value": 49,
+      "documentation": null
+    },
+    "Setting_Achievement_FieldA": {
+      "value": 50,
+      "documentation": null
+    },
+    "Setting_Achievement_FieldB": {
+      "value": 51,
+      "documentation": null
+    },
+    "Setting_Achievement_FieldC": {
+      "value": 52,
+      "documentation": null
+    },
+    "Setting_TelemetryCollectionEnabled": {
+      "value": 53,
+      "documentation": null
+    },
+    "Setting_KeyBindings": {
+      "value": 54,
+      "documentation": null
+    },
+    "Setting_DisplayGamma": {
+      "value": 55,
+      "documentation": null
+    },
+    "Setting_CurrentSaveGame": {
+      "value": 56,
+      "documentation": null
+    },
+    "Setting_VerticalSync": {
+      "value": 57,
+      "documentation": null
+    },
+    "Setting_AntiAliasing": {
+      "value": 58,
+      "documentation": null
+    },
+    "Setting_NumHeadshots": {
+      "value": 59,
+      "documentation": null
+    },
+    "Setting_NumPowerCombos": {
+      "value": 60,
+      "documentation": null
+    },
+    "Setting_NumScreams": {
+      "value": 61,
+      "documentation": null
+    },
+    "Setting_NumShieldsDisrupted": {
+      "value": 62,
+      "documentation": null
+    },
+    "Setting_NumBarriersWarped": {
+      "value": 63,
+      "documentation": null
+    },
+    "Setting_NumArmourIncinerated": {
+      "value": 64,
+      "documentation": null
+    },
+    "Setting_NumN7MissionsCompleted": {
+      "value": 65,
+      "documentation": null
+    },
+    "Setting_NumCodex": {
+      "value": 66,
+      "documentation": null
+    },
+    "Setting_ShowHints": {
+      "value": 67,
+      "documentation": null
+    },
+    "Setting_NumTrainingVidsWatched": {
+      "value": 68,
+      "documentation": null
+    },
+    "Setting_WatchedVid1": {
+      "value": 69,
+      "documentation": null
+    },
+    "Setting_WatchedVid2": {
+      "value": 70,
+      "documentation": null
+    },
+    "Setting_WatchedVid3": {
+      "value": 71,
+      "documentation": null
+    },
+    "Setting_MorinthNotSamara": {
+      "value": 72,
+      "documentation": null
+    },
+    "Setting_MaxWeaponUpgradeCount": {
+      "value": 73,
+      "documentation": null
+    },
+    "Setting_LastFinishedCareer": {
+      "value": 74,
+      "documentation": null
+    },
+    "Setting_SwapTriggersShoulders": {
+      "value": 75,
+      "documentation": null
+    },
+    "Setting_PS3_RedeemedProductCode": {
+      "value": 76,
+      "documentation": null
+    },
+    "Setting_HDREnabled": {
+      "value": 77,
+      "documentation": null
+    },
+    "Setting_HDRBrightness": {
+      "value": 78,
+      "documentation": null
+    },
+    "Setting_HDRContrast": {
+      "value": 79,
+      "documentation": null
+    },
+    "Setting_DynamicResolution": {
+      "value": 80,
+      "documentation": null
+    },
+    "Setting_AmbientOcclusion": {
+      "value": 81,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

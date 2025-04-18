@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "Align_Center": {
+      "value": 0,
+      "documentation": null
+    },
+    "Align_TopCenter": {
+      "value": 1,
+      "documentation": null
+    },
+    "Align_BottomCenter": {
+      "value": 2,
+      "documentation": null
+    },
+    "Align_CenterLeft": {
+      "value": 3,
+      "documentation": null
+    },
+    "Align_CenterRight": {
+      "value": 4,
+      "documentation": null
+    },
+    "Align_TopLeft": {
+      "value": 5,
+      "documentation": null
+    },
+    "Align_TopRight": {
+      "value": 6,
+      "documentation": null
+    },
+    "Align_BottomLeft": {
+      "value": 7,
+      "documentation": null
+    },
+    "Align_BottomRight": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

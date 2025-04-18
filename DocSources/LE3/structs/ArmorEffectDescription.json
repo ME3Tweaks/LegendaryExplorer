@@ -1,15 +1,15 @@
 {
   "Members": {
     "ArmorEffect": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "EffectDescription": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "EffectToken": {
-      "type": null,
+      "type": "string",
       "documentation": null
     }
   },

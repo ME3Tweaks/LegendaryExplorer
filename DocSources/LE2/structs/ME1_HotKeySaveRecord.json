@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "HotKeyPawn": {
+      "type": "int",
+      "documentation": null
+    },
+    "HotKeyEvent": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

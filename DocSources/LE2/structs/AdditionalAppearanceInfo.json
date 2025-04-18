@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Tag": {
+      "type": "Name",
+      "documentation": null
+    },
+    "AddAppearance": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlotFlag": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

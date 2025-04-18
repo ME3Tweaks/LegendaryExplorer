@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "SFXONLINE_BLAZEHUB_ENV_DISABLED": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXONLINE_BLAZEHUB_ENV_DEV": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXONLINE_BLAZEHUB_ENV_TEST": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXONLINE_BLAZEHUB_ENV_CERT": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXONLINE_BLAZEHUB_ENV_PROD": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

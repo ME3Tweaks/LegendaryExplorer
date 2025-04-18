@@ -1,7 +1,7 @@
 {
   "Members": {
     "Pairs": {
-      "type": null,
+      "type": "Set_Mirror",
       "documentation": null
     }
   },

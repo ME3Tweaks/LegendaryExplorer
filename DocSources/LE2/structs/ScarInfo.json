@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "Emissive": {
+      "type": "string",
+      "documentation": null
+    },
+    "Normal": {
+      "type": "string",
+      "documentation": null
+    },
+    "EyeEmissive": {
+      "type": "string",
+      "documentation": null
+    },
+    "FemaleEmissive": {
+      "type": "string",
+      "documentation": null
+    },
+    "FemaleNormal": {
+      "type": "string",
+      "documentation": null
+    },
+    "FemaleEyeEmissive": {
+      "type": "string",
+      "documentation": null
+    },
+    "Color": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "Threshold": {
+      "type": "Vector2D",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

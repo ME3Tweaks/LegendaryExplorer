@@ -1,15 +1,15 @@
 {
   "Members": {
     "CategoryName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "SliderName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Remappings": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

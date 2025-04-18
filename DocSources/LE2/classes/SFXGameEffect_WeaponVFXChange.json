@@ -1,0 +1,65 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "Tracer": {
+      "type": "StaticMesh",
+      "documentation": null
+    },
+    "oMuzzleVFX": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "oMuzzleLoopVFX": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "oImpactVFX": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "CastAtWeapon": {
+      "type": "SFXWeapon",
+      "documentation": null
+    },
+    "bModifyTracer": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bModifyMuzzleFlash": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bModifyImpactVFX": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "UseLoopingMuzzleVFX": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UseLoopingMuzzleVFX(SFXWeapon Weapon)"
+    },
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "OnApplied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnApplied()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

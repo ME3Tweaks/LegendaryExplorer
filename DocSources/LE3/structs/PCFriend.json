@@ -1,39 +1,39 @@
 {
   "Members": {
     "FriendID": {
-      "type": null,
+      "type": "QWord",
       "documentation": null
     },
     "PersonaId": {
-      "type": null,
+      "type": "QWord",
       "documentation": null
     },
     "FriendName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "AvatarID": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Title": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "TitleId": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Group": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "PresenceState": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "FriendState": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

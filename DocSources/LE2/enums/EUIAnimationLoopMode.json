@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "UIANIMLOOP_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "UIANIMLOOP_Continuous": {
+      "value": 1,
+      "documentation": null
+    },
+    "UIANIMLOOP_Bounce": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

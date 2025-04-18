@@ -1,0 +1,33 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "oCaster": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "oTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "nmPower": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bDisableAnimation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableVFX": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableDamageAndEffects": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

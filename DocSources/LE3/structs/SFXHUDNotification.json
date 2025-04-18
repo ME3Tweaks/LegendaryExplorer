@@ -1,19 +1,19 @@
 {
   "Members": {
     "oMovieClip": {
-      "type": null,
+      "type": "GFxValue",
       "documentation": null
     },
     "nID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "fTimeToLive": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bVisible": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

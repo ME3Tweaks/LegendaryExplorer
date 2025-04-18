@@ -1,0 +1,61 @@
+{
+  "parent": "SFXGameInterpTrackCustom",
+  "package": "SFXGame",
+  "variables": {
+    "m_aAttachToTarget": {
+      "type": "BioSeqVar_ObjectFindByTag",
+      "documentation": null
+    },
+    "m_vOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_nmSocketOrBone": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_oEffect": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "TriggerKey": {
+      "documentation": null,
+      "signature_members": {
+        "pTrackInst": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TriggerKey(BioInterpTrackInst pTrackInst)"
+    },
+    "KeyDataDisplayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataDisplayName()"
+    },
+    "KeyDataArrayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataArrayName()"
+    },
+    "NewKeyDefaultName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string NewKeyDefaultName()"
+    },
+    "AllowKeyNaming": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AllowKeyNaming()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

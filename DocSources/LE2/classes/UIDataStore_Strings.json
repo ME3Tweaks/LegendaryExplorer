@@ -1,0 +1,13 @@
+{
+  "parent": "UIDataStore_StringBase",
+  "package": "Engine",
+  "variables": {
+    "LocFileProviders": {
+      "type": "UIConfigFileProvider",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

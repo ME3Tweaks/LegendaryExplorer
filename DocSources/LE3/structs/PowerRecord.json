@@ -1,27 +1,27 @@
 {
   "Members": {
     "EvolvedChoices": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "PowerName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "PowerClassName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "CurrentRank": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "WheelDisplayIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bUsesTalentPoints": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

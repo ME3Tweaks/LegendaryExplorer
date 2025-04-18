@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "ClassName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bFallThru": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

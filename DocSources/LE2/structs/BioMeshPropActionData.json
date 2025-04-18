@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "sEffect": {
+      "type": "string",
+      "documentation": null
+    },
+    "vOffsetLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "rOffsetRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "vOffsetScale": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "nmActionName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nmAttachTo": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bActivate": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

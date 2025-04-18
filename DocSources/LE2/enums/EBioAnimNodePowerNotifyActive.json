@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "eBioAnimNodePowerNotifyActive_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimNodePowerNotifyActive_Casting": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimNodePowerNotifyActive_Release": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

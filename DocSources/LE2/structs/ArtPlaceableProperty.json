@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "sPropertyName": {
+      "type": "string",
+      "documentation": null
+    },
+    "sPropertyValue": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,63 @@
+{
+  "parent": "MorphNodeBase",
+  "package": "Engine",
+  "variables": {
+    "Targets": {
+      "type": "MorphTarget",
+      "documentation": null
+    },
+    "MorphNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Weights": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "UpdateMorphTarget": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "InWeight": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateMorphTarget(MorphTarget Target, float InWeight)"
+    },
+    "RemoveMorphTarget": {
+      "documentation": null,
+      "signature_members": {
+        "MorphTargetName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveMorphTarget(Name MorphTargetName)"
+    },
+    "AddMorphTarget": {
+      "documentation": null,
+      "signature_members": {
+        "MorphTargetName": {
+          "type": null,
+          "documentation": null
+        },
+        "InWeight": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddMorphTarget(Name MorphTargetName, optional float InWeight)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

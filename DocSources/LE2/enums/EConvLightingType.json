@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "ConvLighting_Cinematic": {
+      "value": 0,
+      "documentation": null
+    },
+    "ConvLighting_Exploration": {
+      "value": 1,
+      "documentation": null
+    },
+    "ConvLighting_Dynamic": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

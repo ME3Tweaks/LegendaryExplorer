@@ -1,0 +1,25 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "Mesh": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetArrowColor": {
+      "documentation": null,
+      "signature_members": {
+        "clr": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetArrowColor(eColorSelection clr)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,1137 @@
+{
+  "parent": "ZoneInfo",
+  "package": "Engine",
+  "variables": {
+    "LastTimeUnbuiltLightingWasEncountered": {
+      "type": "Double",
+      "documentation": null
+    },
+    "DefaultPostProcessSettings": {
+      "type": "PostProcessSettings",
+      "documentation": null
+    },
+    "ScreenMessages": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "PriorityScreenMessages": {
+      "type": "ScreenMessageString",
+      "documentation": null
+    },
+    "PortalVolumes": {
+      "type": "PortalVolume",
+      "documentation": null
+    },
+    "EnvironmentVolumes": {
+      "type": "EnvironmentVolume",
+      "documentation": null
+    },
+    "StreamingLevels": {
+      "type": "LevelStreaming",
+      "documentation": null
+    },
+    "DeferredExecs": {
+      "type": "string",
+      "documentation": null
+    },
+    "ComputerName": {
+      "type": "string",
+      "documentation": null
+    },
+    "EngineVersion": {
+      "type": "string",
+      "documentation": null
+    },
+    "MinNetVersion": {
+      "type": "string",
+      "documentation": null
+    },
+    "ReplicationViewers": {
+      "type": "NetViewer",
+      "documentation": null
+    },
+    "NextURL": {
+      "type": "string",
+      "documentation": null
+    },
+    "GameTypesSupportedOnThisMap": {
+      "type": "Class",
+      "documentation": null
+    },
+    "ClientDestroyedActorContent": {
+      "type": "Object",
+      "documentation": null
+    },
+    "PreparingLevelNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Title": {
+      "type": "string",
+      "documentation": null
+    },
+    "Author": {
+      "type": "string",
+      "documentation": null
+    },
+    "EmitterPoolClassPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "DecalManagerClassPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "FractureManagerClassPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "ParticleEventManagerClassPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "CompartmentRunFrames": {
+      "type": "CompartmentRunList",
+      "documentation": null
+    },
+    "NavMeshPathConstraintCache": {
+      "type": "Object",
+      "documentation": null
+    },
+    "NavMeshPathGoalEvaluatorCache": {
+      "type": "Object",
+      "documentation": null
+    },
+    "PhysicsProperties": {
+      "type": "PhysXSceneProperties",
+      "documentation": null
+    },
+    "DefaultAmbientZoneSettings": {
+      "type": "InteriorSettings",
+      "documentation": null
+    },
+    "CurrentMusicTrack": {
+      "type": "MusicTrackStruct",
+      "documentation": null
+    },
+    "ReplicatedMusicTrack": {
+      "type": "MusicTrackStruct",
+      "documentation": null
+    },
+    "VerticalProperties": {
+      "type": "PhysXVerticalProperties",
+      "documentation": null
+    },
+    "DefaultReverbSettings": {
+      "type": "ReverbSettings",
+      "documentation": null
+    },
+    "DefaultColorScale": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "DestructibleSettings": {
+      "type": "ApexModuleDestructibleSettings",
+      "documentation": null
+    },
+    "HighestPriorityPostProcessVolume": {
+      "type": "PostProcessVolume",
+      "documentation": null
+    },
+    "HighestPriorityReverbVolume": {
+      "type": "ReverbVolume",
+      "documentation": null
+    },
+    "Pauser": {
+      "type": "PlayerReplicationInfo",
+      "documentation": null
+    },
+    "DefaultTexture": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "HDRCalibrationTexture": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "WireframeTexture": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "WhiteSquareTexture": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "LargeVertex": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "BSPVertex": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "GRI": {
+      "type": "GameReplicationInfo",
+      "documentation": null
+    },
+    "Game": {
+      "type": "GameInfo",
+      "documentation": null
+    },
+    "NavigationPointList": {
+      "type": "NavigationPoint",
+      "documentation": null
+    },
+    "ControllerList": {
+      "type": "Controller",
+      "documentation": null
+    },
+    "PawnList": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "CoverList": {
+      "type": "CoverLink",
+      "documentation": null
+    },
+    "PylonList": {
+      "type": "Pylon",
+      "documentation": null
+    },
+    "ProjectileList": {
+      "type": "Projectile",
+      "documentation": null
+    },
+    "CommittedPersistentLevelName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "PersistentMapForcedObjects": {
+      "type": "ObjectReferencer",
+      "documentation": null
+    },
+    "MusicComp": {
+      "type": "AudioComponent",
+      "documentation": null
+    },
+    "MyEmitterPool": {
+      "type": "EmitterPool",
+      "documentation": null
+    },
+    "MyDecalManager": {
+      "type": "DecalManager",
+      "documentation": null
+    },
+    "MyFractureManager": {
+      "type": "FractureManager",
+      "documentation": null
+    },
+    "MyParticleEventManager": {
+      "type": "ParticleEventManager",
+      "documentation": null
+    },
+    "EmitterVertical": {
+      "type": "PhysicsLODVerticalEmitter",
+      "documentation": null
+    },
+    "DestructibleVertical": {
+      "type": "PhysicsLODVerticalDestructible",
+      "documentation": null
+    },
+    "PopulationManager": {
+      "type": "CrowdPopulationManagerBase",
+      "documentation": null
+    },
+    "MyMapInfo": {
+      "type": "MapInfo",
+      "documentation": null
+    },
+    "SquintModeKernelSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeDilation": {
+      "type": "float",
+      "documentation": null
+    },
+    "DemoPlayTimeDilation": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeSeconds": {
+      "type": "float",
+      "documentation": null
+    },
+    "RealTimeSeconds": {
+      "type": "float",
+      "documentation": null
+    },
+    "AudioTimeSeconds": {
+      "type": "float",
+      "documentation": null
+    },
+    "DeltaSeconds": {
+      "type": "float",
+      "documentation": null
+    },
+    "PauseDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "RealTimeToUnPause": {
+      "type": "float",
+      "documentation": null
+    },
+    "StallZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "WorldGravityZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "DefaultGravityZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "GlobalGravityZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "RBPhysicsGravityScaling": {
+      "type": "float",
+      "documentation": null
+    },
+    "MoveRepSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "CutSceneDOFMaxFarBlurMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "CutSceneDOFMaxNearBlurMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "CutSceneDOFFstopMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "NextSwitchCountdown": {
+      "type": "float",
+      "documentation": null
+    },
+    "PackedLightAndShadowMapTextureSize": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxPhysicsDeltaTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxPhysicsSubsteps": {
+      "type": "int",
+      "documentation": null
+    },
+    "DefaultSkinWidth": {
+      "type": "float",
+      "documentation": null
+    },
+    "ApexLODResourceBudget": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fInputLockTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "ChanceOfPhysicsChunkOverride": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxExplosionChunkSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxDamageChunkSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "FractureExplosionVelScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxNumFacturedChunksToSpawnInAFrame": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumFacturedChunksSpawnedThisFrame": {
+      "type": "int",
+      "documentation": null
+    },
+    "FracturedMeshWeaponDamage": {
+      "type": "float",
+      "documentation": null
+    },
+    "CharacterLightingContrastFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "bPersistPostProcessToNextLevel": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMapNeedsLightingFullyRebuilt": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMapHasDLEsOutsideOfImportanceVolume": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMapHasMultipleDominantLightsAffectingOnePrimitive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMapHasPathingErrors": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRequestedBlockOnAsyncLoading": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBegunPlay": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPlayersOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPlayersOnlyPending": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDropDetail": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAggressiveLOD": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStartup": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPathsRebuilt": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasPathNodes": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsMenuLevel": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseConsoleInput": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoDefaultInventoryForPlayer": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPathsToPersistantLevel": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPathsWithinLevelOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoPathWarnings": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHighPriorityLoading": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHighPriorityLoadingLocal": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseProcBuildingRulesetOverride": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSupportDoubleBufferedPhysics": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowDebugText": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableChanceOfPhysicsChunkOverride": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLimitExplosionChunkSize": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLimitDamageChunkSize": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowModulateBetterShadows": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowLightEnvSphericalHarmonicLights": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIncreaseFogNearPrecision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "NetMode": {
+      "type": "ENetMode",
+      "documentation": null
+    },
+    "NextTravelType": {
+      "type": "ETravelType",
+      "documentation": null
+    },
+    "m_eBioMinPath": {
+      "type": "EBMaxPath_BuildSize",
+      "documentation": null
+    },
+    "m_eBioMaxPath": {
+      "type": "EBMaxPath_BuildSize",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "FindEnvironmentVolume": {
+      "documentation": null,
+      "signature_members": {
+        "TestLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EnvironmentVolume",
+      "signature": "EnvironmentVolume FindEnvironmentVolume(Vector TestLocation)"
+    },
+    "IsShippingBuild": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsShippingBuild()"
+    },
+    "IsFinalReleaseDebugConsoleBuild": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsFinalReleaseDebugConsoleBuild()"
+    },
+    "IsShippingPCBuild": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsShippingPCBuild()"
+    },
+    "GetWorldInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "WorldInfo",
+      "signature": "WorldInfo GetWorldInfo()"
+    },
+    "GetWorldFractureSettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "WorldFractureSettings",
+      "signature": "WorldFractureSettings GetWorldFractureSettings()"
+    },
+    "DoMemoryTracking": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoMemoryTracking()"
+    },
+    "GetDemoRewindPoints": {
+      "documentation": null,
+      "signature_members": {
+        "OutRewindPoints": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetDemoRewindPoints(out array<int> OutRewindPoints)"
+    },
+    "GetDemoFrameInfo": {
+      "documentation": null,
+      "signature_members": {
+        "CurrentFrame": {
+          "type": null,
+          "documentation": null
+        },
+        "TotalFrames": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetDemoFrameInfo(optional out int CurrentFrame, optional out int TotalFrames)"
+    },
+    "IsPlayingDemo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsPlayingDemo()"
+    },
+    "IsRecordingDemo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsRecordingDemo()"
+    },
+    "GetDetailMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EDetailMode",
+      "signature": "EDetailMode GetDetailMode()"
+    },
+    "GetMapName": {
+      "documentation": null,
+      "signature_members": {
+        "bIncludePrefix": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetMapName(optional bool bIncludePrefix)"
+    },
+    "SetMapInfo": {
+      "documentation": null,
+      "signature_members": {
+        "NewMapInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMapInfo(MapInfo NewMapInfo)"
+    },
+    "GetInputLock": {
+      "documentation": null,
+      "signature_members": {
+        "fDuration": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetInputLock(float fDuration)"
+    },
+    "GetMapInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "MapInfo",
+      "signature": "MapInfo GetMapInfo()"
+    },
+    "SetSeamlessTravelMidpointPause": {
+      "documentation": null,
+      "signature_members": {
+        "bNowPaused": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSeamlessTravelMidpointPause(bool bNowPaused)"
+    },
+    "IsInSeamlessTravel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsInSeamlessTravel()"
+    },
+    "SeamlessTravel": {
+      "documentation": null,
+      "signature_members": {
+        "URL": {
+          "type": null,
+          "documentation": null
+        },
+        "bAbsolute": {
+          "type": null,
+          "documentation": null
+        },
+        "MapPackageGuid": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SeamlessTravel(string URL, optional bool bAbsolute, optional init Guid MapPackageGuid)"
+    },
+    "CommitMapChange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CommitMapChange()"
+    },
+    "CancelPendingMapChange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CancelPendingMapChange()"
+    },
+    "IsMapChangeReady": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsMapChangeReady()"
+    },
+    "IsPreparingMapChange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsPreparingMapChange()"
+    },
+    "PrepareMapChange": {
+      "documentation": null,
+      "signature_members": {
+        "LevelNames": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrepareMapChange(const out array<Name> LevelNames)"
+    },
+    "NotifyMatchStarted": {
+      "documentation": null,
+      "signature_members": {
+        "bShouldActivateLevelStartupEvents": {
+          "type": null,
+          "documentation": null
+        },
+        "bShouldActivateLevelBeginningEvents": {
+          "type": null,
+          "documentation": null
+        },
+        "bShouldActivateLevelLoadedEvents": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyMatchStarted(optional bool bShouldActivateLevelStartupEvents, optional bool bShouldActivateLevelBeginningEvents, optional bool bShouldActivateLevelLoadedEvents)"
+    },
+    "AllPawns": {
+      "documentation": null,
+      "signature_members": {
+        "BaseClass": {
+          "type": null,
+          "documentation": null
+        },
+        "P": {
+          "type": null,
+          "documentation": null
+        },
+        "TestLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "TestRadius": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AllPawns(Class<Pawn> BaseClass, out Pawn P, optional Vector TestLocation, optional float TestRadius)"
+    },
+    "AllControllers": {
+      "documentation": null,
+      "signature_members": {
+        "BaseClass": {
+          "type": null,
+          "documentation": null
+        },
+        "C": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AllControllers(Class<Controller> BaseClass, out Controller C)"
+    },
+    "NavigationPointCheck": {
+      "documentation": null,
+      "signature_members": {
+        "Point": {
+          "type": null,
+          "documentation": null
+        },
+        "Extent": {
+          "type": null,
+          "documentation": null
+        },
+        "Navs": {
+          "type": null,
+          "documentation": null
+        },
+        "Specs": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NavigationPointCheck(Vector Point, Vector Extent, optional out array<NavigationPoint> Navs, optional out array<ReachSpec> Specs)"
+    },
+    "RadiusNavigationPoints": {
+      "documentation": null,
+      "signature_members": {
+        "BaseClass": {
+          "type": null,
+          "documentation": null
+        },
+        "N": {
+          "type": null,
+          "documentation": null
+        },
+        "Point": {
+          "type": null,
+          "documentation": null
+        },
+        "Radius": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RadiusNavigationPoints(Class<NavigationPoint> BaseClass, out NavigationPoint N, Vector Point, float Radius)"
+    },
+    "AllNavigationPoints": {
+      "documentation": null,
+      "signature_members": {
+        "BaseClass": {
+          "type": null,
+          "documentation": null
+        },
+        "N": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AllNavigationPoints(Class<NavigationPoint> BaseClass, out NavigationPoint N)"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "PreBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreBeginPlay()"
+    },
+    "ThisIsNeverExecuted": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ThisIsNeverExecuted(DefaultPhysicsVolume P)"
+    },
+    "ServerTravel": {
+      "documentation": null,
+      "signature_members": {
+        "URL": {
+          "type": null,
+          "documentation": null
+        },
+        "bAbsolute": {
+          "type": null,
+          "documentation": null
+        },
+        "bShouldSkipGameNotify": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerTravel(string URL, optional bool bAbsolute, optional bool bShouldSkipGameNotify)"
+    },
+    "GetGameClass": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Class",
+      "signature": "Class<GameInfo> GetGameClass()"
+    },
+    "GetAddressURL": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetAddressURL()"
+    },
+    "VerifyNavList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "VerifyNavList()"
+    },
+    "RescheduleGarbageCollectionTimer": {
+      "documentation": null,
+      "signature_members": {
+        "maxdelay": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RescheduleGarbageCollectionTimer(float maxdelay)"
+    },
+    "DelayGarbageCollection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DelayGarbageCollection()"
+    },
+    "ForceGarbageCollection": {
+      "documentation": null,
+      "signature_members": {
+        "bFullPurge": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ForceGarbageCollection(optional bool bFullPurge)"
+    },
+    "IsPlayInEditor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsPlayInEditor()"
+    },
+    "IsConsoleBuild": {
+      "documentation": null,
+      "signature_members": {
+        "ConsoleType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsConsoleBuild(optional EConsoleType ConsoleType)"
+    },
+    "InitDownloadableContent": {
+      "documentation": null,
+      "signature_members": {
+        "bFinalAttempt": {
+          "type": null,
+          "documentation": null
+        },
+        "bBlocking": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitDownloadableContent(bool bFinalAttempt, bool bBlocking)"
+    },
+    "UnloadStreamingLevels": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnloadStreamingLevels()"
+    },
+    "GetLockInputKey": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetLockInputKey()"
+    },
+    "SetLockInputToControllerOnNextInput": {
+      "documentation": null,
+      "signature_members": {
+        "b_iValue": {
+          "type": null,
+          "documentation": null
+        },
+        "Key": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetLockInputToControllerOnNextInput(bool b_iValue, Name Key)"
+    },
+    "GetLockInputToControllerOnNextInput": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetLockInputToControllerOnNextInput()"
+    },
+    "IsDemoBuild": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsDemoBuild()"
+    },
+    "GetLocalURL": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetLocalURL()"
+    },
+    "SetLevelRBGravity": {
+      "documentation": null,
+      "signature_members": {
+        "NewGrav": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLevelRBGravity(Vector NewGrav)"
+    },
+    "GetAllRootSequences": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Sequence",
+      "signature": "array<Sequence> GetAllRootSequences()"
+    },
+    "GetGameSequence": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Sequence",
+      "signature": "Sequence GetGameSequence()"
+    },
+    "GetGravityZ": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetGravityZ()"
+    },
+    "UpdateMusicTrack": {
+      "documentation": null,
+      "signature_members": {
+        "NewMusicTrack": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateMusicTrack(MusicTrackStruct NewMusicTrack)"
+    },
+    "IsMenuLevel": {
+      "documentation": null,
+      "signature_members": {
+        "MapName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsMenuLevel(optional string MapName)"
+    },
+    "AddOnScreenDebugMessage": {
+      "documentation": null,
+      "signature_members": {
+        "Key": {
+          "type": null,
+          "documentation": null
+        },
+        "TimeToDisplay": {
+          "type": null,
+          "documentation": null
+        },
+        "DisplayColor": {
+          "type": null,
+          "documentation": null
+        },
+        "DebugMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddOnScreenDebugMessage(int Key, float TimeToDisplay, Color DisplayColor, string DebugMessage)"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "GetNavMeshPathGoalEvaluatorFromCache": {
+      "documentation": null,
+      "signature_members": {
+        "GoalEvalClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Requestor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "NavMeshPathGoalEvaluator",
+      "signature": "NavMeshPathGoalEvaluator GetNavMeshPathGoalEvaluatorFromCache(Class<NavMeshPathGoalEvaluator> GoalEvalClass, NavigationHandle Requestor)"
+    },
+    "GetNavMeshPathConstraintFromCache": {
+      "documentation": null,
+      "signature_members": {
+        "ConstraintClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Requestor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "NavMeshPathConstraint",
+      "signature": "NavMeshPathConstraint GetNavMeshPathConstraintFromCache(Class<NavMeshPathConstraint> ConstraintClass, NavigationHandle Requestor)"
+    },
+    "ReleaseCachedConstraintsAndEvaluators": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReleaseCachedConstraintsAndEvaluators()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

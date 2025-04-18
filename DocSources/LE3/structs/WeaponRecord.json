@@ -1,7 +1,7 @@
 {
   "Members": {
     "WeaponClassName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     }
   },

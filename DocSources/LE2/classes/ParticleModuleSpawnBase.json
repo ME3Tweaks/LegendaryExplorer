@@ -1,0 +1,17 @@
+{
+  "parent": "ParticleModule",
+  "package": "Engine",
+  "variables": {
+    "bProcessSpawnRate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bProcessBurstList": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,235 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "m_aCrosshairPaths": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_aTargets": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_aReticles": {
+      "type": "SFXSF_ReticleBase",
+      "documentation": null
+    },
+    "m_aCrosshairRawBuffer": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_pCameraManager": {
+      "type": "SFXCameraNativeBase",
+      "documentation": null
+    },
+    "m_pPlayerController": {
+      "type": "BioPlayerController",
+      "documentation": null
+    },
+    "m_pPlayerInput": {
+      "type": "BioPlayerInput",
+      "documentation": null
+    },
+    "m_pPlayerBehavior": {
+      "type": "BioEpicPawnBehavior",
+      "documentation": null
+    },
+    "m_pPlayerSquad": {
+      "type": "BioPlayerSquad",
+      "documentation": null
+    },
+    "m_fTimeSinceLastUpdate": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCacheCrosshairRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nCrosshairBufferIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCacheWeaponAmmo": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCacheSniperZoom": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCacheSniperDistance": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fSFWidth": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fSFHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fScrn2SF_YOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fScrn2SF_YScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fScrn2SF_XScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nMaxReticleDistance": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fUpdateInterval": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fSelectionBoxScalingFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fScreenChangeDelta": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_srDistanceUnit": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_fCrosshairAccuracyModifier": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bSelectionInvalidated": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_fCacheTargetInSights": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bReticleVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bShowHeavyDetails": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bShowSniperDetails": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eCurrentCrosshair": {
+      "type": "SFXReticleCrosshair",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ExInt_ReticleVisible": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExInt_ReticleVisible()"
+    },
+    "ExInt_OutTransitionComplete": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExInt_OutTransitionComplete(string sPath)"
+    },
+    "ExInt_InTransitionComplete": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExInt_InTransitionComplete(string sPath)"
+    },
+    "GetWeaponAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "bClipOnly": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetWeaponAmmo(optional bool bClipOnly)"
+    },
+    "GetWeaponAmmoString": {
+      "documentation": null,
+      "signature_members": {
+        "bClipOnly": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetWeaponAmmoString(optional bool bClipOnly)"
+    },
+    "GetDesiredCrosshairFromWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXReticleCrosshair",
+      "signature": "SFXReticleCrosshair GetDesiredCrosshairFromWeapon()"
+    },
+    "GetCrosshairRadius": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetCrosshairRadius()"
+    },
+    "ProcessImpacts": {
+      "documentation": null,
+      "signature_members": {
+        "bIsHeadshot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessImpacts(bool bIsHeadshot)"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "GameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GameSessionEnded()"
+    },
+    "CleanupReferences": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CleanupReferences()"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

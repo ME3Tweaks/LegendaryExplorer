@@ -1,15 +1,15 @@
 {
   "Members": {
     "Value_Initial": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Value_ToSend": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Id": {
-      "type": null,
+      "type": "EGuiOptions",
       "documentation": null
     }
   },

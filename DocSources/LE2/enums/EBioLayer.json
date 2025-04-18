@@ -1,0 +1,49 @@
+{
+  "EnumValues": {
+    "LAYER_DAMAGE_CONCENTRATION": {
+      "value": 0,
+      "documentation": null
+    },
+    "LAYER_SUPPRESSION_CONCENTRATION": {
+      "value": 1,
+      "documentation": null
+    },
+    "LAYER_BIOTIC_HARDENING": {
+      "value": 2,
+      "documentation": null
+    },
+    "LAYER_TECH_HARDENING": {
+      "value": 3,
+      "documentation": null
+    },
+    "LAYER_TOXIC_RESISTANCE": {
+      "value": 4,
+      "documentation": null
+    },
+    "LAYER_DISABLING_EFFECTS_RESISTANCE": {
+      "value": 5,
+      "documentation": null
+    },
+    "LAYER_DAMAGE_RESISTANCE": {
+      "value": 6,
+      "documentation": null
+    },
+    "LAYER_COMBAT_KICKBACK_REDUCTION": {
+      "value": 7,
+      "documentation": null
+    },
+    "LAYER_BIOTIC_KICKBACK_REDUCTION": {
+      "value": 8,
+      "documentation": null
+    },
+    "LAYER_TECH_KICKBACK_REDUCTION": {
+      "value": 9,
+      "documentation": null
+    },
+    "LAYER_COUNT": {
+      "value": 10,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

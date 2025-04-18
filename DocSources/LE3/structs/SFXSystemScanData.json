@@ -1,11 +1,11 @@
 {
   "Members": {
     "vScanOrigin": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "fElapsedTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

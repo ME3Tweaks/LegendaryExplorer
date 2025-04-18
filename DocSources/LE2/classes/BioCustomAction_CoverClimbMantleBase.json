@@ -1,0 +1,143 @@
+{
+  "parent": "BioCustomAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_CurrentCoverInfo": {
+      "type": "CovPosInfo",
+      "documentation": null
+    },
+    "m_BS_StanceFromExplore": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "m_BS_StanceFromCombat": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "m_BS_StanceFromCover": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "m_fCollisionOffPerioud": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCollisionOffTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bCoverCacheValid": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_CurrentBodyStance": {
+      "type": "ECoverBodyStanceID",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CacheCoverInfo": {
+      "documentation": null,
+      "signature_members": {
+        "CoverInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CacheCoverInfo(CovPosInfo CoverInfo)"
+    },
+    "EndPlayBodyStance": {
+      "documentation": null,
+      "signature_members": {
+        "StanceID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EndPlayBodyStance(ECoverBodyStanceID StanceID)"
+    },
+    "StopPlayBodyStance": {
+      "documentation": null,
+      "signature_members": {
+        "StanceID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StopPlayBodyStance(ECoverBodyStanceID StanceID)"
+    },
+    "StartPlayBodyStance": {
+      "documentation": null,
+      "signature_members": {
+        "StanceID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartPlayBodyStance(ECoverBodyStanceID StanceID)"
+    },
+    "GetBodyStance": {
+      "documentation": null,
+      "signature_members": {
+        "StanceID": {
+          "type": null,
+          "documentation": null
+        },
+        "out_BodyStance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetBodyStance(ECoverBodyStanceID StanceID, out BodyStance out_BodyStance)"
+    },
+    "BodyStanceAnimEndNotification": {
+      "documentation": null,
+      "signature_members": {
+        "SeqNode": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayedTime": {
+          "type": null,
+          "documentation": null
+        },
+        "ExcessTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BodyStanceAnimEndNotification(AnimNodeSequence SeqNode, float PlayedTime, float ExcessTime)"
+    },
+    "TickCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TickCustomAction(float fDeltaTime)"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "parent": "FogVolumeDensityComponent",
+  "package": "Engine",
+  "variables": {
+    "SphereCenter": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PreviewSphereRadius": {
+      "type": "DrawLightRadiusComponent",
+      "documentation": null
+    },
+    "MaxDensity": {
+      "type": "float",
+      "documentation": null
+    },
+    "SphereRadius": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

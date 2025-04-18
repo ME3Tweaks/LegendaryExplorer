@@ -1,11 +1,11 @@
 {
   "Members": {
     "sLbName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Scope": {
-      "type": null,
+      "type": "LeaderboardStatScope",
       "documentation": null
     }
   },

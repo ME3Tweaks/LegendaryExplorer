@@ -1,11 +1,11 @@
 {
   "Members": {
     "PlotStates": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Option": {
-      "type": null,
+      "type": "EEndGameOption",
       "documentation": null
     }
   },

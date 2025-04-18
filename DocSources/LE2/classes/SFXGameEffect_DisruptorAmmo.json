@@ -1,0 +1,81 @@
+{
+  "parent": "SFXGameEffect_AmmoPower",
+  "package": "SFXGameContent_Powers",
+  "variables": {
+    "StunCrustEffect": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "RobotReactionChance": {
+      "type": "float",
+      "documentation": null
+    },
+    "OverheatChance": {
+      "type": "float",
+      "documentation": null
+    },
+    "OverheatLength": {
+      "type": "float",
+      "documentation": null
+    },
+    "Damage": {
+      "type": "float",
+      "documentation": null
+    },
+    "RobotStunLength": {
+      "type": "float",
+      "documentation": null
+    },
+    "bExplodesRobots": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "StunRobot": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StunRobot(BioPawn oPawn)"
+    },
+    "TurnOnDeathPower": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TurnOnDeathPower(BioPawn oPawn)"
+    },
+    "GetDamageVocProbabilityMod": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDamageVocProbabilityMod()"
+    },
+    "OnWeaponImpact": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        },
+        "Impact": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnWeaponImpact(SFXWeapon Weapon, ImpactInfo Impact)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "parent": "SFXGameInterpTrack",
+  "package": "SFXGame",
+  "variables": {
+    "m_nmFindActor": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_bActorChanged": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eFindActorMode": {
+      "type": "EActorTrackFindActorMode",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "KnownLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "InterpLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Cover": {
+      "type": "CoverInfo",
+      "documentation": null
+    },
+    "Pawn": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "InterpTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "InitialSeenTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastSeenTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastFailedPathTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bVisible": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

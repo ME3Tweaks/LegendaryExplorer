@@ -1,35 +1,35 @@
 {
   "Members": {
     "pWeaponClass": {
-      "type": null,
+      "type": "Class",
       "documentation": null
     },
     "nmProp": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "nmAction": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "pPropMesh": {
-      "type": null,
+      "type": "Object",
       "documentation": null
     },
     "pActionPartSys": {
-      "type": null,
+      "type": "ParticleSystem",
       "documentation": null
     },
     "pActionClientEffect": {
-      "type": null,
+      "type": "RvrClientEffectInterface",
       "documentation": null
     },
     "bEquip": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bForceGenericWeapon": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

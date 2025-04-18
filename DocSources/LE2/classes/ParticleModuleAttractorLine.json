@@ -1,0 +1,25 @@
+{
+  "parent": "ParticleModuleAttractorBase",
+  "package": "Engine",
+  "variables": {
+    "Range": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "Strength": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "EndPoint0": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "EndPoint1": {
+      "type": "Vector",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

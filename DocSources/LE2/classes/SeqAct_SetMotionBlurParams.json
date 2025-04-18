@@ -1,0 +1,25 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "Engine",
+  "variables": {
+    "MotionBlurAmount": {
+      "type": "float",
+      "documentation": null
+    },
+    "InterpolateSeconds": {
+      "type": "float",
+      "documentation": null
+    },
+    "InterpolateElapsed": {
+      "type": "float",
+      "documentation": null
+    },
+    "OldMotionBlurAmount": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

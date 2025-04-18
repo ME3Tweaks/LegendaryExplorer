@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "Icon": {
+      "type": "string",
+      "documentation": null
+    },
+    "Name": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Title": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "Incomplete": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "Complete": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "PlotID": {
+      "type": "int",
+      "documentation": null
+    },
+    "AchievementId": {
+      "type": "EAchievementID",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

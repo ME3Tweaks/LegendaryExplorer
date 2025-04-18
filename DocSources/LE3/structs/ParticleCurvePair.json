@@ -1,11 +1,11 @@
 {
   "Members": {
     "CurveName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "CurveObject": {
-      "type": null,
+      "type": "Object",
       "documentation": null
     }
   },

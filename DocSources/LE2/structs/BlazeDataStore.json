@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "LoginInfo": {
+      "type": "byte",
+      "documentation": null
+    },
+    "PersonaID": {
+      "type": "byte",
+      "documentation": null
+    },
+    "DaysSinceRegistration": {
+      "type": "int",
+      "documentation": null
+    },
+    "bNucleusRefused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNucleusSuccessful": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCerberusRefused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAutoLogin": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDirty": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPS3_RedeemedProductCode": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

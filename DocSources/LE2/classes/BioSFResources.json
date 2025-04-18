@@ -1,0 +1,47 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "Sounds": {
+      "type": "BioSFSoundAssetResource",
+      "documentation": null
+    },
+    "LoadScreenTips": {
+      "type": "BioSFScreenTip",
+      "documentation": null
+    },
+    "Movies": {
+      "type": "GFxMovieInfo",
+      "documentation": null
+    },
+    "BioScreenTipEntries": {
+      "type": "BioSFScreenTipEntry",
+      "documentation": null
+    },
+    "bUsingGamepad": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetUsingGamepad": {
+      "documentation": null,
+      "signature_members": {
+        "gamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetUsingGamepad(bool gamepad)"
+    },
+    "PopulateBioScreenTipEntries": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PopulateBioScreenTipEntries()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

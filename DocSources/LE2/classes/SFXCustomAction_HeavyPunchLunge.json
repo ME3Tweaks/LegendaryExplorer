@@ -1,0 +1,124 @@
+{
+  "parent": "BioCustomAction",
+  "package": "SFXGame",
+  "variables": {
+    "PawnTargets": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "HitShake": {
+      "type": "ScreenShakeStruct",
+      "documentation": null
+    },
+    "UtilizeCrust": {
+      "type": "VisualEffect",
+      "documentation": null
+    },
+    "BS_Punch": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "HitForceFeedback": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null
+    },
+    "MaxLungeDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "ConeAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxRagdollPhysLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "WindUpDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "ChargePoseDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "SwingDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "HitPoseDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeDilationDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeDilationAmount": {
+      "type": "float",
+      "documentation": null
+    },
+    "bRequireTarget": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "BodyStanceAnimEndNotification": {
+      "documentation": null,
+      "signature_members": {
+        "SeqNode": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayedTime": {
+          "type": null,
+          "documentation": null
+        },
+        "ExcessTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BodyStanceAnimEndNotification(AnimNodeSequence SeqNode, float PlayedTime, float ExcessTime)"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    },
+    "PlayImpact": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayImpact()"
+    },
+    "Lunge": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Lunge()"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "SetLeftArmIKEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLeftArmIKEnabled(bool bEnabled)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

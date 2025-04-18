@@ -1,0 +1,65 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "LitInstances": {
+      "type": "StoredFoliageInstance",
+      "documentation": null
+    },
+    "StaticallyRelevantLights": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "StaticallyIrrelevantLights": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "LightmassSettings": {
+      "type": "LightmassPrimitiveSettings",
+      "documentation": null
+    },
+    "DirectionalStaticLightingScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "SimpleStaticLightingScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinScale": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "MaxScale": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "InstanceStaticMesh": {
+      "type": "StaticMesh",
+      "documentation": null
+    },
+    "Material": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "MaxDrawRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinTransitionRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinThinningRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "SwayScale": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

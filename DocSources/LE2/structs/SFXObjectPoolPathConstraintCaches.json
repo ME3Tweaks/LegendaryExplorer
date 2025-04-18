@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "List": {
+      "type": "PathConstraint",
+      "documentation": null
+    },
+    "ListIdx": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

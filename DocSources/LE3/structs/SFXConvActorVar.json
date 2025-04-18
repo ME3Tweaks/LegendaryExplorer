@@ -1,15 +1,15 @@
 {
   "Members": {
     "nmPinName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "pActor": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "pSeqVar": {
-      "type": null,
+      "type": "SeqVar_Object",
       "documentation": null
     }
   },

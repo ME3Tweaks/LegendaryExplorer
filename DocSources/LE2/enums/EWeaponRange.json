@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "WeaponRange_Invalid": {
+      "value": 0,
+      "documentation": null
+    },
+    "WeaponRange_Melee": {
+      "value": 1,
+      "documentation": null
+    },
+    "WeaponRange_Short": {
+      "value": 2,
+      "documentation": null
+    },
+    "WeaponRange_Medium": {
+      "value": 3,
+      "documentation": null
+    },
+    "WeaponRange_Long": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

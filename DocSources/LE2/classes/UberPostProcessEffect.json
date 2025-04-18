@@ -1,0 +1,65 @@
+{
+  "parent": "DOFBloomMotionBlurEffect",
+  "package": "Engine",
+  "variables": {
+    "SceneShadows": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "SceneHighLights": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "SceneMidTones": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "SceneDesaturation": {
+      "type": "float",
+      "documentation": null
+    },
+    "FXAAContrastThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "FilmGrain_Scale": {
+      "type": "float",
+      "documentation": null
+    },
+    "EnableDOF": {
+      "type": "bool",
+      "documentation": null
+    },
+    "EnableBloom": {
+      "type": "bool",
+      "documentation": null
+    },
+    "EnableColorMapping": {
+      "type": "bool",
+      "documentation": null
+    },
+    "EnableMotionBlur": {
+      "type": "bool",
+      "documentation": null
+    },
+    "EnableFilmic": {
+      "type": "bool",
+      "documentation": null
+    },
+    "EnableNewFilmGrain": {
+      "type": "bool",
+      "documentation": null
+    },
+    "EnableRandomFilmGrain": {
+      "type": "bool",
+      "documentation": null
+    },
+    "PostProcessAAType": {
+      "type": "EPostProcessAAType",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

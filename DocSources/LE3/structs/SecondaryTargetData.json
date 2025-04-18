@@ -1,15 +1,15 @@
 {
   "Members": {
     "TargetCoverInfo": {
-      "type": null,
+      "type": "CoverInfo",
       "documentation": null
     },
     "FireTarget": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     },
     "PawnTarget": {
-      "type": null,
+      "type": "BioPawn",
       "documentation": null
     }
   },

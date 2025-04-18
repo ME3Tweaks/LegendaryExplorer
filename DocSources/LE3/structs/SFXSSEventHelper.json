@@ -1,15 +1,15 @@
 {
   "Members": {
     "pNode": {
-      "type": null,
+      "type": "SFXSceneShopNode",
       "documentation": null
     },
     "nmEventName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "fEventTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

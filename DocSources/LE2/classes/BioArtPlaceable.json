@@ -1,0 +1,429 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "m_mAttachedNavPoints": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "m_maoBlockedReachSpecs": {
+      "type": "MultiMap_Mirror",
+      "documentation": null
+    },
+    "VisualEffects": {
+      "type": "BioVisualEffect",
+      "documentation": null
+    },
+    "m_oBehavior": {
+      "type": "BioArtPlaceableBehavior",
+      "documentation": null
+    },
+    "DestroyedMesh": {
+      "type": "MeshComponent",
+      "documentation": null
+    },
+    "PlaceableMesh": {
+      "type": "MeshComponent",
+      "documentation": null
+    },
+    "m_oLastInstigator": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "m_pLightEnvComponent": {
+      "type": "LightEnvironmentComponent",
+      "documentation": null
+    },
+    "m_nmMatineeNodeName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "NextPlaceable": {
+      "type": "BioArtPlaceable",
+      "documentation": null
+    },
+    "FSM": {
+      "type": "BioFSMComponent",
+      "documentation": null
+    },
+    "m_nNumParticipants": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fCorpseCleanupFirstAttemptTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCorpseCleanupAttemptRetryTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nMaxCorpseVisibilityCleanupAttempts": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fMaxCorpseCleanupDistanceThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMaxCorpseCleanupScreenSizeThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nCorpseCleanupAttempts": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bCanCleanupCorpse": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsFrozen": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ReactToDeath": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "fDeathDamage": {
+          "type": null,
+          "documentation": null
+        },
+        "InstigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "clsDamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "pDamage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReactToDeath(float Damage, float fDeathDamage, Controller InstigatedBy, Vector HitLocation, Vector Momentum, Class<DamageType> clsDamageType, optional TraceHitInfo HitInfo, optional SFXDamageType pDamage)"
+    },
+    "DestroyedCleanupTimer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DestroyedCleanupTimer()"
+    },
+    "FinishAnimControl": {
+      "documentation": null,
+      "signature_members": {
+        "InInterpGroup": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FinishAnimControl(InterpGroup InInterpGroup)"
+    },
+    "SetAnimWeights": {
+      "documentation": null,
+      "signature_members": {
+        "SlotInfos": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAnimWeights(array<AnimSlotInfo> SlotInfos)"
+    },
+    "SetAnimPosition": {
+      "documentation": null,
+      "signature_members": {
+        "SlotName": {
+          "type": null,
+          "documentation": null
+        },
+        "ChannelIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "InAnimSeqName": {
+          "type": null,
+          "documentation": null
+        },
+        "InPosition": {
+          "type": null,
+          "documentation": null
+        },
+        "bFireNotifies": {
+          "type": null,
+          "documentation": null
+        },
+        "bLooping": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAnimPosition(Name SlotName, int ChannelIndex, Name InAnimSeqName, float InPosition, bool bFireNotifies, bool bLooping)"
+    },
+    "BeginAnimControl": {
+      "documentation": null,
+      "signature_members": {
+        "InInterpGroup": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BeginAnimControl(InterpGroup InInterpGroup)"
+    },
+    "OnSkillGameCanceled": {
+      "documentation": null,
+      "signature_members": {
+        "oUsingPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSkillGameCanceled(BioPawn oUsingPawn)"
+    },
+    "OnSkillGameSucceeded": {
+      "documentation": null,
+      "signature_members": {
+        "oUsingPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSkillGameSucceeded(BioPawn oUsingPawn)"
+    },
+    "OnSkillGameFailed": {
+      "documentation": null,
+      "signature_members": {
+        "oUsingPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSkillGameFailed(BioPawn oUsingPawn)"
+    },
+    "AbortReactive": {
+      "documentation": null,
+      "signature_members": {
+        "nmToState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AbortReactive(Name nmToState)"
+    },
+    "RanInto": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RanInto(Actor Other)"
+    },
+    "IsDestroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsDestroyed()"
+    },
+    "OnCastAt": {
+      "documentation": null,
+      "signature_members": {
+        "oAttacker": {
+          "type": null,
+          "documentation": null
+        },
+        "Power": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnCastAt(Pawn oAttacker, SFXPower Power)"
+    },
+    "OnAttacked": {
+      "documentation": null,
+      "signature_members": {
+        "oAttacker": {
+          "type": null,
+          "documentation": null
+        },
+        "WeaponName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnAttacked(Pawn oAttacker, Name WeaponName)"
+    },
+    "CreateSelection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CreateSelection()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "UnfreezeAnimation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnfreezeAnimation()"
+    },
+    "FreezeAnimation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FreezeAnimation()"
+    },
+    "MAT_FinishAnimControl": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MAT_FinishAnimControl()"
+    },
+    "MAT_SetAnimWeights": {
+      "documentation": null,
+      "signature_members": {
+        "SlotInfos": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MAT_SetAnimWeights(array<AnimSlotInfo> SlotInfos)"
+    },
+    "MAT_SetAnimPosition": {
+      "documentation": null,
+      "signature_members": {
+        "SlotName": {
+          "type": null,
+          "documentation": null
+        },
+        "ChannelIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "InAnimSeqName": {
+          "type": null,
+          "documentation": null
+        },
+        "InPosition": {
+          "type": null,
+          "documentation": null
+        },
+        "bFireNotifies": {
+          "type": null,
+          "documentation": null
+        },
+        "bLooping": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MAT_SetAnimPosition(Name SlotName, int ChannelIndex, Name InAnimSeqName, float InPosition, bool bFireNotifies, bool bLooping)"
+    },
+    "MAT_BeginAnimControl": {
+      "documentation": null,
+      "signature_members": {
+        "InAnimSets": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MAT_BeginAnimControl(array<AnimSet> InAnimSets)"
+    },
+    "OverrideUseCase": {
+      "documentation": null,
+      "signature_members": {
+        "UseCase": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OverrideUseCase(eBioAPLUseCase UseCase)"
+    },
+    "AddProximityTimer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AddProximityTimer()"
+    },
+    "BioDoProximityCheck": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool BioDoProximityCheck()"
+    },
+    "TermRagdoll": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TermRagdoll()"
+    },
+    "InitRagdoll": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitRagdoll()"
+    },
+    "UpdateWpPointPosition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateWpPointPosition()"
+    },
+    "SetActionStationWP": {
+      "documentation": null,
+      "signature_members": {
+        "oWP": {
+          "type": null,
+          "documentation": null
+        },
+        "nmSocket": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetActionStationWP(NavigationPoint oWP, Name nmSocket)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

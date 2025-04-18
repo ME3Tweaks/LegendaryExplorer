@@ -1,47 +1,47 @@
 {
   "Members": {
     "SaveDescriptor": {
-      "type": null,
+      "type": "SFXSaveDescriptor",
       "documentation": null
     },
     "FriendlyName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "ImagePath": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "SaveGame": {
-      "type": null,
+      "type": "SFXSaveGame",
       "documentation": null
     },
     "AreaImage": {
-      "type": null,
+      "type": "Texture2D",
       "documentation": null
     },
     "m_sec": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "m_min": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "m_hr": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "m_day": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "m_mo": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "m_year": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

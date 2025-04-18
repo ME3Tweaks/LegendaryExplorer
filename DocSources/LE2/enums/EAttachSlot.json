@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "EASlot_Holster": {
+      "value": 0,
+      "documentation": null
+    },
+    "EASlot_LowerBack": {
+      "value": 1,
+      "documentation": null
+    },
+    "EASlot_LeftShoulder": {
+      "value": 2,
+      "documentation": null
+    },
+    "EASlot_RightShoulder": {
+      "value": 3,
+      "documentation": null
+    },
+    "EASlot_CenterBack": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

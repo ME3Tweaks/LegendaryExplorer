@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "TalentID": {
+      "type": "int",
+      "documentation": null
+    },
+    "CurrentRank": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

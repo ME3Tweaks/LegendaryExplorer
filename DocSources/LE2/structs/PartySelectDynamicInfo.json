@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Abilities": {
+      "type": "int",
+      "documentation": null
+    },
+    "Ranks": {
+      "type": "int",
+      "documentation": null
+    },
+    "Weapons": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

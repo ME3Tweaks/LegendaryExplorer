@@ -1,15 +1,15 @@
 {
   "Members": {
     "RotationOffset": {
-      "type": null,
+      "type": "Rotator",
       "documentation": null
     },
     "PositionOffset": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "Tag": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     }
   },

@@ -1,15 +1,15 @@
 {
   "Members": {
     "m_fMaxThreshold": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "m_fSmoothingFactor": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "m_bStart": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

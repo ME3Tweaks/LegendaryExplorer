@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "SL_PLANET": {
+      "value": 0,
+      "documentation": null
+    },
+    "SL_ANOMALY": {
+      "value": 1,
+      "documentation": null
+    },
+    "SL_RINGPLANET": {
+      "value": 2,
+      "documentation": null
+    },
+    "SL_MASSRELAY": {
+      "value": 3,
+      "documentation": null
+    },
+    "SL_DEPOT": {
+      "value": 4,
+      "documentation": null
+    },
+    "SL_SUN": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

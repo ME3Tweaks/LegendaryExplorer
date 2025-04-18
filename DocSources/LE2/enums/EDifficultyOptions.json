@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "DO_Level1": {
+      "value": 0,
+      "documentation": null
+    },
+    "DO_Level2": {
+      "value": 1,
+      "documentation": null
+    },
+    "DO_Level3": {
+      "value": 2,
+      "documentation": null
+    },
+    "DO_Level4": {
+      "value": 3,
+      "documentation": null
+    },
+    "DO_Level5": {
+      "value": 4,
+      "documentation": null
+    },
+    "DO_Level6": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

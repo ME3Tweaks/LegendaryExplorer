@@ -1,0 +1,20 @@
+{
+  "parent": "SFXCameraMode",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(BioPlayerController PC)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

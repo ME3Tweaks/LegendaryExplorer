@@ -1,0 +1,115 @@
+{
+  "parent": "Volume",
+  "package": "Engine",
+  "variables": {
+    "ConvexMeshes": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ExclusionShapes": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ExclusionShapePoses": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ForceField": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "LinearKernel": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Constant": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PositionMultiplierX": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PositionMultiplierY": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PositionMultiplierZ": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PositionTarget": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "VelocityMultiplierX": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "VelocityMultiplierY": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "VelocityMultiplierZ": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "VelocityTarget": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Noise": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "FalloffLinear": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "FalloffQuadratic": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "ExcludeChannel": {
+      "type": "int",
+      "documentation": null
+    },
+    "CollideWithChannels": {
+      "type": "RBCollisionChannelContainer",
+      "documentation": null
+    },
+    "TorusRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "RBChannel": {
+      "type": "ERBCollisionChannel",
+      "documentation": null
+    },
+    "Coordinates": {
+      "type": "FFB_ForceFieldCoordinates",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "StopsProjectile": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StopsProjectile(Projectile P)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

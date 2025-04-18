@@ -1,0 +1,41 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Compound": {
+      "type": "MaterialExpressionCompound",
+      "documentation": null
+    },
+    "bRealtimePreview": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNeedToUpdatePreview": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsParameterExpression": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowOutputNameOnPin": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHidePreviewWindow": {
+      "type": "bool",
+      "documentation": null
+    },
+    "MaterialExpressionEditorX": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaterialExpressionEditorY": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

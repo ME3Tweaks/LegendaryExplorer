@@ -1,0 +1,79 @@
+{
+  "parent": "Settings",
+  "package": "Engine",
+  "variables": {
+    "ManualSkillOverride": {
+      "type": "OverrideSkill",
+      "documentation": null
+    },
+    "FilterQuery": {
+      "type": "OnlineGameSearchQuery",
+      "documentation": null
+    },
+    "Results": {
+      "type": "OnlineGameSearchResult",
+      "documentation": null
+    },
+    "NamedProperties": {
+      "type": "NamedObjectProperty",
+      "documentation": null
+    },
+    "AdditionalSearchCriteria": {
+      "type": "string",
+      "documentation": null
+    },
+    "GameSettingsClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "Query": {
+      "type": "LocalizedStringSetting",
+      "documentation": null
+    },
+    "MaxSearchResults": {
+      "type": "int",
+      "documentation": null
+    },
+    "PingBucketSize": {
+      "type": "int",
+      "documentation": null
+    },
+    "bIsLanQuery": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUsesArbitration": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsSearchInProgress": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SortSearchResults": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SortSearchResults()"
+    },
+    "SetSkillOverride": {
+      "documentation": null,
+      "signature_members": {
+        "LeaderboardId": {
+          "type": null,
+          "documentation": null
+        },
+        "Players": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSkillOverride(int LeaderboardId, const out array<UniqueNetId> Players)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

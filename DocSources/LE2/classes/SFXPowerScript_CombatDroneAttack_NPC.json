@@ -1,0 +1,83 @@
+{
+  "parent": "BioPowerScriptDesign",
+  "package": "SFXGameContent_Powers",
+  "variables": {
+    "m_oPower": {
+      "type": "SFXPower_CombatDroneAttack_NPC",
+      "documentation": null
+    },
+    "ImpactShake": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null
+    },
+    "NormalImpactSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ShouldUsePower": {
+      "documentation": null,
+      "signature_members": {
+        "Caster": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "sOptionalInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldUsePower(Actor Caster, Actor Target, out string sOptionalInfo)"
+    },
+    "OnImpact": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": null,
+          "documentation": null
+        },
+        "fCasterStability": {
+          "type": null,
+          "documentation": null
+        },
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        },
+        "nPreviouslyImpacted": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnImpact(Actor oCaster, float fCasterStability, Actor oImpacted, int nPreviouslyImpacted)"
+    },
+    "StartPhase": {
+      "documentation": null,
+      "signature_members": {
+        "ePhase": {
+          "type": null,
+          "documentation": null
+        },
+        "oCaster": {
+          "type": null,
+          "documentation": null
+        },
+        "fDuration": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartPhase(EBioPowerState ePhase, Actor oCaster, float fDuration)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

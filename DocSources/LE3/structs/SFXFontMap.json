@@ -1,27 +1,27 @@
 {
   "Members": {
     "Locale": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "FontExportName": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "SubstituteFont": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "FontGFxResource": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "ScaleFactor": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Style": {
-      "type": null,
+      "type": "SFXFontStyle",
       "documentation": null
     }
   },

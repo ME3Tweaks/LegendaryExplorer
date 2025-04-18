@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "PRACO_Trigger": {
+      "value": 0,
+      "documentation": null
+    },
+    "PRACO_Button": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

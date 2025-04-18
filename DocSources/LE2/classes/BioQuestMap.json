@@ -1,0 +1,25 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "QuestMap": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "TaskEvalMap": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "IntTaskEvalMap": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "FloatTaskEvalMap": {
+      "type": "Map_Mirror",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,154 @@
+{
+  "parent": "BioPawn",
+  "package": "SFXGame",
+  "variables": {
+    "FootstepShake": {
+      "type": "ScreenShakeStruct",
+      "documentation": null
+    },
+    "FireChargingVFX": {
+      "type": "VisualEffect",
+      "documentation": null
+    },
+    "PS_HeadGib": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "PS_LimbGib": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "nmMuzzleSocketName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nmShellCasingSocketName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "VocalizationBankOverride": {
+      "type": "SFXVocalizationBank",
+      "documentation": null
+    },
+    "FootstepForceFeedback": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null
+    },
+    "ShieldImpactOffset": {
+      "type": "int",
+      "documentation": null
+    },
+    "PrettyName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "bIsTalking": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSupportsVisibleWeapons": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnPowersLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPowersLoaded()"
+    },
+    "CreatePlayerSquadWeapons": {
+      "documentation": null,
+      "signature_members": {
+        "ChkLoadout": {
+          "type": null,
+          "documentation": null
+        },
+        "LoadoutWeapons": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CreatePlayerSquadWeapons(SFXPlayerSquadLoadoutData ChkLoadout, optional Name LoadoutWeapons[6])"
+    },
+    "GetPrettyName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "stringref",
+      "signature": "stringref GetPrettyName()"
+    },
+    "GetShieldTypeAsDisplayString": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetShieldTypeAsDisplayString()"
+    },
+    "CanUseWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "WeaponClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanUseWeapon(Class<SFXWeapon> WeaponClass)"
+    },
+    "PlayFireCharging": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayFireCharging()"
+    },
+    "CreateVisualEffect": {
+      "documentation": null,
+      "signature_members": {
+        "Template": {
+          "type": null,
+          "documentation": null
+        },
+        "Effect": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateVisualEffect(BioVFXTemplate Template, out BioVisualEffect Effect)"
+    },
+    "TalkingTimout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TalkingTimout()"
+    },
+    "SetTalking": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetTalking()"
+    },
+    "PlayStepEffect": {
+      "documentation": null,
+      "signature_members": {
+        "FootDown": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "Loudness": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayStepEffect(int FootDown, TraceHitInfo HitInfo, float Loudness)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

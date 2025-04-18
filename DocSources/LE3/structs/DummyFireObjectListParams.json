@@ -1,31 +1,31 @@
 {
   "Members": {
     "SecondsPerObject": {
-      "type": null,
+      "type": "Vector2D",
       "documentation": null
     },
     "ObjectChangeDelay": {
-      "type": null,
+      "type": "Vector2D",
       "documentation": null
     },
     "TimeUntilObjectChange": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "DelayTimeRemaining": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "CurrentObjIdx": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bDelay": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "CyclingMethod": {
-      "type": null,
+      "type": "DummyFireObjectCyclingMethod",
       "documentation": null
     }
   },

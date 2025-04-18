@@ -1,0 +1,89 @@
+{
+  "Members": {
+    "TargetBoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "KeyLight_Scale_Red": {
+      "type": "float",
+      "documentation": null
+    },
+    "KeyLight_Scale_Green": {
+      "type": "float",
+      "documentation": null
+    },
+    "KeyLight_Scale_Blue": {
+      "type": "float",
+      "documentation": null
+    },
+    "FillLight_Scale_Red": {
+      "type": "float",
+      "documentation": null
+    },
+    "FillLight_Scale_Green": {
+      "type": "float",
+      "documentation": null
+    },
+    "FillLight_Scale_Blue": {
+      "type": "float",
+      "documentation": null
+    },
+    "RimLightColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "RimLightScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "RimLightYaw": {
+      "type": "float",
+      "documentation": null
+    },
+    "RimLightPitch": {
+      "type": "float",
+      "documentation": null
+    },
+    "BouncedLightingIntensity": {
+      "type": "float",
+      "documentation": null
+    },
+    "BouncedKeyLightingFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "BouncedKeyLightingDesaturation": {
+      "type": "float",
+      "documentation": null
+    },
+    "WrapLightingDirectMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "WrapLightingIndirectMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "bLockEnvironment": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTriggerFullUpdate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseForNextCamera": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RimLightControl": {
+      "type": "ERimLightControlType",
+      "documentation": null
+    },
+    "LightingType": {
+      "type": "EConvLightingType",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

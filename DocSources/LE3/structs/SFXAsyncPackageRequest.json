@@ -1,15 +1,15 @@
 {
   "Members": {
     "AssetRequests": {
-      "type": null,
+      "type": "SFXAsyncAssetRequest",
       "documentation": null
     },
     "PackageName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "AsyncLoadGroup": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     }
   },

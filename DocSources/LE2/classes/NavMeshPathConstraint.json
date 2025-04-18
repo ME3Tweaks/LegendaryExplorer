@@ -1,0 +1,42 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "NextConstraint": {
+      "type": "NavMeshPathConstraint",
+      "documentation": null
+    },
+    "NumNodesProcessed": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumThrownOutNodes": {
+      "type": "int",
+      "documentation": null
+    },
+    "AddedDirectCost": {
+      "type": "float",
+      "documentation": null
+    },
+    "AddedHeuristicCost": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetDumpString": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetDumpString()"
+    },
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

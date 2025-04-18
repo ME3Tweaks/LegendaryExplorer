@@ -1,11 +1,11 @@
 {
   "Members": {
     "fCooldown": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "EventId": {
-      "type": null,
+      "type": "BioGuiEvents",
       "documentation": null
     }
   },

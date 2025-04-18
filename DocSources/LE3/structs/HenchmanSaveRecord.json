@@ -1,39 +1,39 @@
 {
   "Members": {
     "Powers": {
-      "type": null,
+      "type": "PowerSaveRecord",
       "documentation": null
     },
     "Weapons": {
-      "type": null,
+      "type": "WeaponSaveRecord",
       "documentation": null
     },
     "WeaponMods": {
-      "type": null,
+      "type": "WeaponModSaveRecord",
       "documentation": null
     },
     "LoadoutWeapons": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "Tag": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "MappedPower": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "CharacterLevel": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "TalentPoints": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Grenades": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

@@ -1,0 +1,89 @@
+{
+  "Members": {
+    "BoolVariables": {
+      "type": "ProfileBOOLSaveRecord",
+      "documentation": null
+    },
+    "IntVariables": {
+      "type": "ME1_ProfileINTSaveRecord",
+      "documentation": null
+    },
+    "FloatVariables": {
+      "type": "ME1_ProfileFLOATSaveRecord",
+      "documentation": null
+    },
+    "PlotManagerAchievementMaps": {
+      "type": "ME1_PlotManagerAchievementSaveRecord",
+      "documentation": null
+    },
+    "lstPlaythroughs": {
+      "type": "ME1_ProfilePlaythroughSaveRecord",
+      "documentation": null
+    },
+    "RewardStats": {
+      "type": "ME1_ProfileRewardSaveRecord",
+      "documentation": null
+    },
+    "AchievementStates": {
+      "type": "int",
+      "documentation": null
+    },
+    "UnlockedBonusTalents": {
+      "type": "ME1_BonusTalentSaveRecord",
+      "documentation": null
+    },
+    "PassiveBonusTalents": {
+      "type": "ME1_BonusTalentSaveRecord",
+      "documentation": null
+    },
+    "IntStats": {
+      "type": "int",
+      "documentation": null
+    },
+    "FloatStats": {
+      "type": "float",
+      "documentation": null
+    },
+    "lstCharacterProfiles": {
+      "type": "ME1_CharacterProfileSaveRecord",
+      "documentation": null
+    },
+    "GameOptions": {
+      "type": "ME1_GameOptionsSaveRecord",
+      "documentation": null
+    },
+    "LastPlayedCharacterID": {
+      "type": "string",
+      "documentation": null
+    },
+    "LastSaveGame": {
+      "type": "string",
+      "documentation": null
+    },
+    "LastUsedPlaythroughID": {
+      "type": "int",
+      "documentation": null
+    },
+    "LowestPlaythroughDamageTaken": {
+      "type": "float",
+      "documentation": null
+    },
+    "MostMoneyAccumulated": {
+      "type": "int",
+      "documentation": null
+    },
+    "MostPlaythroughPlayerKills": {
+      "type": "int",
+      "documentation": null
+    },
+    "LowestPlaythroughPlayerDeaths": {
+      "type": "int",
+      "documentation": null
+    },
+    "FastestPlaythroughTime": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

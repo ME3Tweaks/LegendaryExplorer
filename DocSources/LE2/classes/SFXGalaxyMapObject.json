@@ -1,0 +1,112 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "Tag": {
+      "type": "string",
+      "documentation": null
+    },
+    "PosX": {
+      "type": "int",
+      "documentation": null
+    },
+    "PosY": {
+      "type": "int",
+      "documentation": null
+    },
+    "TableID": {
+      "type": "int",
+      "documentation": null
+    },
+    "DisplayName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "Scale": {
+      "type": "float",
+      "documentation": null
+    },
+    "nPreviouslySelectedIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "VisibleConditional": {
+      "type": "int",
+      "documentation": null
+    },
+    "VisibleParameter": {
+      "type": "int",
+      "documentation": null
+    },
+    "UsableConditional": {
+      "type": "int",
+      "documentation": null
+    },
+    "UsableParameter": {
+      "type": "int",
+      "documentation": null
+    },
+    "VisibleConditionalRegion": {
+      "type": "EBioRegionAutoSet",
+      "documentation": null
+    },
+    "VisibleConditionalPlot": {
+      "type": "EGalaxyObjectVisiblePlotAutoSet",
+      "documentation": null
+    },
+    "VisibleConditionalName": {
+      "type": "EGalaxyObjectVisibleAutoSet",
+      "documentation": null
+    },
+    "UsableConditionalRegion": {
+      "type": "EBioRegionAutoSet",
+      "documentation": null
+    },
+    "UsableConditionalPlot": {
+      "type": "EGalaxyObjectUsablePlotAutoSet",
+      "documentation": null
+    },
+    "UsableConditionalName": {
+      "type": "EGalaxyObjectUsableAutoSet",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "EnumerateChildren": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnumerateChildren()"
+    },
+    "GetChildren": {
+      "documentation": null,
+      "signature_members": {
+        "Children": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetChildren(out array<SFXGalaxyMapObject> Children)"
+    },
+    "RemoveChild": {
+      "documentation": null,
+      "signature_members": {
+        "Child": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveChild(SFXGalaxyMapObject Child)"
+    },
+    "AddChild": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXGalaxyMapObject",
+      "signature": "SFXGalaxyMapObject AddChild()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

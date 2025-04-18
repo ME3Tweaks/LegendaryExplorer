@@ -1,0 +1,73 @@
+{
+  "EnumValues": {
+    "EAID_LeftUp": {
+      "value": 0,
+      "documentation": null
+    },
+    "EAID_LeftDown": {
+      "value": 1,
+      "documentation": null
+    },
+    "EAID_RightUp": {
+      "value": 2,
+      "documentation": null
+    },
+    "EAID_RightDown": {
+      "value": 3,
+      "documentation": null
+    },
+    "EAID_ZeroUp": {
+      "value": 4,
+      "documentation": null
+    },
+    "EAID_ZeroDown": {
+      "value": 5,
+      "documentation": null
+    },
+    "EAID_ZeroLeft": {
+      "value": 6,
+      "documentation": null
+    },
+    "EAID_ZeroRight": {
+      "value": 7,
+      "documentation": null
+    },
+    "EAID_CellLU": {
+      "value": 8,
+      "documentation": null
+    },
+    "EAID_CellCU": {
+      "value": 9,
+      "documentation": null
+    },
+    "EAID_CellRU": {
+      "value": 10,
+      "documentation": null
+    },
+    "EAID_CellLC": {
+      "value": 11,
+      "documentation": null
+    },
+    "EAID_CellCC": {
+      "value": 12,
+      "documentation": null
+    },
+    "EAID_CellRC": {
+      "value": 13,
+      "documentation": null
+    },
+    "EAID_CellLD": {
+      "value": 14,
+      "documentation": null
+    },
+    "EAID_CellCD": {
+      "value": 15,
+      "documentation": null
+    },
+    "EAID_CellRD": {
+      "value": 16,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

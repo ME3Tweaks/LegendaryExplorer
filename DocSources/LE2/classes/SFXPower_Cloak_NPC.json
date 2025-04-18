@@ -1,0 +1,15 @@
+{
+  "parent": "SFXPower_Cloak",
+  "package": "SFXGameContent_Powers",
+  "variables": {},
+  "functions": {
+    "GetDamageMultiplier": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDamageMultiplier()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

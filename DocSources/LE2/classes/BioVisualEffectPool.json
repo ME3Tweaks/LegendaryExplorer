@@ -1,0 +1,105 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_EffectPool": {
+      "type": "BioVisualEffect",
+      "documentation": null
+    },
+    "m_VFXTemplate": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "m_nMinEffectsInPool": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nMaxEffectsInPool": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fInstancePoolRechargePeriod": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nInstancePoolMax": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nInstancePoolCurrent": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fInstancePoolTimeAccumulator": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fTimeTillDecay": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fDecayPeriod": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bInstancePoolEnabled": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PrimePoolEffects": {
+      "documentation": null,
+      "signature_members": {
+        "a_nNumEffects": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrimePoolEffects(optional int a_nNumEffects)"
+    },
+    "GetEffect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioVisualEffect",
+      "signature": "BioVisualEffect GetEffect()"
+    },
+    "SetPoolSize": {
+      "documentation": null,
+      "signature_members": {
+        "a_nMaxSize": {
+          "type": null,
+          "documentation": null
+        },
+        "a_nMinSize": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPoolSize(int a_nMaxSize, int a_nMinSize)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "a_oTemplate": {
+          "type": null,
+          "documentation": null
+        },
+        "nMaxNumEffects": {
+          "type": null,
+          "documentation": null
+        },
+        "nMinNumEffects": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(BioVFXTemplate a_oTemplate, int nMaxNumEffects, int nMinNumEffects)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

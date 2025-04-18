@@ -1,0 +1,119 @@
+{
+  "parent": "UIDataProvider_OnlinePlayerDataBase",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementCellProvider": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "FriendsList": {
+      "type": "OnlineFriend",
+      "documentation": null
+    },
+    "NickNameCol": {
+      "type": "string",
+      "documentation": null
+    },
+    "PresenceInfoCol": {
+      "type": "string",
+      "documentation": null
+    },
+    "FriendStateCol": {
+      "type": "string",
+      "documentation": null
+    },
+    "bIsOnlineCol": {
+      "type": "string",
+      "documentation": null
+    },
+    "bIsPlayingCol": {
+      "type": "string",
+      "documentation": null
+    },
+    "bIsPlayingThisGameCol": {
+      "type": "string",
+      "documentation": null
+    },
+    "bIsJoinableCol": {
+      "type": "string",
+      "documentation": null
+    },
+    "bHasVoiceSupportCol": {
+      "type": "string",
+      "documentation": null
+    },
+    "bHaveInvitedCol": {
+      "type": "string",
+      "documentation": null
+    },
+    "bHasInvitedYouCol": {
+      "type": "string",
+      "documentation": null
+    },
+    "OfflineText": {
+      "type": "string",
+      "documentation": null
+    },
+    "OnlineText": {
+      "type": "string",
+      "documentation": null
+    },
+    "AwayText": {
+      "type": "string",
+      "documentation": null
+    },
+    "BusyText": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "RefreshFriendsList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RefreshFriendsList()"
+    },
+    "OnLoginChange": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnLoginChange(byte LocalUserNum)"
+    },
+    "OnFriendsReadComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnFriendsReadComplete(bool bWasSuccessful)"
+    },
+    "OnUnregister": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUnregister()"
+    },
+    "OnRegister": {
+      "documentation": null,
+      "signature_members": {
+        "InPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRegister(LocalPlayer InPlayer)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

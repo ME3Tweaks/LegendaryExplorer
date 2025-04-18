@@ -1,0 +1,17 @@
+{
+  "parent": "AnimMetaData",
+  "package": "Engine",
+  "variables": {
+    "SkelControlNameList": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bFullControlOverController": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

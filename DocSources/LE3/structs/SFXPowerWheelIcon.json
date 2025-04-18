@@ -1,19 +1,19 @@
 {
   "Members": {
     "sPath": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sID": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "fBoundary": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bHenchIcon": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

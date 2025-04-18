@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "nStrRefID": {
+      "type": "int",
+      "documentation": null
+    },
+    "fLength": {
+      "type": "float",
+      "documentation": null
+    },
+    "bShowAtTop": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

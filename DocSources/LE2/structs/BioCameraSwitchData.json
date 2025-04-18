@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "nmExplicitCamera": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nmStageSpecificCam": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nIntimacy": {
+      "type": "int",
+      "documentation": null
+    },
+    "bForceCrossingLineOfAction": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseForNextCamera": {
+      "type": "bool",
+      "documentation": null
+    },
+    "eStandardCamera": {
+      "type": "EBioCommonStageCameras",
+      "documentation": null
+    },
+    "eStageSpecificCamera": {
+      "type": "EBioSwitchCamSpecific",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "parent": "SFXGameInterpTrackInst",
+  "package": "SFXGame",
+  "variables": {
+    "m_pActor": {
+      "type": "Actor",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

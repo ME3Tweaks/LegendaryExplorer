@@ -1,23 +1,23 @@
 {
   "Members": {
     "SeqID": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "ListID": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "FncOnEntry": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "SeqStep": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Label": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

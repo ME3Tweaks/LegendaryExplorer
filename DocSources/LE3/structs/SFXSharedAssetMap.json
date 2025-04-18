@@ -1,11 +1,11 @@
 {
   "Members": {
     "SharedFile": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "GFxResource": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     }
   },

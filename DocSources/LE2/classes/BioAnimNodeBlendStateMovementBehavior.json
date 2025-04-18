@@ -1,0 +1,85 @@
+{
+  "parent": "BioAnimNodeBlendStateBehavior",
+  "package": "SFXGame",
+  "variables": {
+    "BlendDownPerc": {
+      "type": "float",
+      "documentation": null
+    },
+    "ScaleByValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "WalkRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "RunRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendResetWeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fStartCheckTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nLastPhys": {
+      "type": "int",
+      "documentation": null
+    },
+    "bUseSprint": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseSnapshotSpeed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseSnapshotStartSpeed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseDirStartControl": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsStarted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInTakeoff": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInLanding": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPlayedAnim": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bRootMotionOn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "MovementBehavior": {
+      "type": "EBioAnimNodeBlendStateMovementBehavior",
+      "documentation": null
+    },
+    "AxisDir": {
+      "type": "EBioAnimNodeBlendStateMoveAxisDir",
+      "documentation": null
+    },
+    "AxisDirMode": {
+      "type": "EBioAnimNodeBlendStateMoveAxisDirMode",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

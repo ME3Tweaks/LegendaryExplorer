@@ -1,0 +1,63 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "StormSlowDown": {
+      "type": "InterpCurveFloat",
+      "documentation": null
+    },
+    "BP": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "Controller": {
+      "type": "BioPlayerController",
+      "documentation": null
+    },
+    "CustomTimeDilation": {
+      "type": "float",
+      "documentation": null
+    },
+    "PostStormDilationTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeSinceStorm": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "OnApplied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnApplied()"
+    },
+    "SlowTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SlowTime()"
+    },
+    "OnUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUpdate(float TimeDelta)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

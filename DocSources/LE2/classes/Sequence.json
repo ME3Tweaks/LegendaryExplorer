@@ -1,0 +1,149 @@
+{
+  "parent": "SequenceOp",
+  "package": "Engine",
+  "variables": {
+    "SequenceObjects": {
+      "type": "SequenceObject",
+      "documentation": null
+    },
+    "ActiveSequenceOps": {
+      "type": "SequenceOp",
+      "documentation": null
+    },
+    "NestedSequences": {
+      "type": "Sequence",
+      "documentation": null
+    },
+    "UnregisteredEvents": {
+      "type": "SequenceEvent",
+      "documentation": null
+    },
+    "DelayedActivatedOps": {
+      "type": "ActivateOp",
+      "documentation": null
+    },
+    "QueuedActivations": {
+      "type": "QueuedActivationInfo",
+      "documentation": null
+    },
+    "m_aBioNotifyOfStasis": {
+      "type": "SequenceObject",
+      "documentation": null
+    },
+    "m_aBioDynAnimSets": {
+      "type": "BioDynamicAnimSet",
+      "documentation": null
+    },
+    "m_aBioPreTickedSequences": {
+      "type": "Sequence",
+      "documentation": null
+    },
+    "LogFile": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "DefaultViewX": {
+      "type": "int",
+      "documentation": null
+    },
+    "DefaultViewY": {
+      "type": "int",
+      "documentation": null
+    },
+    "DefaultViewZoom": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nTotalRecursiveKismetCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nTotalRecursiveMemoryUsage": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nTotalRecursiveSequences": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nApproximateKismetLoadTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "IsLocalized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bBioForceReUpdate": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bInEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEnabled(bool bInEnabled)"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "FindSeqObjectsByName": {
+      "documentation": null,
+      "signature_members": {
+        "SeqObjName": {
+          "type": null,
+          "documentation": null
+        },
+        "bCheckComment": {
+          "type": null,
+          "documentation": null
+        },
+        "OutputObjects": {
+          "type": null,
+          "documentation": null
+        },
+        "bRecursive": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FindSeqObjectsByName(string SeqObjName, bool bCheckComment, out array<SequenceObject> OutputObjects, optional bool bRecursive)"
+    },
+    "FindSeqObjectsByClass": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredClass": {
+          "type": null,
+          "documentation": null
+        },
+        "bRecursive": {
+          "type": null,
+          "documentation": null
+        },
+        "OutputObjects": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FindSeqObjectsByClass(Class<SequenceObject> DesiredClass, bool bRecursive, out array<SequenceObject> OutputObjects)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

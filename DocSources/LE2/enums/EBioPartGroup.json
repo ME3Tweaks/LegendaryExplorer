@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "BIOPARTGROUP_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIOPARTGROUP_INHERIT_FROM_PARENT": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIOPARTGROUP_HEAD": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIOPARTGROUP_LEFT_LEG": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIOPARTGROUP_RIGHT_LEG": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIOPARTGROUP_LEFT_ARM": {
+      "value": 5,
+      "documentation": null
+    },
+    "BIOPARTGROUP_RIGHT_ARM": {
+      "value": 6,
+      "documentation": null
+    },
+    "BIOPARTGROUP_TORSO": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

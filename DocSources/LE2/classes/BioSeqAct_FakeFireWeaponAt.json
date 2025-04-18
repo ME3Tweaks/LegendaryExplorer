@@ -1,0 +1,37 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "oShooter": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "oTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "fDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "fRemainingTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bDisableVFX": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableDamage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDelayedLoad": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

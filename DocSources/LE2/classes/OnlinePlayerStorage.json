@@ -1,0 +1,421 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "ProfileSettings": {
+      "type": "OnlineProfileSetting",
+      "documentation": null
+    },
+    "ProfileMappings": {
+      "type": "SettingsPropertyPropertyMetaData",
+      "documentation": null
+    },
+    "__NotifySettingValueUpdated__Delegate": {
+      "type": "NotifySettingValueUpdated",
+      "documentation": null
+    },
+    "VersionNumber": {
+      "type": "int",
+      "documentation": null
+    },
+    "AsyncState": {
+      "type": "EOnlinePlayerStorageAsyncState",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetToDefaults": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetToDefaults()"
+    },
+    "AddSettingFloat": {
+      "documentation": null,
+      "signature_members": {
+        "SettingId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddSettingFloat(int SettingId)"
+    },
+    "AddSettingInt": {
+      "documentation": null,
+      "signature_members": {
+        "SettingId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddSettingInt(int SettingId)"
+    },
+    "GetRangedProfileSettingValue": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileId": {
+          "type": null,
+          "documentation": null
+        },
+        "OutValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetRangedProfileSettingValue(int ProfileId, out float OutValue)"
+    },
+    "SetRangedProfileSettingValue": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileId": {
+          "type": null,
+          "documentation": null
+        },
+        "NewValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetRangedProfileSettingValue(int ProfileId, float NewValue)"
+    },
+    "GetProfileSettingRange": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileId": {
+          "type": null,
+          "documentation": null
+        },
+        "OutMinValue": {
+          "type": null,
+          "documentation": null
+        },
+        "OutMaxValue": {
+          "type": null,
+          "documentation": null
+        },
+        "RangeIncrement": {
+          "type": null,
+          "documentation": null
+        },
+        "bFormatAsInt": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProfileSettingRange(int ProfileId, out float OutMinValue, out float OutMaxValue, out float RangeIncrement, out byte bFormatAsInt)"
+    },
+    "GetProfileSettingMappingIds": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileId": {
+          "type": null,
+          "documentation": null
+        },
+        "IDs": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProfileSettingMappingIds(int ProfileId, out array<int> IDs)"
+    },
+    "GetProfileSettingMappingType": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileId": {
+          "type": null,
+          "documentation": null
+        },
+        "OutType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProfileSettingMappingType(int ProfileId, out EPropertyValueMappingType OutType)"
+    },
+    "SetProfileSettingValueFloat": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetProfileSettingValueFloat(int ProfileSettingId, float Value)"
+    },
+    "SetProfileSettingValueInt": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetProfileSettingValueInt(int ProfileSettingId, int Value)"
+    },
+    "SetProfileSettingValueId": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetProfileSettingValueId(int ProfileSettingId, int Value)"
+    },
+    "GetProfileSettingValueFloat": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProfileSettingValueFloat(int ProfileSettingId, out float Value)"
+    },
+    "GetProfileSettingValueInt": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProfileSettingValueInt(int ProfileSettingId, out int Value)"
+    },
+    "GetProfileSettingValueId": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        },
+        "ValueId": {
+          "type": null,
+          "documentation": null
+        },
+        "ListIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProfileSettingValueId(int ProfileSettingId, out int ValueId, optional out int ListIndex)"
+    },
+    "SetProfileSettingValue": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        },
+        "NewValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetProfileSettingValue(int ProfileSettingId, const out string NewValue)"
+    },
+    "SetProfileSettingValueByName": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingName": {
+          "type": null,
+          "documentation": null
+        },
+        "NewValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetProfileSettingValueByName(Name ProfileSettingName, const out string NewValue)"
+    },
+    "GetProfileSettingValueByName": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingName": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProfileSettingValueByName(Name ProfileSettingName, out string Value)"
+    },
+    "GetProfileSettingValues": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        },
+        "Values": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProfileSettingValues(int ProfileSettingId, out array<Name> Values)"
+    },
+    "GetProfileSettingValueName": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetProfileSettingValueName(int ProfileSettingId)"
+    },
+    "GetProfileSettingValue": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        },
+        "ValueMapID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProfileSettingValue(int ProfileSettingId, out string Value, optional int ValueMapID)"
+    },
+    "IsProfileSettingIdMapped": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsProfileSettingIdMapped(int ProfileSettingId)"
+    },
+    "FindProfileMappingIndexByName": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindProfileMappingIndexByName(Name ProfileSettingName)"
+    },
+    "FindProfileMappingIndex": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindProfileMappingIndex(int ProfileSettingId)"
+    },
+    "FindProfileSettingIndex": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindProfileSettingIndex(int ProfileSettingId)"
+    },
+    "GetProfileSettingColumnHeader": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetProfileSettingColumnHeader(int ProfileSettingId)"
+    },
+    "GetProfileSettingName": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetProfileSettingName(int ProfileSettingId)"
+    },
+    "GetProfileSettingId": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingName": {
+          "type": null,
+          "documentation": null
+        },
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProfileSettingId(Name ProfileSettingName, out int ProfileSettingId)"
+    },
+    "NotifySettingValueUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "SettingName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifySettingValueUpdated(Name SettingName)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

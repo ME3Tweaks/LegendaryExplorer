@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "eBioAnimDirStart_ForwardRight": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimDirStart_ForwardLeft": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimDirStart_Right": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioAnimDirStart_Left": {
+      "value": 3,
+      "documentation": null
+    },
+    "eBioAnimDirStart_BackwardRight": {
+      "value": 4,
+      "documentation": null
+    },
+    "eBioAnimDirStart_BackwardLeft": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

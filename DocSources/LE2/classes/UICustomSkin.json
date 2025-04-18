@@ -1,0 +1,13 @@
+{
+  "parent": "UISkin",
+  "package": "Engine",
+  "variables": {
+    "WidgetStyleMap": {
+      "type": "Object",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

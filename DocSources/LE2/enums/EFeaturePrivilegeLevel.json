@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "FPL_Disabled": {
+      "value": 0,
+      "documentation": null
+    },
+    "FPL_EnabledFriendsOnly": {
+      "value": 1,
+      "documentation": null
+    },
+    "FPL_Enabled": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

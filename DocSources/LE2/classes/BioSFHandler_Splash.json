@@ -1,0 +1,142 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "fLegalTimeout": {
+      "type": "float",
+      "documentation": null
+    },
+    "fShowLegalTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "srNoLoginStart": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srConfirmNoLoginStart": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srCancelNoLoginStart": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "bPressedStart": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "StartTimeout": {
+      "documentation": null,
+      "signature_members": {
+        "bShowLegal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StartTimeout(bool bShowLegal)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": null,
+          "documentation": null
+        },
+        "lstArguments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    },
+    "AdvanceScreen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AdvanceScreen()"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "Callback_NoLoginStart": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_NoLoginStart(bool bAPressed, int context)"
+    },
+    "DisplayNoProfileConfirmation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisplayNoProfileConfirmation()"
+    },
+    "Callback_LoginComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bIsOpening": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_LoginComplete(bool bIsOpening)"
+    },
+    "CheckLogin": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckLogin()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

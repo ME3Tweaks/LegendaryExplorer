@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "m_EffectTemplate": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "bUsePowerTime": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

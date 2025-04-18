@@ -1,0 +1,260 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "m_sResourceCostColorHTML_CanAfford": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sResourceCostColorHTML_CantAfford": {
+      "type": "string",
+      "documentation": null
+    },
+    "__InputCallback__Delegate": {
+      "type": "InputCallback",
+      "documentation": null
+    },
+    "__UpdateCallback__Delegate": {
+      "type": "UpdateCallback",
+      "documentation": null
+    },
+    "__UpdateCallbackEx__Delegate": {
+      "type": "UpdateCallbackEx",
+      "documentation": null
+    },
+    "m_ChoiceData": {
+      "type": "SFXGameChoiceGUIData",
+      "documentation": null
+    },
+    "nInputCallbackContext": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_srResourceTextCredits": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srResourceTextEzo": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srResourceTextIridium": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srResourceTextPalladium": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srResourceTextPlatinum": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srResourceTextProbes": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srResourceCostFormat": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srResourceAvailFormat": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_nInfoScrollSpeed": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bStopScroll": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CleanUpDelegateReferences": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CleanUpDelegateReferences()"
+    },
+    "GameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GameSessionEnded()"
+    },
+    "GetResourceCount": {
+      "documentation": null,
+      "signature_members": {
+        "nResource": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetResourceCount(int nResource)"
+    },
+    "onExIntUpdateOptionValues": {
+      "documentation": null,
+      "signature_members": {
+        "nResource": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "onExIntUpdateOptionValues(int nResource)"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "ScrollText": {
+      "documentation": null,
+      "signature_members": {
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ScrollText(float fValue)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "GetResourceText": {
+      "documentation": null,
+      "signature_members": {
+        "eResource": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetResourceText(EInventoryResourceTypes eResource)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "ChoiceData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(SFXGameChoiceGUIData ChoiceData)"
+    },
+    "HideChoiceGUI": {
+      "documentation": null,
+      "signature_members": {
+        "bRemove": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HideChoiceGUI(optional bool bRemove)"
+    },
+    "ShowChoiceGUI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowChoiceGUI()"
+    },
+    "SetUpdateDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "pDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetUpdateDelegate(delegate<UpdateCallback> pDelegate)"
+    },
+    "SetInputDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "pDelegate": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInputDelegate(delegate<InputCallback> pDelegate, optional int nContext)"
+    },
+    "UpdateCallbackEx": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        },
+        "oChoiceGUI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCallbackEx(float fDeltaT, Object oChoiceGUI)"
+    },
+    "UpdateCallback": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        },
+        "oChoiceGUI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCallback(float fDeltaT, BioSFHandler_ChoiceGUI oChoiceGUI)"
+    },
+    "InputCallback": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InputCallback(bool bAPressed, int nContext)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

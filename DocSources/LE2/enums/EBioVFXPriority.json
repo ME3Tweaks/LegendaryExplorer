@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "BIO_VFX_PRIORITY_MIN": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_VFX_PRIORITY_LOW": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_VFX_PRIORITY_MEDIUM": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_VFX_PRIORITY_HIGH": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_VFX_PRIORITY_ALWAYS": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

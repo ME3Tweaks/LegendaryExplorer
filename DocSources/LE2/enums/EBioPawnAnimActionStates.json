@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "PAAS_Posture": {
+      "value": 0,
+      "documentation": null
+    },
+    "PAAS_Dying": {
+      "value": 1,
+      "documentation": null
+    },
+    "PAAS_Death": {
+      "value": 2,
+      "documentation": null
+    },
+    "PAAS_Matinee": {
+      "value": 3,
+      "documentation": null
+    },
+    "PAAS_Recover": {
+      "value": 4,
+      "documentation": null
+    },
+    "PAAS_Gestures": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "OPPO_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "OPPO_OnlineService": {
+      "value": 1,
+      "documentation": null
+    },
+    "OPPO_Game": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

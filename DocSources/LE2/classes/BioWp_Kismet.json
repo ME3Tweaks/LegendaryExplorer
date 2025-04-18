@@ -1,0 +1,20 @@
+{
+  "parent": "BioPathPoint",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "OnCreatureReachedWayPoint": {
+      "documentation": null,
+      "signature_members": {
+        "PathFindingCreature": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnCreatureReachedWayPoint(Pawn PathFindingCreature)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,19 +1,19 @@
 {
   "Members": {
     "EventName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "EventId": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "MaxValue": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "MappingType": {
-      "type": null,
+      "type": "EPropertyValueMappingType",
       "documentation": null
     }
   },

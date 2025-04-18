@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "pWeapon": {
+      "type": "Object",
+      "documentation": null
+    },
+    "bSpawned": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,41 @@
+{
+  "parent": "Texture",
+  "package": "Engine",
+  "variables": {
+    "SourceRegions": {
+      "type": "SourceTexture2DRegion",
+      "documentation": null
+    },
+    "MaxTextureSize": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ResetSourceRegions": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetSourceRegions()"
+    },
+    "UpdateCompositeTexture": {
+      "documentation": null,
+      "signature_members": {
+        "NumMipsToGenerate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCompositeTexture(int NumMipsToGenerate)"
+    },
+    "SourceTexturesFullyStreamedIn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool SourceTexturesFullyStreamedIn()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

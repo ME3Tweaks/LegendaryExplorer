@@ -1,0 +1,26 @@
+{
+  "parent": "SFXSelectionModule",
+  "package": "SFXGame",
+  "variables": {
+    "selectable": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "IsEnglishBuild": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsEnglishBuild()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

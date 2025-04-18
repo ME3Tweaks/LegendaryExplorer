@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "ItemId": {
+      "type": "int",
+      "documentation": null
+    },
+    "Manufacturer": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlotConditionalID": {
+      "type": "int",
+      "documentation": null
+    },
+    "sophistication": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

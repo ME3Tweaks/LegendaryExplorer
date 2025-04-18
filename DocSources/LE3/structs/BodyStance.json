@@ -1,7 +1,7 @@
 {
   "Members": {
     "AnimName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     }
   },

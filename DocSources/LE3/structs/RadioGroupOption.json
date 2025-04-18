@@ -1,39 +1,39 @@
 {
   "Members": {
     "TelemetryKey": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "AddTelemFunc": {
-      "type": null,
+      "type": "AddTelem",
       "documentation": null
     },
     "UClass": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Value0": {
-      "type": null,
+      "type": "OptionText",
       "documentation": null
     },
     "Value1": {
-      "type": null,
+      "type": "OptionText",
       "documentation": null
     },
     "Label": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Story": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "DefaultVal": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Id": {
-      "type": null,
+      "type": "EGuiOptions",
       "documentation": null
     }
   },

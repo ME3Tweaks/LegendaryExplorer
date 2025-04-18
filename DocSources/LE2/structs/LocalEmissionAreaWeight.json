@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "EmissionAreaIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "Weight": {
+      "type": "float",
+      "documentation": null
+    },
+    "SpawnMeshIndex": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

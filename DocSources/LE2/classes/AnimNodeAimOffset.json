@@ -1,0 +1,88 @@
+{
+  "parent": "AnimNodeBlendBase",
+  "package": "Engine",
+  "variables": {
+    "RequiredBones": {
+      "type": "byte",
+      "documentation": null
+    },
+    "AimCpntBoneIndex": {
+      "type": "byte",
+      "documentation": null
+    },
+    "AimCpntIndexLUT": {
+      "type": "byte",
+      "documentation": null
+    },
+    "Profiles": {
+      "type": "AimOffsetProfile",
+      "documentation": null
+    },
+    "Aim": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "AngleOffset": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "TemplateNode": {
+      "type": "AnimNodeAimOffset",
+      "documentation": null
+    },
+    "PassThroughAtOrAboveLOD": {
+      "type": "int",
+      "documentation": null
+    },
+    "CurrentProfileIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "bForceAimDir": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBakeFromAnimations": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPassThroughWhenNotRendered": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSynchronizeNodesInEditor": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ForcedAimDir": {
+      "type": "EAnimAimDir",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetActiveProfileByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetActiveProfileByIndex(int ProfileIndex)"
+    },
+    "SetActiveProfileByName": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetActiveProfileByName(Name ProfileName)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

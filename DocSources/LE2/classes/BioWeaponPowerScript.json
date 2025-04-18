@@ -1,0 +1,166 @@
+{
+  "parent": "BioPowerScriptDesign",
+  "package": "SFXGameContent_Powers",
+  "variables": {
+    "WeaponPowerEffectClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "oTracer": {
+      "type": "StaticMesh",
+      "documentation": null
+    },
+    "oImpactVFX": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "oMuzzleVFX": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "oMuzzleLoopVFX": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "m_oCaster": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "NotRecommended_HeavyWeaponEquipped": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "bModifyTracer": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bModifyImpactVFX": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bModifyMuzzle": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ShouldUsePower": {
+      "documentation": null,
+      "signature_members": {
+        "Caster": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "sOptionalInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldUsePower(Actor Caster, Actor Target, out string sOptionalInfo)"
+    },
+    "ApplyPowerEffects": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "oWeapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyPowerEffects(BioPawn oPawn, SFXWeapon oWeapon)"
+    },
+    "SetWeaponPower": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "oWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "bOverrideCurrentPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetWeaponPower(BioPawn oPawn, SFXWeapon oWeapon, bool bOverrideCurrentPower)"
+    },
+    "ReloadAmmoPower": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReloadAmmoPower(BioPawn Target, SFXWeapon Weapon)"
+    },
+    "StartPhase": {
+      "documentation": null,
+      "signature_members": {
+        "ePhase": {
+          "type": null,
+          "documentation": null
+        },
+        "oCaster": {
+          "type": null,
+          "documentation": null
+        },
+        "fDuration": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartPhase(EBioPowerState ePhase, Actor oCaster, float fDuration)"
+    },
+    "ApplyToSquadMembers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ApplyToSquadMembers()"
+    },
+    "GetDuration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDuration()"
+    },
+    "GetElapsedTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetElapsedTime()"
+    },
+    "CanStartPower": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanStartPower(Actor oCaster)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

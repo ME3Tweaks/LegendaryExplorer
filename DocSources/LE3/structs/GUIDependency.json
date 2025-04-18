@@ -1,19 +1,19 @@
 {
   "Members": {
     "OnDependency": {
-      "type": null,
+      "type": "OnDependencyEvent",
       "documentation": null
     },
     "SourceGUI": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "DependentGUI": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "OptContext": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

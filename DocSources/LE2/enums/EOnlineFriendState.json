@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "OFS_Offline": {
+      "value": 0,
+      "documentation": null
+    },
+    "OFS_Online": {
+      "value": 1,
+      "documentation": null
+    },
+    "OFS_Away": {
+      "value": 2,
+      "documentation": null
+    },
+    "OFS_Busy": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

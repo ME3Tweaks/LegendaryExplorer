@@ -1,0 +1,26 @@
+{
+  "parent": "SFXWeapon",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "ScaleWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "Level": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ScaleWeapon(int Level)"
+    },
+    "CalculateStaticBonus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float CalculateStaticBonus()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

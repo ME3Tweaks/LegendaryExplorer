@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "SF_MSS_Correct": {
+      "value": 0,
+      "documentation": null
+    },
+    "SF_MSS_Normal": {
+      "value": 1,
+      "documentation": null
+    },
+    "SF_MSS_Hairline": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

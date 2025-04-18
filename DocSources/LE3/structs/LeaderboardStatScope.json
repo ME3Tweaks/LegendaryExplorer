@@ -1,7 +1,7 @@
 {
   "Members": {
     "KeyScopePairs": {
-      "type": null,
+      "type": "LeaderboardStatScopeValuePair",
       "documentation": null
     }
   },

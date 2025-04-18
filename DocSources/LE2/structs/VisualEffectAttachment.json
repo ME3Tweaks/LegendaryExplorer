@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "m_States": {
+      "type": "VFXAPLStatePair",
+      "documentation": null
+    },
+    "m_oEffectTemplate": {
+      "type": "BioVFXTemplate",
+      "documentation": null
+    },
+    "m_nmSocket": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

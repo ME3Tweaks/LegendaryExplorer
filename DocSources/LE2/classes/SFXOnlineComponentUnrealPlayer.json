@@ -1,0 +1,1780 @@
+{
+  "parent": "SFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "VfTable_IISFXOnlineComponent": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "CachedAchievementList": {
+      "type": "SFXCachedAchievements",
+      "documentation": null
+    },
+    "ProfileCache": {
+      "type": "SFXProfileSettingsCache",
+      "documentation": null
+    },
+    "PlayerStorageCache": {
+      "type": "OnlinePlayerStorage",
+      "documentation": null
+    },
+    "PerUserDelegates": {
+      "type": "BioPerUserDelegateLists",
+      "documentation": null
+    },
+    "LocalPlayerStorageReadDelegates": {
+      "type": "OnReadPlayerStorageComplete",
+      "documentation": null
+    },
+    "LocalPlayerStorageWriteDelegates": {
+      "type": "OnWritePlayerStorageComplete",
+      "documentation": null
+    },
+    "RemotePlayerStorageReadDelegates": {
+      "type": "OnReadPlayerStorageForNetIdComplete",
+      "documentation": null
+    },
+    "LoginCancelledDelegates": {
+      "type": "OnLoginCancelled",
+      "documentation": null
+    },
+    "LoginFailedDelegates": {
+      "type": "OnLoginFailed",
+      "documentation": null
+    },
+    "LogoutCompletedDelegates": {
+      "type": "OnLogoutCompleted",
+      "documentation": null
+    },
+    "LoginChangeDelegates": {
+      "type": "OnLoginChange",
+      "documentation": null
+    },
+    "PlayerLoginStatusDelegates": {
+      "type": "LoginStatusDelegates",
+      "documentation": null
+    },
+    "ProfileDataDirectory": {
+      "type": "string",
+      "documentation": null
+    },
+    "ProfileDataExtension": {
+      "type": "string",
+      "documentation": null
+    },
+    "LoggedInPlayerName": {
+      "type": "string",
+      "documentation": null
+    },
+    "__OnProfileDataChanged__Delegate": {
+      "type": "OnProfileDataChanged",
+      "documentation": null
+    },
+    "__OnLoginChange__Delegate": {
+      "type": "OnLoginChange",
+      "documentation": null
+    },
+    "__OnLoginCancelled__Delegate": {
+      "type": "OnLoginCancelled",
+      "documentation": null
+    },
+    "__OnMutingChange__Delegate": {
+      "type": "OnMutingChange",
+      "documentation": null
+    },
+    "__OnFriendsChange__Delegate": {
+      "type": "OnFriendsChange",
+      "documentation": null
+    },
+    "__OnLoginFailed__Delegate": {
+      "type": "OnLoginFailed",
+      "documentation": null
+    },
+    "__OnLogoutCompleted__Delegate": {
+      "type": "OnLogoutCompleted",
+      "documentation": null
+    },
+    "__OnLoginStatusChange__Delegate": {
+      "type": "OnLoginStatusChange",
+      "documentation": null
+    },
+    "__OnReadProfileSettingsComplete__Delegate": {
+      "type": "OnReadProfileSettingsComplete",
+      "documentation": null
+    },
+    "__OnWriteProfileSettingsComplete__Delegate": {
+      "type": "OnWriteProfileSettingsComplete",
+      "documentation": null
+    },
+    "__OnReadPlayerStorageComplete__Delegate": {
+      "type": "OnReadPlayerStorageComplete",
+      "documentation": null
+    },
+    "__OnReadPlayerStorageForNetIdComplete__Delegate": {
+      "type": "OnReadPlayerStorageForNetIdComplete",
+      "documentation": null
+    },
+    "__OnWritePlayerStorageComplete__Delegate": {
+      "type": "OnWritePlayerStorageComplete",
+      "documentation": null
+    },
+    "__OnReadFriendsComplete__Delegate": {
+      "type": "OnReadFriendsComplete",
+      "documentation": null
+    },
+    "__OnKeyboardInputComplete__Delegate": {
+      "type": "OnKeyboardInputComplete",
+      "documentation": null
+    },
+    "__OnAddFriendByNameComplete__Delegate": {
+      "type": "OnAddFriendByNameComplete",
+      "documentation": null
+    },
+    "__OnFriendInviteReceived__Delegate": {
+      "type": "OnFriendInviteReceived",
+      "documentation": null
+    },
+    "__OnReceivedGameInvite__Delegate": {
+      "type": "OnReceivedGameInvite",
+      "documentation": null
+    },
+    "__OnJoinFriendGameComplete__Delegate": {
+      "type": "OnJoinFriendGameComplete",
+      "documentation": null
+    },
+    "__OnFriendMessageReceived__Delegate": {
+      "type": "OnFriendMessageReceived",
+      "documentation": null
+    },
+    "__OnReadAchievementsComplete__Delegate": {
+      "type": "OnReadAchievementsComplete",
+      "documentation": null
+    },
+    "__OnUnlockAchievementComplete__Delegate": {
+      "type": "OnUnlockAchievementComplete",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ClearUnlockAchievementCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "UnlockAchievementCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearUnlockAchievementCompleteDelegate(byte LocalUserNum, delegate<OnUnlockAchievementComplete> UnlockAchievementCompleteDelegate)"
+    },
+    "AddUnlockAchievementCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "UnlockAchievementCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddUnlockAchievementCompleteDelegate(byte LocalUserNum, delegate<OnUnlockAchievementComplete> UnlockAchievementCompleteDelegate)"
+    },
+    "OnUnlockAchievementComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUnlockAchievementComplete(bool bWasSuccessful)"
+    },
+    "UnlockAchievement": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "AchievementId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UnlockAchievement(byte LocalUserNum, int AchievementId)"
+    },
+    "GetAchievements": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "Achievements": {
+          "type": null,
+          "documentation": null
+        },
+        "TitleId": {
+          "type": null,
+          "documentation": null
+        },
+        "SetIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EOnlineEnumerationReadState",
+      "signature": "EOnlineEnumerationReadState GetAchievements(byte LocalUserNum, out array<AchievementDetails> Achievements, optional int TitleId, optional int SetIndex)"
+    },
+    "ClearReadAchievementsCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "ReadAchievementsCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearReadAchievementsCompleteDelegate(byte LocalUserNum, delegate<OnReadAchievementsComplete> ReadAchievementsCompleteDelegate)"
+    },
+    "AddReadAchievementsCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "ReadAchievementsCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddReadAchievementsCompleteDelegate(byte LocalUserNum, delegate<OnReadAchievementsComplete> ReadAchievementsCompleteDelegate)"
+    },
+    "OnReadAchievementsComplete": {
+      "documentation": null,
+      "signature_members": {
+        "TitleId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnReadAchievementsComplete(int TitleId)"
+    },
+    "ReadAchievements": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "TitleId": {
+          "type": null,
+          "documentation": null
+        },
+        "bShouldReadText": {
+          "type": null,
+          "documentation": null
+        },
+        "bShouldReadImages": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadAchievements(byte LocalUserNum, optional int TitleId, optional bool bShouldReadText, optional bool bShouldReadImages)"
+    },
+    "DeleteMessage": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "MessageIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DeleteMessage(byte LocalUserNum, int MessageIndex)"
+    },
+    "ClearFriendMessageReceivedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "MessageDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearFriendMessageReceivedDelegate(byte LocalUserNum, delegate<OnFriendMessageReceived> MessageDelegate)"
+    },
+    "AddFriendMessageReceivedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "MessageDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddFriendMessageReceivedDelegate(byte LocalUserNum, delegate<OnFriendMessageReceived> MessageDelegate)"
+    },
+    "OnFriendMessageReceived": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "SendingPlayer": {
+          "type": null,
+          "documentation": null
+        },
+        "SendingNick": {
+          "type": null,
+          "documentation": null
+        },
+        "Message": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnFriendMessageReceived(byte LocalUserNum, UniqueNetId SendingPlayer, string SendingNick, string Message)"
+    },
+    "GetFriendMessages": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "FriendMessages": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetFriendMessages(byte LocalUserNum, out array<OnlineFriendMessage> FriendMessages)"
+    },
+    "ClearJoinFriendGameCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "JoinFriendGameCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearJoinFriendGameCompleteDelegate(delegate<OnJoinFriendGameComplete> JoinFriendGameCompleteDelegate)"
+    },
+    "AddJoinFriendGameCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "JoinFriendGameCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddJoinFriendGameCompleteDelegate(delegate<OnJoinFriendGameComplete> JoinFriendGameCompleteDelegate)"
+    },
+    "OnJoinFriendGameComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnJoinFriendGameComplete(bool bWasSuccessful)"
+    },
+    "JoinFriendGame": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "Friend": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool JoinFriendGame(byte LocalUserNum, UniqueNetId Friend)"
+    },
+    "ClearReceivedGameInviteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "ReceivedGameInviteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearReceivedGameInviteDelegate(byte LocalUserNum, delegate<OnReceivedGameInvite> ReceivedGameInviteDelegate)"
+    },
+    "AddReceivedGameInviteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "ReceivedGameInviteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddReceivedGameInviteDelegate(byte LocalUserNum, delegate<OnReceivedGameInvite> ReceivedGameInviteDelegate)"
+    },
+    "OnReceivedGameInvite": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "InviterName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnReceivedGameInvite(byte LocalUserNum, string InviterName)"
+    },
+    "SendGameInviteToFriends": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "Friends": {
+          "type": null,
+          "documentation": null
+        },
+        "Text": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SendGameInviteToFriends(byte LocalUserNum, array<UniqueNetId> Friends, optional string Text)"
+    },
+    "SendGameInviteToFriend": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "Friend": {
+          "type": null,
+          "documentation": null
+        },
+        "Text": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SendGameInviteToFriend(byte LocalUserNum, UniqueNetId Friend, optional string Text)"
+    },
+    "SendMessageToFriend": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "Friend": {
+          "type": null,
+          "documentation": null
+        },
+        "Message": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SendMessageToFriend(byte LocalUserNum, UniqueNetId Friend, string Message)"
+    },
+    "ClearFriendInviteReceivedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "InviteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearFriendInviteReceivedDelegate(byte LocalUserNum, delegate<OnFriendInviteReceived> InviteDelegate)"
+    },
+    "AddFriendInviteReceivedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "InviteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddFriendInviteReceivedDelegate(byte LocalUserNum, delegate<OnFriendInviteReceived> InviteDelegate)"
+    },
+    "OnFriendInviteReceived": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "RequestingPlayer": {
+          "type": null,
+          "documentation": null
+        },
+        "RequestingNick": {
+          "type": null,
+          "documentation": null
+        },
+        "Message": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnFriendInviteReceived(byte LocalUserNum, UniqueNetId RequestingPlayer, string RequestingNick, string Message)"
+    },
+    "RemoveFriend": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "FormerFriend": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveFriend(byte LocalUserNum, UniqueNetId FormerFriend)"
+    },
+    "DenyFriendInvite": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "RequestingPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DenyFriendInvite(byte LocalUserNum, UniqueNetId RequestingPlayer)"
+    },
+    "AcceptFriendInvite": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "RequestingPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AcceptFriendInvite(byte LocalUserNum, UniqueNetId RequestingPlayer)"
+    },
+    "ClearAddFriendByNameCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "FriendDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearAddFriendByNameCompleteDelegate(byte LocalUserNum, delegate<OnAddFriendByNameComplete> FriendDelegate)"
+    },
+    "AddAddFriendByNameCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "FriendDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddAddFriendByNameCompleteDelegate(byte LocalUserNum, delegate<OnAddFriendByNameComplete> FriendDelegate)"
+    },
+    "OnAddFriendByNameComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnAddFriendByNameComplete(bool bWasSuccessful)"
+    },
+    "AddFriendByName": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "FriendName": {
+          "type": null,
+          "documentation": null
+        },
+        "Message": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddFriendByName(byte LocalUserNum, string FriendName, optional string Message)"
+    },
+    "AddFriend": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "NewFriend": {
+          "type": null,
+          "documentation": null
+        },
+        "Message": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddFriend(byte LocalUserNum, UniqueNetId NewFriend, optional string Message)"
+    },
+    "GetKeyboardInputResults": {
+      "documentation": null,
+      "signature_members": {
+        "bWasCanceled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetKeyboardInputResults(out byte bWasCanceled)"
+    },
+    "ClearKeyboardInputDoneDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "InputDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearKeyboardInputDoneDelegate(delegate<OnKeyboardInputComplete> InputDelegate)"
+    },
+    "AddKeyboardInputDoneDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "InputDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddKeyboardInputDoneDelegate(delegate<OnKeyboardInputComplete> InputDelegate)"
+    },
+    "OnKeyboardInputComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnKeyboardInputComplete(bool bWasSuccessful)"
+    },
+    "ShowKeyboardUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "TitleText": {
+          "type": null,
+          "documentation": null
+        },
+        "DescriptionText": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsPassword": {
+          "type": null,
+          "documentation": null
+        },
+        "bShouldValidate": {
+          "type": null,
+          "documentation": null
+        },
+        "DefaultText": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxResultLength": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowKeyboardUI(byte LocalUserNum, string TitleText, string DescriptionText, optional bool bIsPassword, optional bool bShouldValidate, optional string DefaultText, optional int MaxResultLength)"
+    },
+    "SetOnlineStatus": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "StatusId": {
+          "type": null,
+          "documentation": null
+        },
+        "LocalizedStringSettings": {
+          "type": null,
+          "documentation": null
+        },
+        "Properties": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOnlineStatus(byte LocalUserNum, int StatusId, const out array<LocalizedStringSetting> LocalizedStringSettings, const out array<SettingsProperty> Properties)"
+    },
+    "GetFriendsList": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "Friends": {
+          "type": null,
+          "documentation": null
+        },
+        "Count": {
+          "type": null,
+          "documentation": null
+        },
+        "StartingAt": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EOnlineEnumerationReadState",
+      "signature": "EOnlineEnumerationReadState GetFriendsList(byte LocalUserNum, out array<OnlineFriend> Friends, optional int Count, optional int StartingAt)"
+    },
+    "ClearReadFriendsCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "ReadFriendsCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearReadFriendsCompleteDelegate(byte LocalUserNum, delegate<OnReadFriendsComplete> ReadFriendsCompleteDelegate)"
+    },
+    "AddReadFriendsCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "ReadFriendsCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddReadFriendsCompleteDelegate(byte LocalUserNum, delegate<OnReadFriendsComplete> ReadFriendsCompleteDelegate)"
+    },
+    "OnReadFriendsComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnReadFriendsComplete(bool bWasSuccessful)"
+    },
+    "ReadFriendsList": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "Count": {
+          "type": null,
+          "documentation": null
+        },
+        "StartingAt": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadFriendsList(byte LocalUserNum, optional int Count, optional int StartingAt)"
+    },
+    "ClearWritePlayerStorageCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "WritePlayerStorageCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearWritePlayerStorageCompleteDelegate(byte LocalUserNum, delegate<OnWritePlayerStorageComplete> WritePlayerStorageCompleteDelegate)"
+    },
+    "AddWritePlayerStorageCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "WritePlayerStorageCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddWritePlayerStorageCompleteDelegate(byte LocalUserNum, delegate<OnWritePlayerStorageComplete> WritePlayerStorageCompleteDelegate)"
+    },
+    "OnWritePlayerStorageComplete": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnWritePlayerStorageComplete(byte LocalUserNum, bool bWasSuccessful)"
+    },
+    "WritePlayerStorage": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerStorage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool WritePlayerStorage(byte LocalUserNum, OnlinePlayerStorage PlayerStorage)"
+    },
+    "GetPlayerStorage": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "OnlinePlayerStorage",
+      "signature": "OnlinePlayerStorage GetPlayerStorage(byte LocalUserNum)"
+    },
+    "ClearReadPlayerStorageForNetIdCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "NetId": {
+          "type": null,
+          "documentation": null
+        },
+        "ReadPlayerStorageForNetIdCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearReadPlayerStorageForNetIdCompleteDelegate(UniqueNetId NetId, delegate<OnReadPlayerStorageForNetIdComplete> ReadPlayerStorageForNetIdCompleteDelegate)"
+    },
+    "AddReadPlayerStorageForNetIdCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "NetId": {
+          "type": null,
+          "documentation": null
+        },
+        "ReadPlayerStorageForNetIdCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddReadPlayerStorageForNetIdCompleteDelegate(UniqueNetId NetId, delegate<OnReadPlayerStorageForNetIdComplete> ReadPlayerStorageForNetIdCompleteDelegate)"
+    },
+    "OnReadPlayerStorageForNetIdComplete": {
+      "documentation": null,
+      "signature_members": {
+        "NetId": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnReadPlayerStorageForNetIdComplete(UniqueNetId NetId, bool bWasSuccessful)"
+    },
+    "ReadPlayerStorageForNetId": {
+      "documentation": null,
+      "signature_members": {
+        "NetId": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerStorage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadPlayerStorageForNetId(UniqueNetId NetId, OnlinePlayerStorage PlayerStorage)"
+    },
+    "ClearReadPlayerStorageCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "ReadPlayerStorageCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearReadPlayerStorageCompleteDelegate(byte LocalUserNum, delegate<OnReadPlayerStorageComplete> ReadPlayerStorageCompleteDelegate)"
+    },
+    "AddReadPlayerStorageCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "ReadPlayerStorageCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddReadPlayerStorageCompleteDelegate(byte LocalUserNum, delegate<OnReadPlayerStorageComplete> ReadPlayerStorageCompleteDelegate)"
+    },
+    "OnReadPlayerStorageComplete": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnReadPlayerStorageComplete(byte LocalUserNum, bool bWasSuccessful)"
+    },
+    "ReadPlayerStorage": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerStorage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadPlayerStorage(byte LocalUserNum, OnlinePlayerStorage PlayerStorage)"
+    },
+    "ClearWriteProfileSettingsCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "WriteProfileSettingsCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearWriteProfileSettingsCompleteDelegate(byte LocalUserNum, delegate<OnWriteProfileSettingsComplete> WriteProfileSettingsCompleteDelegate)"
+    },
+    "AddWriteProfileSettingsCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "WriteProfileSettingsCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddWriteProfileSettingsCompleteDelegate(byte LocalUserNum, delegate<OnWriteProfileSettingsComplete> WriteProfileSettingsCompleteDelegate)"
+    },
+    "OnWriteProfileSettingsComplete": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnWriteProfileSettingsComplete(byte LocalUserNum, bool bWasSuccessful)"
+    },
+    "WriteProfileSettings": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "ProfileSettings": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsTrilogyProfile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool WriteProfileSettings(byte LocalUserNum, OnlineProfileSettings ProfileSettings, optional bool bIsTrilogyProfile)"
+    },
+    "GetProfileSettings": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "OnlineProfileSettings",
+      "signature": "OnlineProfileSettings GetProfileSettings(byte LocalUserNum)"
+    },
+    "ClearReadProfileSettingsCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "ReadProfileSettingsCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearReadProfileSettingsCompleteDelegate(byte LocalUserNum, delegate<OnReadProfileSettingsComplete> ReadProfileSettingsCompleteDelegate)"
+    },
+    "AddReadProfileSettingsCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "ReadProfileSettingsCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddReadProfileSettingsCompleteDelegate(byte LocalUserNum, delegate<OnReadProfileSettingsComplete> ReadProfileSettingsCompleteDelegate)"
+    },
+    "OnReadProfileSettingsComplete": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnReadProfileSettingsComplete(byte LocalUserNum, bool bWasSuccessful)"
+    },
+    "ReadProfileSettings": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "ProfileSettings": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsTrilogyProfile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadProfileSettings(byte LocalUserNum, OnlineProfileSettings ProfileSettings, optional bool bIsTrilogyProfile)"
+    },
+    "ClearFriendsChangeDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "FriendsDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearFriendsChangeDelegate(byte LocalUserNum, delegate<OnFriendsChange> FriendsDelegate)"
+    },
+    "AddFriendsChangeDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "FriendsDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddFriendsChangeDelegate(byte LocalUserNum, delegate<OnFriendsChange> FriendsDelegate)"
+    },
+    "ClearMutingChangeDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "MutingDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearMutingChangeDelegate(delegate<OnMutingChange> MutingDelegate)"
+    },
+    "AddMutingChangeDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "MutingDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddMutingChangeDelegate(delegate<OnMutingChange> MutingDelegate)"
+    },
+    "ClearLoginCancelledDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "CancelledDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearLoginCancelledDelegate(delegate<OnLoginCancelled> CancelledDelegate)"
+    },
+    "AddLoginCancelledDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "CancelledDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddLoginCancelledDelegate(delegate<OnLoginCancelled> CancelledDelegate)"
+    },
+    "ClearLoginStatusChangeDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LoginStatusDelegate": {
+          "type": null,
+          "documentation": null
+        },
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearLoginStatusChangeDelegate(delegate<OnLoginStatusChange> LoginStatusDelegate, byte LocalUserNum)"
+    },
+    "AddLoginStatusChangeDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LoginStatusDelegate": {
+          "type": null,
+          "documentation": null
+        },
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddLoginStatusChangeDelegate(delegate<OnLoginStatusChange> LoginStatusDelegate, byte LocalUserNum)"
+    },
+    "OnLoginStatusChange": {
+      "documentation": null,
+      "signature_members": {
+        "NewStatus": {
+          "type": null,
+          "documentation": null
+        },
+        "NewId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnLoginStatusChange(ELoginStatus NewStatus, UniqueNetId NewId)"
+    },
+    "ClearLoginChangeDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LoginDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearLoginChangeDelegate(delegate<OnLoginChange> LoginDelegate)"
+    },
+    "AddLoginChangeDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LoginDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddLoginChangeDelegate(delegate<OnLoginChange> LoginDelegate)"
+    },
+    "ShowFriendsUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowFriendsUI(byte LocalUserNum)"
+    },
+    "IsMuted": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsMuted(byte LocalUserNum, UniqueNetId PlayerID)"
+    },
+    "AreAnyFriends": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "Query": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AreAnyFriends(byte LocalUserNum, out array<FriendsQuery> Query)"
+    },
+    "IsFriend": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsFriend(byte LocalUserNum, UniqueNetId PlayerID)"
+    },
+    "CanShowPresenceInformation": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EFeaturePrivilegeLevel",
+      "signature": "EFeaturePrivilegeLevel CanShowPresenceInformation(byte LocalUserNum)"
+    },
+    "CanViewPlayerProfiles": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EFeaturePrivilegeLevel",
+      "signature": "EFeaturePrivilegeLevel CanViewPlayerProfiles(byte LocalUserNum)"
+    },
+    "CanPurchaseContent": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EFeaturePrivilegeLevel",
+      "signature": "EFeaturePrivilegeLevel CanPurchaseContent(byte LocalUserNum)"
+    },
+    "CanDownloadUserContent": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EFeaturePrivilegeLevel",
+      "signature": "EFeaturePrivilegeLevel CanDownloadUserContent(byte LocalUserNum)"
+    },
+    "CanCommunicate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EFeaturePrivilegeLevel",
+      "signature": "EFeaturePrivilegeLevel CanCommunicate(byte LocalUserNum)"
+    },
+    "CanPlayOnline": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EFeaturePrivilegeLevel",
+      "signature": "EFeaturePrivilegeLevel CanPlayOnline(byte LocalUserNum)"
+    },
+    "IsLocalLogin": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsLocalLogin(byte LocalUserNum)"
+    },
+    "IsGuestLogin": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsGuestLogin(byte LocalUserNum)"
+    },
+    "GetPlayerNickname": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetPlayerNickname(byte LocalUserNum)"
+    },
+    "GetUniquePlayerId": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetUniquePlayerId(byte LocalUserNum, out UniqueNetId PlayerID)"
+    },
+    "GetLoginStatus": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ELoginStatus",
+      "signature": "ELoginStatus GetLoginStatus(byte LocalUserNum)"
+    },
+    "ClearLogoutCompletedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "LogoutDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearLogoutCompletedDelegate(byte LocalUserNum, delegate<OnLogoutCompleted> LogoutDelegate)"
+    },
+    "AddLogoutCompletedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "LogoutDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddLogoutCompletedDelegate(byte LocalUserNum, delegate<OnLogoutCompleted> LogoutDelegate)"
+    },
+    "OnLogoutCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnLogoutCompleted(bool bWasSuccessful)"
+    },
+    "Logout": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Logout(byte LocalUserNum)"
+    },
+    "ClearLoginFailedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "LoginDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearLoginFailedDelegate(byte LocalUserNum, delegate<OnLoginFailed> LoginDelegate)"
+    },
+    "AddLoginFailedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "LoginDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddLoginFailedDelegate(byte LocalUserNum, delegate<OnLoginFailed> LoginDelegate)"
+    },
+    "OnLoginFailed": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "ErrorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnLoginFailed(byte LocalUserNum, EOnlineServerConnectionStatus ErrorCode)"
+    },
+    "AutoLogin": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AutoLogin()"
+    },
+    "Login": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "LoginName": {
+          "type": null,
+          "documentation": null
+        },
+        "Password": {
+          "type": null,
+          "documentation": null
+        },
+        "bWantsLocalOnly": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Login(byte LocalUserNum, string LoginName, string Password, optional bool bWantsLocalOnly)"
+    },
+    "ShowLoginUI": {
+      "documentation": null,
+      "signature_members": {
+        "bShowOnlineOnly": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowLoginUI(optional bool bShowOnlineOnly)"
+    },
+    "OnFriendsChange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnFriendsChange()"
+    },
+    "OnMutingChange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnMutingChange()"
+    },
+    "OnLoginCancelled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnLoginCancelled()"
+    },
+    "OnLoginChange": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnLoginChange(byte LocalUserNum)"
+    },
+    "OnProfileDataChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnProfileDataChanged()"
+    },
+    "CreateProfileName": {
+      "documentation": null,
+      "signature_members": {
+        "bIsTrilogyProfile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string CreateProfileName(optional bool bIsTrilogyProfile)"
+    },
+    "DoesProfileExist": {
+      "documentation": null,
+      "signature_members": {
+        "bIsTrilogyProfile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DoesProfileExist(optional bool bIsTrilogyProfile)"
+    },
+    "OnTick": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTick(SFXOnlineEvent oEvent)"
+    },
+    "GetAPIName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetAPIName()"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "OnInitialize": {
+      "documentation": null,
+      "signature_members": {
+        "oOnlineSubsystem": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnInitialize(SFXOnlineSubsystem oOnlineSubsystem)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

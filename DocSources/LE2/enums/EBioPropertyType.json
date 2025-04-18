@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "BPT_INVALID": {
+      "value": 0,
+      "documentation": null
+    },
+    "BPT_OBJECT_PROPERTY": {
+      "value": 1,
+      "documentation": null
+    },
+    "BPT_BEHAVIOR_PROPERTY": {
+      "value": 2,
+      "documentation": null
+    },
+    "BPT_BEHAVIOR_FUNCTION": {
+      "value": 3,
+      "documentation": null
+    },
+    "BPT_OBJECT_FUNCTION": {
+      "value": 4,
+      "documentation": null
+    },
+    "BPT_SELECTION_PROPERTY": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

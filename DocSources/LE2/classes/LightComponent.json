@@ -1,0 +1,298 @@
+{
+  "parent": "ActorComponent",
+  "package": "Engine",
+  "variables": {
+    "SceneInfo": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "WorldToLight": {
+      "type": "Matrix",
+      "documentation": null
+    },
+    "LightToWorld": {
+      "type": "Matrix",
+      "documentation": null
+    },
+    "LightGuid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "LightmapGuid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "Brightness": {
+      "type": "float",
+      "documentation": null
+    },
+    "LightColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "Function": {
+      "type": "LightFunction",
+      "documentation": null
+    },
+    "LightEnv_BouncedLightBrightness": {
+      "type": "float",
+      "documentation": null
+    },
+    "LightEnv_BouncedModulationColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CastShadows": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CastStaticShadows": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CastDynamicShadows": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCastCompositeShadow": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAffectCompositeShadowDirection": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNonModulatedSelfShadowing": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSelfShadowOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowPreShadow": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceDynamicLight": {
+      "type": "bool",
+      "documentation": null
+    },
+    "UseDirectLightMap": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasLightEverBeenBuiltIntoLightMap": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOnlyAffectSameAndSpecifiedLevels": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanAffectDynamicPrimitivesOutsideDynamicChannel": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseVolumes": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRenderLightShafts": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPrecomputedLightingIsValid": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowedToBypassLightEnvironments": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCullModulatedShadowOnSubject": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowDynamicProjective": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceDynamicLightEnvUpdate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "LightEnvironment": {
+      "type": "LightEnvironmentComponent",
+      "documentation": null
+    },
+    "OtherLevelsToAffect": {
+      "type": "Name",
+      "documentation": null
+    },
+    "LightingChannels": {
+      "type": "LightingChannelContainer",
+      "documentation": null
+    },
+    "InclusionConvexVolumes": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ExclusionConvexVolumes": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "LightAffectsClassification": {
+      "type": "ELightAffectsClassification",
+      "documentation": null
+    },
+    "LightShadowMode": {
+      "type": "ELightShadowMode",
+      "documentation": null
+    },
+    "ModShadowColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "ModShadowFadeoutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ModShadowFadeoutExponent": {
+      "type": "float",
+      "documentation": null
+    },
+    "LightListIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "ShadowProjectionTechnique": {
+      "type": "EShadowProjectionTechnique",
+      "documentation": null
+    },
+    "ShadowFilterQuality": {
+      "type": "EShadowFilterQuality",
+      "documentation": null
+    },
+    "MinShadowResolution": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxShadowResolution": {
+      "type": "int",
+      "documentation": null
+    },
+    "ShadowFadeResolution": {
+      "type": "int",
+      "documentation": null
+    },
+    "OcclusionDepthRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "BloomScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "BloomThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "BloomScreenBlendThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "BloomTint": {
+      "type": "Color",
+      "documentation": null
+    },
+    "RadialBlurPercent": {
+      "type": "float",
+      "documentation": null
+    },
+    "OcclusionMaskDarkness": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnUpdatePropertyOcclusionMaskDarkness": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUpdatePropertyOcclusionMaskDarkness()"
+    },
+    "OnUpdatePropertyBloomTint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUpdatePropertyBloomTint()"
+    },
+    "OnUpdatePropertyBloomScale": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUpdatePropertyBloomScale()"
+    },
+    "UpdateLightShaftParameters": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateLightShaftParameters()"
+    },
+    "UpdateColorAndBrightness": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateColorAndBrightness()"
+    },
+    "GetDirection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetDirection()"
+    },
+    "GetOrigin": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetOrigin()"
+    },
+    "SetLightProperties": {
+      "documentation": null,
+      "signature_members": {
+        "NewBrightness": {
+          "type": null,
+          "documentation": null
+        },
+        "NewLightColor": {
+          "type": null,
+          "documentation": null
+        },
+        "NewLightFunction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLightProperties(optional float NewBrightness, optional Color NewLightColor, optional LightFunction NewLightFunction)"
+    },
+    "SetEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bSetEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEnabled(bool bSetEnabled)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

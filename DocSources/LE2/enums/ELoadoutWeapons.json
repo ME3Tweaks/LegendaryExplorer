@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "LoadoutWeapons_AssaultRifles": {
+      "value": 0,
+      "documentation": null
+    },
+    "LoadoutWeapons_Shotguns": {
+      "value": 1,
+      "documentation": null
+    },
+    "LoadoutWeapons_SniperRifles": {
+      "value": 2,
+      "documentation": null
+    },
+    "LoadoutWeapons_AutoPistols": {
+      "value": 3,
+      "documentation": null
+    },
+    "LoadoutWeapons_HeavyPistols": {
+      "value": 4,
+      "documentation": null
+    },
+    "LoadoutWeapons_HeavyWeapons": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

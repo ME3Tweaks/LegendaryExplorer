@@ -1,0 +1,512 @@
+{
+  "parent": "InventoryManager",
+  "package": "SFXGame",
+  "variables": {
+    "CurrentWeaponSelection": {
+      "type": "Class",
+      "documentation": null
+    },
+    "AccuracyLastViewRot": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "WeaponRecoilOffset": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "TotalRecoil": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "Drift": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "DriftTarget": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "InterpRange": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "Credits": {
+      "type": "int",
+      "documentation": null
+    },
+    "Medigel": {
+      "type": "int",
+      "documentation": null
+    },
+    "Eezo": {
+      "type": "int",
+      "documentation": null
+    },
+    "Iridium": {
+      "type": "int",
+      "documentation": null
+    },
+    "Palladium": {
+      "type": "int",
+      "documentation": null
+    },
+    "Platinum": {
+      "type": "int",
+      "documentation": null
+    },
+    "Probes": {
+      "type": "int",
+      "documentation": null
+    },
+    "CurrentFuel": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxCredits": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxEezo": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxIridium": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxPalladium": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxPlatinum": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxMedigel": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxProbes": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxFuel": {
+      "type": "float",
+      "documentation": null
+    },
+    "FuelEfficiency": {
+      "type": "float",
+      "documentation": null
+    },
+    "Base_Acc_Standing": {
+      "type": "float",
+      "documentation": null
+    },
+    "Base_Acc_Zoom": {
+      "type": "float",
+      "documentation": null
+    },
+    "AccMod_Move": {
+      "type": "float",
+      "documentation": null
+    },
+    "AccMod_ViewTurn": {
+      "type": "float",
+      "documentation": null
+    },
+    "AccMod_Crouched": {
+      "type": "float",
+      "documentation": null
+    },
+    "AccMod_MouseMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "AccMod_MaxCameraLoss": {
+      "type": "float",
+      "documentation": null
+    },
+    "Base_Interp_Speed": {
+      "type": "float",
+      "documentation": null
+    },
+    "InterpMod_Move": {
+      "type": "float",
+      "documentation": null
+    },
+    "InterpMul_ViewTurn": {
+      "type": "float",
+      "documentation": null
+    },
+    "Accuracy": {
+      "type": "float",
+      "documentation": null
+    },
+    "AccMod_WeaponFired": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeSinceLastFire": {
+      "type": "float",
+      "documentation": null
+    },
+    "DriftPitch": {
+      "type": "float",
+      "documentation": null
+    },
+    "DriftYaw": {
+      "type": "float",
+      "documentation": null
+    },
+    "DriftInterpSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "DriftInterpResetSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "DriftInterpMinSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "DriftNoiseMagPitch": {
+      "type": "float",
+      "documentation": null
+    },
+    "DriftNoiseMagYaw": {
+      "type": "float",
+      "documentation": null
+    },
+    "DriftRampUpRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "DriftRampUpDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "bWeaponFired": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "StartFire": {
+      "documentation": null,
+      "signature_members": {
+        "FireModeNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StartFire(byte FireModeNum)"
+    },
+    "GrantScaledCredits": {
+      "documentation": null,
+      "signature_members": {
+        "nSize": {
+          "type": null,
+          "documentation": null
+        },
+        "i_bTickResource": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GrantScaledCredits(int nSize, optional bool i_bTickResource)"
+    },
+    "GetMaxProbes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMaxProbes()"
+    },
+    "GetMaxMedigel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMaxMedigel()"
+    },
+    "SetMaxFuel": {
+      "documentation": null,
+      "signature_members": {
+        "F": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMaxFuel(float F)"
+    },
+    "GetMaxFuel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMaxFuel()"
+    },
+    "GetResource": {
+      "documentation": null,
+      "signature_members": {
+        "eInvResType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetResource(EInventoryResourceTypes eInvResType)"
+    },
+    "EmptyResource": {
+      "documentation": null,
+      "signature_members": {
+        "ResourceType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EmptyResource(EInventoryResourceTypes ResourceType)"
+    },
+    "AdjustResource": {
+      "documentation": null,
+      "signature_members": {
+        "eInvResType": {
+          "type": null,
+          "documentation": null
+        },
+        "Amount": {
+          "type": null,
+          "documentation": null
+        },
+        "bShowNotification": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnoreBudget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AdjustResource(EInventoryResourceTypes eInvResType, int Amount, optional bool bShowNotification, optional bool bIgnoreBudget)"
+    },
+    "EmptyInventory": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EmptyInventory()"
+    },
+    "ProcessDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "InstigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessDamage(out float Damage, out TraceHitInfo HitInfo, out Vector HitLocation, out Vector Momentum, Class<SFXDamageType> DamageType, Controller InstigatedBy, Actor DamageCauser)"
+    },
+    "CreateInventory": {
+      "documentation": null,
+      "signature_members": {
+        "NewInventoryItemClass": {
+          "type": null,
+          "documentation": null
+        },
+        "bDoNotActivate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Inventory",
+      "signature": "Inventory CreateInventory(Class<Inventory> NewInventoryItemClass, optional bool bDoNotActivate)"
+    },
+    "GetWeaponInSlot": {
+      "documentation": null,
+      "signature_members": {
+        "Slot": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnoreWielded": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXWeapon",
+      "signature": "SFXWeapon GetWeaponInSlot(EAttachSlot Slot, optional bool bIgnoreWielded)"
+    },
+    "SetWeaponIfAvailable": {
+      "documentation": null,
+      "signature_members": {
+        "WeapToSwitch": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWeaponIfAvailable(SFXWeapon WeapToSwitch)"
+    },
+    "SetWeaponFromSlot": {
+      "documentation": null,
+      "signature_members": {
+        "Slot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWeaponFromSlot(EAttachSlot Slot)"
+    },
+    "SetWeaponBySelected": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetWeaponBySelected()"
+    },
+    "ChangedWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ChangedWeapon()"
+    },
+    "CancelWeaponChange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CancelWeaponChange()"
+    },
+    "GetPlayerCrosshairValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetPlayerCrosshairValue()"
+    },
+    "GetPlayerNormalizedAccuracy": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetPlayerNormalizedAccuracy()"
+    },
+    "UpdatePlayerAccuracy": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdatePlayerAccuracy(float DeltaTime)"
+    },
+    "DebugDrawWeaponAccuracy": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DebugDrawWeaponAccuracy()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "UpdateKickbackFade": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "out_DeltaRot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateKickbackFade(float DeltaTime, out Rotator out_DeltaRot)"
+    },
+    "ApplySniperDrift": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ApplySniperDrift(float DeltaTime)"
+    },
+    "UpdateKickback": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "out_DeltaRot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateKickback(float DeltaTime, out Rotator out_DeltaRot)"
+    },
+    "SetWeaponRecoil": {
+      "documentation": null,
+      "signature_members": {
+        "PitchRecoil": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWeaponRecoil(float PitchRecoil)"
+    },
+    "SwitchToBestWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "bForceADifferentWeapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SwitchToBestWeapon(optional bool bForceADifferentWeapon)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

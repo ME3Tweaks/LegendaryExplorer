@@ -1,15 +1,15 @@
 {
   "Members": {
     "location": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "Rotation": {
-      "type": null,
+      "type": "Rotator",
       "documentation": null
     },
     "Scale": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

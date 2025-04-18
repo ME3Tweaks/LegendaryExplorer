@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "BIO_ANIM_NODE_COMBAT_MODE_STATE_NONCOMBAT": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_ANIM_NODE_COMBAT_MODE_STATE_COMBAT": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_ANIM_NODE_COMBAT_MODE_STATE_ANIMATING_TO_COMBAT": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_ANIM_NODE_COMBAT_MODE_STATE_ANIMATING_TO_NONCOMBAT": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_ANIM_NODE_COMBAT_MODE_STATE_BLENDING_TO_COMBAT": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_ANIM_NODE_COMBAT_MODE_STATE_BLENDING_TO_NONCOMBAT": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,23 +1,23 @@
 {
   "Members": {
     "BodyPart": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "ReactionChance": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bIgnoreShields": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "Reaction": {
-      "type": null,
+      "type": "EReactionTypes",
       "documentation": null
     },
     "MaxRange": {
-      "type": null,
+      "type": "EHitReactRange",
       "documentation": null
     }
   },

@@ -1,0 +1,26 @@
+{
+  "parent": "SFXGameEffect_DamageBonus",
+  "package": "SFXGameContent_Bonuses",
+  "variables": {
+    "PassiveWeaponDmg": {
+      "type": "SFXGameEffect",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "OnApplied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnApplied()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,49 @@
+{
+  "Members": {
+    "Dummy1": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Dummy2": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Dummy3": {
+      "type": "string",
+      "documentation": null
+    },
+    "Dummy4": {
+      "type": "int",
+      "documentation": null
+    },
+    "Dummy5": {
+      "type": "int",
+      "documentation": null
+    },
+    "Dummy6": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Dummy7": {
+      "type": "float",
+      "documentation": null
+    },
+    "Dummy8": {
+      "type": "byte",
+      "documentation": null
+    },
+    "Dummy9": {
+      "type": "byte",
+      "documentation": null
+    },
+    "Dummy10": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Dummy11": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

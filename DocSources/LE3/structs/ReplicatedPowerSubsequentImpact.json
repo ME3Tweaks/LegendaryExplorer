@@ -1,35 +1,35 @@
 {
   "Members": {
     "Instigator": {
-      "type": null,
+      "type": "BioPawn",
       "documentation": null
     },
     "PowerType": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "CustomActionReactionType": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "ImpactCount": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "DoCallback": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "TriggerCounter": {
-      "type": null,
+      "type": "byte",
       "documentation": null
     },
     "Duration": {
-      "type": null,
+      "type": "byte",
       "documentation": null
     },
     "Delay": {
-      "type": null,
+      "type": "byte",
       "documentation": null
     }
   },

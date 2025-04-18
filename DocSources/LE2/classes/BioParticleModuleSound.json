@@ -1,0 +1,33 @@
+{
+  "parent": "ParticleModule",
+  "package": "SFXGame",
+  "variables": {
+    "oWwiseEvent": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "WwiseDuckEvent": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "m_DuckDistanceThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "ObjInstanceVersion": {
+      "type": "int",
+      "documentation": null
+    },
+    "bPerParticle": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDuck": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

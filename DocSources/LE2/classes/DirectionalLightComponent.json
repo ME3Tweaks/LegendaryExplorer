@@ -1,0 +1,34 @@
+{
+  "parent": "LightComponent",
+  "package": "Engine",
+  "variables": {
+    "LightmassSettings": {
+      "type": "LightmassDirectionalLightSettings",
+      "documentation": null
+    },
+    "TraceDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "WholeSceneDynamicShadowRadius": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnUpdatePropertyBrightness": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUpdatePropertyBrightness()"
+    },
+    "OnUpdatePropertyLightColor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUpdatePropertyLightColor()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "UIALIGN_Left": {
+      "value": 0,
+      "documentation": null
+    },
+    "UIALIGN_Center": {
+      "value": 1,
+      "documentation": null
+    },
+    "UIALIGN_Right": {
+      "value": 2,
+      "documentation": null
+    },
+    "UIALIGN_Default": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

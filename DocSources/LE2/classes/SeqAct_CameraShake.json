@@ -1,0 +1,56 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "LocationActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "Shake": {
+      "type": "CameraShake",
+      "documentation": null
+    },
+    "ShakeScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "RadialShake_InnerRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "RadialShake_OuterRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "RadialShake_Falloff": {
+      "type": "float",
+      "documentation": null
+    },
+    "bDoControllerVibration": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRadialShake": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOrientTowardRadialEpicenter": {
+      "type": "bool",
+      "documentation": null
+    },
+    "PlaySpace": {
+      "type": "ECameraAnimPlaySpace",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

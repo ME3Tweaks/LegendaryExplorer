@@ -1,15 +1,15 @@
 {
   "Members": {
     "Lines": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "EventName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "ReplyLine": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     }
   },

@@ -1,0 +1,43 @@
+{
+  "parent": "HUD",
+  "package": "Engine",
+  "variables": {
+    "bDisplayMessages": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ChangeState": {
+      "documentation": null,
+      "signature_members": {
+        "bIsVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ChangeState(bool bIsVisible)"
+    },
+    "UpdateScoreBoard": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateScoreBoard()"
+    },
+    "UpdateGRI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool UpdateGRI()"
+    },
+    "DrawHUD": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DrawHUD()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

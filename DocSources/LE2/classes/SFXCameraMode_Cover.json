@@ -1,0 +1,20 @@
+{
+  "parent": "SFXCameraMode",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "fTimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float fTimeDelta)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

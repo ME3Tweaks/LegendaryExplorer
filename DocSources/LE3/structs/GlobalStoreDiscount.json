@@ -1,11 +1,11 @@
 {
   "Members": {
     "PlayerVariable": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "DiscountStrength": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

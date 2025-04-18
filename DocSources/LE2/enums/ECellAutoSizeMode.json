@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "CELLAUTOSIZE_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "CELLAUTOSIZE_Uniform": {
+      "value": 1,
+      "documentation": null
+    },
+    "CELLAUTOSIZE_Constrain": {
+      "value": 2,
+      "documentation": null
+    },
+    "CELLAUTOSIZE_AdjustList": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

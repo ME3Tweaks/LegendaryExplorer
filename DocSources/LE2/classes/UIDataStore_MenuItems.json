@@ -1,0 +1,100 @@
+{
+  "parent": "UIDataStore_GameResource",
+  "package": "Engine",
+  "variables": {
+    "OptionProviders": {
+      "type": "MultiMap_Mirror",
+      "documentation": null
+    },
+    "DynamicProviders": {
+      "type": "UIDataProvider_MenuItem",
+      "documentation": null
+    },
+    "CurrentGameSettingsTag": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Unregistered": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Unregistered(LocalPlayer PlayerOwner)"
+    },
+    "Registered": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Registered(LocalPlayer PlayerOwner)"
+    },
+    "OnGameSettingsChanged": {
+      "documentation": null,
+      "signature_members": {
+        "SourceProvider": {
+          "type": null,
+          "documentation": null
+        },
+        "PropTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnGameSettingsChanged(UIDataProvider SourceProvider, optional Name PropTag)"
+    },
+    "GetSet": {
+      "documentation": null,
+      "signature_members": {
+        "SetName": {
+          "type": null,
+          "documentation": null
+        },
+        "OutProviders": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetSet(Name SetName, out array<UIDataProvider_MenuItem> OutProviders)"
+    },
+    "AppendToSet": {
+      "documentation": null,
+      "signature_members": {
+        "SetName": {
+          "type": null,
+          "documentation": null
+        },
+        "NumOptions": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AppendToSet(Name SetName, int NumOptions)"
+    },
+    "ClearSet": {
+      "documentation": null,
+      "signature_members": {
+        "SetName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearSet(Name SetName)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

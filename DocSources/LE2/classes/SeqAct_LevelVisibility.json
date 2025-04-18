@@ -1,0 +1,21 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "Engine",
+  "variables": {
+    "Level": {
+      "type": "LevelStreaming",
+      "documentation": null
+    },
+    "LevelName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bStatusIsOk": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,23 +1,23 @@
 {
   "Members": {
     "ME2PowerName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "ME2Evolve1ClassName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "ME2Evolve2ClassName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "ME3PowerName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "ME3PowerClassName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     }
   },

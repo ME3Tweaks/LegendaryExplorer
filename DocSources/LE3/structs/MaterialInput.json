@@ -1,31 +1,31 @@
 {
   "Members": {
     "Expression": {
-      "type": null,
+      "type": "MaterialExpression",
       "documentation": null
     },
     "Mask": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "MaskR": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "MaskG": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "MaskB": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "MaskA": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "GCC64_Padding": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

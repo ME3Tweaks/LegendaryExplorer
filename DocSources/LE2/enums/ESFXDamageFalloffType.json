@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "DamageFalloffType_Constant": {
+      "value": 0,
+      "documentation": null
+    },
+    "DamageFalloffType_Linear": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,15 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

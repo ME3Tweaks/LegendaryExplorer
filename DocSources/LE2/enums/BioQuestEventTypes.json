@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "QET_New": {
+      "value": 0,
+      "documentation": null
+    },
+    "QET_Updated": {
+      "value": 1,
+      "documentation": null
+    },
+    "QET_Completed": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

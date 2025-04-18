@@ -1,71 +1,71 @@
 {
   "Members": {
     "MorphHead": {
-      "type": null,
+      "type": "MorphHeadSaveRecord",
       "documentation": null
     },
     "CasualID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "FullBodyID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "TorsoID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "ShoulderID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "ArmID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "LegID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "SpecID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Tint1ID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Tint2ID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Tint3ID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "PatternID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "PatternColorID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "HelmetID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "EmissiveID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bHasMorphHead": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "CombatAppearance": {
-      "type": null,
+      "type": "EPlayerAppearanceType",
       "documentation": null
     }
   },

@@ -1,0 +1,21 @@
+{
+  "parent": "PBRuleNodeBase",
+  "package": "Engine",
+  "variables": {
+    "NumOutputs": {
+      "type": "int",
+      "documentation": null
+    },
+    "MinNumExecuted": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxNumExecuted": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

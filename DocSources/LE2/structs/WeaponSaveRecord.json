@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "Item": {
+      "type": "ME1_ItemSaveRecord",
+      "documentation": null
+    },
+    "WeaponClassName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "AmmoPowerName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "AmmoUsedCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "TotalAmmo": {
+      "type": "int",
+      "documentation": null
+    },
+    "bLastWeapon": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCurrentWeapon": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Slot": {
+      "type": "EBioItemWeaponRangedType",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

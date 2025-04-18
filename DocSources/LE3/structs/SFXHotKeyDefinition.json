@@ -1,11 +1,11 @@
 {
   "Members": {
     "nmPawn": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "nmPower": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     }
   },

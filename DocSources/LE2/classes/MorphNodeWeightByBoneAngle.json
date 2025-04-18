@@ -1,0 +1,61 @@
+{
+  "parent": "MorphNodeWeightBase",
+  "package": "Engine",
+  "variables": {
+    "WeightArray": {
+      "type": "BoneAngleMorph",
+      "documentation": null
+    },
+    "BaseBoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "AngleBoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ScalarParameterName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "MaterialInstanceConstant": {
+      "type": "MaterialInstanceConstant",
+      "documentation": null
+    },
+    "Angle": {
+      "type": "float",
+      "documentation": null
+    },
+    "NodeWeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaterialSlotId": {
+      "type": "int",
+      "documentation": null
+    },
+    "bInvertBaseBoneAxis": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInvertAngleBoneAxis": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bControlMaterialParameter": {
+      "type": "bool",
+      "documentation": null
+    },
+    "BaseBoneAxis": {
+      "type": "EAxis",
+      "documentation": null
+    },
+    "AngleBoneAxis": {
+      "type": "EAxis",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

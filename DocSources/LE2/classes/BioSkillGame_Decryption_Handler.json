@@ -1,0 +1,69 @@
+{
+  "parent": "BioSkillGame_Base_Handler",
+  "package": "SFXGame",
+  "variables": {
+    "m_nPercentDanger": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nPercentGood": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fSpeed": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "onSelectPressed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "onSelectPressed()"
+    },
+    "onRightPressed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "onRightPressed()"
+    },
+    "onLeftPressed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "onLeftPressed()"
+    },
+    "onUpPressed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "onUpPressed()"
+    },
+    "onDownPressed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "onDownPressed()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

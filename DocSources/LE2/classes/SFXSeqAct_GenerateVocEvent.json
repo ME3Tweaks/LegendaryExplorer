@@ -1,0 +1,53 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "oInstigator": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "oRecipient": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "fDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "fChanceToPlayMod": {
+      "type": "float",
+      "documentation": null
+    },
+    "oEventID": {
+      "type": "ESFXVocalizationEventID",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "GetBioPawn": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioPawn",
+      "signature": "BioPawn GetBioPawn(Actor oTarget)"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

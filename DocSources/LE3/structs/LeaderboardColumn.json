@@ -1,23 +1,23 @@
 {
   "Members": {
     "Heading": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "sMetaData": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "HeaderMovieClip": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "RowEntryMovieClip": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Width_Px": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

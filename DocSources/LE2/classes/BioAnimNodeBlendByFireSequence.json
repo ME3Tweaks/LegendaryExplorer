@@ -1,0 +1,60 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "SFXGame",
+  "variables": {
+    "CachedAnimSeqLoop": {
+      "type": "AnimNodeSequence",
+      "documentation": null
+    },
+    "CachedAnimSeqEnd": {
+      "type": "AnimNodeSequence",
+      "documentation": null
+    },
+    "FlashLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "BlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "QueuedTransition": {
+      "type": "int",
+      "documentation": null
+    },
+    "FlashCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "CacheUpdated": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetPlayRate": {
+      "documentation": null,
+      "signature_members": {
+        "Seq": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetPlayRate(AnimNodeSequence Seq)"
+    },
+    "NotifyWeaponAnimationPlaying": {
+      "documentation": null,
+      "signature_members": {
+        "Playing": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyWeaponAnimationPlaying(bool Playing)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

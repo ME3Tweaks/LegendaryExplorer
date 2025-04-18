@@ -1,0 +1,65 @@
+{
+  "parent": "AnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_fBlendTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fRemainingTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fTotalBlendTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fTargetWeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nLastChild": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nTargetChild": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bIsBlending": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bTriggerTimeBlend": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bBlendDirect": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bShowSlider": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetChildAnimTime": {
+      "documentation": null,
+      "signature_members": {
+        "oChild": {
+          "type": null,
+          "documentation": null
+        },
+        "fTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetChildAnimTime(AnimNode oChild, float fTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

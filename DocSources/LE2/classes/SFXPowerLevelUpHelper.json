@@ -1,0 +1,195 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_powers": {
+      "type": "SFXPower",
+      "documentation": null
+    },
+    "m_UpdatedPowers": {
+      "type": "NewPowerInfo",
+      "documentation": null
+    },
+    "m_WorldInfo": {
+      "type": "BioWorldInfo",
+      "documentation": null
+    },
+    "m_Pawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "m_nPointsSpent": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CanMakePurchase": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanMakePurchase()"
+    },
+    "GetNextWheelDisplayIndex": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNextWheelDisplayIndex()"
+    },
+    "GetCurrentRankByPower": {
+      "documentation": null,
+      "signature_members": {
+        "Power": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetCurrentRankByPower(SFXPower Power)"
+    },
+    "GetCurrentRank": {
+      "documentation": null,
+      "signature_members": {
+        "nPowerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetCurrentRank(int nPowerIndex)"
+    },
+    "CancelEvolution": {
+      "documentation": null,
+      "signature_members": {
+        "OriginalPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CancelEvolution(SFXPower OriginalPower)"
+    },
+    "EvolvePower": {
+      "documentation": null,
+      "signature_members": {
+        "OriginalPower": {
+          "type": null,
+          "documentation": null
+        },
+        "EvolvedPowerClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EvolvePower(SFXPower OriginalPower, Class<Object> EvolvedPowerClass)"
+    },
+    "CancelChanges": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CancelChanges()"
+    },
+    "ApplyChanges": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyChanges()"
+    },
+    "CanEvolvePower": {
+      "documentation": null,
+      "signature_members": {
+        "nPowerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanEvolvePower(int nPowerIndex)"
+    },
+    "IsUnlocked": {
+      "documentation": null,
+      "signature_members": {
+        "nPowerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsUnlocked(int nPowerIndex)"
+    },
+    "GetAvailableRank": {
+      "documentation": null,
+      "signature_members": {
+        "nPowerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetAvailableRank(int nPowerIndex)"
+    },
+    "GetRemainingPoints": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetRemainingPoints()"
+    },
+    "CanIncreaseRank": {
+      "documentation": null,
+      "signature_members": {
+        "nPowerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "nCostToIncrease": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanIncreaseRank(int nPowerIndex, out int nCostToIncrease)"
+    },
+    "IncreaseRank": {
+      "documentation": null,
+      "signature_members": {
+        "nPowerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IncreaseRank(int nPowerIndex)"
+    },
+    "AutoLevelUp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AutoLevelUp()"
+    },
+    "SetPawn": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetPawn(BioPawn Pawn)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "WorldInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Initialize(BioWorldInfo WorldInfo)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

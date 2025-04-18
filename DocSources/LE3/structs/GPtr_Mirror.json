@@ -1,7 +1,7 @@
 {
   "Members": {
     "pObject": {
-      "type": null,
+      "type": "Pointer",
       "documentation": null
     }
   },

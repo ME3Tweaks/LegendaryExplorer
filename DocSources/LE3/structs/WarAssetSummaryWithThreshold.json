@@ -1,11 +1,11 @@
 {
   "Members": {
     "Summary": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Threshold": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

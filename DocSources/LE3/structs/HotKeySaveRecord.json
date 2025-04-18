@@ -1,11 +1,11 @@
 {
   "Members": {
     "PawnName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "PowerName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     }
   },

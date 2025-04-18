@@ -1,27 +1,27 @@
 {
   "Members": {
     "Icon": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "MedalName": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Threshold": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Score": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "ReplacesIdx": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Type": {
-      "type": null,
+      "type": "MPMedalType",
       "documentation": null
     }
   },

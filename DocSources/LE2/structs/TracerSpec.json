@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "Scale3D": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "StaticMesh": {
+      "type": "StaticMesh",
+      "documentation": null
+    },
+    "PSTemplate": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "AccelRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "Speed": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxSpeed": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

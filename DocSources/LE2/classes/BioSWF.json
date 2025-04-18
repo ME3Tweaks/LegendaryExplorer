@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Data": {
+      "type": "byte",
+      "documentation": null
+    },
+    "SourceFilePath": {
+      "type": "string",
+      "documentation": null
+    },
+    "SourceFileTimestamp": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

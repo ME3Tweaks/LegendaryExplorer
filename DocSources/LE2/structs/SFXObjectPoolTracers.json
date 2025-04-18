@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Tracers": {
+      "type": "Projectile",
+      "documentation": null
+    },
+    "Mesh": {
+      "type": "StaticMesh",
+      "documentation": null
+    },
+    "Template": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "NextIdx": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

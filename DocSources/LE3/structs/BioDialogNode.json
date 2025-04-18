@@ -1,71 +1,71 @@
 {
   "Members": {
     "sText": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "pCue": {
-      "type": null,
+      "type": "WwiseBaseSoundObject",
       "documentation": null
     },
     "srText": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "nConditionalFunc": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nConditionalParam": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nStateTransition": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nStateTransitionParam": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nExportID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nScriptIndex": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nCameraIntimacy": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "bFireConditional": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bAmbient": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bNonTextLine": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bSoundLoaded": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bIgnoreBodyGestures": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bAlwaysHideSubtitle": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "eGUIStyle": {
-      "type": null,
+      "type": "EConvGUIStyles",
       "documentation": null
     }
   },

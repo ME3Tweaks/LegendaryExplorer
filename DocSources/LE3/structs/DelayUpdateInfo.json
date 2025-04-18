@@ -1,19 +1,19 @@
 {
   "Members": {
     "Controller": {
-      "type": null,
+      "type": "Controller",
       "documentation": null
     },
     "EventName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "UpdateTime": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "Type": {
-      "type": null,
+      "type": "EPerceptionType",
       "documentation": null
     }
   },

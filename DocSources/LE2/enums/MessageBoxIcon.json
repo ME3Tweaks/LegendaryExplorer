@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "MBI_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "MBI_Error": {
+      "value": 1,
+      "documentation": null
+    },
+    "MBI_Warning": {
+      "value": 2,
+      "documentation": null
+    },
+    "MBI_Alert": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

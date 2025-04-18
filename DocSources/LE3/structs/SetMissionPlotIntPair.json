@@ -1,11 +1,11 @@
 {
   "Members": {
     "Id": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "V": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

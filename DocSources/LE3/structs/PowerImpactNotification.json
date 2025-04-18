@@ -1,11 +1,11 @@
 {
   "Members": {
     "Label": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "TimeBeforeImpact": {
-      "type": null,
+      "type": "float",
       "documentation": null
     }
   },

@@ -1,19 +1,19 @@
 {
   "Members": {
     "Id": {
-      "type": null,
+      "type": "PlotIdenfitier",
       "documentation": null
     },
     "nValue": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nConditional": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "nConditionalParameter": {
-      "type": null,
+      "type": "int",
       "documentation": null
     }
   },

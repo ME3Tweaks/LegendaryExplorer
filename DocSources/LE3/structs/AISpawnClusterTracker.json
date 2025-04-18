@@ -1,23 +1,23 @@
 {
   "Members": {
     "ClusterPawns": {
-      "type": null,
+      "type": "Pawn",
       "documentation": null
     },
     "ObscuredSpawnProjectile": {
-      "type": null,
+      "type": "SFXProjectile",
       "documentation": null
     },
     "CurrentType": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "VisibilityTimer": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bVisible": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

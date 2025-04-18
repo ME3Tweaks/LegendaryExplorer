@@ -1,83 +1,83 @@
 {
   "Members": {
     "Icon": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Name": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "Parent": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "ChallengeGroupName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "GrinderAccomplishmentName": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "Index": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "XboxAchievementID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "XboxAvatarAwardID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "PS3TrophyID": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Title": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Incomplete": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "Complete": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "PointValue": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "NotificationText": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "MPNotificationText": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "VisibilityStartTime": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "VisibilityEndTime": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "IsMultiplayerOnly": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bRepeatableChallenge": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "LinkedAchievementID": {
-      "type": null,
+      "type": "EAchievementID",
       "documentation": null
     }
   },

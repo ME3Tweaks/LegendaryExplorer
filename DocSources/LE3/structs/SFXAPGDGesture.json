@@ -1,31 +1,31 @@
 {
   "Members": {
     "fPlayRate": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "fPlayWeight": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "nPlayChance": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "fRetriggerDelay": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "bOneShot": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bEnterEvent": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     },
     "bExitEvent": {
-      "type": null,
+      "type": "bool",
       "documentation": null
     }
   },

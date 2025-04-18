@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "AchievementId": {
+      "type": "int",
+      "documentation": null
+    },
+    "BonusTalentID": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

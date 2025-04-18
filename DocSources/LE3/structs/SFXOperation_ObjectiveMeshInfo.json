@@ -1,39 +1,39 @@
 {
   "Members": {
     "UniqueString": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "MeshPath": {
-      "type": null,
+      "type": "string",
       "documentation": null
     },
     "Translation": {
-      "type": null,
+      "type": "Vector",
       "documentation": null
     },
     "Rotation": {
-      "type": null,
+      "type": "Rotator",
       "documentation": null
     },
     "GameName": {
-      "type": null,
+      "type": "stringref",
       "documentation": null
     },
     "MeshVOLine": {
-      "type": null,
+      "type": "int",
       "documentation": null
     },
     "Scale": {
-      "type": null,
+      "type": "float",
       "documentation": null
     },
     "SpawnLocation": {
-      "type": null,
+      "type": "EObjectiveLocation",
       "documentation": null
     },
     "TipText": {
-      "type": null,
+      "type": "ETargetTipText",
       "documentation": null
     }
   },

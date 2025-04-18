@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Filename": {
+      "type": "string",
+      "documentation": null
+    },
+    "ReadState": {
+      "type": "EOnlineEnumerationReadState",
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

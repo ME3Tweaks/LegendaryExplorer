@@ -1,0 +1,2240 @@
+{
+  "parent": "SFXWeapon_NativeBase",
+  "package": "SFXGame",
+  "variables": {
+    "Damage": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "MagSize": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "MaxSpareAmmo": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "MinAimError": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "MaxAimError": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "MinZoomAimError": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "MaxZoomAimError": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "RateOfFire": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "Recoil": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "ZoomRecoil": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "AimOffsetProfileNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "MuzzleLightChangeOverLifeKeys": {
+      "type": "ChangeOverLifeKey",
+      "documentation": null
+    },
+    "GUIImage": {
+      "type": "string",
+      "documentation": null
+    },
+    "AmmoRTPCName": {
+      "type": "string",
+      "documentation": null
+    },
+    "ZoomSnapList": {
+      "type": "ZoomSnapInfo",
+      "documentation": null
+    },
+    "FadingParameters": {
+      "type": "Name",
+      "documentation": null
+    },
+    "DamageUpgradeTokens": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ResearchUpgradeTokens": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ResearchUpgradeIds": {
+      "type": "int",
+      "documentation": null
+    },
+    "CoverLeanPositions": {
+      "type": "CoverLeanPosition",
+      "documentation": null
+    },
+    "__OnWeaponImpact__Delegate": {
+      "type": "OnWeaponImpact",
+      "documentation": null
+    },
+    "__GetDamageVocProbabilityMod__Delegate": {
+      "type": "GetDamageVocProbabilityMod",
+      "documentation": null
+    },
+    "__OnWeaponReload__Delegate": {
+      "type": "OnWeaponReload",
+      "documentation": null
+    },
+    "__OnWeaponEquip__Delegate": {
+      "type": "OnWeaponEquip",
+      "documentation": null
+    },
+    "__OnWeaponUnequip__Delegate": {
+      "type": "OnWeaponUnequip",
+      "documentation": null
+    },
+    "DroppedAmmoClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "TracerInfo": {
+      "type": "TracerSpec",
+      "documentation": null
+    },
+    "DebugShotStartLoc": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "DebugShotAimRot": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "MuzzleIdlePosition": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "FrictionTargetOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "MeleePowerName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "AI_AccCone_Min": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "AI_AccCone_Max": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "AI_BurstFireCount": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "AI_BurstFireDelay": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "AI_BurstFireMovingDelay": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "AI_HenchBurstFireMultiplier": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "AI_AimDelay": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "WeaponFireWaveForm": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null
+    },
+    "PS_DefaultImpactEffect": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "PS_DefaultMaterialImpactEffect": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "DefaultDecalProperties": {
+      "type": "DecalComponent",
+      "documentation": null
+    },
+    "DefaultDecalMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "PSC_ShellCasing": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "PSC_ReloadVent": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "PSC_MuzFlashEmitter": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "LC_MuzzleFlashLight": {
+      "type": "PointLightComponent",
+      "documentation": null
+    },
+    "MuzzleSocketName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ShellCasingSocketName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "CrosshairRange": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "ZoomCrosshairRange": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "IconResource": {
+      "type": "Object",
+      "documentation": null
+    },
+    "DefaultImpactSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "FireSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "PlayerFireSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "WeaponPowerFireSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "FireNoAmmoSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "WeaponWhipSoundLeft": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "WeaponWhipSoundRight": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "WeaponReloadSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "WeaponExpandSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "WeaponCollapseSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "NeedReloadNotifySound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "SteamReloadNotifySound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "FrictionMultiplierRange": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "AdhesionRot": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "AmmoPowerPSCO": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "AmmoPowerIconPSCO": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "AmmoPowerName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ZoomFOV": {
+      "type": "float",
+      "documentation": null
+    },
+    "fHeatDissipation": {
+      "type": "float",
+      "documentation": null
+    },
+    "fHeatDissipationCooldown": {
+      "type": "float",
+      "documentation": null
+    },
+    "SwitchPriority": {
+      "type": "int",
+      "documentation": null
+    },
+    "ImpactRelevanceDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "ImpactScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "ShowTracerDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "TracerSpawnOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "MuzzleLightLifetime": {
+      "type": "float",
+      "documentation": null
+    },
+    "MuzzleLightBrightness": {
+      "type": "float",
+      "documentation": null
+    },
+    "MuzzleLightColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "MuzzleLightFalloffExponent": {
+      "type": "float",
+      "documentation": null
+    },
+    "MuzzleLightMinShadowFalloffRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "MuzzleLightRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "MuzzleLightShadowFalloffExponent": {
+      "type": "float",
+      "documentation": null
+    },
+    "MuzzleLightShadowRadiusMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "LightStepSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "LightKeyIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "LightCurrentTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "LightDeltaBrightness": {
+      "type": "float",
+      "documentation": null
+    },
+    "LightDeltaR": {
+      "type": "float",
+      "documentation": null
+    },
+    "LightDeltaG": {
+      "type": "float",
+      "documentation": null
+    },
+    "LightDeltaB": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeToHideMuzzleFlashPSC": {
+      "type": "float",
+      "documentation": null
+    },
+    "WeaponLevel": {
+      "type": "float",
+      "documentation": null
+    },
+    "EjectShellCasingTimeRatio": {
+      "type": "float",
+      "documentation": null
+    },
+    "ReloadReactionWindow": {
+      "type": "float",
+      "documentation": null
+    },
+    "ReloadSuccessDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "ReloadFailureDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastBulletStrongerPercent": {
+      "type": "float",
+      "documentation": null
+    },
+    "StealthDamageIncrease": {
+      "type": "float",
+      "documentation": null
+    },
+    "DamageAI": {
+      "type": "float",
+      "documentation": null
+    },
+    "DamageHench": {
+      "type": "float",
+      "documentation": null
+    },
+    "InitialMagazines": {
+      "type": "int",
+      "documentation": null
+    },
+    "LowAmmoSoundThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "SteamSoundThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "NoAmmoFireSoundDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "RateOfFireAI": {
+      "type": "float",
+      "documentation": null
+    },
+    "AmmoPerShot": {
+      "type": "float",
+      "documentation": null
+    },
+    "BurstRounds": {
+      "type": "float",
+      "documentation": null
+    },
+    "BurstRefireTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "BurstCount": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinRefireTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "RecoilPitchOscillation": {
+      "type": "float",
+      "documentation": null
+    },
+    "RecoilInterpSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "RecoilFadeSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "RecoilZoomFadeSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "RecoilMinFadePitch": {
+      "type": "float",
+      "documentation": null
+    },
+    "RecoilMinFadeYaw": {
+      "type": "float",
+      "documentation": null
+    },
+    "RecoilCap": {
+      "type": "float",
+      "documentation": null
+    },
+    "ZoomRecoilCap": {
+      "type": "float",
+      "documentation": null
+    },
+    "RecoilYawScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "RecoilYawBias": {
+      "type": "float",
+      "documentation": null
+    },
+    "RecoilYawFrequency": {
+      "type": "float",
+      "documentation": null
+    },
+    "RecoilPitchFrequency": {
+      "type": "float",
+      "documentation": null
+    },
+    "TraceRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "AccFirePenalty": {
+      "type": "float",
+      "documentation": null
+    },
+    "AccFireInterpSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "ZoomAccFirePenalty": {
+      "type": "float",
+      "documentation": null
+    },
+    "ZoomAccFireInterpSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "MagneticCorrectionThresholdAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxMagneticCorrectionAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "Range_Melee": {
+      "type": "float",
+      "documentation": null
+    },
+    "Range_Short": {
+      "type": "float",
+      "documentation": null
+    },
+    "Range_Medium": {
+      "type": "float",
+      "documentation": null
+    },
+    "Range_Long": {
+      "type": "float",
+      "documentation": null
+    },
+    "DamageMod_MeleeRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "DamageMod_ShortRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "DamageMod_MediumRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "DamageMod_LongRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentSpareAmmo": {
+      "type": "int",
+      "documentation": null
+    },
+    "AmmoUsedCount": {
+      "type": "float",
+      "documentation": null
+    },
+    "IconRef": {
+      "type": "int",
+      "documentation": null
+    },
+    "PrettyName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "GUIClassName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "GUIClassDescription": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "AmmoPrettyName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ShortDescription": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "GeneralDescription": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "MinFrictionDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxFrictionDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "PeakFrictionDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "PeakFrictionRadiusScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "PeakFrictionHeightScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinAdhesionDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxAdhesionDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinAdhesionVelocity": {
+      "type": "float",
+      "documentation": null
+    },
+    "CamInputAdhesionDamping": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxLateralAdhesionDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "AimCorrectionAmount": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinZoomSnapDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxZoomSnapDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "ZoomSnapDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "DamageUpgradeId": {
+      "type": "int",
+      "documentation": null
+    },
+    "bSuperDamage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInfiniteAmmo": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSuppressMuzzleFlash": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSuppressTracers": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSuppressImpactFX": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSuppressAudio": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSuppressDecal": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUpgradesBasicWeapon": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPlayerUsable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEarlyReload": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseSniperCam": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceSpawnTracer": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsAutomatic": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanDropWeapon": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanDropAmmo": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWeaponCanBeReloaded": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bQuickReloadSucceeded": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDrawingWeapon": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHolsteringWeapon": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFiringAnimationPlaying": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNotRegularWeaponGUI": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFrictionEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFrictionDistanceScalingEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAdhesionEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAdhesionDuringCam": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bZoomSnapEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bScaleAnimDurationByFireRate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "WaitingToBeginFire": {
+      "type": "bool",
+      "documentation": null
+    },
+    "AnimType": {
+      "type": "WeaponAnimType",
+      "documentation": null
+    },
+    "AttachSlot": {
+      "type": "EAttachSlot",
+      "documentation": null
+    },
+    "CharacterSlot": {
+      "type": "EAttachSlot",
+      "documentation": null
+    },
+    "FireOnceFiringMode": {
+      "type": "byte",
+      "documentation": null
+    },
+    "FireModeToBegin": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CalculateCoverLeanOutOffset": {
+      "documentation": null,
+      "signature_members": {
+        "Offset": {
+          "type": null,
+          "documentation": null
+        },
+        "Direction": {
+          "type": null,
+          "documentation": null
+        },
+        "Type": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CalculateCoverLeanOutOffset(out Vector Offset, ECoverDirection Direction, ECoverType Type)"
+    },
+    "GetGeneralDescription": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetGeneralDescription()"
+    },
+    "GetShortDescription": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetShortDescription()"
+    },
+    "GetPrettyName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetPrettyName()"
+    },
+    "GetWeaponDebug": {
+      "documentation": null,
+      "signature_members": {
+        "DebugInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetWeaponDebug(out array<string> DebugInfo)"
+    },
+    "DrawDebugShot": {
+      "documentation": null,
+      "signature_members": {
+        "StartLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "EndLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawDebugShot(Vector StartLocation, Vector EndLocation)"
+    },
+    "DisableAmmoPowerHologram": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableAmmoPowerHologram()"
+    },
+    "EnableAmmoPowerHologram": {
+      "documentation": null,
+      "signature_members": {
+        "Template": {
+          "type": null,
+          "documentation": null
+        },
+        "IconTemplate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnableAmmoPowerHologram(ParticleSystem Template, ParticleSystem IconTemplate)"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "HolderDied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HolderDied()"
+    },
+    "DropFrom": {
+      "documentation": null,
+      "signature_members": {
+        "StartLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "StartVelocity": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DropFrom(Vector StartLocation, Vector StartVelocity)"
+    },
+    "CanThrow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanThrow()"
+    },
+    "DetachWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DetachWeapon()"
+    },
+    "AttachMuzzleEffectsComponents": {
+      "documentation": null,
+      "signature_members": {
+        "SkelMesh": {
+          "type": null,
+          "documentation": null
+        },
+        "MuzzleSocket": {
+          "type": null,
+          "documentation": null
+        },
+        "CasingSocket": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AttachMuzzleEffectsComponents(SkeletalMeshComponent SkelMesh, optional Name MuzzleSocket, optional Name CasingSocket)"
+    },
+    "AttachWeaponTo": {
+      "documentation": null,
+      "signature_members": {
+        "MeshCpnt": {
+          "type": null,
+          "documentation": null
+        },
+        "SocketName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AttachWeaponTo(SkeletalMeshComponent MeshCpnt, optional Name SocketName)"
+    },
+    "AssignToSlot": {
+      "documentation": null,
+      "signature_members": {
+        "Slot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AssignToSlot(EAttachSlot Slot)"
+    },
+    "GivenTo": {
+      "documentation": null,
+      "signature_members": {
+        "thisPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bDoNotActivate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GivenTo(Pawn thisPawn, optional bool bDoNotActivate)"
+    },
+    "EquipTimedOut": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EquipTimedOut()"
+    },
+    "EquipFinished": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EquipFinished()"
+    },
+    "EquipNearFinished": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EquipNearFinished()"
+    },
+    "Collapse": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Collapse()"
+    },
+    "Expand": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Expand()"
+    },
+    "UnEquipTimedOut": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnEquipTimedOut()"
+    },
+    "UnEquipFinished": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnEquipFinished()"
+    },
+    "ReloadNearFinished": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReloadNearFinished()"
+    },
+    "CancelReload": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CancelReload()"
+    },
+    "RefireBurst": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RefireBurst()"
+    },
+    "ShouldRefire": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldRefire()"
+    },
+    "PlayNoAmmoFireSound": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayNoAmmoFireSound()"
+    },
+    "PlayNoAmmoEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayNoAmmoEffects()"
+    },
+    "TryReload": {
+      "documentation": null,
+      "signature_members": {
+        "bDisplayHint": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TryReload(optional bool bDisplayHint)"
+    },
+    "DissipateHeat": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DissipateHeat(float DeltaTime)"
+    },
+    "DoReload": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoReload()"
+    },
+    "DoEarlyReload": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoEarlyReload()"
+    },
+    "GetReloadDuration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetReloadDuration()"
+    },
+    "ShouldAutoReload": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldAutoReload()"
+    },
+    "CanReload": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanReload()"
+    },
+    "EffectIsRelevant": {
+      "documentation": null,
+      "signature_members": {
+        "SpawnLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceDedicated": {
+          "type": null,
+          "documentation": null
+        },
+        "CullDistance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectIsRelevant(Vector SpawnLocation, bool bForceDedicated, optional float CullDistance)"
+    },
+    "PlayReloadEject": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayReloadEject()"
+    },
+    "StopFireEffects": {
+      "documentation": null,
+      "signature_members": {
+        "FireModeNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StopFireEffects(byte FireModeNum)"
+    },
+    "WeaponPlayWwiseEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Sound": {
+          "type": null,
+          "documentation": null
+        },
+        "NoiseLoudness": {
+          "type": null,
+          "documentation": null
+        },
+        "SoundLoc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "WeaponPlayWwiseEvent(WwiseEvent Sound, optional float NoiseLoudness, optional Vector SoundLoc)"
+    },
+    "SpawnTracerEffect": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitDistance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnTracerEffect(Vector HitLocation, float HitDistance)"
+    },
+    "ShouldSpawnTracerFX": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldSpawnTracerFX()"
+    },
+    "PlayOwnedFireEffects": {
+      "documentation": null,
+      "signature_members": {
+        "FireModeNum": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayOwnedFireEffects(byte FireModeNum, Vector HitLocation)"
+    },
+    "HideReloadEmitters": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideReloadEmitters()"
+    },
+    "HideMuzzleFlashLight": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideMuzzleFlashLight()"
+    },
+    "HideMuzzleFlashEmitter": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideMuzzleFlashEmitter()"
+    },
+    "StopMuzzleFlashEffect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopMuzzleFlashEffect()"
+    },
+    "IsCameraWithinRadius": {
+      "documentation": null,
+      "signature_members": {
+        "TestLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Radius": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsCameraWithinRadius(Vector TestLocation, float Radius)"
+    },
+    "IsMuzzleFlashRelevant": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsMuzzleFlashRelevant()"
+    },
+    "PlayMuzzleFlashEffect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayMuzzleFlashEffect()"
+    },
+    "PlayMuzzleFlashLightEffect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayMuzzleFlashLightEffect()"
+    },
+    "StepMuzzleLight": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StepMuzzleLight()"
+    },
+    "AdjustLightPropertiesByDeltas": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AdjustLightPropertiesByDeltas()"
+    },
+    "CalculateEffectLightDeltas": {
+      "documentation": null,
+      "signature_members": {
+        "StartBrightness": {
+          "type": null,
+          "documentation": null
+        },
+        "EndBrightness": {
+          "type": null,
+          "documentation": null
+        },
+        "StartColor": {
+          "type": null,
+          "documentation": null
+        },
+        "EndColor": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CalculateEffectLightDeltas(float StartBrightness, float EndBrightness, Color StartColor, Color EndColor, float DeltaTime)"
+    },
+    "PlayFireEffects": {
+      "documentation": null,
+      "signature_members": {
+        "FireModeNum": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayFireEffects(byte FireModeNum, optional Vector HitLocation)"
+    },
+    "CheckTimerFireOnce": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckTimerFireOnce()"
+    },
+    "PlayFireEffectsOnce": {
+      "documentation": null,
+      "signature_members": {
+        "FireModeNum": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayFireEffectsOnce(byte FireModeNum, optional Vector HitLocation)"
+    },
+    "PrecacheVFX": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PrecacheVFX()"
+    },
+    "GetWeaponSpecificDecalData": {
+      "documentation": null,
+      "signature_members": {
+        "DecalEffects": {
+          "type": null,
+          "documentation": null
+        },
+        "FadeTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "DecalComponent",
+      "signature": "DecalComponent GetWeaponSpecificDecalData(SFXPhysicalMaterialDecals DecalEffects, out float FadeTime)"
+    },
+    "GetDecalData": {
+      "documentation": null,
+      "signature_members": {
+        "PhysMat": {
+          "type": null,
+          "documentation": null
+        },
+        "FadeTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "DecalComponent",
+      "signature": "DecalComponent GetDecalData(PhysicalMaterial PhysMat, out float FadeTime)"
+    },
+    "SpawnADecal": {
+      "documentation": null,
+      "signature_members": {
+        "Impact": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnADecal(ImpactInfo Impact)"
+    },
+    "GetWeaponSpecificImpactSound": {
+      "documentation": null,
+      "signature_members": {
+        "ImpactSounds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "WwiseEvent",
+      "signature": "WwiseEvent GetWeaponSpecificImpactSound(SFXPhysicalMaterialImpactSounds ImpactSounds)"
+    },
+    "GetImpactSound": {
+      "documentation": null,
+      "signature_members": {
+        "PhysMat": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "WwiseEvent",
+      "signature": "WwiseEvent GetImpactSound(PhysicalMaterial PhysMat)"
+    },
+    "SpawnImpactSounds": {
+      "documentation": null,
+      "signature_members": {
+        "Impact": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnImpactSounds(ImpactInfo Impact)"
+    },
+    "GetWeaponSpecificImpactEffect": {
+      "documentation": null,
+      "signature_members": {
+        "ImpactEffects": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ParticleSystem",
+      "signature": "ParticleSystem GetWeaponSpecificImpactEffect(SFXPhysicalMaterialImpactEffects ImpactEffects)"
+    },
+    "GetImpactEffect": {
+      "documentation": null,
+      "signature_members": {
+        "PhysMat": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ParticleSystem",
+      "signature": "ParticleSystem GetImpactEffect(PhysicalMaterial PhysMat)"
+    },
+    "ActivateImpactPSC": {
+      "documentation": null,
+      "signature_members": {
+        "Template": {
+          "type": null,
+          "documentation": null
+        },
+        "Impact": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivateImpactPSC(ParticleSystem Template, ImpactInfo Impact)"
+    },
+    "SpawnImpactEffects": {
+      "documentation": null,
+      "signature_members": {
+        "Impact": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnImpactEffects(ImpactInfo Impact)"
+    },
+    "ProcessInstantHit": {
+      "documentation": null,
+      "signature_members": {
+        "FiringMode": {
+          "type": null,
+          "documentation": null
+        },
+        "Impact": {
+          "type": null,
+          "documentation": null
+        },
+        "NumHits": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessInstantHit(byte FiringMode, ImpactInfo Impact, optional int NumHits)"
+    },
+    "CalcWeaponFire": {
+      "documentation": null,
+      "signature_members": {
+        "StartTrace": {
+          "type": null,
+          "documentation": null
+        },
+        "EndTrace": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactList": {
+          "type": null,
+          "documentation": null
+        },
+        "Extent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ImpactInfo",
+      "signature": "ImpactInfo CalcWeaponFire(Vector StartTrace, Vector EndTrace, optional out array<ImpactInfo> ImpactList, optional Vector Extent)"
+    },
+    "InstantFire": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InstantFire()"
+    },
+    "GetMaximumAllowedAmmo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMaximumAllowedAmmo()"
+    },
+    "GetAmmoCountInMagazine": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetAmmoCountInMagazine()"
+    },
+    "GetFireInterval": {
+      "documentation": null,
+      "signature_members": {
+        "FireModeNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetFireInterval(byte FireModeNum)"
+    },
+    "HasAnyAmmo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasAnyAmmo()"
+    },
+    "HasAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "FireModeNum": {
+          "type": null,
+          "documentation": null
+        },
+        "Amount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasAmmo(byte FireModeNum, optional int Amount)"
+    },
+    "HasBurstAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "FireModeNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasBurstAmmo(byte FireModeNum)"
+    },
+    "HasSpareAmmo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasSpareAmmo()"
+    },
+    "AddAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int AddAmmo(int Amount)"
+    },
+    "PlayLowAmmoVocalization": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayLowAmmoVocalization()"
+    },
+    "ConsumeAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "FireModeNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ConsumeAmmo(byte FireModeNum)"
+    },
+    "InitializeAmmo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeAmmo()"
+    },
+    "GetZoomFOV": {
+      "documentation": null,
+      "signature_members": {
+        "BaseFOV": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetZoomFOV(float BaseFOV)"
+    },
+    "GetModifiedFOV": {
+      "documentation": null,
+      "signature_members": {
+        "FOV": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetModifiedFOV(out float FOV)"
+    },
+    "GetMuzzleLoc": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetMuzzleLoc()"
+    },
+    "SetWeaponRecoil": {
+      "documentation": null,
+      "signature_members": {
+        "PitchRecoil": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWeaponRecoil(float PitchRecoil)"
+    },
+    "SetZoomed": {
+      "documentation": null,
+      "signature_members": {
+        "bState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetZoomed(bool bState)"
+    },
+    "GetAIAimDelay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetAIAimDelay()"
+    },
+    "GetAimError": {
+      "documentation": null,
+      "signature_members": {
+        "Accuracy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetAimError(float Accuracy)"
+    },
+    "GetPlayerAimError": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetPlayerAimError()"
+    },
+    "GetAdjustedAim": {
+      "documentation": null,
+      "signature_members": {
+        "StartFireLoc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator GetAdjustedAim(Vector StartFireLoc)"
+    },
+    "GetRateOfFire": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetRateOfFire()"
+    },
+    "GetTraceRange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetTraceRange()"
+    },
+    "GetWeaponAimErrorRange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector2D",
+      "signature": "Vector2D GetWeaponAimErrorRange()"
+    },
+    "GetWeaponRecoil": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetWeaponRecoil()"
+    },
+    "ResetAmmoOnHolster": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetAmmoOnHolster()"
+    },
+    "GetCurrentTotalAmmo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetCurrentTotalAmmo()"
+    },
+    "GetMaxTotalAmmo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMaxTotalAmmo()"
+    },
+    "GetCurrentSpareAmmo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetCurrentSpareAmmo()"
+    },
+    "GetMaxSpareAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "bIgnoreCurrentMag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetMaxSpareAmmo(optional bool bIgnoreCurrentMag)"
+    },
+    "GetMagazineSize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMagazineSize()"
+    },
+    "OutOfAmmo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool OutOfAmmo()"
+    },
+    "GetDamageType": {
+      "documentation": null,
+      "signature_members": {
+        "FiringMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Class",
+      "signature": "Class<SFXDamageType> GetDamageType(byte FiringMode)"
+    },
+    "GetRangeMultiplier": {
+      "documentation": null,
+      "signature_members": {
+        "RangeMultiplier": {
+          "type": null,
+          "documentation": null
+        },
+        "Range": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetRangeMultiplier(out float RangeMultiplier, out float Range, Vector HitLocation, optional Actor HitActor)"
+    },
+    "ModifyDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Multiplier": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyDamage(out float Multiplier, Vector HitLocation, optional Actor HitActor)"
+    },
+    "GetFireModeBaseDamage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetFireModeBaseDamage()"
+    },
+    "NotifyUnpossessed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyUnpossessed()"
+    },
+    "UseFirstPersonCamera": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool UseFirstPersonCamera()"
+    },
+    "GetProjectileFirePosition": {
+      "documentation": null,
+      "signature_members": {
+        "out_ProjLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "out_ProjDir": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetProjectileFirePosition(out Vector out_ProjLoc, out Vector out_ProjDir)"
+    },
+    "GetPhysicalFireStartLoc": {
+      "documentation": null,
+      "signature_members": {
+        "AimDir": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetPhysicalFireStartLoc(optional Vector AimDir)"
+    },
+    "ProjectileFire": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Projectile",
+      "signature": "Projectile ProjectileFire()"
+    },
+    "ForceEndFire": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ForceEndFire()"
+    },
+    "EndFire": {
+      "documentation": null,
+      "signature_members": {
+        "FireModeNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EndFire(byte FireModeNum)"
+    },
+    "StartBurstFire": {
+      "documentation": null,
+      "signature_members": {
+        "FireModeNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StartBurstFire(byte FireModeNum)"
+    },
+    "BurstRefireTimer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BurstRefireTimer()"
+    },
+    "InitDefaultDecalProperties": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitDefaultDecalProperties()"
+    },
+    "ScaleWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "Level": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ScaleWeapon(int Level)"
+    },
+    "CalculateStaticBonus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float CalculateStaticBonus()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "OnWeaponUnequip": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnWeaponUnequip(SFXWeapon Weapon)"
+    },
+    "OnWeaponEquip": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnWeaponEquip(SFXWeapon Weapon)"
+    },
+    "OnWeaponReload": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnWeaponReload(SFXWeapon Weapon)"
+    },
+    "GetDamageVocProbabilityMod": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDamageVocProbabilityMod()"
+    },
+    "OnWeaponImpact": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        },
+        "Impact": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnWeaponImpact(SFXWeapon Weapon, ImpactInfo Impact)"
+    }
+  },
+  "states": {
+    "WeaponEquipping": {
+      "functions": {
+        "ForceAnimSets": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "EquipFinished": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "EquipNearFinished": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "EquipTimedOut": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "TryPutDown": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "Activate": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "WeaponPuttingDown": {
+      "functions": {
+        "UnEquipFinished": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "UnEquipTimedOut": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "TryPutDown": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Reloading": {
+      "functions": {
+        "CancelReload": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "FinishReloading": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "TryPutDown": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "ReloadNearFinished": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "TryReload": {
+          "documentation": null,
+          "signature_members": {
+            "bDisplayHint": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "StartReload": {
+      "functions": {
+        "TryPutDown": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "WaitForReload": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "TransitionToReload": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "TryReload": {
+          "documentation": null,
+          "signature_members": {
+            "bDisplayHint": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Active": {
+      "functions": {
+        "IsInPortArms": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "EndFire": {
+          "documentation": null,
+          "signature_members": {
+            "FireModeNum": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginFireForReal": {
+          "documentation": null,
+          "signature_members": {
+            "FireModeNum": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginFire": {
+          "documentation": null,
+          "signature_members": {
+            "FireModeNum": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

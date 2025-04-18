@@ -1,11 +1,11 @@
 {
   "Members": {
     "Tag": {
-      "type": null,
+      "type": "Name",
       "documentation": null
     },
     "pActor": {
-      "type": null,
+      "type": "Actor",
       "documentation": null
     }
   },
