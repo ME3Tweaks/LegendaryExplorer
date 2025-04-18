@@ -1,0 +1,81 @@
+# .NET Desktop
+
+# Build and run tests for .NET Desktop or Windows classic desktop solutions.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
+
+# Trigger on all branches. Only some branches however will run certain steps
+#trigger:
+#- *
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  buildPlatform: 'x64'
+  docToolBranch: 'DocuDB'
+
+steps:
+- checkout: self
+  clean: true
+  persistCredentials: true
+  submodules: recursive
+  fetchDepth: 1
+  fetchTags: false
+
+- task: PowerShell@2
+  displayName: "Build UnrealDoc"
+  condition: eq(variables['Build.SourceBranchName'], 'UnrealDoc')
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Variables
+      $buildDir = "$(Build.SourcesDirectory)\UnrealDocBuild"
+      $unrealDocProj = "$(Build.SourcesDirectory)\LegendaryExplorer\LegendaryExplorerUnrealDoc\LegendaryExplorerUnrealDoc.csproj"
+      $inputDir = "$(Build.SourcesDirectory)\DocSources" # .json files
+      $outputDir = "$(Build.SourcesDirectory)\BuiltDocs" # Where docs get built
+
+      # Build UnrealDoc so we can run it to build the docs.
+      Write-Host Switching to $docToolBranch branch...
+      git fetch $docToolBranch --depth 1
+      git switch $docToolBranch
+      dotnet publish $unrealDocProj -o $buildDir -c Release
+
+      # Checkout UnrealDoc branch
+      Write-Host Changing to UnrealDoc branch for documentation build.
+      git fetch --depth 1 origin UnrealDoc
+      git switch UnrealDoc
+      
+      # Build docs
+      & $buildDir\LegendaryExplorerUnrealDoc.exe -i $inputDir -o $outputDir
+
+      # Commit docs
+      Write-Host Changing to Github pages branch for publishing.
+      git fetch --depth 1 origin gh-pages
+      git checkout gh-pages
+
+      Write-Host Cleaning out existing documentation...
+      if(Test-Path .\unrealdoc\)
+      {
+          Remove-Item .\unrealdoc\* -Recurse
+      } else {
+          New-Item .\unrealdoc -ItemType Directory
+      }
+
+      Write-Host "Copying documentation to repo..."
+      Copy-Item -Path "$($outputDir)\*" -Destination .\unrealdoc -Recurse
+
+      git config user.email "me3tweaks-auto@me3tweaks.com"
+      git config user.name "ME3Tweaks-UnrealDoc"
+
+      Write-Host "Adding documentation files to tracked files..."
+      git add .\unrealdoc\*
+      git add .\unrealdoc\**\*
+
+      Write-Host "Commiting new documentation..."
+      git commit -m "Update UnrealDoc [pipeline build]"
+
+      Write-Host "Pushing new documentation to public repo..."
+      git push origin gh-pages
+
+      Write-Host "Done."
