@@ -6,8 +6,8 @@
 		<script type="text/javascript">
 			document.addEventListener('DOMContentLoaded', function() {
 				var url = window.location.href.substring(window.location.protocol.length + 2);
-				var gameidx = url.indexOf("/%LD_GAME%/");
-				var baseurl = url.substring(gameidx + 5);
+				var gameidx = url.indexOf("/LE3/");
+				var baseurl = url.substring(0, gameidx + 5);
 				console.log(baseurl);
 				var typelinks = document.querySelectorAll('[data-type]');
 				for (const element of typelinks) {
@@ -15,13 +15,13 @@
 					var value = element.textContent;
 					switch(type){
 						case 'class':
-							element.href = baseurl + 'classes/' + value + '.html';
+							element.href = window.location.protocol + '//' + baseurl + 'classes/' + value + '.html';
 							break;
 						case 'struct':
-							element.href = baseurl + 'structs/' + value + '.html';
+							element.href = window.location.protocol + '//' + baseurl + 'structs/' + value + '.html';
 							break;
 						case 'enum':
-							element.href = baseurl + 'enums/' + value + '.html';
+							element.href = window.location.protocol + '//' + baseurl + 'enums/' + value + '.html';
 							break;
 					}
 				}
