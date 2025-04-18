@@ -1,0 +1,5691 @@
+<html>
+	<head>
+		<title>SFXWeapon</title>
+		<description></description>
+		<link rel="stylesheet" href="../lexdoc.css">
+		<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function() {
+				var url = window.location.href.substring(window.location.protocol.length + 2);
+				var gameidx = url.indexOf("/LE3/");
+				var baseurl = url.substring(gameidx + 5);
+				console.log(baseurl);
+				var typelinks = document.querySelectorAll('[data-type]');
+				for (const element of typelinks) {
+					var type = element.dataset.type;
+					var value = element.textContent;
+					switch(type){
+						case 'class':
+							element.href = baseurl + 'classes/' + value + '.html';
+							break;
+						case 'struct':
+							element.href = baseurl + 'structs/' + value + '.html';
+							break;
+						case 'enum':
+							element.href = baseurl + 'enums/' + value + '.html';
+							break;
+					}
+				}
+			}, false);
+		</script>
+	</head>
+	<body>
+	<!-- ========= START OF TOP NAVBAR ======= -->
+<div class="topNav"><a name="navbar.top">
+<!--   -->
+</a>
+<div class="skipNav"><a href="#skip.navbar.top" title="Skip navigation links">Skip navigation links</a></div>
+<a name="navbar.top.firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/Constructor.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../index-files/index-1.html">Index</a></li>
+<li><a href="../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><strong>Legendary Explorer<br>DocuDB</strong></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../java/lang/reflect/Array.html" title="class in java.lang.reflect"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../java/lang/reflect/Executable.html" title="class in java.lang.reflect"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../index.html?java/lang/reflect/Constructor.html" target="_top">Frames</a></li>
+<li><a href="Constructor.html" target="_top">No&nbsp;Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../allclasses-noframe.html">All&nbsp;Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method.summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method.detail">Method</a></li>
+</ul>
+</div>
+<a name="skip.navbar.top">
+<!--   -->
+</a></div>
+<!-- ========= END OF TOP NAVBAR ========= -->
+
+		<h2 class="title">Class SFXWeapon</h2>
+<ul class="inheritance">
+<li><a href="Object.html">Core.Object</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="Actor.html">Engine.Actor</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="Inventory.html">Engine.Inventory</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="Weapon.html">Engine.Weapon</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="SFXWeapon_NativeBase.html">SFXGame.SFXWeapon_NativeBase</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="SFXWeapon.html">SFXGame.SFXWeapon</a></li>
+</ul>
+
+</li>
+</ul>
+
+</li>
+</ul>
+
+</li>
+</ul>
+
+</li>
+</ul>
+
+</li>
+</ul>
+
+<hr>
+<p></p>
+
+	<!-- VARIABLES-->
+	<h3>Variables</h3>
+	<table>
+	<tr>
+		<th>Type</th>
+		<th>Name</th>
+		<th>Description</th>
+	</tr>
+	<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_AccCone_Min</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_AccCone_Max</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ReloadDuration</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Damage</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MagSize</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MaxSpareAmmo</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MinAimError</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MaxAimError</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MinZoomAimError</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MaxZoomAimError</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RateOfFire</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NoAmmoUseChance</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HeadshotDamageMultiplier</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ImpactForceModifier</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ReactionChanceModifier</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MeleeDamageModifier</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EncumbranceWeight</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Recoil</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ZoomRecoil</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AccFirePenalty</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AccFireInterpSpeed</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ZoomAccFirePenalty</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ZoomAccFireInterpSpeed</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MinCrosshairRange</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MaxCrosshairRange</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MinZoomCrosshairRange</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MaxZoomCrosshairRange</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PenetrationBonus</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PenetrationDamageBonus</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ArmorPiercing</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StatBarAccuracy</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StatBarDamage</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StatBarRateOfFire</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScaledFloat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ZoomDamageShakeModifier</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">SFXWeaponAimMode</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AimModes</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Name</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AimOffsetProfileNames</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ChangeOverLifeKey</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MuzzleLightChangeOverLifeKeys</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GUIImage</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NotificationImage</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AmmoRTPCName</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ZoomSnapInfo</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ZoomSnapList</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Name</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FadingParameters</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>stringref</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DamageUpgradeTokens</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>stringref</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ResearchUpgradeTokens</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ResearchUpgradeIds</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AllowableWeaponMods</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">WeaponModMeshOverride</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponModMeshOverrides</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">CoverLeanPosition</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CoverLeanPositions</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">LinearColor</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponModGripColours</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">LinearColor</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponModBodyColours</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">LinearColor</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponModEmissiveColours</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RTPCName</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DefaultModOptions</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>OnWeaponImpact</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ImpactSubscriptions</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">SFXProjectile</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PredictedProjectiles</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>OnWeaponImpact</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">__OnWeaponImpact__Delegate</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>GetDamageVocProbabilityMod</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">__GetDamageVocProbabilityMod__Delegate</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>OnWeaponReload</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">__OnWeaponReload__Delegate</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>OnWeaponEquip</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">__OnWeaponEquip__Delegate</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>OnWeaponUnequip</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">__OnWeaponUnequip__Delegate</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">Class</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DroppedAmmoClass</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">Class</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GUIReticleClass</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">Class</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GUIZoomReticleClass</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScreenShakeStruct</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FiringShake</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScreenShakeStruct</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TightAimFiringShake</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ScreenShakeStruct</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ChargeCameraShake</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">TracerSpec</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TracerInfo</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">Guid</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AttachedFlashlightVFXGuid</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">LinearColor</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponModBaseGripColour</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">LinearColor</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponModBaseBodyColour</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">LinearColor</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponModBaseEmissiveColour</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">Vector</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DebugShotStartLoc</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">Rotator</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DebugShotAimRot</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">Vector</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MuzzleIdlePosition</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">Vector</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FrictionTargetOffset</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">Vector</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DummyFireTargetLoc</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">Vector</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StartFireLocation</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">Vector</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StartFireDirection</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Name</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MeleePowerName</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">Vector2D</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_BurstFireCount</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">Vector2D</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_BurstFireDelay</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">Vector2D</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_AimDelay</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">SFXAnimSetCookSpec</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ReloadAnimInfo</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">AnimNodeSlot</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponAnimNode</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">ParticleSystemComponent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PSC_OutOfAmmoEffect</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">ForceFeedbackWaveform</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OutOfAmmoRumble</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">ForceFeedbackWaveform</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponFireWaveForm</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">ForceFeedbackWaveform</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EjectRumble</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">ParticleSystem</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PS_DefaultImpactEffect</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">ParticleSystem</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PS_DefaultMaterialImpactEffect</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">DecalComponent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DefaultDecalProperties</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">MaterialInterface</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DefaultDecalMaterial</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">ParticleSystemComponent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PSC_ShellCasing</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">ParticleSystemComponent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PSC_ReloadVent</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">ParticleSystemComponent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PSC_MuzFlashEmitter</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">PointLightComponent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LC_MuzzleFlashLight</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">ParticleSystemComponent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PSC_PermanentMuzzle</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OnMuzzleSound</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OffMuzzleSound</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Name</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MuzzleSocketName</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Name</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ShellCasingSocketName</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">Light</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AttachedFlashlight</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">Light</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AttachedAmbientLight</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">GFxMovieInfo</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IconResource</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DefaultImpactSound</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FireSound</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlayerFireSound</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponPowerFireSound</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FireNoAmmoSound</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponWhipSoundLeft</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponWhipSoundRight</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponReloadSound</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponSteamReloadSound</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StopWeaponReloadSound</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponExpandSound</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponCollapseSound</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NeedReloadNotifySound</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SteamReloadNotifySound</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ActivateModScopeZoomWwiseEvent</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DeActivateModScopeZoomWwiseEvent</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">Vector2D</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FrictionMultiplierRange</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">Vector2D</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AdhesionStrengthRange</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">ParticleSystemComponent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AmmoPowerPSCO</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">ParticleSystemComponent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AmmoPowerIconPSCO</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Name</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AmmoPowerName</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Name</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AmmoPowerSourceTag</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">Actor</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DummyFireParent</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">Actor</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DummyFireTargetActor</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">Pawn</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PreDummyFireInstigator</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">SFXCameraSetup</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CameraSetup</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">RvrClientEffectInterface</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TaserMeleeModImpactEffect</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TaserMeleeModImpactSound</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">ParticleSystem</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">BladeMeleeModImpactEffect</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">BladeMeleeModImpactSound</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">ParticleSystemComponent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ChargeUpPS</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">ParticleSystemComponent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ChargeDownPS</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PowerUpSound</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PowerDownSound</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NPCPowerUpSound</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NPCPowerDownSound</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">Actor</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StartFireTarget</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RemainingBurstFireCount</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RemainingBurstsToFire</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CurrentAimMode</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CoverLeanExitDelay</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CoverPartialLeanExitDelay</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SwitchPriority</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ImpactRelevanceDistance</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ImpactScale</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ShowTracerDistance</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TracerSpawnOffset</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MuzzleLightLifetime</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MuzzleLightBrightness</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">Color</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MuzzleLightColor</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MuzzleLightFalloffExponent</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MuzzleLightMinShadowFalloffRadius</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MuzzleLightRadius</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MuzzleLightShadowFalloffExponent</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MuzzleLightShadowRadiusMultiplier</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LightStepSize</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LightKeyIndex</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LightCurrentTime</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LightDeltaBrightness</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LightDeltaR</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LightDeltaG</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LightDeltaB</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TimeToHideMuzzleFlashPSC</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TimeToDeactivateMuzzleFlashPSC</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">Color</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FlashlightFireColor</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FlashlightFireBrightnessIncrease</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FlashlightFireRadiusIncrease</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FlashlightStopFireDelay</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponLevel</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EjectShellCasingTimeRatio</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ReloadReactionWindow</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LastBulletStrongerPercent</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StealthDamageIncrease</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DamageHench</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LowAmmoSoundThreshold</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SteamSoundThreshold</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NoAmmoFireSoundDelay</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MinRefireTime</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LazyRateOfFire</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RateOfFireAI</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RoundsPerBurst</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ModCrosshairMultiplier</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AmmoPerShot</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RecoilInterpSpeed</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RecoilFadeSpeed</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RecoilZoomFadeSpeed</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RecoilMinFade</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RecoilCap</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ZoomRecoilCap</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RecoilYawScale</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RecoilYawFrequency</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TraceRange</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MeleeRange</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IdealMinRange</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IdealTargetDistance</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IdealMaxRange</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MagneticCorrectionThresholdAngle</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MaxMagneticCorrectionAngle</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DistancePenetrated</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IconRef</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>stringref</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PrettyName</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>stringref</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ShortPrettyName</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>stringref</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GUIClassName</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>stringref</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GUIClassDescription</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>stringref</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AmmoPrettyName</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>stringref</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ShortDescription</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>stringref</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GeneralDescription</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>stringref</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponUnlockMessage</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>stringref</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponUpgradeMessage</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GUIWeaponOrder</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>stringref</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NuiSpeechName</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponLoudness</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MinFrictionDistance</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MaxFrictionDistance</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PeakFrictionDistance</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PeakFrictionRadiusScale</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PeakFrictionHeightScale</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MinAdhesionDistance</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MaxAdhesionDistance</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MinAdhesionVelocity</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CamInputAdhesionDamping</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MaxLateralAdhesionDist</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AimCorrectionAmount</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MinZoomSnapDistance</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MaxZoomSnapDistance</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DamageUpgradeId</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DummyFireInaccuracy</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DummyFireShotsRemaining</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MaxWeaponMods</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TaserMeleeModStunDuration</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClientSideHitLeeway</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClientSideHitMaxDistReallyClose</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClientSideHitMaxAngle</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClientSideHitMaxDistClose</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClientSideHitMaxAngleClose</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NumberOfDefaultModsToAttach</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HearNoiseTimeout</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ChargeAmount</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MinChargeTime</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MaxChargeTime</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MaxChargeFireRumble</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MinChargeFireRumble</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MaxChargeCameraShake</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ChargeStartTime</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LastFireTime</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MaxLevel</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponAcquiredID</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponAcquiredID_NGP</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NewGamePlusID</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CodexPlotID</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bSuperDamage</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bSuppressMuzzleFlash</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bSuppressTracers</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bSuppressImpactFX</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bSuppressDecal</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bSuppressDamage</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bSuppressCameraShake</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bPlayerUsable</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bLoopingFlashEmitter</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bPlayingMuzzleFlashEffect</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bPermanentMuzzle</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bForceSpawnTracer</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bFlashlightAttached</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bWeaponCanBeReloaded</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bDrawingWeapon</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bHolsteringWeapon</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bFiringAnimationPlaying</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bNotRegularWeaponGUI</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bPlayZoomSound</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bPlaySoundOncePerBurst</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bAIPlaySoundOncePerBurst</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bFrictionEnabled</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bFrictionDistanceScalingEnabled</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bAdhesionEnabled</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bAdhesionDuringCam</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bZoomSnapEnabled</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bScaleAnimDurationByFireRate</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bWeaponAndEffectsHidden</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bNoAmmoPowerTracers</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bDummyFireWeapon</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bDamagesFriends</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bSuppressDummyFireLineCheck</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DummyFireInstigatorSet</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bDoesNotUnlock</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bTaserMeleeModApplied</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bBladeMeleeModApplied</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bAutoModdingEnabled</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bNeedPowerDownSound</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bForceFireAfterCharge</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bFired</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bIsCharged</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bQuickSwitchEligible</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="enum">AimProfiles</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AimNodeProfileID</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="enum">IKProfiles</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IKProfileID</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="enum">FireModes</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DefaultFireMode</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="enum">WeaponAnimType</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AnimType</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="enum">EAttachSlot</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AttachSlot</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>byte</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FireOnceFiringMode</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>byte</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PendingFireMode</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>byte</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DummyTeamIndex</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="enum">EPlayerPositionRTPC</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RTPCPlayerPosition</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="enum">ChargeEffectType</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RepChargeEffect</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+
+</table>
+
+	<!-- FUNCTIONS-->
+	<h3>Functions</h3>
+	<table>
+	<tr>
+		<th>Return type</th>
+		<th>Signature</th>
+		<th>Description</th>
+	</tr>
+	<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CalculateCoverLeanOutOffset(out <a data-type="struct">Vector</a> Offset, <a data-type="enum">ECoverDirection</a> Direction, <a data-type="enum">ECoverType</a> Type)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CancelReload()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Destroyed()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DummyFire(byte FireModeNum, <a data-type="struct">Vector</a> TargetLoc, optional <a data-type="class">Actor</a> AttachedTo, optional float AimErrorDeg, optional <a data-type="class">Actor</a> TargetActor)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetMuzzleLoc()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetPenetrationDepth()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetPhysicalFireStartLoc(optional <a data-type="struct">Vector</a> AimDir)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetReloadDuration()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetTraceRange()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HasLoopingFire()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PostBeginPlay()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PostInitAnimTree(<a data-type="class">SkeletalMeshComponent</a> SkelComp)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PrecacheVFX(<a data-type="class">SFXObjectPool</a> ObjectPool, <a data-type="class">RvrClientEffectManager</a> ClientEffects)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ProcessInstantHit(byte FiringMode, <a data-type="struct">ImpactInfo</a> Impact, optional int NumHits)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ProcessInstantHit_Internal(byte FiringMode, <a data-type="struct">ImpactInfo</a> Impact, optional int NumHits)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ReplicatedEvent(Name VarName)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetZoomed(bool bState)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponStoppedFiring(byte FiringMode)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EffectIsRelevant(<a data-type="struct">Vector</a> SpawnLocation, bool bForceDedicated, optional float CullDistance)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetPrettyName(optional int <a data-type="class">Level</a>)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetWeaponStatBarValues(<a data-type="enum">EWeaponStatBars</a> StatBar, out float WeaponValue)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AddAmmo(int Amount)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AttachWeaponTo(<a data-type="class">SkeletalMeshComponent</a> MeshCpnt, optional Name SocketName)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CacheAnimNodes()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>ImpactInfo</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CalcWeaponFire(<a data-type="struct">Vector</a> StartTrace, <a data-type="struct">Vector</a> EndTrace, optional out array<ImpactInfo> ImpactList, optional <a data-type="struct">Vector</a> Extent)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CanThrow()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClearFlashLocation()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClientWeaponSet(bool bOptionalSet, optional bool bDoNotActivate)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClientWeaponThrown()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ConsumeAmmo(byte FireModeNum)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DetachWeapon()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DropFrom(<a data-type="struct">Vector</a> StartLocation, <a data-type="struct">Vector</a> StartVelocity)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EndFire(byte FireModeNum)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FireModeUpdated(byte FiringMode, bool bViaReplication)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ForceEndFire()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Rotator</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetAdjustedAim(<a data-type="struct">Vector</a> StartFireLoc)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetFireInterval(byte FireModeNum)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetWeaponDebug(out array<string> DebugInfo)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GivenTo(<a data-type="class">Pawn</a> thisPawn, optional bool bDoNotActivate)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HandleFinishedFiring()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HasAmmo(byte FireModeNum, optional int Amount)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HasAnyAmmo()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HolderDied()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">InstantFire()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NotifyWeaponFired(byte FireMode)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlayFireEffects(byte FireModeNum, optional <a data-type="struct">Vector</a> HitLocation)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a href="Projectile.html">Projectile</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ProjectileFire()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ServerStopFire(byte FireModeNum)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetFlashLocation(<a data-type="struct">Vector</a> HitLocation)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ShouldRefire()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StartFire(byte FireModeNum)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StopFireEffects(byte FireModeNum)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponFired(byte FiringMode, bool bViaReplication, optional <a data-type="struct">Vector</a> HitLocation)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AdjustLightPropertiesByDeltas()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ApplyDefaultWeaponMods(optional bool bClearOldMods)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AssignToSlot(<a data-type="enum">EAttachSlot</a> Slot)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AttachFlashlight()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AttachMuzzleEffectsComponents(<a data-type="class">SkeletalMeshComponent</a> SkelMesh, optional Name MuzzleSocket, optional Name CasingSocket)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">BeginDummyFire(byte FiringMode, optional <a data-type="class">Actor</a> AttachedTo)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CalcRemoteImpactEffects(byte FireModeNum, <a data-type="struct">Vector</a> GivenHitLocation, bool bViaReplication)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CalculateBonus(<a data-type="struct">Vector</a> HitLocation, out <a data-type="struct">DamageCalculationAlgorithm</a> DamageCalc, optional <a data-type="class">Actor</a> HitActor)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CalculateEffectLightDeltas(float StartBrightness, float EndBrightness, <a data-type="struct">Color</a> StartColor, <a data-type="struct">Color</a> EndColor, float DeltaTime)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CanFire()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CanReload()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CharacterSlotUpdated()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CheckTimerFireOnce()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CleanUpDummyFire()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClearFizzleCount()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClearWeaponModMaterialParameters()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClientDoImpact(<a data-type="class">BioPawn</a> InImpactedPawn)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Collapse()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DeferredPostBeginPlay()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DelayedRestoreFlashlightToNormal()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DetachFlashlight()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DoAReload()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DoReload()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DrawDebugShot(<a data-type="struct">Vector</a> StartLocation, <a data-type="struct">Vector</a> EndLocation)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DummyFireNumTimes(int nNumTimes, <a data-type="struct">Vector</a> vHitLocation, optional <a data-type="class">Actor</a> AttachedTo, optional float fInaccuracy, optional <a data-type="class">Actor</a> TargetActor)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DummyFireTimerFunction()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EquipFinished()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EquipNearFinished()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EquipTimedOut()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Expand()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a href="Class.html">Class</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FindWeaponClass(string WeaponClassName)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetAIAimDelay()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetAmmoCountInMagazine()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetAmmoRestoredPerReload()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetBurstFireCount()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetBurstsToFire()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetCurrentSpareAmmo()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetCurrentTotalAmmo()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a href="Class.html">Class</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetDamageType(optional byte FiringMode)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetDamageVocProbabilityMod()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a href="DecalComponent.html">DecalComponent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetDecalData(<a data-type="class">PhysicalMaterial</a> PhysMat, out float FadeTime)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetFireModeBaseDamage()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetGeneralDescription()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a href="ParticleSystem.html">ParticleSystem</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetImpactEffect(<a data-type="class">PhysicalMaterial</a> PhysMat)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a href="WwiseEvent.html">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetImpactSound(<a data-type="class">PhysicalMaterial</a> PhysMat)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetInitialDummyFireDelay()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetLazyFireInterval(byte FireModeNum)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetMagazineSize()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetMaxSpareAmmo(optional bool bIgnoreCurrentMag)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetMaxTotalAmmo()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetModifiedFOV(out float FOV)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetPlayerAimError(float Accuracy)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetProjectileFirePosition(out <a data-type="struct">Vector</a> out_ProjLoc, out <a data-type="struct">Vector</a> out_ProjDir)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetRateOfFire()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetReactionChanceModifier()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetShortDescription()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>EAttachSlot</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetStoreQualification()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Vector2D</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetWeaponAimErrorRange()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>EWeaponFireType</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetWeaponFireType()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetWeaponRecoil()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a href="DecalComponent.html">DecalComponent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetWeaponSpecificDecalData(<a data-type="class">SFXPhysicalMaterialDecals</a> DecalEffects, out float FadeTime)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a href="ParticleSystem.html">ParticleSystem</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetWeaponSpecificImpactEffect(<a data-type="class">SFXPhysicalMaterialImpactEffects</a> ImpactEffects)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a href="WwiseEvent.html">WwiseEvent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetWeaponSpecificImpactSound(<a data-type="class">SFXPhysicalMaterialImpactSounds</a> ImpactSounds)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetZoomFOV()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GiveWeaponCodex()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HasSpareAmmo()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HearNoiseTimer()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HideMuzzleFlashEmitter()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HideMuzzleFlashLight()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HideReloadEmitters()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IncrementFizzleCount()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">InitDefaultDecalProperties()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">InitializeAmmo()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">InitializeWeapon()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Internal_AssignToSlot()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a href="Projectile.html">Projectile</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Internal_ProjectileFire()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsAnimTypePistol()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsAnimTypeShotgun()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsAnimTypeSniper()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsCameraWithinRadius(<a data-type="struct">Vector</a> TestLocation, float Radius)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsChargingWeapon()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsClientReadyToInitialize()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsMuzzleFlashRelevant()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsWeaponAlreadyAwarded(Class<SFXWeapon> WeaponClass)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsWeaponUnlocked(Class<SFXWeapon> WeaponClass)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a href="Class.html">Class</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LoadWeaponClass(string WeaponClassName)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NotifyUnpossessed()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NotifyWeaponRefireDelayExpired()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OnClientProjectileSpawned(<a data-type="class">SFXProjectile</a> NewProjectile)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OnWeaponEquip(<a data-type="class">SFXWeapon</a> <a data-type="class">Weapon</a>)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OnWeaponImpact(<a data-type="class">SFXWeapon</a> <a data-type="class">Weapon</a>, <a data-type="struct">ImpactInfo</a> Impact)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OnWeaponReload(<a data-type="class">SFXWeapon</a> <a data-type="class">Weapon</a>)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OnWeaponUnequip(<a data-type="class">SFXWeapon</a> <a data-type="class">Weapon</a>)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OutOfAmmo()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlayFireEffectsOnce(optional <a data-type="struct">Vector</a> HitLocation)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlayMuzzleFlashEffect()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlayMuzzleFlashLightEffect()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlayNoAmmoEffects()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlayNoAmmoFireSound()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlayOwnedFireEffects(byte FireModeNum, <a data-type="struct">Vector</a> HitLocation)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlayReloadEject()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ProcessInstantHitNearMiss(<a data-type="struct">Vector</a> StartTrace, <a data-type="struct">Vector</a> HitLocation)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a href="Projectile.html">Projectile</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ProjectileFireSimple(optional float AimErrorDeg)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ReloadNearFinished()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ReplicateImpact(<a data-type="class">BioPawn</a> ImpactedPawn, optional <a data-type="class">SFXProjectile</a> InProjectile, optional float fDelay)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ResetAmmoOnHolster()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RestoreFlashlightToNormal()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ScaleWeapon()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a href="Actor.html">Actor</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SelectTarget()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ServerCancelReload()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ServerFireChargedShot(float SentChargeAmount)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ServerProcessInstantHit(byte FiringMode, <a data-type="struct">ImpactInfo</a> Impact, int HitArmourIdx, bool bSuppressedAudio, optional int NumHits)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ServerProjectileFire(<a data-type="class">Actor</a> Target, <a data-type="struct">Vector</a> ProjLocation, <a data-type="struct">Vector</a> ProjDirection)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ServerSetIsZoomed(bool bState)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetAmmoPowerHologramEnabled(bool bEnabled, optional bool bForceEnabled)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetAmmoPowerHologramTemplates(<a data-type="class">ParticleSystem</a> Template, <a data-type="class">ParticleSystem</a> IconTemplate)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetFlashlightFireMode()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetRTPCPlayerPosition(<a data-type="enum">EPlayerPositionRTPC</a> NewPlayerPosition)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetupWeaponFire(byte FireModeNum)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetWeaponHidden(bool bWeaponHidden)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetWeaponModBodyColour(int ModLevel)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetWeaponModEmissiveValue(int ModLevel)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetWeaponModGripColour(int ModLevel)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetWeaponRecoil(float PitchRecoil)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ShouldAutoReload()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ShouldSpawnTracerFX()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ShutOffAllEmitters()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SpawnADecal(<a data-type="struct">ImpactInfo</a> Impact)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SpawnImpactEffects(<a data-type="struct">ImpactInfo</a> Impact)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SpawnImpactSounds(<a data-type="struct">ImpactInfo</a> Impact)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SpawnTracerEffect(<a data-type="struct">Vector</a> HitLocation, float HitDistance)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StartChargeEffects()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StartFullChargeRumble()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StepMuzzleLight()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StopChargeEffects()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StopMuzzleFlashEffect()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SubscribeToImpactNotifications(delegate<OnWeaponImpact> Callback)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TryReload(optional bool bDisplayHint)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">UnEquipFinished()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">UnEquipTimedOut()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">UnsubscribeFromImpactNotifications(delegate<OnWeaponImpact> Callback)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Upgrade(<a data-type="class">SFXPawn_Player</a> <a data-type="class">Player</a>, Class<SFXWeapon> WeaponClass, optional bool bNoNotification, optional bool bIsMultiplayer, optional bool bDoesNotCountasNGPFound, optional bool bUnlockOnly)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">UseFirstPersonCamera()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponPlayWwiseEvent(<a data-type="class">WwiseEvent</a> Sound, optional float NoiseLoudness, optional <a data-type="struct">Vector</a> SoundLoc, optional Name NoiseType)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+
+</table>
+
+
+	</body>
+</html>

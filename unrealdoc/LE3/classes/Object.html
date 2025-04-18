@@ -1,0 +1,3527 @@
+<html>
+	<head>
+		<title>Object</title>
+		<description></description>
+		<link rel="stylesheet" href="../lexdoc.css">
+		<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function() {
+				var url = window.location.href.substring(window.location.protocol.length + 2);
+				var gameidx = url.indexOf("/LE3/");
+				var baseurl = url.substring(gameidx + 5);
+				console.log(baseurl);
+				var typelinks = document.querySelectorAll('[data-type]');
+				for (const element of typelinks) {
+					var type = element.dataset.type;
+					var value = element.textContent;
+					switch(type){
+						case 'class':
+							element.href = baseurl + 'classes/' + value + '.html';
+							break;
+						case 'struct':
+							element.href = baseurl + 'structs/' + value + '.html';
+							break;
+						case 'enum':
+							element.href = baseurl + 'enums/' + value + '.html';
+							break;
+					}
+				}
+			}, false);
+		</script>
+	</head>
+	<body>
+	<!-- ========= START OF TOP NAVBAR ======= -->
+<div class="topNav"><a name="navbar.top">
+<!--   -->
+</a>
+<div class="skipNav"><a href="#skip.navbar.top" title="Skip navigation links">Skip navigation links</a></div>
+<a name="navbar.top.firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/Constructor.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../index-files/index-1.html">Index</a></li>
+<li><a href="../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><strong>Legendary Explorer<br>DocuDB</strong></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../java/lang/reflect/Array.html" title="class in java.lang.reflect"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../java/lang/reflect/Executable.html" title="class in java.lang.reflect"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../index.html?java/lang/reflect/Constructor.html" target="_top">Frames</a></li>
+<li><a href="Constructor.html" target="_top">No&nbsp;Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../allclasses-noframe.html">All&nbsp;Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method.summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method.detail">Method</a></li>
+</ul>
+</div>
+<a name="skip.navbar.top">
+<!--   -->
+</a></div>
+<!-- ========= END OF TOP NAVBAR ========= -->
+
+		<h2 class="title">Class Object</h2>
+<ul class="inheritance">
+<li><a href="Object.html">Core.Object</a></li>
+</ul>
+
+<hr>
+<p></p>
+
+	<!-- VARIABLES-->
+	<h3>Variables</h3>
+	<table>
+	<tr>
+		<th>Type</th>
+		<th>Name</th>
+		<th>Description</th>
+	</tr>
+	<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">Pointer</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">VfTableObject</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ObjectInternalInteger</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">QWord</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ObjectFlags</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">Pointer</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HashNext</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">Pointer</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HashOuterNext</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">Pointer</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StateFrame</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">Object</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Linker</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">Pointer</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LinkerIndex</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NetIndex</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">Object</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Outer</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Name</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Name</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">Class</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Class</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">Object</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ObjectArchetype</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+
+</table>
+
+	<!-- FUNCTIONS-->
+	<h3>Functions</h3>
+	<table>
+	<tr>
+		<th>Return type</th>
+		<th>Signature</th>
+		<th>Description</th>
+	</tr>
+	<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Abs(float A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Acos(float A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">appScreenDebugMessageStatic(string sMsg)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Asc(string S)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Asin(float A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Atan(float A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Atan2(float A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">BeginState(Name PreviousStateName)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Caps(coerce string S)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Chr(int i)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Clamp(int V, int A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClampLength(<a data-type="struct">Vector</a> V, float MaxLength)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClassIsChildOf(Class<Object> TestClass, Class<Object> ParentClass)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClearCustomTokens()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ContinuedState()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Cos(float A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DebugBreak(optional int UserFlags, optional <a data-type="enum">EDebugBreakType</a> DebuggerType)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DumpStateStack()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a href="Object.html">Object</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DynamicLoadObject(string ObjectName, Class<Object> ObjectClass, optional bool MayFail)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EndState(Name NextStateName)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EvalInterpCurveFloat(<a data-type="struct">InterpCurveFloat</a> FloatCurve, float InVal)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EvalInterpCurveVector(<a data-type="struct">InterpCurveVector</a> VectorCurve, float InVal)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Vector2D</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EvalInterpCurveVector2D(<a data-type="struct">InterpCurveVector2D</a> Vector2DCurve, float InVal)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Exp(float A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FCeil(float A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FClamp(float V, float A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FCubicInterp(float P0, float T0, float P1, float T1, float A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FFloor(float A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a href="Object.html">Object</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FindObject(string ObjectName, Class<Object> ObjectClass)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FInterpConstantTo(float Current, float Target, float DeltaTime, float InterpSpeed)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FInterpEaseInOut(float A, float B, float Alpha, float Exp)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FInterpTo(float Current, float Target, float DeltaTime, float InterpSpeed)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FMax(float A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FMin(float A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FRand()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetAngleBetween(<a data-type="struct">Vector</a> A, <a data-type="struct">Vector</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetAngularDistance(out <a data-type="struct">Vector2D</a> OutAngularDist, <a data-type="struct">Vector</a> Direction, <a data-type="struct">Vector</a> AxisX, <a data-type="struct">Vector</a> AxisY, <a data-type="struct">Vector</a> AxisZ)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetAngularFromDotDist(out <a data-type="struct">Vector2D</a> OutAngDist, <a data-type="struct">Vector2D</a> DotDist)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetAxes(<a data-type="struct">Rotator</a> A, out <a data-type="struct">Vector</a> X, out <a data-type="struct">Vector</a> Y, out <a data-type="struct">Vector</a> Z)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetDotDistance(out <a data-type="struct">Vector2D</a> OutDotDist, <a data-type="struct">Vector</a> Direction, <a data-type="struct">Vector</a> AxisX, <a data-type="struct">Vector</a> AxisY, <a data-type="struct">Vector</a> AxisZ)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Name</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetEnum(<a data-type="class">Object</a> E, coerce int i)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetEnumIndex(<a data-type="class">Object</a> E, Name valueName)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Name</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetFuncName()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetMappedRangeValue(<a data-type="struct">Vector2D</a> InputRange, <a data-type="struct">Vector2D</a> OutputRange, float Value)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetNetIndex()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a href="Object.html">Object</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetObjectArrayFromConfigSection(Class<Object> SearchClass, out array<Object> out_ObjectResults, optional bool SearchChildren, optional <a data-type="class">Object</a> ResultOuter)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetPerObjectConfigSections(Class<Object> SearchClass, out array<string> out_SectionNames, optional <a data-type="class">Object</a> ObjectOuter, optional int MaxResults)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Name</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetStateName()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetSystemTime(out int Year, out int Month, out int DayOfWeek, out int Day, out int Hour, out int Min, out int Sec, out int MSec)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetTokenisedString(stringref srStringID, optional array<SFXTokenMapping> TokenList)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetUnAxes(<a data-type="struct">Rotator</a> A, out <a data-type="struct">Vector</a> X, out <a data-type="struct">Vector</a> Y, out <a data-type="struct">Vector</a> Z)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetVectorSide(<a data-type="struct">Vector</a> A, <a data-type="struct">Vector</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GotoState(optional Name NewState, optional Name Label, optional bool bForceEvents, optional bool bKeepStack)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">InStr(coerce string S, coerce string T, optional bool bSearchFromRight, optional bool bIgnoreCase, optional int StartPos)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">InverseTransformNormal(<a data-type="struct">Matrix</a> TM, <a data-type="struct">Vector</a> A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">InverseTransformVector(<a data-type="struct">Matrix</a> TM, <a data-type="struct">Vector</a> A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsA(Name className)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsChildState(Name TestState, Name TestParentState)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsInState(Name TestState, optional bool bTestStateStack)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsPendingKill()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsUTracing()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsZero(<a data-type="struct">Vector</a> A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Left(coerce string S, int i)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Len(coerce string S)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Lerp(float A, float B, float Alpha)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Localize(string SectionName, string KeyName, string PackageName)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Locs(coerce string S)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Loge(float A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LogInternal(coerce string S, optional Name Tag)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Matrix</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MakeRotationMatrix(<a data-type="struct">Rotator</a> Rotation)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Matrix</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MakeRotationTranslationMatrix(<a data-type="struct">Vector</a> Translation, <a data-type="struct">Rotator</a> Rotation)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MatrixGetAxis(<a data-type="struct">Matrix</a> TM, <a data-type="enum">EAxis</a> Axis)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MatrixGetOrigin(<a data-type="struct">Matrix</a> TM)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Rotator</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MatrixGetRotator(<a data-type="struct">Matrix</a> TM)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Max(int A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Mid(coerce string S, int i, optional int J)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Min(int A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MirrorVectorByNormal(<a data-type="struct">Vector</a> InVect, <a data-type="struct">Vector</a> InNormal)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Normal(<a data-type="struct">Vector</a> A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Rotator</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Normalize(<a data-type="struct">Rotator</a> Rot)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NormalizeRotAxis(int Angle)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Rotator</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OrthoRotation(<a data-type="struct">Vector</a> X, <a data-type="struct">Vector</a> Y, <a data-type="struct">Vector</a> Z)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ParseStringIntoArray(string BaseString, out array<string> Pieces, string delim, bool bCullEmpty)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PathName(<a data-type="class">Object</a> CheckObject)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PausedState()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PointDistToLine(<a data-type="struct">Vector</a> Point, <a data-type="struct">Vector</a> Line, <a data-type="struct">Vector</a> Origin, optional out <a data-type="struct">Vector</a> OutClosestPoint)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PointDistToSegment(<a data-type="struct">Vector</a> Point, <a data-type="struct">Vector</a> StartPoint, <a data-type="struct">Vector</a> EndPoint, optional out <a data-type="struct">Vector</a> OutClosestPoint)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PointProjectToPlane(<a data-type="struct">Vector</a> Point, <a data-type="struct">Vector</a> A, <a data-type="struct">Vector</a> B, <a data-type="struct">Vector</a> C)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PoppedState()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PopState(optional bool bPopAll)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ProjectOnTo(<a data-type="struct">Vector</a> X, <a data-type="struct">Vector</a> Y)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PushedState()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PushState(Name NewState, optional Name NewLabel)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">QuatDot(<a data-type="struct">Quat</a> A, <a data-type="struct">Quat</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Quat</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">QuatFindBetween(<a data-type="struct">Vector</a> A, <a data-type="struct">Vector</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Quat</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">QuatFromAxisAndAngle(<a data-type="struct">Vector</a> Axis, float Angle)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Quat</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">QuatFromRotator(<a data-type="struct">Rotator</a> A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Quat</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">QuatInvert(<a data-type="struct">Quat</a> A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Quat</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">QuatProduct(<a data-type="struct">Quat</a> A, <a data-type="struct">Quat</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">QuatRotateVector(<a data-type="struct">Quat</a> A, <a data-type="struct">Vector</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Quat</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">QuatSlerp(<a data-type="struct">Quat</a> A, <a data-type="struct">Quat</a> B, float Alpha, optional bool bShortestPath)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Rotator</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">QuatToRotator(<a data-type="struct">Quat</a> A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Rand(int Max)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RDiff(<a data-type="struct">Rotator</a> A, <a data-type="struct">Rotator</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Repl(coerce string Src, coerce string Match, coerce string With, optional bool bCaseSensitive)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Right(coerce string S, int i)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Rotator</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RInterpTo(<a data-type="struct">Rotator</a> Current, <a data-type="struct">Rotator</a> Target, float DeltaTime, float InterpSpeed, optional bool bConstantInterpSpeed)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Rotator</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RLerp(<a data-type="struct">Rotator</a> A, <a data-type="struct">Rotator</a> B, float Alpha, optional bool bShortestPath)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Rotator</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RotRand(optional bool bRoll)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Round(float A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Rotator</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RSmerp(<a data-type="struct">Rotator</a> A, <a data-type="struct">Rotator</a> B, float Alpha, optional bool bShortestPath)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Rotator</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RTransform(<a data-type="struct">Rotator</a> R, <a data-type="struct">Rotator</a> RBasis)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SaveConfig()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ScriptTrace()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetBioRwBox(<a data-type="struct">BioRwBox</a> Target, <a data-type="struct">Vector</a> Min, <a data-type="struct">Vector</a> Max)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetCustomToken(int nTokenNum, string sToken)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetUTracing(bool bShouldUTrace)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Sin(float A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Sqrt(float A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Square(float A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StaticSaveConfig()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Tan(float A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TimeStamp()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ToHex(int A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TransformNormal(<a data-type="struct">Matrix</a> TM, <a data-type="struct">Vector</a> A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TransformVector(<a data-type="struct">Matrix</a> TM, <a data-type="struct">Vector</a> A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TransformVectorByRotation(<a data-type="struct">Rotator</a> SourceRotation, <a data-type="struct">Vector</a> SourceVector, optional bool bInverse)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">VInterpTo(<a data-type="struct">Vector</a> Current, <a data-type="struct">Vector</a> Target, float DeltaTime, float InterpSpeed)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">VLerp(<a data-type="struct">Vector</a> A, <a data-type="struct">Vector</a> B, float Alpha)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">VRand()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">VRandCone(<a data-type="struct">Vector</a> Dir, float ConeHalfAngleRadians)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">VRandCone2(<a data-type="struct">Vector</a> Dir, float HorizontalConeHalfAngleRadians, float VerticalConeHalfAngleRadians)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">VSize(<a data-type="struct">Vector</a> A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">VSize2D(<a data-type="struct">Vector</a> A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">VSizeSq(<a data-type="struct">Vector</a> A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">VSizeSq2D(<a data-type="struct">Vector</a> A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">VSmerp(<a data-type="struct">Vector</a> A, <a data-type="struct">Vector</a> B, float Alpha)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WarnInternal(coerce string S)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Color</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Add_ColorColor(<a data-type="struct">Color</a> A, <a data-type="struct">Color</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Add_FloatFloat(float A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Add_IntInt(int A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Quat</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Add_QuatQuat(<a data-type="struct">Quat</a> A, <a data-type="struct">Quat</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Rotator</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Add_RotatorRotator(<a data-type="struct">Rotator</a> A, <a data-type="struct">Rotator</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector2D</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Add_Vector2DVector2D(<a data-type="struct">Vector2D</a> A, <a data-type="struct">Vector2D</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Add_VectorVector(<a data-type="struct">Vector</a> A, <a data-type="struct">Vector</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>byte</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AddAdd_Byte(out byte A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AddAdd_Int(out int A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>byte</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AddAdd_PreByte(out byte A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AddAdd_PreInt(out int A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>byte</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AddEqual_ByteByte(out byte A, byte B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AddEqual_FloatFloat(out float A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AddEqual_IntInt(out int A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Rotator</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AddEqual_RotatorRotator(out <a data-type="struct">Rotator</a> A, <a data-type="struct">Rotator</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AddEqual_VectorVector(out <a data-type="struct">Vector</a> A, <a data-type="struct">Vector</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">And_IntInt(int A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AndAnd_BoolBool(bool A, skip bool B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">appScreenDebugMessage(string sMsg)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">At_StrStr(coerce string A, coerce string B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AtEqual_StrStr(out string A, coerce string B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ByteToFloat(byte inputByte, optional bool bSigned)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClampRotAxis(int ViewAxis, out int out_DeltaViewAxis, int MaxLimit, int MinLimit)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClampRotAxisFromBase(int Current, int Center, int MaxDelta)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClampRotAxisFromRange(int Current, int Min, int Max)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClockwiseFrom_IntInt(int A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>LinearColor</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ColorToLinearColor(<a data-type="struct">Color</a> OldColor)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Complement_PreInt(int A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ComplementEqual_FloatFloat(float A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ComplementEqual_StrStr(string A, string B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Concat_StrStr(coerce string A, coerce string B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ConcatEqual_StrStr(out string A, coerce string B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Cross_VectorVector(<a data-type="struct">Vector</a> A, <a data-type="struct">Vector</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Divide_FloatFloat(float A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Divide_IntInt(int A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Rotator</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Divide_RotatorFloat(<a data-type="struct">Rotator</a> A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Divide_VectorFloat(<a data-type="struct">Vector</a> A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>byte</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DivideEqual_ByteByte(out byte A, byte B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DivideEqual_FloatFloat(out float A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DivideEqual_IntFloat(out int A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Rotator</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DivideEqual_RotatorFloat(out <a data-type="struct">Rotator</a> A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DivideEqual_VectorFloat(out <a data-type="struct">Vector</a> A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Dot_VectorVector(<a data-type="struct">Vector</a> A, <a data-type="struct">Vector</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EqualEqual_BoolBool(bool A, bool B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EqualEqual_FloatFloat(float A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EqualEqual_InterfaceInterface(<a data-type="class">Interface</a> A, <a data-type="class">Interface</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EqualEqual_IntInt(int A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EqualEqual_IntStringRef(int A, stringref B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EqualEqual_NameName(Name A, Name B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EqualEqual_ObjectObject(<a data-type="class">Object</a> A, <a data-type="class">Object</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EqualEqual_RotatorRotator(<a data-type="struct">Rotator</a> A, <a data-type="struct">Rotator</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EqualEqual_StringRefInt(stringref A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EqualEqual_StringRefStringRef(stringref A, stringref B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EqualEqual_StrStr(string A, string B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EqualEqual_VectorVector(<a data-type="struct">Vector</a> A, <a data-type="struct">Vector</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FindDeltaAngle(float A1, float A2)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FInterpEaseIn(float A, float B, float Alpha, float Exp)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FInterpEaseOut(float A, float B, float Alpha, float Exp)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>byte</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FloatToByte(float inputFloat, optional bool bSigned)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FPctByRange(float Value, float InMin, float InMax)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetAngularDegreesFromRadians(out <a data-type="struct">Vector2D</a> OutFOV)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetHeadingAngle(<a data-type="struct">Vector</a> Dir)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Name</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetPackageName()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetRangePctByValue(<a data-type="struct">Vector2D</a> Range, float Value)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetRangeValueByPct(<a data-type="struct">Vector2D</a> Range, float Pct)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetRightMost(coerce string Text)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Greater_FloatFloat(float A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Greater_IntInt(int A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Greater_StrStr(string A, string B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GreaterEqual_FloatFloat(float A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GreaterEqual_IntInt(int A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GreaterEqual_StrStr(string A, string B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GreaterGreater_IntInt(int A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GreaterGreater_VectorRotator(<a data-type="struct">Vector</a> A, <a data-type="struct">Rotator</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GreaterGreaterGreater_IntInt(int A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">InCylinder(<a data-type="struct">Vector</a> Origin, <a data-type="struct">Rotator</a> Dir, float Width, <a data-type="struct">Vector</a> A, optional bool bIgnoreZ)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">JoinArray(array<string> StringArray, out string out_Result, optional string delim, optional bool bIgnoreBlanks)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Color</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LerpColor(<a data-type="struct">Color</a> A, <a data-type="struct">Color</a> B, float Alpha)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Less_FloatFloat(float A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Less_IntInt(int A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Less_StrStr(string A, string B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LessEqual_FloatFloat(float A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LessEqual_IntInt(int A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LessEqual_StrStr(string A, string B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LessLess_IntInt(int A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LessLess_VectorRotator(<a data-type="struct">Vector</a> A, <a data-type="struct">Rotator</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Color</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MakeColor(byte R, byte G, byte B, optional byte A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>LinearColor</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MakeLinearColor(float R, float G, float B, float A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Rotator</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MakeRotator(int Pitch, int Yaw, int Roll)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Color</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Multiply_ColorFloat(<a data-type="struct">Color</a> A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Color</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Multiply_FloatColor(float A, <a data-type="struct">Color</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Multiply_FloatFloat(float A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Rotator</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Multiply_FloatRotator(float A, <a data-type="struct">Rotator</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Multiply_FloatVector(float A, <a data-type="struct">Vector</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Multiply_IntInt(int A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>LinearColor</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Multiply_LinearColorFloat(<a data-type="struct">LinearColor</a> LC, float Mult)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Matrix</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Multiply_MatrixMatrix(<a data-type="struct">Matrix</a> A, <a data-type="struct">Matrix</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Rotator</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Multiply_RotatorFloat(<a data-type="struct">Rotator</a> A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Multiply_VectorFloat(<a data-type="struct">Vector</a> A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Multiply_VectorVector(<a data-type="struct">Vector</a> A, <a data-type="struct">Vector</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>byte</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MultiplyEqual_ByteByte(out byte A, byte B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>byte</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MultiplyEqual_ByteFloat(out byte A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MultiplyEqual_FloatFloat(out float A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MultiplyEqual_IntFloat(out int A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Rotator</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MultiplyEqual_RotatorFloat(out <a data-type="struct">Rotator</a> A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MultiplyEqual_VectorFloat(out <a data-type="struct">Vector</a> A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MultiplyEqual_VectorVector(out <a data-type="struct">Vector</a> A, <a data-type="struct">Vector</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MultiplyMultiply_FloatFloat(float Base, float Exp)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Not_PreBool(bool A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NotEqual_BoolBool(bool A, bool B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NotEqual_FloatFloat(float A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NotEqual_InterfaceInterface(<a data-type="class">Interface</a> A, <a data-type="class">Interface</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NotEqual_IntInt(int A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NotEqual_IntStringRef(int A, stringref B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NotEqual_NameName(Name A, Name B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NotEqual_ObjectObject(<a data-type="class">Object</a> A, <a data-type="class">Object</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NotEqual_RotatorRotator(<a data-type="struct">Rotator</a> A, <a data-type="struct">Rotator</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NotEqual_StringRefInt(stringref A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NotEqual_StringRefStringRef(stringref A, stringref B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NotEqual_StrStr(string A, string B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NotEqual_VectorVector(<a data-type="struct">Vector</a> A, <a data-type="struct">Vector</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NoZDot(<a data-type="struct">Vector</a> A, <a data-type="struct">Vector</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Or_IntInt(int A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OrOr_BoolBool(bool A, skip bool B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ParseLocalizedPropertyPath(string PathName)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Percent_FloatFloat(float A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Percent_IntInt(int A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PointDistToPlane(<a data-type="struct">Vector</a> Point, <a data-type="struct">Rotator</a> Orientation, <a data-type="struct">Vector</a> Origin, optional out <a data-type="struct">Vector</a> out_ClosestPoint)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RandRange(float InMin, float InMax)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RSize(<a data-type="struct">Rotator</a> R)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SClampRotAxis(float DeltaTime, int ViewAxis, out int out_DeltaViewAxis, int MaxLimit, int MinLimit, float InterpolationSpeed)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Split(coerce string Text, coerce string SplitStr, optional bool bOmitSplitStr)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SplitString(string Source, optional string Delimiter, optional bool bCullEmpty)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Color</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Subtract_ColorColor(<a data-type="struct">Color</a> A, <a data-type="struct">Color</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Subtract_FloatFloat(float A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Subtract_IntInt(int A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>LinearColor</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Subtract_LinearColorLinearColor(<a data-type="struct">LinearColor</a> A, <a data-type="struct">LinearColor</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Subtract_PreFloat(float A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Subtract_PreInt(int A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Subtract_PreVector(<a data-type="struct">Vector</a> A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Quat</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Subtract_QuatQuat(<a data-type="struct">Quat</a> A, <a data-type="struct">Quat</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Rotator</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Subtract_RotatorRotator(<a data-type="struct">Rotator</a> A, <a data-type="struct">Rotator</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Vector2D</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Subtract_Vector2DVector2D(<a data-type="struct">Vector2D</a> A, <a data-type="struct">Vector2D</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Subtract_VectorVector(<a data-type="struct">Vector</a> A, <a data-type="struct">Vector</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>byte</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SubtractEqual_ByteByte(out byte A, byte B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SubtractEqual_FloatFloat(out float A, float B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SubtractEqual_IntInt(out int A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Rotator</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SubtractEqual_RotatorRotator(out <a data-type="struct">Rotator</a> A, <a data-type="struct">Rotator</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SubtractEqual_StrStr(out string A, coerce string B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SubtractEqual_VectorVector(out <a data-type="struct">Vector</a> A, <a data-type="struct">Vector</a> B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>byte</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SubtractSubtract_Byte(out byte A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SubtractSubtract_Int(out int A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>byte</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SubtractSubtract_PreByte(out byte A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SubtractSubtract_PreInt(out int A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">UnwindHeading(float A)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector2D</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">vect2d(float InX, float InY)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Xor_IntInt(int A, int B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">XorXor_BoolBool(bool A, bool B)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+
+</table>
+
+
+	</body>
+</html>

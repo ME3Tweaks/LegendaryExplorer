@@ -1,0 +1,542 @@
+<html>
+	<head>
+		<title>Texture2D</title>
+		<description></description>
+		<link rel="stylesheet" href="../lexdoc.css">
+		<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function() {
+				var url = window.location.href.substring(window.location.protocol.length + 2);
+				var gameidx = url.indexOf("/LE3/");
+				var baseurl = url.substring(gameidx + 5);
+				console.log(baseurl);
+				var typelinks = document.querySelectorAll('[data-type]');
+				for (const element of typelinks) {
+					var type = element.dataset.type;
+					var value = element.textContent;
+					switch(type){
+						case 'class':
+							element.href = baseurl + 'classes/' + value + '.html';
+							break;
+						case 'struct':
+							element.href = baseurl + 'structs/' + value + '.html';
+							break;
+						case 'enum':
+							element.href = baseurl + 'enums/' + value + '.html';
+							break;
+					}
+				}
+			}, false);
+		</script>
+	</head>
+	<body>
+	<!-- ========= START OF TOP NAVBAR ======= -->
+<div class="topNav"><a name="navbar.top">
+<!--   -->
+</a>
+<div class="skipNav"><a href="#skip.navbar.top" title="Skip navigation links">Skip navigation links</a></div>
+<a name="navbar.top.firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/Constructor.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../index-files/index-1.html">Index</a></li>
+<li><a href="../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><strong>Legendary Explorer<br>DocuDB</strong></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../java/lang/reflect/Array.html" title="class in java.lang.reflect"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../java/lang/reflect/Executable.html" title="class in java.lang.reflect"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../index.html?java/lang/reflect/Constructor.html" target="_top">Frames</a></li>
+<li><a href="Constructor.html" target="_top">No&nbsp;Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../allclasses-noframe.html">All&nbsp;Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method.summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method.detail">Method</a></li>
+</ul>
+</div>
+<a name="skip.navbar.top">
+<!--   -->
+</a></div>
+<!-- ========= END OF TOP NAVBAR ========= -->
+
+		<h2 class="title">Class Texture2D</h2>
+<ul class="inheritance">
+<li><a href="Object.html">Core.Object</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="Surface.html">Engine.Surface</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="Texture.html">Engine.Texture</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="Texture2D.html">Engine.Texture2D</a></li>
+</ul>
+
+</li>
+</ul>
+
+</li>
+</ul>
+
+</li>
+</ul>
+
+<hr>
+<p></p>
+
+	<!-- VARIABLES-->
+	<h3>Variables</h3>
+	<table>
+	<tr>
+		<th>Type</th>
+		<th>Name</th>
+		<th>Description</th>
+	</tr>
+	<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">IndirectArray_Mirror</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Mips</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>byte</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SystemMemoryData</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">Pointer</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ResourceMem</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">Guid</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TextureFileCacheGuid</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">Guid</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TFCFileGuid</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">Guid</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TFCFileGuidHiRes</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Name</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TextureFileCacheName</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SizeX</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SizeY</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OriginalSizeX</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OriginalSizeY</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ForceMiplevelsToBeResident</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ForceMipLevelsToBeResidentTimestamp</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HiResMipCount</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RequestedMips</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ResidentMips</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">ThreadSafeCounter</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PendingMipChangeRequestStatus</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MipTailBaseIdx</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FirstResourceMemMip</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">BioMipMapCompressionSetting</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CurrentScreenSize</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CurrentDistanceFromCameraSq</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CurrentScreenSizeOld</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CurrentDistanceFromCameraSqOld</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StreamingLinkIndex</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Timer</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bIsStreamable</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bHasCancelationPending</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bHasBeenLoadedFromPersistentArchive</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bGlobalForceMipLevelsToBeResident</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bConfigForceMiplevelsToBeResident</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="enum">EPixelFormat</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Format</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="enum">TextureAddress</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AddressX</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="enum">TextureAddress</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AddressY</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+
+</table>
+
+	<!-- FUNCTIONS-->
+	<h3>Functions</h3>
+	<table>
+	<tr>
+		<th>Return type</th>
+		<th>Signature</th>
+		<th>Description</th>
+	</tr>
+	<tr class="rowColor">
+	<td class="colfirst">
+		<code><a href="Texture2D.html">Texture2D</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Create(int InSizeX, int InSizeY, optional <a data-type="enum">EPixelFormat</a> InFormat)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetForceMipLevelsToBeResident(float Seconds, optional int CinematicTextureGroups)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+
+</table>
+
+
+	</body>
+</html>

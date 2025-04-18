@@ -1,0 +1,827 @@
+<html>
+	<head>
+		<title>Settings</title>
+		<description></description>
+		<link rel="stylesheet" href="../lexdoc.css">
+		<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function() {
+				var url = window.location.href.substring(window.location.protocol.length + 2);
+				var gameidx = url.indexOf("/LE3/");
+				var baseurl = url.substring(gameidx + 5);
+				console.log(baseurl);
+				var typelinks = document.querySelectorAll('[data-type]');
+				for (const element of typelinks) {
+					var type = element.dataset.type;
+					var value = element.textContent;
+					switch(type){
+						case 'class':
+							element.href = baseurl + 'classes/' + value + '.html';
+							break;
+						case 'struct':
+							element.href = baseurl + 'structs/' + value + '.html';
+							break;
+						case 'enum':
+							element.href = baseurl + 'enums/' + value + '.html';
+							break;
+					}
+				}
+			}, false);
+		</script>
+	</head>
+	<body>
+	<!-- ========= START OF TOP NAVBAR ======= -->
+<div class="topNav"><a name="navbar.top">
+<!--   -->
+</a>
+<div class="skipNav"><a href="#skip.navbar.top" title="Skip navigation links">Skip navigation links</a></div>
+<a name="navbar.top.firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/Constructor.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../index-files/index-1.html">Index</a></li>
+<li><a href="../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><strong>Legendary Explorer<br>DocuDB</strong></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../java/lang/reflect/Array.html" title="class in java.lang.reflect"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../java/lang/reflect/Executable.html" title="class in java.lang.reflect"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../index.html?java/lang/reflect/Constructor.html" target="_top">Frames</a></li>
+<li><a href="Constructor.html" target="_top">No&nbsp;Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../allclasses-noframe.html">All&nbsp;Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method.summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method.detail">Method</a></li>
+</ul>
+</div>
+<a name="skip.navbar.top">
+<!--   -->
+</a></div>
+<!-- ========= END OF TOP NAVBAR ========= -->
+
+		<h2 class="title">Class Settings</h2>
+<ul class="inheritance">
+<li><a href="Object.html">Core.Object</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="Settings.html">Engine.Settings</a></li>
+</ul>
+
+</li>
+</ul>
+
+<hr>
+<p></p>
+
+	<!-- VARIABLES-->
+	<h3>Variables</h3>
+	<table>
+	<tr>
+		<th>Type</th>
+		<th>Name</th>
+		<th>Description</th>
+	</tr>
+	<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">LocalizedStringSetting</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LocalizedSettings</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">SettingsProperty</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Properties</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">LocalizedStringSettingMetaData</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LocalizedSettingsMappings</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">SettingsPropertyPropertyMetaData</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PropertyMappings</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>NotifySettingValueUpdated</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">__NotifySettingValueUpdated__Delegate</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>NotifyPropertyValueUpdated</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">__NotifyPropertyValueUpdated__Delegate</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+
+</table>
+
+	<!-- FUNCTIONS-->
+	<h3>Functions</h3>
+	<table>
+	<tr>
+		<th>Return type</th>
+		<th>Signature</th>
+		<th>Description</th>
+	</tr>
+	<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AppendContextsToURL(out string <a data-type="struct">URL</a>)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AppendDataBindingsToURL(out string <a data-type="struct">URL</a>)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AppendPropertiesToURL(out string <a data-type="struct">URL</a>)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">BuildURL(out string <a data-type="struct">URL</a>)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EmptySettingsData(out <a data-type="struct">SettingsData</a> Data)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetFloatProperty(int PropertyId, out float Value)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetIntProperty(int PropertyId, out int Value)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetPropertyAsString(int PropertyId)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetPropertyAsStringByName(Name PropertyName)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetPropertyColumnHeader(int PropertyId)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetPropertyId(Name PropertyName, out int PropertyId)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetPropertyMappingType(int PropertyId, out <a data-type="enum">EPropertyValueMappingType</a> OutType)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Name</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetPropertyName(int PropertyId)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetPropertyRange(int PropertyId, out float OutMinValue, out float OutMaxValue, out float RangeIncrement, out byte bFormatAsInt)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>ESettingsDataType</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetPropertyType(int PropertyId)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetPropertyValueId(int PropertyId, out int ValueId)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetQoSAdvertisedProperties(out array<SettingsProperty> QoSProps)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetQoSAdvertisedStringSettings(out array<LocalizedStringSetting> QoSSettings)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetRangedPropertyValue(int PropertyId, out float OutValue)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetSettingsDataBlob(out <a data-type="struct">SettingsData</a> Data, out array<byte> OutBlob)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetSettingsDataDateTime(out <a data-type="struct">SettingsData</a> Data, out int OutInt1, out int OutInt2)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetSettingsDataFloat(out <a data-type="struct">SettingsData</a> Data)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetSettingsDataInt(out <a data-type="struct">SettingsData</a> Data)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetSettingsDataString(out <a data-type="struct">SettingsData</a> Data)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetStringProperty(int PropertyId, out string Value)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetStringSettingColumnHeader(int StringSettingId)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetStringSettingId(Name StringSettingName, out int StringSettingId)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Name</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetStringSettingName(int StringSettingId)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetStringSettingValue(int StringSettingId, out int ValueIndex)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetStringSettingValueByName(Name StringSettingName, out int ValueIndex)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Name</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetStringSettingValueName(int StringSettingId, int ValueIndex)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Name</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetStringSettingValueNameByName(Name StringSettingName)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetStringSettingValueNames(int StringSettingId, out array<IdToStringMapping> Values)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HasProperty(int PropertyId)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HasStringSetting(int SettingId)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IncrementStringSettingValue(int StringSettingId, int Direction, bool bShouldWrap)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsWildcardStringSetting(int StringSettingId)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NotifyPropertyValueUpdated(Name PropertyName)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NotifySettingValueUpdated(Name SettingName)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetFloatProperty(int PropertyId, float Value)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetIntProperty(int PropertyId, int Value)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetPropertyFromStringByName(Name PropertyName, <a data-type="class">const</a> out string NewValue)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetPropertyValueId(int PropertyId, int ValueId)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetRangedPropertyValue(int PropertyId, float NewValue)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetSettingsData(out <a data-type="struct">SettingsData</a> Data, out <a data-type="struct">SettingsData</a> Data2Copy)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetSettingsDataBlob(out <a data-type="struct">SettingsData</a> Data, out array<byte> InBlob)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetSettingsDataDateTime(out <a data-type="struct">SettingsData</a> Data, int InInt1, int InInt2)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetSettingsDataFloat(out <a data-type="struct">SettingsData</a> Data, float InFloat)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetSettingsDataInt(out <a data-type="struct">SettingsData</a> Data, int InInt)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetSettingsDataString(out <a data-type="struct">SettingsData</a> Data, string InString)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetStringProperty(int PropertyId, string Value)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetStringSettingValue(int StringSettingId, int ValueIndex, optional bool bShouldAutoAdd)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetStringSettingValueByName(Name StringSettingName, int ValueIndex, bool bShouldAutoAdd)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetStringSettingValueFromStringByName(Name StringSettingName, <a data-type="class">const</a> out string NewValue)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">UpdateFromURL(<a data-type="class">const</a> out string <a data-type="struct">URL</a>, <a data-type="class">GameInfo</a> Game)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">UpdateProperties(<a data-type="class">const</a> out array<SettingsProperty> Props, optional bool bShouldAddIfMissing)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">UpdateStringSettings(<a data-type="class">const</a> out array<LocalizedStringSetting> <a data-type="class">Settings</a>, optional bool bShouldAddIfMissing)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+
+</table>
+
+
+	</body>
+</html>

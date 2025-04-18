@@ -1,0 +1,1202 @@
+<html>
+	<head>
+		<title>BioPlanet</title>
+		<description></description>
+		<link rel="stylesheet" href="../lexdoc.css">
+		<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function() {
+				var url = window.location.href.substring(window.location.protocol.length + 2);
+				var gameidx = url.indexOf("/LE3/");
+				var baseurl = url.substring(gameidx + 5);
+				console.log(baseurl);
+				var typelinks = document.querySelectorAll('[data-type]');
+				for (const element of typelinks) {
+					var type = element.dataset.type;
+					var value = element.textContent;
+					switch(type){
+						case 'class':
+							element.href = baseurl + 'classes/' + value + '.html';
+							break;
+						case 'struct':
+							element.href = baseurl + 'structs/' + value + '.html';
+							break;
+						case 'enum':
+							element.href = baseurl + 'enums/' + value + '.html';
+							break;
+					}
+				}
+			}, false);
+		</script>
+	</head>
+	<body>
+	<!-- ========= START OF TOP NAVBAR ======= -->
+<div class="topNav"><a name="navbar.top">
+<!--   -->
+</a>
+<div class="skipNav"><a href="#skip.navbar.top" title="Skip navigation links">Skip navigation links</a></div>
+<a name="navbar.top.firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/Constructor.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../index-files/index-1.html">Index</a></li>
+<li><a href="../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><strong>Legendary Explorer<br>DocuDB</strong></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../java/lang/reflect/Array.html" title="class in java.lang.reflect"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../java/lang/reflect/Executable.html" title="class in java.lang.reflect"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../index.html?java/lang/reflect/Constructor.html" target="_top">Frames</a></li>
+<li><a href="Constructor.html" target="_top">No&nbsp;Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../allclasses-noframe.html">All&nbsp;Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method.summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method.detail">Method</a></li>
+</ul>
+</div>
+<a name="skip.navbar.top">
+<!--   -->
+</a></div>
+<!-- ========= END OF TOP NAVBAR ========= -->
+
+		<h2 class="title">Class BioPlanet</h2>
+<ul class="inheritance">
+<li><a href="Object.html">Core.Object</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="SFXGalaxyMapObject.html">SFXGame.SFXGalaxyMapObject</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="SFXSystemLevelObject.html">SFXGame.SFXSystemLevelObject</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="BioPlanet.html">SFXGame.BioPlanet</a></li>
+</ul>
+
+</li>
+</ul>
+
+</li>
+</ul>
+
+</li>
+</ul>
+
+<hr>
+<p></p>
+
+	<!-- VARIABLES-->
+	<h3>Variables</h3>
+	<table>
+	<tr>
+		<th>Type</th>
+		<th>Name</th>
+		<th>Description</th>
+	</tr>
+	<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">PlanetSun</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Suns</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">SFXPlanetFeature</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Features</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">SFXPlanetFeature</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AutoGrantedFeatures</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MapName</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ImageBackground</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetEvent</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">LinearColor</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RingColor</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="struct">LinearColor</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CloudColor</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="struct">LinearColor</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CoronaColor</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">Texture2D</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PreviewImage</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">MaterialInstanceConstant</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetMaterial</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">MaterialInstanceConstant</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CloudMaterial</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">Prefab</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ScenePrefab</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="class">Texture2D</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TextureParam</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="class">Actor</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SystemActorStorage</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>stringref</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Description</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>stringref</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ButtonLabel</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>stringref</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MissionBriefing</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ResourceRichness</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetRotation</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Opacity</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FringeBloom</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RelativeSize</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DefaultDisplaySize</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TerrainDepthFactor</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">m_fPlanetScale</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">UnscaledMineralsSum</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlacedMineralsPool</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RandomMineralsBase</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EezoMineralsBase</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ScanBarMaxMineralSize</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetLandCondition</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetEventCondition</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetEventParameter</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetEventTransition</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetEventTransitionParameter</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>stringref</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetEventMessage</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>stringref</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetPlotLabel</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetPlotLabelCondition</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AlreadyExplored</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LabelAlwaysVisible</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AlwaysShowMapTag</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">bInitialized</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CritPathPlot</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="enum">EPlanetType</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetType</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="enum">EOrbitRingType</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OrbitRing</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="enum">ESystemLevelType</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SystemLevelType</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="enum">EBioGalaxyMap_PlanetType</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetLevelType</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="enum">EBioRegionAutoSet</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetLandConditionRegion</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="enum">EBioPlanetLandConditionPlotAutoSet</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetLandConditionPlot</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="enum">EBioPlanetLandConditionAutoSet</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetLandConditionName</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="enum">EBioRegionAutoSet</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetEventConditionRegion</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="enum">EBioPlanetEventConditionPlotAutoSet</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetEventConditionPlot</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="enum">EBioPlanetEventConditionAutoSet</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetEventConditionName</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="enum">EBioRegionAutoSet</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetEventTransitionRegion</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="enum">EBioPlanetEventTransitionPlotAutoSet</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetEventTransitionPlot</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="enum">EBioPlanetEventTransitionAutoSet</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetEventTransitionName</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="enum">EBioRegionAutoSet</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetPlotLabelConditionRegion</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a data-type="enum">EBioPlanetPlotLabelConditionPlotAutoSet</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetPlotLabelConditionPlot</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a data-type="enum">EBioPlanetPlotLabelConditionAutoSet</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanetPlotLabelConditionName</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+
+</table>
+
+	<!-- FUNCTIONS-->
+	<h3>Functions</h3>
+	<table>
+	<tr>
+		<th>Return type</th>
+		<th>Signature</th>
+		<th>Description</th>
+	</tr>
+	<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">BuildPlotLabelList(out array<stringref> aPlotNames, optional <a data-type="enum">EBioGalaxyMapState</a> eMapLevel)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CanBeInteractedWith()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CanBeScanned()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CanBeSystemScanned()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CleanTransientData()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CountFeatures(<a data-type="enum">EFeatureType</a> eFeature, bool bCheckUsable, bool bCheckVisible, bool bCheckProbeable)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EnterPlanetDetailView(<a data-type="class">Actor</a> DetailActor)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EnterScan()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsSelectable()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsVisited()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsVisitedInMap()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LeavePlanetDetailView()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LeaveScan()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LoadProbeImpacts(out array<Vector> vImpacts)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MapTagIsVisible()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ObjectVisited()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OnSystemScan(<a data-type="class">Object</a> oScanInstigator, <a data-type="struct">Vector</a> vScanOrigin)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SaveProbeImpact(<a data-type="struct">Vector</a> vImpact)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetSystemScannedState(bool bScanned)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetVisited(bool bVisited)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ShouldDisplayUnknownTag()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CountObjectsForExploration(out int nObjectCount, out int nExploredCount, <a data-type="enum">EBioGalaxyMapState</a> eMapLevel)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetPlanetDescriptionText()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetPlanetMissionText()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetPlanetSize()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetPlanetTitleText()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a href="Texture2D.html">Texture2D</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetPlanetViewImage()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HasBeenSystemScanned()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HasFeaturesToCountForExploration()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsMultiLand()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LoadMultiLandPlanetData(<a data-type="class">InterpActor</a> Planet, out array<ParticleSystemComponent> TempComponents)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LoadPlanetData(<a data-type="class">InterpActor</a> Planet, out array<ParticleSystemComponent> TempComponents)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OnDisplayPlanetDetails(<a data-type="class">BioSFHandler_GalaxyMap</a> oGUI)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlanePosToSphere(<a data-type="struct">Vector</a> vPosition2D, float SphereRadius)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ShouldCountFeature(<a data-type="class">SFXPlanetFeature</a> oFeatureObj, <a data-type="enum">EFeatureType</a> eFeature, bool bCheckUsable, bool bCheckVisible, bool bCheckProbeable)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SphereToPlanePos(<a data-type="struct">Vector</a> vSphere, float SphereRadius)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+
+</table>
+
+
+	</body>
+</html>
