@@ -37,7 +37,7 @@ steps:
 
       # Build UnrealDoc so we can run it to build the docs.
       Write-Host Switching to $(docToolBranch) branch...
-      git fetch $(docToolBranch) --depth 1
+      git fetch origin $(docToolBranch) --depth 1
       git switch $(docToolBranch)
       dotnet publish $unrealDocProj -o $buildDir -c Release
 
