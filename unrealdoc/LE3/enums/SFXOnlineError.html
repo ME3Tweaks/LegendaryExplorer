@@ -1,0 +1,795 @@
+<html>
+	<head>
+		<meta property="og:type" content="website" />
+		<title>SFXOnlineError</title>
+		<meta name="og:title" content="SFXOnlineError"/>
+		<meta name="description" content=""/>
+		<meta name="og:description" content=""/>
+		<meta name="og:url" content="https://me3tweaks.github.io/LegendaryExplorer/unrealdoc/LE3/../"/>
+		<meta name="og:image" content="https://me3tweaks.github.io/idk.png"/>
+		<link rel="stylesheet" href="../lexdoc.css">
+		<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function() {
+				document.title = document.title + " - LE3 - Legendary Explorer UnrealDoc"
+				var url = window.location.href.substring(window.location.protocol.length + 2);
+				var gameidx = url.indexOf("/LE3/");
+				var baseurl = url.substring(0, gameidx + 5);
+				console.log(baseurl);
+				var typelinks = document.querySelectorAll('[data-type]');
+				for (const element of typelinks) {
+					var type = element.dataset.type;
+					var value = element.textContent;
+					switch(type){
+						case 'class':
+							element.href = window.location.protocol + '//' + baseurl + 'classes/' + value + '.html';
+							break;
+						case 'struct':
+							element.href = window.location.protocol + '//' + baseurl + 'structs/' + value + '.html';
+							break;
+						case 'enum':
+							element.href = window.location.protocol + '//' + baseurl + 'enums/' + value + '.html';
+							break;
+					}
+				}
+			}, false);
+		</script>
+	</head>
+	<body>
+	<!-- ========= START OF TOP NAVBAR ======= -->
+<div class="topNav"><a name="navbar.top">
+<!--   -->
+</a>
+<div class="skipNav"><a href="#skip.navbar.top" title="Skip navigation links">Skip navigation links</a></div>
+<a name="navbar.top.firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/Constructor.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../index-files/index-1.html">Index</a></li>
+<li><a href="../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><strong>Legendary Explorer<br>DocuDB</strong></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../java/lang/reflect/Array.html" title="class in java.lang.reflect"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../java/lang/reflect/Executable.html" title="class in java.lang.reflect"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../index.html?java/lang/reflect/Constructor.html" target="_top">Frames</a></li>
+<li><a href="Constructor.html" target="_top">No&nbsp;Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+	<li><a href="../classes/index.html">All&nbsp;Classes</a></li>
+	<li><a href="../structs/index.html">All&nbsp;Structs</a></li>
+	<li><a href="../enums/index.html">All&nbsp;Enums</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method.summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method.detail">Method</a></li>
+</ul>
+</div>
+<a name="skip.navbar.top">
+<!--   -->
+</a></div>
+<!-- ========= END OF TOP NAVBAR ========= -->
+<div>
+		<div class="header">
+	<h2 class="title">Enum SFXOnlineError</h2>
+</div>
+<hr>
+<p></p>
+
+	<!-- VARIABLES-->
+	<h3>Values</h3>
+	<table class="membersummary">
+	<tr>
+		<th>Value</th>
+		<th>Name</th>
+		<th>Description</th>
+	</tr>
+	<tr class="rowColor">
+	<td class="colfirst">
+		<code>0</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_ERR_OK</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>1</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_DEFAULT</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>2</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_SYSTEM</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>3</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_ERR_AUTHORIZATION_REQUIRED</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>4</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_TOS_REQUIRED</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>5</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_INVALID_COUNTRY</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>6</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_INVALID_USER</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>7</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_INVALID_PASSWORD</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>8</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_MISSING_PASSWORD</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>9</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_INVALID_TOKEN</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>10</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_EXPIRED_TOKEN</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>11</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_EXISTS</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>12</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_TOO_YOUNG</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>13</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_NO_ACCOUNT</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>14</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_PERSONA_NOT_FOUND</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>15</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_PERSONA_INACTIVE</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>16</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_INVALID_PMAIL</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>17</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_INVALID_FIELD</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>18</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_INVALID_EMAIL</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>19</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_MISSING_EMAIL</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>20</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_INVALID_STATUS</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>21</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_INVALID_SESSION_KEY</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>22</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_PERSONA_BANNED</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>23</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_DEACTIVATED</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>24</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_PENDING</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>25</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_BANNED</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>26</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_DISABLED</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>27</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_MISSING_PERSONAID</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>28</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_USER_DOES_NOT_MATCH_PERSONA</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>29</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_USER_INACTIVE</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>30</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_NAME_MISMATCH</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>31</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_INVALID_PS3_TICKET</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>32</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_INVALID_NAMESPACE</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>33</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_FIELD_INVALID_CHARS</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>34</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_FIELD_TOO_SHORT</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>35</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_FIELD_TOO_LONG</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>36</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_FIELD_MUST_BEGIN_WITH_LETTER</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>37</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_FIELD_MISSING</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>38</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_FIELD_INVALID</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>39</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_FIELD_NOT_ALLOWED</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>40</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_FIELD_NEEDS_SPECIAL_CHARS</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>41</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_FIELD_ALREADY_EXISTS</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>42</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_FIELD_NEEDS_CONSENT</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>43</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_FIELD_TOO_YOUNG</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>44</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_ERR_DUPLICATE_LOGIN</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>45</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_ERR_DISCONNECTED</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>46</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_SDK_ERR_SERVER_DISCONNECT</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>47</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_SDK_ERR_XBL_DISCONNECT</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>48</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_SDK_ERR_PSN_DISCONNECT</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>49</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_REDIRECTOR_NO_MATCHING_INSTANCE</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>50</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_REDIRECTOR_CLIENT_NOT_COMPATIBLE</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>51</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_REDIRECTOR_CLIENT_UNKNOWN</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>52</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_REDIRECTOR_SERVER_DOWN</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>53</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_REDIRECTOR_SERVER_SUNSET</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>54</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_REDIRECTOR_NO_SERVER_CAPACITY</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>55</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_SDK_ERR_NO_MULTIPLAYER_PRIVILEGE</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>56</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_REDIRECTOR_SERVER_NOT_FOUND</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>57</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_PASSWORD_NOT_MATCH</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>58</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_INVALID_CODE</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>59</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_AUTH_ERR_CODE_ALREADY_USED</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>60</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXONLINE_SDK_ERR_MINIMUM_AGE_CHECK_FAILED</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+
+</table>
+
+
+</div>
+	</body>
+</html>
