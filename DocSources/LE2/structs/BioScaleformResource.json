@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Dummy1": {
       "type": "Pointer",
       "documentation": null
@@ -45,5 +45,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioSFPanel",
   "documentation": null
 }

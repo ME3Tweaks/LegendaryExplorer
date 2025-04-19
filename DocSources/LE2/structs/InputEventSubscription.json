@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Subscribers": {
       "type": "UIScreenObject",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "UIRoot",
   "documentation": null
 }

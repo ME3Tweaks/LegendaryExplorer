@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Group": {
       "type": "InterpGroup",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "InterpGroup",
   "documentation": null
 }

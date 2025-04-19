@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "m_fBaseHeadSettings": {
       "type": "BaseSliders",
       "documentation": null
     }
   },
+  "classdef": "BioMorphFaceFrontEnd",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Poly": {
       "type": "Pointer",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "NavigationHandle",
   "documentation": null
 }

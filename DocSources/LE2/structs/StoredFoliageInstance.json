@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "StaticLighting": {
       "type": "Color",
       "documentation": null
     }
   },
+  "classdef": "FoliageComponent",
   "documentation": null
 }

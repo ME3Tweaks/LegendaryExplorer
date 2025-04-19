@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Angle": {
       "type": "float",
       "documentation": null
     }
   },
+  "classdef": "PBRuleNodeEdgeAngle",
   "documentation": null
 }

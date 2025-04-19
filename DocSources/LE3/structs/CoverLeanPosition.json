@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "WeaponTypes": {
       "type": "WeaponAnimType",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXWeapon",
   "documentation": null
 }

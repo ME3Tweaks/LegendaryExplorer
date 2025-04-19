@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Instigator": {
       "type": "BioPawn",
       "documentation": null
@@ -21,5 +21,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXVocalizationManagerNativeBase",
   "documentation": null
 }

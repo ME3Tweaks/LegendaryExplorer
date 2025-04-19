@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "ObjectValue": {
       "type": "Object",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "SeqCond_SwitchObject",
   "documentation": null
 }

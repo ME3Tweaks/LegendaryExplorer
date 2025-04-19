@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "mapActions": {
       "type": "Map_Mirror",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioEvtSysTrackPropInst",
   "documentation": null
 }

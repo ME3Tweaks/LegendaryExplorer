@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "RelativeMatrix": {
       "type": "Matrix",
       "documentation": null
@@ -137,5 +137,6 @@
       "documentation": null
     }
   },
+  "classdef": "PhysXDestructibleStructure",
   "documentation": null
 }

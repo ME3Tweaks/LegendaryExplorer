@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "EdgeList": {
       "type": "EdgePointer",
       "documentation": null
     }
   },
+  "classdef": "NavigationHandle",
   "documentation": null
 }

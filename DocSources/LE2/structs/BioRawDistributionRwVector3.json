@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Distribution": {
       "type": "DistributionVector",
       "documentation": null
     }
   },
+  "classdef": "DistributionVector",
   "documentation": null
 }

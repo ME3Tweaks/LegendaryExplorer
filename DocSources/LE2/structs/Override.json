@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "AnimSet_Override": {
       "type": "Override_AnimSet",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "InterpTrackFaceFX",
   "documentation": null
 }

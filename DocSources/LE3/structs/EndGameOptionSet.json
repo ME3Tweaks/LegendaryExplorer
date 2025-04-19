@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Brain": {
       "type": "EEndGameOption",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXGAWAssetsHandler",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "StateName": {
       "type": "Name",
       "documentation": null
@@ -21,5 +21,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioTriggerStream",
   "documentation": null
 }

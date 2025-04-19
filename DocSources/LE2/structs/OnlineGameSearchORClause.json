@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "OrParams": {
       "type": "OnlineGameSearchParameter",
       "documentation": null
     }
   },
+  "classdef": "OnlineGameSearch",
   "documentation": null
 }

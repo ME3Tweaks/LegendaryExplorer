@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Target": {
       "type": "Actor",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "CoverLink",
   "documentation": null
 }

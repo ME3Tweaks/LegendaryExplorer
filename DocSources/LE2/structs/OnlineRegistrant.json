@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "PlayerNetId": {
       "type": "UniqueNetId",
       "documentation": null
     }
   },
+  "classdef": "OnlineSubsystem",
   "documentation": null
 }

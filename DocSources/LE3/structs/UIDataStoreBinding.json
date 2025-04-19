@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "MarkupString": {
       "type": "string",
       "documentation": null
@@ -29,5 +29,6 @@
       "documentation": null
     }
   },
+  "classdef": "UIRoot",
   "documentation": null
 }

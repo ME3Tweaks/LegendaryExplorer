@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "ColumnHeaderText": {
       "type": "string",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "UIComp_ListPresenter",
   "documentation": null
 }

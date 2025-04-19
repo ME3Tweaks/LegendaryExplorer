@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "StartPos": {
       "type": "Vector",
       "documentation": null
@@ -41,5 +41,6 @@
       "documentation": null
     }
   },
+  "classdef": "SplineMeshComponent",
   "documentation": null
 }

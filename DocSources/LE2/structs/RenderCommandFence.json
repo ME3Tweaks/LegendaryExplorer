@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "NumPendingFences": {
       "type": "int",
       "documentation": null
     }
   },
+  "classdef": "Object",
   "documentation": null
 }

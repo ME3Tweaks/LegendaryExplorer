@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Curve": {
       "type": "InterpCurveFloat",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXGame",
   "documentation": null
 }

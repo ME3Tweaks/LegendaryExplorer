@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Factory": {
       "type": "PrimitiveComponentFactory",
       "documentation": null
@@ -33,5 +33,6 @@
       "documentation": null
     }
   },
+  "classdef": "Terrain",
   "documentation": null
 }

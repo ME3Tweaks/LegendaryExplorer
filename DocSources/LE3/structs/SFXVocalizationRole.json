@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Roles": {
       "type": "SFXVocalizationVariation",
       "documentation": null
     }
   },
+  "classdef": "SFXVocalizationBank",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "EmissiveBoost": {
       "type": "float",
       "documentation": null
@@ -41,5 +41,6 @@
       "documentation": null
     }
   },
+  "classdef": "MaterialInterface",
   "documentation": null
 }

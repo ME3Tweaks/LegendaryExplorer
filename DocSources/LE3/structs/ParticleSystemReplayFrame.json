@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Emitters": {
       "type": "ParticleEmitterReplayFrame",
       "documentation": null
     }
   },
+  "classdef": "ParticleSystemReplay",
   "documentation": null
 }

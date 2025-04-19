@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "aTrans": {
       "type": "SFXAPGDTransition",
       "documentation": null
@@ -33,5 +33,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXAmbPerfGameData",
   "documentation": null
 }

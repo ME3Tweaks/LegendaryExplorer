@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "sImagePath": {
       "type": "string",
       "documentation": null
@@ -29,5 +29,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXSeqAct_ResearchChoiceGUI",
   "documentation": null
 }

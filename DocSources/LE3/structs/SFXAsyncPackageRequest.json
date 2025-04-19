@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "AssetRequests": {
       "type": "SFXAsyncAssetRequest",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXAsyncAssetLoader",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Quaternion": {
       "type": "Quat",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "AnimNodeAimOffset",
   "documentation": null
 }

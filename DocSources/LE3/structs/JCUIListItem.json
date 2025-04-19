@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "sName": {
       "type": "string",
       "documentation": null
@@ -25,5 +25,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXGUI_JournalCodex",
   "documentation": null
 }

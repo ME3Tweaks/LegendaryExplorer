@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "SkelMeshLinkupRUID": {
       "type": "QWord",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "AnimSet",
   "documentation": null
 }

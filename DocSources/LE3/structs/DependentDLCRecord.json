@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Name": {
       "type": "Name",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXSaveGame",
   "documentation": null
 }

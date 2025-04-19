@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "HitInfo": {
       "type": "TraceHitInfo",
       "documentation": null
@@ -29,5 +29,6 @@
       "documentation": null
     }
   },
+  "classdef": "Actor",
   "documentation": null
 }

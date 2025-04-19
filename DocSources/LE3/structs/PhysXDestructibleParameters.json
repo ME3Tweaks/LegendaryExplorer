@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "DepthParameters": {
       "type": "PhysXDestructibleDepthParameters",
       "documentation": null
@@ -41,5 +41,6 @@
       "documentation": null
     }
   },
+  "classdef": "PhysXDestructible",
   "documentation": null
 }

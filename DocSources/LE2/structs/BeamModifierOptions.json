@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "bModify": {
       "type": "bool",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "ParticleModuleBeamModifier",
   "documentation": null
 }

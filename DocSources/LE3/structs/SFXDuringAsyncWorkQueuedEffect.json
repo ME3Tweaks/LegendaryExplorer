@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "location": {
       "type": "Vector",
       "documentation": null
@@ -25,5 +25,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXDuringAsyncWorkTicker",
   "documentation": null
 }

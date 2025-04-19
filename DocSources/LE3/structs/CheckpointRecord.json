@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "bCollideActors": {
       "type": "bool",
       "documentation": null
     }
   },
+  "classdef": "Trigger",
   "documentation": null
 }

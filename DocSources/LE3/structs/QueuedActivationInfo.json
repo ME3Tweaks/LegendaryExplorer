@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "ActivateIndices": {
       "type": "int",
       "documentation": null
@@ -21,5 +21,6 @@
       "documentation": null
     }
   },
+  "classdef": "Sequence",
   "documentation": null
 }

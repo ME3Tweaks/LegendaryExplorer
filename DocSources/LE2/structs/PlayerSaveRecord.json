@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Appearance": {
       "type": "AppearanceSaveRecord",
       "documentation": null
@@ -285,5 +285,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXSaveGame",
   "documentation": null
 }

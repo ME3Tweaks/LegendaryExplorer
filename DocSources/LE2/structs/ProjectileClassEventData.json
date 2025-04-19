@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "ProjectileClassName": {
       "type": "string",
       "documentation": null
     }
   },
+  "classdef": "GameplayEvents",
   "documentation": null
 }

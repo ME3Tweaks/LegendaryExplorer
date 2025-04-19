@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Guids": {
       "type": "WwisePlatformGuid",
       "documentation": null
     }
   },
+  "classdef": "WwiseStream",
   "documentation": null
 }

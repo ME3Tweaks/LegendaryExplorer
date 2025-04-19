@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "StateClassName": {
       "type": "string",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "UIRoot",
   "documentation": null
 }

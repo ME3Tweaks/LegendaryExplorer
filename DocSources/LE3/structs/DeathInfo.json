@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "DamageType": {
       "type": "Class",
       "documentation": null
@@ -21,5 +21,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXPawn",
   "documentation": null
 }

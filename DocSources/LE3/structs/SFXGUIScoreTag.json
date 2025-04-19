@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Text": {
       "type": "string",
       "documentation": null
     }
   },
+  "classdef": "SFXGUI_MPScoretags",
   "documentation": null
 }

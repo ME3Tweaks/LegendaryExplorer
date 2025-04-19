@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "BoolVariables": {
       "type": "int",
       "documentation": null
@@ -33,5 +33,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXSaveGame",
   "documentation": null
 }

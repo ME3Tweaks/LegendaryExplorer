@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "SublevelName": {
       "type": "string",
       "documentation": null
@@ -21,5 +21,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXEngine",
   "documentation": null
 }

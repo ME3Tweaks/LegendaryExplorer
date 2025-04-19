@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "LoadDelegate": {
       "type": "OnRefreshMPDataDelegate",
       "documentation": null
     }
   },
+  "classdef": "SFXSaveManagerMP",
   "documentation": null
 }

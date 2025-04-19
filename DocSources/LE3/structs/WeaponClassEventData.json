@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "WeaponClassName": {
       "type": "string",
       "documentation": null
     }
   },
+  "classdef": "GameplayEvents",
   "documentation": null
 }

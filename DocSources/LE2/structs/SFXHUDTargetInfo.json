@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "sName": {
       "type": "string",
       "documentation": null
@@ -29,5 +29,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXSFHandler_HUD",
   "documentation": null
 }

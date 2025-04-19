@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "AnimTreeTemplate": {
       "type": "AnimTree",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "Bio_Appr_Character_Body",
   "documentation": null
 }

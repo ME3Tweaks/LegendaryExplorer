@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "AnimInfo": {
       "type": "AnimInfo",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "AnimNodeSequenceBlendBase",
   "documentation": null
 }

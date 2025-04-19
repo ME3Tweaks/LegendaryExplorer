@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "bOpaque": {
       "type": "bool",
       "documentation": null
@@ -25,5 +25,6 @@
       "documentation": null
     }
   },
+  "classdef": "PrimitiveComponent",
   "documentation": null
 }

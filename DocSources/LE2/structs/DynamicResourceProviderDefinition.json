@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "ProviderClassName": {
       "type": "string",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "UIDataStore_DynamicResource",
   "documentation": null
 }

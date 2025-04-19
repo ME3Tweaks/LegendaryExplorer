@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "FriendID": {
       "type": "QWord",
       "documentation": null
@@ -37,5 +37,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXOnlineComponentOrigin",
   "documentation": null
 }

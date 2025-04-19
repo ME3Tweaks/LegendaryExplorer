@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Cells": {
       "type": "UIListElementCellTemplate",
       "documentation": null
     }
   },
+  "classdef": "UIComp_ListPresenter",
   "documentation": null
 }

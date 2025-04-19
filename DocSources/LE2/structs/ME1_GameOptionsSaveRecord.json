@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "GameOptions": {
       "type": "int",
       "documentation": null
     }
   },
+  "classdef": "SFXSaveGame",
   "documentation": null
 }

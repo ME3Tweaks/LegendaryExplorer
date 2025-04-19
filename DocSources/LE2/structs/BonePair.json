@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Bones": {
       "type": "Name",
       "documentation": null
     }
   },
+  "classdef": "SkeletalMeshComponent",
   "documentation": null
 }

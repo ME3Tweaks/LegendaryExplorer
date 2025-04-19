@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "TargetCoverInfo": {
       "type": "CoverInfo",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXCovGoal_CanFireAtSecondaries",
   "documentation": null
 }

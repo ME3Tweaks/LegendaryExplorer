@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "KitTextureRef": {
       "type": "string",
       "documentation": null
@@ -109,5 +109,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXSaveManagerMP",
   "documentation": null
 }

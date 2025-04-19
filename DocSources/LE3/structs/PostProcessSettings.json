@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "ColorGradingLUT": {
       "type": "LUTBlender",
       "documentation": null
@@ -337,5 +337,6 @@
       "documentation": null
     }
   },
+  "classdef": "PostProcessVolume",
   "documentation": null
 }

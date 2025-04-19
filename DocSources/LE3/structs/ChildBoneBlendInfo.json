@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "TargetPerBoneWeight": {
       "type": "float",
       "documentation": null
@@ -25,5 +25,6 @@
       "documentation": null
     }
   },
+  "classdef": "AnimNodeBlendMultiBone",
   "documentation": null
 }

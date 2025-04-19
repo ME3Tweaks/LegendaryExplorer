@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "RotAmplitude": {
       "type": "Vector",
       "documentation": null
@@ -61,5 +61,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXCameraModifier_ScreenShake",
   "documentation": null
 }

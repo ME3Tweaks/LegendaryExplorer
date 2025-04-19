@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Mapping": {
       "type": "Pointer",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "InstancedStaticMeshComponent",
   "documentation": null
 }

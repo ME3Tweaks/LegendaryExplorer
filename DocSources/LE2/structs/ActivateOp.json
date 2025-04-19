@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "ActivatorOp": {
       "type": "SequenceOp",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "Sequence",
   "documentation": null
 }

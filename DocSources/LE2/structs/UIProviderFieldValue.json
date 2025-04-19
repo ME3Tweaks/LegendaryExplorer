@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "CustomStringNode": {
       "type": "Pointer",
       "documentation": null
     }
   },
+  "classdef": "UIRoot",
   "documentation": null
 }

@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Planets": {
       "type": "PlanetSaveRecord",
       "documentation": null
     }
   },
+  "classdef": "SFXSaveGame",
   "documentation": null
 }

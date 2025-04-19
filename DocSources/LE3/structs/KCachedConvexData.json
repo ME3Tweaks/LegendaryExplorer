@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "CachedConvexElements": {
       "type": "KCachedConvexDataElement",
       "documentation": null
     }
   },
+  "classdef": "RB_BodySetup",
   "documentation": null
 }

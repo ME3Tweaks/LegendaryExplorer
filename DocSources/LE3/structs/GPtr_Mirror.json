@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "pObject": {
       "type": "Pointer",
       "documentation": null
     }
   },
+  "classdef": "SFXGUIMovieLegacyAdapter",
   "documentation": null
 }

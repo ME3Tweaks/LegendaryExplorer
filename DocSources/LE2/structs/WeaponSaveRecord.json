@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Item": {
       "type": "ME1_ItemSaveRecord",
       "documentation": null
@@ -37,5 +37,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXSaveGame",
   "documentation": null
 }

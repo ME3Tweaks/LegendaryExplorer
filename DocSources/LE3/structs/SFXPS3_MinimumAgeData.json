@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Country": {
       "type": "string",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXOnlineComponentPlatformPS3",
   "documentation": null
 }

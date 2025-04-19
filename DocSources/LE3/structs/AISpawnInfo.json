@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Types": {
       "type": "Pawn",
       "documentation": null
@@ -105,5 +105,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXSeqAct_AIFactory2",
   "documentation": null
 }

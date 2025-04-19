@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Emitters": {
       "type": "PhysXEmitterVerticalProperties",
       "documentation": null
     }
   },
+  "classdef": "WorldInfo",
   "documentation": null
 }

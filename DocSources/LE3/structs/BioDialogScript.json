@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "sScriptTag": {
       "type": "Name",
       "documentation": null
     }
   },
+  "classdef": "BioConversation",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "m_vOffset": {
       "type": "Vector",
       "documentation": null
@@ -33,5 +33,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioWorldInfo",
   "documentation": null
 }

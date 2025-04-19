@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "m_nmLabel": {
       "type": "Name",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioEpicPawnBehavior",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "WeaponClasses": {
       "type": "ELoadoutWeapons",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXPlayerSquadLoadoutData",
   "documentation": null
 }

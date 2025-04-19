@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Language": {
       "type": "string",
       "documentation": null
@@ -45,5 +45,6 @@
       "documentation": null
     }
   },
+  "classdef": "GameplayEvents",
   "documentation": null
 }

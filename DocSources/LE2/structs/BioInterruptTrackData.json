@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "bShowInterrupt": {
       "type": "bool",
       "documentation": null
     }
   },
+  "classdef": "BioEvtSysTrackInterrupt",
   "documentation": null
 }

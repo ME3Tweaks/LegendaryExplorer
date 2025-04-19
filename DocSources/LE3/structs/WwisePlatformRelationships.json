@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Relationships": {
       "type": "WwiseRelationships",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "WwiseEvent",
   "documentation": null
 }

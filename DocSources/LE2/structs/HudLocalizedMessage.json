@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "StringMessage": {
       "type": "string",
       "documentation": null
@@ -57,5 +57,6 @@
       "documentation": null
     }
   },
+  "classdef": "HUD",
   "documentation": null
 }

@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "InviteDelegates": {
       "type": "OnGameInviteAccepted",
       "documentation": null
     }
   },
+  "classdef": "SFXOnlineComponentBlazeGame",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Inputs": {
       "type": "InputEntry",
       "documentation": null
@@ -33,5 +33,6 @@
       "documentation": null
     }
   },
+  "classdef": "PlayerController",
   "documentation": null
 }

@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "LightSourceAngle": {
       "type": "float",
       "documentation": null
     }
   },
+  "classdef": "EngineTypes",
   "documentation": null
 }

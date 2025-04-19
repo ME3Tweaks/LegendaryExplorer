@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "FieldProviders": {
       "type": "UIDataProvider",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "UIDataProvider",
   "documentation": null
 }

@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "m_aMaterials": {
       "type": "MaterialInterface",
       "documentation": null
     }
   },
+  "classdef": "Bio_Appr_Character_Head",
   "documentation": null
 }

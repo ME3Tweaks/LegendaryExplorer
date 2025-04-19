@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Children": {
       "type": "BioAnimStateNodeChildDef",
       "documentation": null
     }
   },
+  "classdef": "BioAnimNodeBlendStateBehavior",
   "documentation": null
 }

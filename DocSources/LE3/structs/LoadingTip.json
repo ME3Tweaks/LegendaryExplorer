@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "GenericTip": {
       "type": "stringref",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXLoadMovieManager",
   "documentation": null
 }

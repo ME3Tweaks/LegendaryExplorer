@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Powers": {
       "type": "PowerSaveRecord",
       "documentation": null
@@ -129,5 +129,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXSaveGame",
   "documentation": null
 }

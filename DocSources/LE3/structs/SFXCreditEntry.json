@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Title": {
       "type": "stringref",
       "documentation": null
@@ -45,5 +45,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXGUI_Credits",
   "documentation": null
 }

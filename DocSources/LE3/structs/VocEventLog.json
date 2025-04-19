@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Speaker": {
       "type": "Pawn",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXVocalizationManager",
   "documentation": null
 }

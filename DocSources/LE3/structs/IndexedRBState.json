@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "CenterOfMass": {
       "type": "Vector",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "PhysXEmitterSpawnable",
   "documentation": null
 }

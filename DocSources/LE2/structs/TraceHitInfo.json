@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Material": {
       "type": "Material",
       "documentation": null
@@ -25,5 +25,6 @@
       "documentation": null
     }
   },
+  "classdef": "Actor",
   "documentation": null
 }

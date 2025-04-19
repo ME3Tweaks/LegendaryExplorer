@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "WeaponClassName": {
       "type": "Name",
       "documentation": null
     }
   },
+  "classdef": "SFXMPCharacterRecord",
   "documentation": null
 }

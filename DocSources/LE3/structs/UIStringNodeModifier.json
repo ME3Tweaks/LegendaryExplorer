@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "ModifierStack": {
       "type": "ModifierData",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "UIRoot",
   "documentation": null
 }

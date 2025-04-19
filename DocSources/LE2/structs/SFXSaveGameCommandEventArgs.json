@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Descriptor": {
       "type": "SFXSaveDescriptor",
       "documentation": null
@@ -53,5 +53,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXEngine",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "OffsetInfo": {
       "type": "InterpPropertyInfo",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioVisualEffect",
   "documentation": null
 }

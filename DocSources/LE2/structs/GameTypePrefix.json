@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Prefix": {
       "type": "string",
       "documentation": null
@@ -21,5 +21,6 @@
       "documentation": null
     }
   },
+  "classdef": "GameInfo",
   "documentation": null
 }

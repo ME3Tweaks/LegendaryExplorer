@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "BoneName": {
       "type": "Name",
       "documentation": null
@@ -49,5 +49,6 @@
       "documentation": null
     }
   },
+  "classdef": "PhysXDestructibleAsset",
   "documentation": null
 }

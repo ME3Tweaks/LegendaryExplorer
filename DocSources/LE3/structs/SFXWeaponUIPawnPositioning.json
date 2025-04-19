@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "RotationOffset": {
       "type": "Rotator",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXGUI_WeaponSelection",
   "documentation": null
 }

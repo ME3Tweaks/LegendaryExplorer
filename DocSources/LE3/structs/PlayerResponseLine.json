@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "PlayerName": {
       "type": "string",
       "documentation": null
@@ -29,5 +29,6 @@
       "documentation": null
     }
   },
+  "classdef": "Info",
   "documentation": null
 }

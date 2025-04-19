@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "TimeDilation": {
       "type": "InterpCurveFloat",
       "documentation": null
@@ -265,5 +265,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXTimelineData",
   "documentation": null
 }

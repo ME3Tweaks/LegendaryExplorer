@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Filename": {
       "type": "string",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "IniLocPatcher",
   "documentation": null
 }

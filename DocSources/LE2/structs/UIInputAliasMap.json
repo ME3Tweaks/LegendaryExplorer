@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "InputAliasLookupTable": {
       "type": "MultiMap_Mirror",
       "documentation": null
     }
   },
+  "classdef": "UIRoot",
   "documentation": null
 }

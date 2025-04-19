@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Actions": {
       "type": "ECoverAction",
       "documentation": null
@@ -189,5 +189,6 @@
       "documentation": null
     }
   },
+  "classdef": "CoverLink",
   "documentation": null
 }

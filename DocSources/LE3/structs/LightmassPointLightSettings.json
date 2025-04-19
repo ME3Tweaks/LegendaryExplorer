@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "LightSourceRadius": {
       "type": "float",
       "documentation": null
     }
   },
+  "classdef": "EngineTypes",
   "documentation": null
 }

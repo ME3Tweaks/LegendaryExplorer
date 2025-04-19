@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Reference": {
       "type": "Pointer",
       "documentation": null
     }
   },
+  "classdef": "SpeedTreeComponent",
   "documentation": null
 }

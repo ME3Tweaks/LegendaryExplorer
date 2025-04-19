@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "nInstanceVersion": {
       "type": "int",
       "documentation": null
     }
   },
+  "classdef": "BioDefine",
   "documentation": null
 }

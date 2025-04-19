@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "ShadowMaps": {
       "type": "ShadowMap2D",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "StaticMeshComponent",
   "documentation": null
 }

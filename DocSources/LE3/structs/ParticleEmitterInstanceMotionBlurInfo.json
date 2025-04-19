@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "ParticleMBInfoMap": {
       "type": "Map_Mirror",
       "documentation": null
     }
   },
+  "classdef": "ParticleSystemComponent",
   "documentation": null
 }

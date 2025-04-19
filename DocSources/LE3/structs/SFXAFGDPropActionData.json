@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "nmActionName": {
       "type": "Name",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXAmbPerfGameData",
   "documentation": null
 }

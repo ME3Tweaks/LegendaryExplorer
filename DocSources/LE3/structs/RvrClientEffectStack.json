@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Elements": {
       "type": "RvrClientEffectComponent",
       "documentation": null
     }
   },
+  "classdef": "RvrClientEffectManager",
   "documentation": null
 }

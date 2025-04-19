@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "TexturePath": {
       "type": "string",
       "documentation": null
@@ -41,5 +41,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXGUIInteraction",
   "documentation": null
 }

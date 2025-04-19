@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Resources": {
       "type": "RvrClientEffectResource",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "RvrClientEffectPool",
   "documentation": null
 }

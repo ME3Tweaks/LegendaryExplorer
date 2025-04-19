@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "StatName": {
       "type": "string",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXGUI_Store",
   "documentation": null
 }

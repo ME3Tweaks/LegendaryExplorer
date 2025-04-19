@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "PlayerData": {
       "type": "PerPlayerSplitscreenData",
       "documentation": null
     }
   },
+  "classdef": "GameViewportClient",
   "documentation": null
 }

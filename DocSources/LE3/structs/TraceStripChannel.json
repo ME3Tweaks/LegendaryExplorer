@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Keys": {
       "type": "TraceStripKey",
       "documentation": null
@@ -41,5 +41,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioHUD",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Attachment": {
       "type": "Actor",
       "documentation": null
@@ -33,5 +33,6 @@
       "documentation": null
     }
   },
+  "classdef": "SkeletalMeshComponent",
   "documentation": null
 }

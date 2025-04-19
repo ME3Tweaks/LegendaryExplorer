@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "SendingPlayerId": {
       "type": "UniqueNetId",
       "documentation": null
@@ -29,5 +29,6 @@
       "documentation": null
     }
   },
+  "classdef": "OnlineSubsystem",
   "documentation": null
 }

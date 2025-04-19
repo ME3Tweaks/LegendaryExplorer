@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "ChildNodes": {
       "type": "MorphNodeBase",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "MorphNodeWeightBase",
   "documentation": null
 }

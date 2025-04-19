@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Object": {
       "type": "Object",
       "documentation": null
     }
   },
+  "classdef": "BioHardLinks",
   "documentation": null
 }

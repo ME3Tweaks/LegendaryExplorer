@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Owner": {
       "type": "UniqueNetId",
       "documentation": null
@@ -41,5 +41,6 @@
       "documentation": null
     }
   },
+  "classdef": "OnlineSubsystem",
   "documentation": null
 }

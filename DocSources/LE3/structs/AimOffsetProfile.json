@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "AimComponents": {
       "type": "AimComponent",
       "documentation": null
@@ -53,5 +53,6 @@
       "documentation": null
     }
   },
+  "classdef": "AnimNodeAimOffset",
   "documentation": null
 }

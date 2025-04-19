@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "DepthParameters": {
       "type": "NxDestructibleDepthParameters",
       "documentation": null
@@ -93,5 +93,6 @@
       "documentation": null
     }
   },
+  "classdef": "ApexDestructibleAsset",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "PlayerKit": {
       "type": "string",
       "documentation": null
@@ -101,5 +101,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXAccomplishmentManager",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "PitchConstraint": {
       "type": "int",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioSkelControl_TurretConstrained",
   "documentation": null
 }

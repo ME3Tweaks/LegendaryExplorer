@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "CurrentMap": {
       "type": "Name",
       "documentation": null
@@ -25,5 +25,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXSeqAct_LeaveMission",
   "documentation": null
 }

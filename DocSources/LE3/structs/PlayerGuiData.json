@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "aMessageBoxQueue": {
       "type": "BioMessageBoxData",
       "documentation": null
     }
   },
+  "classdef": "SFXGUIInteraction",
   "documentation": null
 }

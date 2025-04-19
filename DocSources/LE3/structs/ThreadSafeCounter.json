@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Value": {
       "type": "int",
       "documentation": null
     }
   },
+  "classdef": "Object",
   "documentation": null
 }

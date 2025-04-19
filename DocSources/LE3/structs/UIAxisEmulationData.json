@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "bEnabled": {
       "type": "bool",
       "documentation": null
     }
   },
+  "classdef": "UIInteraction",
   "documentation": null
 }

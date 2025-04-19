@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "ChoiceEntry": {
       "type": "SFXChoiceEntry",
       "documentation": null
@@ -73,5 +73,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXGUIData_Store",
   "documentation": null
 }

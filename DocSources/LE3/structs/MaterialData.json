@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Panels": {
       "type": "MaterialPanel",
       "documentation": null
     }
   },
+  "classdef": "BioMorphUtility",
   "documentation": null
 }

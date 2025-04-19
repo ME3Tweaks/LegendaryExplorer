@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Threshold": {
       "type": "Vector2D",
       "documentation": null
@@ -33,5 +33,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioDefine",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Mesh": {
       "type": "PlayerMeshInfo",
       "documentation": null
@@ -45,5 +45,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioDefine",
   "documentation": null
 }

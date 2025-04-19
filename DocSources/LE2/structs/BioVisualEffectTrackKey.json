@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "m_Effect": {
       "type": "BioVisualEffect",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioVisualEffectTrack",
   "documentation": null
 }

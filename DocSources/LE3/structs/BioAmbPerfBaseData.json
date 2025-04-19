@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "tPosition": {
       "type": "IntPoint",
       "documentation": null
@@ -21,5 +21,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioGestureRulesData",
   "documentation": null
 }

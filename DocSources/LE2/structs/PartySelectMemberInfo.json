@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Tag": {
       "type": "Name",
       "documentation": null
@@ -57,5 +57,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioSFHandler_PartySelection",
   "documentation": null
 }

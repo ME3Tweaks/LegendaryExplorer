@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "ConvexElementData": {
       "type": "byte",
       "documentation": null
     }
   },
+  "classdef": "RB_BodySetup",
   "documentation": null
 }

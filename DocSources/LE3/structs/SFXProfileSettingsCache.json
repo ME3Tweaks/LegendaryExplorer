@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "ReadDelegates": {
       "type": "OnReadProfileSettingsComplete",
       "documentation": null
@@ -29,5 +29,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXOnlineComponentUnrealPlayer",
   "documentation": null
 }

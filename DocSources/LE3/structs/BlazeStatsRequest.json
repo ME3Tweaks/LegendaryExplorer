@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "pUniquePlayerId": {
       "type": "UniqueNetId",
       "documentation": null
@@ -21,5 +21,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXOnlineComponentBlazeStats",
   "documentation": null
 }

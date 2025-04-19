@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "DeviceSelectionMulticast": {
       "type": "OnDeviceSelectionComplete",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXOnlineComponentUnrealPlayerEx",
   "documentation": null
 }

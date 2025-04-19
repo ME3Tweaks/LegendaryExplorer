@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Alias": {
       "type": "string",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioPlayerInput",
   "documentation": null
 }

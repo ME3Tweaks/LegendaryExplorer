@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "RBCallback": {
       "type": "RBCollisionCallback",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioPawn",
   "documentation": null
 }

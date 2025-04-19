@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Color": {
       "type": "LinearColor",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "ProcBuilding",
   "documentation": null
 }

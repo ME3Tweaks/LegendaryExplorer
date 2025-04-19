@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Instigator": {
       "type": "BioPawn",
       "documentation": null
@@ -33,5 +33,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioPawn",
   "documentation": null
 }

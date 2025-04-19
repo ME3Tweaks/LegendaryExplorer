@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "SourceStyleID": {
       "type": "STYLE_ID",
       "documentation": null
@@ -21,5 +21,6 @@
       "documentation": null
     }
   },
+  "classdef": "UIStyle_Combo",
   "documentation": null
 }

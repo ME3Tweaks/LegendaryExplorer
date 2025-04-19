@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "PlaceHolder": {
       "type": "int",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXInterpTrackBlackScreen",
   "documentation": null
 }

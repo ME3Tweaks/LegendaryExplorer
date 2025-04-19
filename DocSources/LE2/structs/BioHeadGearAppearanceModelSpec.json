@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "m_nMaterialConfigCount": {
       "type": "int",
       "documentation": null
@@ -25,5 +25,6 @@
       "documentation": null
     }
   },
+  "classdef": "Bio_Appr_Character_HeadGear",
   "documentation": null
 }

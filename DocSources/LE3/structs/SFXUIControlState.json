@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Text": {
       "type": "stringref",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioSFHandler_GalaxyMap",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Locale": {
       "type": "string",
       "documentation": null
@@ -25,5 +25,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXGUIInteraction",
   "documentation": null
 }

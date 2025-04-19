@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Links": {
       "type": "SeqOpOutputInputLink",
       "documentation": null
@@ -29,5 +29,6 @@
       "documentation": null
     }
   },
+  "classdef": "SequenceOp",
   "documentation": null
 }

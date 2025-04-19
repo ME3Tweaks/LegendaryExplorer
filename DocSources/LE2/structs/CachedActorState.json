@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "A": {
       "type": "Actor",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXGameModePhoto",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Goal": {
       "type": "Actor",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "NavMeshGoal_ClosestActorInList",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Message": {
       "type": "string",
       "documentation": null
@@ -29,5 +29,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXOnlineComponentBlazeNotification",
   "documentation": null
 }

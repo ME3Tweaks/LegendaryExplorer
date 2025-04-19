@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "MorphHead": {
       "type": "MorphHeadSaveRecord",
       "documentation": null
@@ -69,5 +69,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXSaveGame",
   "documentation": null
 }

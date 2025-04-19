@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Icon": {
       "type": "string",
       "documentation": null
@@ -25,5 +25,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXScoreManager",
   "documentation": null
 }

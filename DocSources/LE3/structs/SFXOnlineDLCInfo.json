@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Name": {
       "type": "string",
       "documentation": null
@@ -49,5 +49,6 @@
       "documentation": null
     }
   },
+  "classdef": "ISFXOnlineComponentNotification",
   "documentation": null
 }

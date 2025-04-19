@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Uid": {
       "type": "QWord",
       "documentation": null
     }
   },
+  "classdef": "OnlineSubsystem",
   "documentation": null
 }

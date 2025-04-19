@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "PrimaryIndex": {
       "type": "int",
       "documentation": null
@@ -37,5 +37,6 @@
       "documentation": null
     }
   },
+  "classdef": "UIComp_ListElementSorter",
   "documentation": null
 }

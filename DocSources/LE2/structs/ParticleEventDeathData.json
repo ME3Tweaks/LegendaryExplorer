@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "ParticleTime": {
       "type": "float",
       "documentation": null
     }
   },
+  "classdef": "ParticleSystemComponent",
   "documentation": null
 }

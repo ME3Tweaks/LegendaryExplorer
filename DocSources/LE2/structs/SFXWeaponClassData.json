@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "cWeapon": {
       "type": "Class",
       "documentation": null
     }
   },
+  "classdef": "SFXInterpTrackSetWeaponInstant",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "CareerName": {
       "type": "string",
       "documentation": null
@@ -37,5 +37,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXSFHandler_Load",
   "documentation": null
 }

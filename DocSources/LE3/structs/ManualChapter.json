@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Image": {
       "type": "string",
       "documentation": null
@@ -33,5 +33,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXGUI_Manual",
   "documentation": null
 }

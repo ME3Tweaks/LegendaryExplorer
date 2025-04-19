@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "BranchList": {
       "type": "BranchInfo",
       "documentation": null
@@ -41,5 +41,6 @@
       "documentation": null
     }
   },
+  "classdef": "AnimNode_MultiBlendPerBone",
   "documentation": null
 }

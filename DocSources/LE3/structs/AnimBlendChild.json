@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "RootMotion": {
       "type": "BoneAtom",
       "documentation": null
@@ -33,5 +33,6 @@
       "documentation": null
     }
   },
+  "classdef": "AnimNodeBlendBase",
   "documentation": null
 }

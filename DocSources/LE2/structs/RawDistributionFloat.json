@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Distribution": {
       "type": "DistributionFloat",
       "documentation": null
     }
   },
+  "classdef": "DistributionFloat",
   "documentation": null
 }

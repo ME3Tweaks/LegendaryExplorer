@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "ChanceOfPhysicsChunkOverride": {
       "type": "float",
       "documentation": null
@@ -33,5 +33,6 @@
       "documentation": null
     }
   },
+  "classdef": "WorldInfo",
   "documentation": null
 }

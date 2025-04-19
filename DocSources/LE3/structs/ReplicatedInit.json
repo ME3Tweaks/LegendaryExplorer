@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Direction": {
       "type": "Vector",
       "documentation": null
@@ -21,5 +21,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXProjectile",
   "documentation": null
 }

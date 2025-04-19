@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Anim": {
       "type": "CameraAnim",
       "documentation": null
@@ -49,5 +49,6 @@
       "documentation": null
     }
   },
+  "classdef": "GameTypes",
   "documentation": null
 }

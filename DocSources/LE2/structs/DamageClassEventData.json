@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "DamageClassName": {
       "type": "string",
       "documentation": null
     }
   },
+  "classdef": "GameplayEvents",
   "documentation": null
 }

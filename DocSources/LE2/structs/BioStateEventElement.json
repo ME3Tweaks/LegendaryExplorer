@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "VfTable": {
       "type": "Pointer",
       "documentation": null
     }
   },
+  "classdef": "BioDefine",
   "documentation": null
 }

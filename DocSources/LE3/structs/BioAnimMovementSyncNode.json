@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Node": {
       "type": "AnimNode",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioAnimMovementSync",
   "documentation": null
 }

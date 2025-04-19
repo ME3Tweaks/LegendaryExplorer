@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "aChainedGestures": {
       "type": "int",
       "documentation": null
@@ -97,5 +97,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioEvtSysTrackGesture",
   "documentation": null
 }

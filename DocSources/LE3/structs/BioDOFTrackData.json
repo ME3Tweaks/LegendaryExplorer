@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "vFocusPosition": {
       "type": "Vector",
       "documentation": null
@@ -45,5 +45,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioEvtSysTrackDOF",
   "documentation": null
 }

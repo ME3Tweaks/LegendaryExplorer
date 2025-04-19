@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "StatName": {
       "type": "Name",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXDifficultyHandler",
   "documentation": null
 }

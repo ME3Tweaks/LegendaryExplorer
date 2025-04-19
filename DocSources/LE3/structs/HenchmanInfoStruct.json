@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "className": {
       "type": "Name",
       "documentation": null
@@ -33,5 +33,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioDefine",
   "documentation": null
 }

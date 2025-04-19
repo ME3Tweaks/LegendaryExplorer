@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "m_pMaterial": {
       "type": "MaterialInterface",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "RvrMaterialMultiplexor",
   "documentation": null
 }

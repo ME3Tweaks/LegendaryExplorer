@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "SoloEnableSetting": {
       "type": "byte",
       "documentation": null
     }
   },
+  "classdef": "ParticleSystem",
   "documentation": null
 }

@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Dummy": {
       "type": "int",
       "documentation": null
     }
   },
+  "classdef": "Object",
   "documentation": null
 }

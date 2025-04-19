@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "FrameState": {
       "type": "Pointer",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "ParticleSystemReplay",
   "documentation": null
 }

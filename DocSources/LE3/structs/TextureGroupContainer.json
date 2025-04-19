@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "TEXTUREGROUP_World": {
       "type": "bool",
       "documentation": null
@@ -93,5 +93,6 @@
       "documentation": null
     }
   },
+  "classdef": "Texture",
   "documentation": null
 }

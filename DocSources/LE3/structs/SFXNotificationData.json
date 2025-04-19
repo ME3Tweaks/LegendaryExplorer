@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "sImageResource": {
       "type": "string",
       "documentation": null
@@ -65,5 +65,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioHintSystemBase",
   "documentation": null
 }

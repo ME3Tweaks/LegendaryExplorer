@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Target": {
       "type": "BioPawn",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioUIWorld",
   "documentation": null
 }

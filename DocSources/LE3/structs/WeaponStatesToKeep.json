@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Pawn": {
       "type": "BioPawn",
       "documentation": null
@@ -25,5 +25,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXGUI_WeaponSelection",
   "documentation": null
 }

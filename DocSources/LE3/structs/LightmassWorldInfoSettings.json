@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "OcclusionCurveLookupTable": {
       "type": "float",
       "documentation": null
@@ -73,5 +73,6 @@
       "documentation": null
     }
   },
+  "classdef": "WorldInfo",
   "documentation": null
 }

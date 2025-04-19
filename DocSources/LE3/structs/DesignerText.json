@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Text": {
       "type": "string",
       "documentation": null
@@ -33,5 +33,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioHUD",
   "documentation": null
 }

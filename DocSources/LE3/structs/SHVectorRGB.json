@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "R": {
       "type": "SHVector",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "Object",
   "documentation": null
 }

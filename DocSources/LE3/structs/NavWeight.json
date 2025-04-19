@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "ConstraintWeights": {
       "type": "float",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXPathWeightLog",
   "documentation": null
 }

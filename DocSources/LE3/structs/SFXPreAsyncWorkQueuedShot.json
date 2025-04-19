@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Impact": {
       "type": "ImpactInfo",
       "documentation": null
@@ -25,5 +25,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXPreAsyncWorkTicker",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "LU": {
       "type": "AimTransform",
       "documentation": null
@@ -41,5 +41,6 @@
       "documentation": null
     }
   },
+  "classdef": "AnimNodeAimOffset",
   "documentation": null
 }

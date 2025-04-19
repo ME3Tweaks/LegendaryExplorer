@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Tag": {
       "type": "Name",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioSFHandler_BrowserWheel",
   "documentation": null
 }

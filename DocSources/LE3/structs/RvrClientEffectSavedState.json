@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Atoms": {
       "type": "BoneAtom",
       "documentation": null
@@ -45,5 +45,6 @@
       "documentation": null
     }
   },
+  "classdef": "RvrCEffectModuleSpawnActorInstance",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "m_anTargetBones": {
       "type": "Name",
       "documentation": null
@@ -77,5 +77,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioLookAtDefinition",
   "documentation": null
 }

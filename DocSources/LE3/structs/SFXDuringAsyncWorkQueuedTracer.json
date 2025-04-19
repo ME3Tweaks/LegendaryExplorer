@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "TracerScale3D": {
       "type": "Vector",
       "documentation": null
@@ -33,5 +33,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXDuringAsyncWorkTicker",
   "documentation": null
 }

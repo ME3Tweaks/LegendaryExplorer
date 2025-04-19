@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "pTable": {
       "type": "Bio2DA",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "Bio2DA",
   "documentation": null
 }

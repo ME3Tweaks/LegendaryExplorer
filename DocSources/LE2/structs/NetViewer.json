@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "ViewLocation": {
       "type": "Vector",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "WorldInfo",
   "documentation": null
 }

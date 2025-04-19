@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "SphereElems": {
       "type": "KSphereElem",
       "documentation": null
@@ -25,5 +25,6 @@
       "documentation": null
     }
   },
+  "classdef": "KMeshProps",
   "documentation": null
 }

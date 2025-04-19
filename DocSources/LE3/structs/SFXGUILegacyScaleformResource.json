@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "MovieDef": {
       "type": "GPtr_Mirror",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXGUIMovieLegacyAdapter",
   "documentation": null
 }

@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Pairs": {
       "type": "Set_Mirror",
       "documentation": null
     }
   },
+  "classdef": "Object",
   "documentation": null
 }

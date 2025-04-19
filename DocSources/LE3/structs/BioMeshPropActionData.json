@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "sParticleSys": {
       "type": "string",
       "documentation": null
@@ -41,5 +41,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioGestureRuntimeData",
   "documentation": null
 }

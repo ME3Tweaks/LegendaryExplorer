@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Interface": {
       "type": "Pointer",
       "documentation": null
@@ -37,5 +37,6 @@
       "documentation": null
     }
   },
+  "classdef": "NavigationHandle",
   "documentation": null
 }

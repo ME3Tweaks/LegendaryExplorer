@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "ScoreEvents": {
       "type": "ScoreEvent",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXPawn",
   "documentation": null
 }

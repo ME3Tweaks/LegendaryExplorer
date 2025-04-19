@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "CachedConvexElements": {
       "type": "int",
       "documentation": null
     }
   },
+  "classdef": "BrushComponent",
   "documentation": null
 }

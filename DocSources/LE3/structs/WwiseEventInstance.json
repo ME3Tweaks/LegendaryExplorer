@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "WwisePlayingID": {
       "type": "int",
       "documentation": null
     }
   },
+  "classdef": "WwiseEvent",
   "documentation": null
 }

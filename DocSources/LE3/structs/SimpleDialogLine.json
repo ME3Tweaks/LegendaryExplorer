@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "pCue": {
       "type": "WwiseBaseSoundObject",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioSimpleDialog",
   "documentation": null
 }

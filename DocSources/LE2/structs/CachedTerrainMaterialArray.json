@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "CachedMaterials": {
       "type": "Pointer",
       "documentation": null
     }
   },
+  "classdef": "Terrain",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Data": {
       "type": "PowerData",
       "documentation": null
@@ -25,5 +25,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXPowerCustomActionBase",
   "documentation": null
 }

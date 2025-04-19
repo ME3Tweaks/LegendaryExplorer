@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Delegates": {
       "type": "OnSendPartyGameInvitesComplete",
       "documentation": null
     }
   },
+  "classdef": "SFXOnlineComponentXenonLiveParty",
   "documentation": null
 }

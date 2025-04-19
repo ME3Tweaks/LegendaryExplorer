@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Sound": {
       "type": "SoundCue",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "InterpTrackSound",
   "documentation": null
 }

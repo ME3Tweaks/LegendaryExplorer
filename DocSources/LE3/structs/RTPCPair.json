@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "RTPCName": {
       "type": "string",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXModule_Audio",
   "documentation": null
 }

@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "W": {
       "type": "float",
       "documentation": null
     }
   },
+  "classdef": "Object",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "MaterialOverrides": {
       "type": "MaterialInterface",
       "documentation": null
@@ -45,5 +45,6 @@
       "documentation": null
     }
   },
+  "classdef": "PBRuleNodeMesh",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Base": {
       "type": "StaticMesh",
       "documentation": null
@@ -45,5 +45,6 @@
       "documentation": null
     }
   },
+  "classdef": "CoverMeshComponent",
   "documentation": null
 }

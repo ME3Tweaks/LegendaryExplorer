@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "RelativeLocation": {
       "type": "Vector",
       "documentation": null
@@ -21,5 +21,6 @@
       "documentation": null
     }
   },
+  "classdef": "EmitterPool",
   "documentation": null
 }

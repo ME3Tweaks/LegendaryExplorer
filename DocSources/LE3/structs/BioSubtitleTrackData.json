@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "nStrRefID": {
       "type": "int",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioEvtSysTrackSubtitles",
   "documentation": null
 }

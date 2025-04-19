@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "KnownLocation": {
       "type": "Vector",
       "documentation": null
@@ -37,5 +37,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioAiController",
   "documentation": null
 }

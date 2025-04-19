@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Delegates": {
       "type": "OnLoginStatusChange",
       "documentation": null
     }
   },
+  "classdef": "SFXOnlineComponentUnrealPlayer",
   "documentation": null
 }

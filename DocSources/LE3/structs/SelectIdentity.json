@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "MemberTag": {
       "type": "Name",
       "documentation": null
@@ -33,5 +33,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXGUIData_TeamSelect",
   "documentation": null
 }

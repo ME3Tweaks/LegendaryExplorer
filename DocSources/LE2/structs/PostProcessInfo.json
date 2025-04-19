@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Shadows": {
       "type": "float",
       "documentation": null
@@ -21,5 +21,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioPlayerController",
   "documentation": null
 }

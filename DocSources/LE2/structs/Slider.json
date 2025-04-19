@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "m_sName": {
       "type": "string",
       "documentation": null
@@ -53,5 +53,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioMorphFaceFrontEnd",
   "documentation": null
 }

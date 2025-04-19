@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Value2": {
       "type": "Pointer",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "Settings",
   "documentation": null
 }

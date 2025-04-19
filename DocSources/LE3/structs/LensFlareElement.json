@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "LFMaterialIndex": {
       "type": "RawDistributionFloat",
       "documentation": null
@@ -73,5 +73,6 @@
       "documentation": null
     }
   },
+  "classdef": "LensFlare",
   "documentation": null
 }

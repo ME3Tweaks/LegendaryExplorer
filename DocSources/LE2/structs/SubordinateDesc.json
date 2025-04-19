@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "bAllGameModes": {
       "type": "bool",
       "documentation": null
     }
   },
+  "classdef": "BioSFHandler_PCOptions",
   "documentation": null
 }

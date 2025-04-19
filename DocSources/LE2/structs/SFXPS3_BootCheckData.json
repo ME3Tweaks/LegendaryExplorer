@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "DirName": {
       "type": "string",
       "documentation": null
@@ -29,5 +29,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXOnlineComponentPlatformPS3",
   "documentation": null
 }

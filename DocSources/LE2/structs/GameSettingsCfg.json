@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "GameSettingsClass": {
       "type": "Class",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "UIDataStore_OnlineGameSettings",
   "documentation": null
 }

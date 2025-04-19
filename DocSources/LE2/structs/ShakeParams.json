@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "X": {
       "type": "EShakeParam",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXCameraModifier_ScreenShake",
   "documentation": null
 }

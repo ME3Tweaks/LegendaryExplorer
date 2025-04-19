@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "AccomplishmentName": {
       "type": "string",
       "documentation": null
@@ -61,5 +61,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXGUI_Accomplishments",
   "documentation": null
 }

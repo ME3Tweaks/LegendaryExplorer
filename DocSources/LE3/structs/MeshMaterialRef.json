@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "MeshComp": {
       "type": "MeshComponent",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "EngineTypes",
   "documentation": null
 }

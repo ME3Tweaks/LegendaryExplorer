@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "aGestPins": {
       "type": "BioGesturePinScrubData",
       "documentation": null
@@ -37,5 +37,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioEvtSysTrackGesture",
   "documentation": null
 }

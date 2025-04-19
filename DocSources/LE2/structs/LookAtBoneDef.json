@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "m_nBoneName": {
       "type": "Name",
       "documentation": null
@@ -49,5 +49,6 @@
       "documentation": null
     }
   },
+  "classdef": "Bio_Appr_Character",
   "documentation": null
 }

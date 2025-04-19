@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "SearchResults": {
       "type": "UIDataProvider_Settings",
       "documentation": null
@@ -29,5 +29,6 @@
       "documentation": null
     }
   },
+  "classdef": "UIDataStore_OnlineGameSearch",
   "documentation": null
 }

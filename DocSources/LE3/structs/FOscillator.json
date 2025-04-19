@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Amplitude": {
       "type": "float",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "CameraShake",
   "documentation": null
 }

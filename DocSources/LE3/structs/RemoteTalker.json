@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "TalkerId": {
       "type": "UniqueNetId",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "OnlineSubsystem",
   "documentation": null
 }

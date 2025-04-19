@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "ExtraMeshes": {
       "type": "StaticMeshComponent",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXModule_WeaponModManager",
   "documentation": null
 }

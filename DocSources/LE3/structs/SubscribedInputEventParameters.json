@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "InputAliasName": {
       "type": "Name",
       "documentation": null
     }
   },
+  "classdef": "UIRoot",
   "documentation": null
 }

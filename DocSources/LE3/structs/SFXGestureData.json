@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "aChainedGestures": {
       "type": "int",
       "documentation": null
@@ -85,5 +85,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioGestureAnimSetMgr",
   "documentation": null
 }

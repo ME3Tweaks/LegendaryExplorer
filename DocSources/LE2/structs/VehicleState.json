@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "RBState": {
       "type": "RigidBodyState",
       "documentation": null
@@ -29,5 +29,6 @@
       "documentation": null
     }
   },
+  "classdef": "SVehicle",
   "documentation": null
 }

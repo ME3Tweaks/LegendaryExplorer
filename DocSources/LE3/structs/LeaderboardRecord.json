@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "uidEntity": {
       "type": "UniqueNetId",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXOnlineDefine",
   "documentation": null
 }

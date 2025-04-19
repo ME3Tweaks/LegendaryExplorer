@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Event": {
       "type": "SFXVocalizationEvent",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXVocalizationManagerNativeBase",
   "documentation": null
 }

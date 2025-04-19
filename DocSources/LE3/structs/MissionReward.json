@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "MissionName": {
       "type": "Name",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioSeqAct_GiveMissionXP_NativeBase",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "ExteriorVolume": {
       "type": "float",
       "documentation": null
@@ -37,5 +37,6 @@
       "documentation": null
     }
   },
+  "classdef": "ReverbVolume",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "ChoiceEntry": {
       "type": "SFXChoiceEntry",
       "documentation": null
@@ -45,5 +45,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXGameChoiceGUIData_Research",
   "documentation": null
 }

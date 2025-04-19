@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "m_bIsVisible": {
       "type": "bool",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioInterface_Appearance_Pawn",
   "documentation": null
 }

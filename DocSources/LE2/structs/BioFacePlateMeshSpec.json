@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "m_pMesh": {
       "type": "SkeletalMesh",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "Bio_Appr_Character_HeadGear",
   "documentation": null
 }

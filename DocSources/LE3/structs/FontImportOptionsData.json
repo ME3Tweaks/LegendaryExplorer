@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "FontName": {
       "type": "string",
       "documentation": null
@@ -113,5 +113,6 @@
       "documentation": null
     }
   },
+  "classdef": "FontImportOptions",
   "documentation": null
 }

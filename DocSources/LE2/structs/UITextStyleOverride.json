@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "DrawFont": {
       "type": "Font",
       "documentation": null
@@ -65,5 +65,6 @@
       "documentation": null
     }
   },
+  "classdef": "UIRoot",
   "documentation": null
 }

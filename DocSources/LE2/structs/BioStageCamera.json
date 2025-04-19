@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "tDOFData": {
       "type": "BioStageDOFData",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioStageType",
   "documentation": null
 }

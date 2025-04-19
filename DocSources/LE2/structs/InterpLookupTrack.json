@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Points": {
       "type": "InterpLookupPoint",
       "documentation": null
     }
   },
+  "classdef": "InterpTrackMove",
   "documentation": null
 }

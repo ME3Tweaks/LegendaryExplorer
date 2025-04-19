@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "sFeatureName": {
       "type": "Name",
       "documentation": null
     }
   },
+  "classdef": "BioBaseAppearance",
   "documentation": null
 }

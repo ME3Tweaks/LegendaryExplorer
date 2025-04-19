@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Outer": {
       "type": "Object",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioVisualEffect",
   "documentation": null
 }

@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "PawnClassName": {
       "type": "string",
       "documentation": null
     }
   },
+  "classdef": "GameplayEvents",
   "documentation": null
 }

@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "ParameterValue": {
       "type": "Texture",
       "documentation": null
     }
   },
+  "classdef": "MaterialInstanceTimeVarying",
   "documentation": null
 }

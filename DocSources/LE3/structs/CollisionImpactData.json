@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "ContactInfos": {
       "type": "RigidBodyContactInfo",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "Actor",
   "documentation": null
 }

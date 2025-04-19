@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Stripe1ColorValue": {
       "type": "LinearColor",
       "documentation": null
@@ -29,5 +29,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioDefine",
   "documentation": null
 }

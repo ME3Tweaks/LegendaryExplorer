@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "U": {
       "type": "float",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "UIRoot",
   "documentation": null
 }

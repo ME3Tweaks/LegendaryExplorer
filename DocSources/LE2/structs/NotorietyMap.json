@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Ref": {
       "type": "stringref",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXSeqAct_LegacyDataBasicInfo",
   "documentation": null
 }

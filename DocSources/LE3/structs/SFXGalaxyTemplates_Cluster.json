@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "ClusterPlanes": {
       "type": "SFXGalaxyTemplatePair",
       "documentation": null
@@ -41,5 +41,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXGalaxyMapGameData",
   "documentation": null
 }

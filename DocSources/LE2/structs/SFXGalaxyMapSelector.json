@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "m_PlotNames": {
       "type": "stringref",
       "documentation": null
@@ -29,5 +29,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioCameraBehaviorGalaxy",
   "documentation": null
 }

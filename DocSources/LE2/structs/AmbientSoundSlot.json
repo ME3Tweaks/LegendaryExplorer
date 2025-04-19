@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Wave": {
       "type": "SoundNodeWave",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "SoundNodeAmbient",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "NextRepeatTime": {
       "type": "Double",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "UIInteraction",
   "documentation": null
 }

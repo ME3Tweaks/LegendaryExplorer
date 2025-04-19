@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "SecondsPerObject": {
       "type": "Vector2D",
       "documentation": null
@@ -29,5 +29,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXSeqAct_DummyWeaponFire",
   "documentation": null
 }

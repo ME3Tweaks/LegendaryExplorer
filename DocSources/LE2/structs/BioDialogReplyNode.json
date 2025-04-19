@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "EntryList": {
       "type": "int",
       "documentation": null
@@ -21,5 +21,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioConversation",
   "documentation": null
 }

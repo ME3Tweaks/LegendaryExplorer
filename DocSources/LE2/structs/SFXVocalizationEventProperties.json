@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Roles": {
       "type": "ESFXVocalizationRole",
       "documentation": null
@@ -41,5 +41,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXVocalizationManagerNativeBase",
   "documentation": null
 }

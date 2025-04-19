@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "LocationOffset": {
       "type": "Vector",
       "documentation": null
@@ -37,5 +37,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXSeqAct_WheelController_NativeBase",
   "documentation": null
 }

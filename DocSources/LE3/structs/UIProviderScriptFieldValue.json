@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "NetIdValue": {
       "type": "UniqueNetId",
       "documentation": null
@@ -33,5 +33,6 @@
       "documentation": null
     }
   },
+  "classdef": "UIRoot",
   "documentation": null
 }

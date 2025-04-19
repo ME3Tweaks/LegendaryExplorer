@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "PosKeys": {
       "type": "Vector",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "AnimSequence",
   "documentation": null
 }

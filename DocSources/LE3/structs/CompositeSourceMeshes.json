@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Parts": {
       "type": "SkeletalMesh",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXPlayerCustomization",
   "documentation": null
 }

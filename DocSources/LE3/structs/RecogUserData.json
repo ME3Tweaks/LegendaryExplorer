@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "UserData": {
       "type": "byte",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "SpeechRecognition",
   "documentation": null
 }

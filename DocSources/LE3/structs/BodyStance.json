@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "AnimName": {
       "type": "Name",
       "documentation": null
     }
   },
+  "classdef": "BioPawn",
   "documentation": null
 }

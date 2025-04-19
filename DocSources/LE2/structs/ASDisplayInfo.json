@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "X": {
       "type": "float",
       "documentation": null
@@ -89,5 +89,6 @@
       "documentation": null
     }
   },
+  "classdef": "GFxValue",
   "documentation": null
 }

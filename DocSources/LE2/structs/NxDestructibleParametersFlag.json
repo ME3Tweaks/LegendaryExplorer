@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "ACCUMULATE_DAMAGE": {
       "type": "bool",
       "documentation": null
@@ -33,5 +33,6 @@
       "documentation": null
     }
   },
+  "classdef": "ApexDestructibleAsset",
   "documentation": null
 }

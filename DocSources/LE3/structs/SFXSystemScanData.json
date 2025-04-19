@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "vScanOrigin": {
       "type": "Vector",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioCameraBehaviorGalaxy",
   "documentation": null
 }

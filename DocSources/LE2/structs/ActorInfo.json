@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "myPosition": {
       "type": "Vector",
       "documentation": null
@@ -29,5 +29,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioProceduralCameraBasic",
   "documentation": null
 }

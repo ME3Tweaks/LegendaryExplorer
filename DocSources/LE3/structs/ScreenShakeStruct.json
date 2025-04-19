@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "RotAmplitude": {
       "type": "Vector",
       "documentation": null
@@ -69,5 +69,6 @@
       "documentation": null
     }
   },
+  "classdef": "GameTypes",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "srKBMText": {
       "type": "stringref",
       "documentation": null
@@ -41,5 +41,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioDefine",
   "documentation": null
 }

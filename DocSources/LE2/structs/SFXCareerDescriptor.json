@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Career": {
       "type": "string",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXEngine",
   "documentation": null
 }

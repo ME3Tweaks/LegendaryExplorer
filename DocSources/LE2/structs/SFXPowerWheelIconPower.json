@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "oMappedIcon": {
       "type": "SFXPowerWheelButtonIcon",
       "documentation": null
@@ -73,5 +73,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXSFHandler_PowerWheel",
   "documentation": null
 }

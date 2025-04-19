@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "MaterialOptions": {
       "type": "MaterialInterface",
       "documentation": null
     }
   },
+  "classdef": "PBRuleNodeMesh",
   "documentation": null
 }

@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Scope": {
       "type": "Class",
       "documentation": null
     }
   },
+  "classdef": "UIRoot",
   "documentation": null
 }

@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Hair": {
       "type": "HairData",
       "documentation": null
     }
   },
+  "classdef": "BioMorphUtility",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "WrinkleParameterName": {
       "type": "string",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "Bio_Appr_Character_Head",
   "documentation": null
 }

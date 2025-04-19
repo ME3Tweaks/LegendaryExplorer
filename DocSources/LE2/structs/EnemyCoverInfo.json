@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Cover": {
       "type": "CoverInfo",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXPath_AvoidFireFromCover",
   "documentation": null
 }

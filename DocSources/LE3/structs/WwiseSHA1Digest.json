@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Digest": {
       "type": "byte",
       "documentation": null
     }
   },
+  "classdef": "WwiseFile",
   "documentation": null
 }

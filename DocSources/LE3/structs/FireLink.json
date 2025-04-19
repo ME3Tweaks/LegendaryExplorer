@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Interactions": {
       "type": "byte",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "CoverLink",
   "documentation": null
 }

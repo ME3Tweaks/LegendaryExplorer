@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "UserPlaySpaceMatrix": {
       "type": "Matrix",
       "documentation": null
@@ -53,5 +53,6 @@
       "documentation": null
     }
   },
+  "classdef": "CameraModifier_CameraShake",
   "documentation": null
 }

@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "LocalPriorities": {
       "type": "TalkerPriority",
       "documentation": null
     }
   },
+  "classdef": "SFXOnlineComponentVoiceInterface",
   "documentation": null
 }

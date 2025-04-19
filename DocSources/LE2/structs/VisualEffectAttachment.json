@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "m_States": {
       "type": "VFXAPLStatePair",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioBaseAppearancePlaceable",
   "documentation": null
 }

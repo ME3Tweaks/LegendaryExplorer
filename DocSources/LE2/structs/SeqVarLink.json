@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "LinkedVariables": {
       "type": "SequenceVariable",
       "documentation": null
@@ -45,5 +45,6 @@
       "documentation": null
     }
   },
+  "classdef": "SequenceOp",
   "documentation": null
 }

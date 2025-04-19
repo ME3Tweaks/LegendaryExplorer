@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "UseConstant": {
       "type": "bool",
       "documentation": null
@@ -13,5 +13,6 @@
       "documentation": null
     }
   },
+  "classdef": "Material",
   "documentation": null
 }

@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "fCooldownTime": {
       "type": "float",
       "documentation": null
     }
   },
+  "classdef": "BioPlayerController",
   "documentation": null
 }

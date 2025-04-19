@@ -1,9 +1,10 @@
 {
-  "Members": {
+  "members": {
     "Lines": {
       "type": "SFXVocalizationLineV2",
       "documentation": null
     }
   },
+  "classdef": "SFXVocalizationBank",
   "documentation": null
 }

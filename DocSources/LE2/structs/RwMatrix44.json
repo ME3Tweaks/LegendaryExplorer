@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "XPlane": {
       "type": "RwPlane",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "Object",
   "documentation": null
 }

@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Placed": {
       "type": "BioPawn",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "BioSFHandler_NewCharacter",
   "documentation": null
 }

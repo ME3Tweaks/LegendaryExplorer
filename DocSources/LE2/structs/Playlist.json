@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "ConfiguredGames": {
       "type": "ConfiguredGameSetting",
       "documentation": null
@@ -37,5 +37,6 @@
       "documentation": null
     }
   },
+  "classdef": "OnlinePlaylistManager",
   "documentation": null
 }

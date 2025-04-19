@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "Source": {
       "type": "EDamageCalculationSource",
       "documentation": null
@@ -89,5 +89,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXDamageType",
   "documentation": null
 }

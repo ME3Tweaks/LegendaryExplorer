@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "CustomText": {
       "type": "string",
       "documentation": null
@@ -9,5 +9,6 @@
       "documentation": null
     }
   },
+  "classdef": "SFXOnlineComponentPlatformXenon",
   "documentation": null
 }

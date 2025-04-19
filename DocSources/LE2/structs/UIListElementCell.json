@@ -1,5 +1,5 @@
 {
-  "Members": {
+  "members": {
     "CellStyle": {
       "type": "UIStyleReference",
       "documentation": null
@@ -17,5 +17,6 @@
       "documentation": null
     }
   },
+  "classdef": "UIComp_ListPresenter",
   "documentation": null
 }
