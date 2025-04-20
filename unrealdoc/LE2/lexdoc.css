@@ -86,13 +86,7 @@ Document title and Copyright styles
     height:0px;
     overflow:hidden;
 }
-.aboutLanguage {
-    float:right;
-    padding:0px 21px;
-    font-size:11px;
-    z-index:200;
-    margin-top:-9px;
-}
+
 .legalCopy {
     margin-left:.5em;
 }
@@ -576,4 +570,16 @@ div.block div.block span.interfaceName {
 
 div.contentContainer ul.blockList li.blockList h2{
     padding-bottom:0px;
+}
+
+/* CUSTOM LEX STUFF */
+.navimage {
+    height: 42.6px;
+}
+
+.navimages {
+    font-size: 0; /* To remove whitespace */
+    float: right;
+    z-index: 200;
+    margin-top: -10px;
 }
