@@ -34,5 +34,7 @@
     }
   },
   "classdef": "SFXAmbPerfGameData",
-  "documentation": null
+  "extends": "SFXAPGDAnimData",
+  "documentation": null,
+  "modifiers": 1
 }

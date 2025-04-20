@@ -10,5 +10,7 @@
     }
   },
   "classdef": "SFXShield_Base",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
 }

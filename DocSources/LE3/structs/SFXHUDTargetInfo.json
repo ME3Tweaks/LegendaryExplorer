@@ -30,5 +30,7 @@
     }
   },
   "classdef": "SFXSFHandler_HUD",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
 }

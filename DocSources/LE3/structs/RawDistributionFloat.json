@@ -6,5 +6,7 @@
     }
   },
   "classdef": "DistributionFloat",
-  "documentation": null
+  "extends": "RawDistribution",
+  "documentation": null,
+  "modifiers": 5
 }

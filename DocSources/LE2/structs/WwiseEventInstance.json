@@ -6,5 +6,7 @@
     }
   },
   "classdef": "WwiseEvent",
-  "documentation": null
+  "extends": "WwiseEventPair",
+  "documentation": null,
+  "modifiers": 1
 }

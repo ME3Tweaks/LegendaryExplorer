@@ -54,5 +54,7 @@
     }
   },
   "classdef": "SFXDuringAsyncWorkTicker",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
 }

@@ -10,5 +10,7 @@
     }
   },
   "classdef": "OnlineSubsystem",
-  "documentation": null
+  "extends": "OnlineRegistrant",
+  "documentation": null,
+  "modifiers": 1
 }

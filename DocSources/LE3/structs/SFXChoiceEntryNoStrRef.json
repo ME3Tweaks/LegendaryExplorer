@@ -58,5 +58,7 @@
     }
   },
   "classdef": "SFXGameChoiceGUIData_PRCShop",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
 }

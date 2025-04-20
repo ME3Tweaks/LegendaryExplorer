@@ -14,5 +14,7 @@
     }
   },
   "classdef": "BioSFHandler_DataCodex",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
 }

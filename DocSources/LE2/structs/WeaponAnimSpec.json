@@ -14,5 +14,7 @@
     }
   },
   "classdef": "Bio_Appr_Character_Body",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
 }

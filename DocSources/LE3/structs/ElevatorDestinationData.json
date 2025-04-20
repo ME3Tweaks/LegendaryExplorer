@@ -38,5 +38,7 @@
     }
   },
   "classdef": "SFXGUIData_Elevator",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
 }

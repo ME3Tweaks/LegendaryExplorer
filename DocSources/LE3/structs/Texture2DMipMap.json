@@ -14,5 +14,7 @@
     }
   },
   "classdef": "Texture2D",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
 }

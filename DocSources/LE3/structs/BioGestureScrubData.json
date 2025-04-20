@@ -38,5 +38,7 @@
     }
   },
   "classdef": "BioEvtSysTrackGesture",
-  "documentation": null
+  "extends": "BioGestureData",
+  "documentation": null,
+  "modifiers": 1
 }

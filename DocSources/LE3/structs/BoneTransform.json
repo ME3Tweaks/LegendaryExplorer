@@ -1,5 +1,7 @@
 {
   "members": {},
   "classdef": "AnimNode",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
 }

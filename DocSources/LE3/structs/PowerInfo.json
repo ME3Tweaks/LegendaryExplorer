@@ -18,5 +18,7 @@
     }
   },
   "classdef": "SFXGUIData_TeamSelect",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
 }

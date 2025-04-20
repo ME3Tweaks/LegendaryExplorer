@@ -50,5 +50,7 @@
     }
   },
   "classdef": "PhysXDestructibleAsset",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
 }

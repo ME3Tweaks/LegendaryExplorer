@@ -10,5 +10,7 @@
     }
   },
   "classdef": "SFXGUI_Leaderboard",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
 }

@@ -10,5 +10,7 @@
     }
   },
   "classdef": "SFXPawn_PlayerParty",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
 }

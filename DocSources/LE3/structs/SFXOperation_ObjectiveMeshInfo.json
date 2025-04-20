@@ -38,5 +38,7 @@
     }
   },
   "classdef": "SFXOperation_ObjectiveData",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
 }

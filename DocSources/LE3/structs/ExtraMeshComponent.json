@@ -10,5 +10,7 @@
     }
   },
   "classdef": "SFXModule_WeaponModManager",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 4
 }

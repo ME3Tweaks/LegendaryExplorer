@@ -30,5 +30,7 @@
     }
   },
   "classdef": "SFXSFHandler_PowerWheel",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
 }

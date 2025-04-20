@@ -30,5 +30,7 @@
     }
   },
   "classdef": "Actor",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 13
 }

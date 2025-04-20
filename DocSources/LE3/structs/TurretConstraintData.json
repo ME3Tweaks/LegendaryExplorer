@@ -14,5 +14,7 @@
     }
   },
   "classdef": "BioSkelControl_TurretConstrained",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
 }

@@ -10,5 +10,7 @@
     }
   },
   "classdef": "SFXSeqAct_AutoLevelPlayer",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
 }

@@ -18,5 +18,7 @@
     }
   },
   "classdef": "UIRoot",
-  "documentation": null
+  "extends": "UIStyleOverride",
+  "documentation": null,
+  "modifiers": 1
 }

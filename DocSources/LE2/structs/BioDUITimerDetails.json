@@ -42,5 +42,7 @@
     }
   },
   "classdef": "BioSFHandler_DesignerUI",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
 }

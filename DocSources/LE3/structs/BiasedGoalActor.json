@@ -10,5 +10,7 @@
     }
   },
   "classdef": "NavMeshGoal_ClosestActorInList",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
 }

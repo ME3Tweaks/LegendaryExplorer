@@ -6,5 +6,7 @@
     }
   },
   "classdef": "MaterialInstanceTimeVarying",
-  "documentation": null
+  "extends": "ParameterValueOverTime",
+  "documentation": null,
+  "modifiers": 1
 }

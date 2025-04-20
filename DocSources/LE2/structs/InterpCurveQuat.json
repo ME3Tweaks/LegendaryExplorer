@@ -10,5 +10,7 @@
     }
   },
   "classdef": "Object",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
 }

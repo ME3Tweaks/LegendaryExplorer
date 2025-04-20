@@ -30,5 +30,7 @@
     }
   },
   "classdef": "SFXGUIData_Terminal",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
 }

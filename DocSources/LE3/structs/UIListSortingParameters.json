@@ -38,5 +38,7 @@
     }
   },
   "classdef": "UIComp_ListElementSorter",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 9
 }

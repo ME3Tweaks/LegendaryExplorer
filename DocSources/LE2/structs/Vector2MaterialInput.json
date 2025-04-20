@@ -14,5 +14,7 @@
     }
   },
   "classdef": "Material",
-  "documentation": null
+  "extends": "MaterialInput",
+  "documentation": null,
+  "modifiers": 0
 }

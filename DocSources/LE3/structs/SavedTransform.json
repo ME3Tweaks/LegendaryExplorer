@@ -10,5 +10,7 @@
     }
   },
   "classdef": "SeqAct_Interp",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 3
 }

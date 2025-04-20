@@ -6,5 +6,7 @@
     }
   },
   "classdef": "Object",
-  "documentation": null
+  "extends": "Vector",
+  "documentation": null,
+  "modifiers": 48
 }

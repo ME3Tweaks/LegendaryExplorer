@@ -46,5 +46,7 @@
     }
   },
   "classdef": "SFXPlotTreasure",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
 }

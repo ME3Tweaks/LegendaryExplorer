@@ -1,5 +1,7 @@
 {
   "members": {},
   "classdef": "UIRoot",
-  "documentation": null
+  "extends": "Guid",
+  "documentation": null,
+  "modifiers": 17
 }

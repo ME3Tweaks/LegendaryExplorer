@@ -10,5 +10,7 @@
     }
   },
   "classdef": "BioDefine",
-  "documentation": null
+  "extends": "BioCodexEntry",
+  "documentation": null,
+  "modifiers": 1
 }

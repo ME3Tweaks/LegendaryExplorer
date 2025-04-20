@@ -18,5 +18,7 @@
     }
   },
   "classdef": "UIDataStore_OnlineGameSettings",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
 }

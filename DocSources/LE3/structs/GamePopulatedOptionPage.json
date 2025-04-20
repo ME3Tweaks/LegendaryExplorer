@@ -10,5 +10,7 @@
     }
   },
   "classdef": "BioSFHandler_Options",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
 }

@@ -18,5 +18,7 @@
     }
   },
   "classdef": "SFXGUI_WarAssets",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
 }

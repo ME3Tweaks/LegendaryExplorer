@@ -14,5 +14,7 @@
     }
   },
   "classdef": "UIDataProvider_Settings",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
 }

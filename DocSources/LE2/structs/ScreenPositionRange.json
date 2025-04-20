@@ -1,5 +1,7 @@
 {
   "members": {},
   "classdef": "UIRoot",
-  "documentation": null
+  "extends": "UIScreenValue_Position",
+  "documentation": null,
+  "modifiers": 1
 }

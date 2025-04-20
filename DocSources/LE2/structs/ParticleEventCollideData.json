@@ -22,5 +22,7 @@
     }
   },
   "classdef": "ParticleSystemComponent",
-  "documentation": null
+  "extends": "ParticleEventData",
+  "documentation": null,
+  "modifiers": 1
 }

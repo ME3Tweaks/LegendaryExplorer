@@ -30,5 +30,7 @@
     }
   },
   "classdef": "BioDefine",
-  "documentation": null
+  "extends": "BioVersionedNativeObject",
+  "documentation": null,
+  "modifiers": 1
 }

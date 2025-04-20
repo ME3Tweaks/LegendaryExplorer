@@ -1,5 +1,7 @@
 {
   "members": {},
   "classdef": "TerrainWeightMapTexture",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
 }

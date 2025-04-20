@@ -6,5 +6,7 @@
     }
   },
   "classdef": "UIInteraction",
-  "documentation": null
+  "extends": "UIKeyRepeatData",
+  "documentation": null,
+  "modifiers": 9
 }

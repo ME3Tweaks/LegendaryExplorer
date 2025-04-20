@@ -22,5 +22,7 @@
     }
   },
   "classdef": "BioConversation",
-  "documentation": null
+  "extends": "BioDialogNode",
+  "documentation": null,
+  "modifiers": 1
 }

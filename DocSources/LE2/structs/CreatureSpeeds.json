@@ -98,5 +98,7 @@
     }
   },
   "classdef": "BioInterface_Appearance_Pawn",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
 }

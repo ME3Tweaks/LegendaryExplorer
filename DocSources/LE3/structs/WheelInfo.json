@@ -38,5 +38,7 @@
     }
   },
   "classdef": "SFXSeqAct_WheelController_NativeBase",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
 }

@@ -10,5 +10,7 @@
     }
   },
   "classdef": "BioAnimNodeBlend_TurnInPlace",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
 }

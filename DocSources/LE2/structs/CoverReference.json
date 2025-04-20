@@ -10,5 +10,7 @@
     }
   },
   "classdef": "CoverLink",
-  "documentation": null
+  "extends": "ActorReference",
+  "documentation": null,
+  "modifiers": 385
 }

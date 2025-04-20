@@ -18,5 +18,7 @@
     }
   },
   "classdef": "BioSeqAct_SetPlotPersuadeCheck",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
 }

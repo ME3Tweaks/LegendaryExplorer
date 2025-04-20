@@ -190,5 +190,7 @@
     }
   },
   "classdef": "CoverLink",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 385
 }

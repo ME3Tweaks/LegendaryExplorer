@@ -26,5 +26,7 @@
     }
   },
   "classdef": "ISFXOnlineComponentCommerce",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 131073
 }

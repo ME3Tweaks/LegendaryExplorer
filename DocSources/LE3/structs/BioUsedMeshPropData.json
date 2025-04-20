@@ -14,5 +14,7 @@
     }
   },
   "classdef": "SFXModule_Gestures",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
 }

@@ -10,5 +10,7 @@
     }
   },
   "classdef": "ProcBuilding",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
 }

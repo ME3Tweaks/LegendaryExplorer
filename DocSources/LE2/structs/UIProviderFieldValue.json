@@ -6,5 +6,7 @@
     }
   },
   "classdef": "UIRoot",
-  "documentation": null
+  "extends": "UIProviderScriptFieldValue",
+  "documentation": null,
+  "modifiers": 1
 }

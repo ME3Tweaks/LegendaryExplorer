@@ -18,5 +18,7 @@
     }
   },
   "classdef": "SFXTelemetry",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
 }

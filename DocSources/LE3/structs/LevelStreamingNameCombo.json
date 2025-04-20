@@ -10,5 +10,7 @@
     }
   },
   "classdef": "SeqAct_MultiLevelStreaming",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
 }

@@ -74,5 +74,7 @@
     }
   },
   "classdef": "SFXSFHandler_PowerWheel",
-  "documentation": null
+  "extends": "SFXPowerWheelIcon",
+  "documentation": null,
+  "modifiers": 1
 }

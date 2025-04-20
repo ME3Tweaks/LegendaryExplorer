@@ -30,5 +30,7 @@
     }
   },
   "classdef": "BioGestureRulesData",
-  "documentation": null
+  "extends": "BioAmbPerfBaseData",
+  "documentation": null,
+  "modifiers": 1
 }

@@ -106,5 +106,7 @@
     }
   },
   "classdef": "SFXSeqAct_AIFactory2",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
 }

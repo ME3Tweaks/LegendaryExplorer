@@ -10,5 +10,7 @@
     }
   },
   "classdef": "SFXSFHandler_Personalization",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
 }

@@ -10,5 +10,7 @@
     }
   },
   "classdef": "SFXOnlineComponentPlatformPS3",
-  "documentation": null
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
 }
