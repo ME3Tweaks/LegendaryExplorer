@@ -4,19 +4,23 @@
   "variables": {
     "Radius": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Height": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxFallSpeed": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MoveFlags": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -30,8 +34,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -41,8 +46,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -50,5 +56,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

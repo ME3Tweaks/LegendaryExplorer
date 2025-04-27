@@ -4,10 +4,13 @@
   "variables": {
     "DisplayMarkerOnSpawn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 4114,
+  "configname": "None",
   "documentation": null
 }

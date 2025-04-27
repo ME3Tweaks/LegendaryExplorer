@@ -2,75 +2,93 @@
   "members": {
     "CoplanarTolerance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ExecutionTimeDivisor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDebugMode": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bStatsEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bGatherBSPSurfacesAcrossComponents": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseDeterministicLighting": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseImmediateImport": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bImmediateProcessMappings": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSortMappings": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDumpBinaryFiles": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDebugMaterials": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPadMappings": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDebugPaddings": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bOnlyCalcDebugTexelMappings": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseRandomColors": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bColorBordersGreen": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bColorByExecutionTime": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "EngineTypes",

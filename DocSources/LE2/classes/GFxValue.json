@@ -4,7 +4,8 @@
   "variables": {
     "Value": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     }
   },
   "functions": {
@@ -12,12 +13,14 @@
       "documentation": null,
       "signature_members": {
         "Target": {
-          "type": null,
-          "documentation": null
+          "type": "GFxValue",
+          "documentation": null,
+          "flags": 128
         },
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -27,8 +30,9 @@
       "documentation": null,
       "signature_members": {
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -38,8 +42,9 @@
       "documentation": null,
       "signature_members": {
         "Path": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "GFxValue",
@@ -49,8 +54,9 @@
       "documentation": null,
       "signature_members": {
         "Path": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "GFxValue",
@@ -60,8 +66,9 @@
       "documentation": null,
       "signature_members": {
         "method": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "string",
@@ -71,8 +78,9 @@
       "documentation": null,
       "signature_members": {
         "method": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "float",
@@ -82,8 +90,9 @@
       "documentation": null,
       "signature_members": {
         "method": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "int",
@@ -93,8 +102,9 @@
       "documentation": null,
       "signature_members": {
         "method": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -104,16 +114,19 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "S": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -123,16 +136,19 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "F": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -142,16 +158,19 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "B": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -161,16 +180,19 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "val": {
-          "type": null,
-          "documentation": null
+          "type": "GFxValue",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -180,16 +202,19 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "arg": {
-          "type": null,
-          "documentation": null
+          "type": "ASValue",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -199,12 +224,14 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "string",
@@ -214,12 +241,14 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "float",
@@ -229,12 +258,14 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -244,16 +275,19 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "GFxValue",
@@ -263,12 +297,14 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "ASValue",
@@ -278,12 +314,14 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "cxform": {
-          "type": null,
-          "documentation": null
+          "type": "ASColorTransform",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -293,16 +331,19 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "X": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Y": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -312,12 +353,14 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Visible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -327,12 +370,14 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "M": {
-          "type": null,
-          "documentation": null
+          "type": "Matrix",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -342,12 +387,14 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "D": {
-          "type": null,
-          "documentation": null
+          "type": "ASDisplayInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -357,12 +404,14 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "S": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -372,12 +421,14 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "F": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -387,12 +438,14 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "B": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -402,12 +455,14 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "val": {
-          "type": null,
-          "documentation": null
+          "type": "GFxValue",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -417,12 +472,14 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "arg": {
-          "type": null,
-          "documentation": null
+          "type": "ASValue",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -432,8 +489,9 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Matrix",
@@ -443,8 +501,9 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "ASDisplayInfo",
@@ -454,8 +513,9 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -465,8 +525,9 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -476,8 +537,9 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -487,12 +549,14 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "GFxValue",
@@ -502,8 +566,9 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "ASValue",
@@ -513,8 +578,9 @@
       "documentation": null,
       "signature_members": {
         "Text": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
         }
       },
       "returntype": "None",
@@ -530,20 +596,24 @@
       "documentation": null,
       "signature_members": {
         "symbolname": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "instancename": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Depth": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "GFxValue",
@@ -553,16 +623,19 @@
       "documentation": null,
       "signature_members": {
         "instancename": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Depth": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "GFxValue",
@@ -572,8 +645,9 @@
       "documentation": null,
       "signature_members": {
         "frame": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -583,8 +657,9 @@
       "documentation": null,
       "signature_members": {
         "frame": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -594,8 +669,9 @@
       "documentation": null,
       "signature_members": {
         "frame": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -605,8 +681,9 @@
       "documentation": null,
       "signature_members": {
         "frame": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -616,8 +693,9 @@
       "documentation": null,
       "signature_members": {
         "cxform": {
-          "type": null,
-          "documentation": null
+          "type": "ASColorTransform",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -627,12 +705,14 @@
       "documentation": null,
       "signature_members": {
         "X": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Y": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -642,8 +722,9 @@
       "documentation": null,
       "signature_members": {
         "Visible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -653,8 +734,9 @@
       "documentation": null,
       "signature_members": {
         "M": {
-          "type": null,
-          "documentation": null
+          "type": "Matrix",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -664,8 +746,9 @@
       "documentation": null,
       "signature_members": {
         "M": {
-          "type": null,
-          "documentation": null
+          "type": "Matrix",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -675,8 +758,9 @@
       "documentation": null,
       "signature_members": {
         "D": {
-          "type": null,
-          "documentation": null
+          "type": "ASDisplayInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -686,12 +770,14 @@
       "documentation": null,
       "signature_members": {
         "X": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "Y": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -719,12 +805,14 @@
       "documentation": null,
       "signature_members": {
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "S": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -734,12 +822,14 @@
       "documentation": null,
       "signature_members": {
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "F": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -749,12 +839,14 @@
       "documentation": null,
       "signature_members": {
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "B": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -764,16 +856,19 @@
       "documentation": null,
       "signature_members": {
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "context": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         },
         "fname": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -783,12 +878,14 @@
       "documentation": null,
       "signature_members": {
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "val": {
-          "type": null,
-          "documentation": null
+          "type": "GFxValue",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -798,12 +895,14 @@
       "documentation": null,
       "signature_members": {
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "arg": {
-          "type": null,
-          "documentation": null
+          "type": "ASValue",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -813,8 +912,9 @@
       "documentation": null,
       "signature_members": {
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "string",
@@ -824,8 +924,9 @@
       "documentation": null,
       "signature_members": {
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "float",
@@ -835,8 +936,9 @@
       "documentation": null,
       "signature_members": {
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -846,12 +948,14 @@
       "documentation": null,
       "signature_members": {
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "GFxValue",
@@ -861,8 +965,9 @@
       "documentation": null,
       "signature_members": {
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "ASValue",
@@ -872,12 +977,14 @@
       "documentation": null,
       "signature_members": {
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Args": {
-          "type": null,
-          "documentation": null
+          "type": "ASValue",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "ASValue",
@@ -885,5 +992,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

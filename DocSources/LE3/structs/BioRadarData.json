@@ -2,31 +2,38 @@
   "members": {
     "vPosition": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fPassTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nSize": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nRelativeZ": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bPlayerLockedOn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "eRadarType": {
       "type": "EBioRadarType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioPlayerController",

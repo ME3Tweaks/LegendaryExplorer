@@ -2,39 +2,48 @@
   "members": {
     "UniqueString": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MeshPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Translation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Rotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GameName": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MeshVOLine": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Scale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SpawnLocation": {
       "type": "EObjectiveLocation",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TipText": {
       "type": "ETargetTipText",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXOperation_ObjectiveData",

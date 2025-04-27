@@ -2,11 +2,13 @@
   "members": {
     "VfTable": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8400898
     },
     "lstEventElements": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 1052672
     }
   },
   "classdef": "BioDefine",

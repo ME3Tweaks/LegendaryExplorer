@@ -2,47 +2,58 @@
   "members": {
     "Base": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LeanLeft": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LeanRight": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Climb": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Mantle": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SlipLeft": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SlipRight": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SwatLeft": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SwatRight": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PopUp": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlayerOnly": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "CoverMeshComponent",

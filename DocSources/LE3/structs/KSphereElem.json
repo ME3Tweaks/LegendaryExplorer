@@ -2,19 +2,23 @@
   "members": {
     "TM": {
       "type": "Matrix",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     },
     "Radius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     },
     "bNoRBCollision": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPerPolyShape": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "KMeshProps",

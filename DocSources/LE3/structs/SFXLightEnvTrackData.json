@@ -2,11 +2,13 @@
   "members": {
     "PlaceHolder": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Quality": {
       "type": "EDLEStateType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXInterpTrackLightEnvQuality",

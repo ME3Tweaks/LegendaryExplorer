@@ -4,10 +4,13 @@
   "variables": {
     "PawnClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315027,
+  "configname": "None",
   "documentation": null
 }

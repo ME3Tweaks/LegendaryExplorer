@@ -4,59 +4,73 @@
   "variables": {
     "IndocClientEffectGuid": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DeviceCrustGuid": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CE_DestructionTemplate": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CE_DeviceCrustTemplate": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WWise_Explosion": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WWise_Activate": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WWise_Deactivate": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "UpdateTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ShieldUpdateTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Range": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WakeRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RegenTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HealthBracketSize": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAwake": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -64,8 +78,9 @@
       "documentation": null,
       "signature_members": {
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -81,32 +96,39 @@
       "documentation": null,
       "signature_members": {
         "DamageAmount": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "EventInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 144
         },
         "DamageCauser": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -116,32 +138,39 @@
       "documentation": null,
       "signature_members": {
         "Resistance": {
-          "type": null,
-          "documentation": null
+          "type": "EPowerResistance",
+          "documentation": null,
+          "flags": 128
         },
         "Caster": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Force": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -163,8 +192,9 @@
       "documentation": null,
       "signature_members": {
         "DifficultyDebugStrings": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -198,8 +228,9 @@
       "documentation": null,
       "signature_members": {
         "CurrentPawn": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -213,5 +244,7 @@
     }
   },
   "states": {},
+  "classflags": 10486290,
+  "configname": "None",
   "documentation": null
 }

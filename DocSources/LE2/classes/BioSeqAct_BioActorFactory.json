@@ -4,10 +4,13 @@
   "variables": {
     "m_oActorType": {
       "type": "BioActorType",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

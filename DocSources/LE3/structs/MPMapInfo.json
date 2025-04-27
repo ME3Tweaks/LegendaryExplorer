@@ -2,39 +2,48 @@
   "members": {
     "PackageName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Image": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "GalaxyAtWarMapPosition": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MusicEventName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Id": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PrettyName": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Description": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GalaxyAtWarMapSubtitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EveryoneHasThisMap": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXOnlineGameSettings",

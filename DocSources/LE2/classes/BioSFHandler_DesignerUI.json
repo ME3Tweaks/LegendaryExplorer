@@ -4,31 +4,38 @@
   "variables": {
     "lstPulsingElements": {
       "type": "BioDUIPulseDetails",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "lstElementStatus": {
       "type": "BioDUIElementStatus",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "stModalTimer": {
       "type": "BioDUITimerDetails",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "stPassiveTimer": {
       "type": "BioDUITimerDetails",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nElementVisibleCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nLayout": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bCanInvoke": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -48,8 +55,9 @@
       "documentation": null,
       "signature_members": {
         "bModalTimer": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -59,20 +67,24 @@
       "documentation": null,
       "signature_members": {
         "bModalTimer": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "fStartTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "fEndTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "fInterval": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -88,8 +100,9 @@
       "documentation": null,
       "signature_members": {
         "bShow": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -99,12 +112,14 @@
       "documentation": null,
       "signature_members": {
         "bModalBar": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bLeftToRight": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -114,12 +129,14 @@
       "documentation": null,
       "signature_members": {
         "bModalBar": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nPercent": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -129,16 +146,19 @@
       "documentation": null,
       "signature_members": {
         "bModalBar": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nMarker1": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nMarker2": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -148,12 +168,14 @@
       "documentation": null,
       "signature_members": {
         "bModalCounter": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nValue": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -163,12 +185,14 @@
       "documentation": null,
       "signature_members": {
         "nElement": {
-          "type": null,
-          "documentation": null
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
         },
         "sText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -178,12 +202,14 @@
       "documentation": null,
       "signature_members": {
         "nElement": {
-          "type": null,
-          "documentation": null
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
         },
         "srText": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -193,8 +219,9 @@
       "documentation": null,
       "signature_members": {
         "nElement": {
-          "type": null,
-          "documentation": null
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -204,16 +231,19 @@
       "documentation": null,
       "signature_members": {
         "nElement": {
-          "type": null,
-          "documentation": null
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
         },
         "fMinAlpha": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "fCycleTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -223,12 +253,14 @@
       "documentation": null,
       "signature_members": {
         "nElement": {
-          "type": null,
-          "documentation": null
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
         },
         "fAlpha": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -238,12 +270,14 @@
       "documentation": null,
       "signature_members": {
         "nElement": {
-          "type": null,
-          "documentation": null
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
         },
         "stColor": {
-          "type": null,
-          "documentation": null
+          "type": "Color",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -253,16 +287,19 @@
       "documentation": null,
       "signature_members": {
         "nElement": {
-          "type": null,
-          "documentation": null
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
         },
         "bVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "fFadeTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -272,8 +309,9 @@
       "documentation": null,
       "signature_members": {
         "bModal": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -283,8 +321,9 @@
       "documentation": null,
       "signature_members": {
         "bModal": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -292,5 +331,7 @@
     }
   },
   "states": {},
+  "classflags": 136315034,
+  "configname": "None",
   "documentation": null
 }

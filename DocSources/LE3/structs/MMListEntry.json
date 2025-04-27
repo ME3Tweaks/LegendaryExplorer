@@ -2,31 +2,38 @@
   "members": {
     "ListID": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "FncOnSelect": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "FncActiveConditional": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "FncNotifyConditional": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "KmtOnSelect": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Label": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ShowNotification": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXGUI_MainMenu_RTT",

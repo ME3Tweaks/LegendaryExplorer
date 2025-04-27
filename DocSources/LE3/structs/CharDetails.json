@@ -2,67 +2,83 @@
   "members": {
     "CharName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Face": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Abbrev": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Thumb": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "XP": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PrettyLevel": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ShieldTitle": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "CharClass": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "allocated": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Spendable": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Level": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PctToLevel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Health": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Shield": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Pgn": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Rng": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXGUI_SquadRecord",

@@ -4,26 +4,33 @@
   "variables": {
     "TrackBoneNames": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "LinkupCache": {
       "type": "AnimSetMeshLinkup",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "UseTranslationBoneNames": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "ForceMeshTranslationBoneNames": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "bAnimRotationOnly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

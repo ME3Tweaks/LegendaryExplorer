@@ -2,39 +2,48 @@
   "members": {
     "sName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "sDescription": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "sIconResource": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "oWeaponClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nWeaponIcon": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nAmmo": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bEquipped": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bHenchIcon": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "eWeaponState": {
       "type": "SFXPowerWheelWeaponState",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXSFHandler_PowerWheel",

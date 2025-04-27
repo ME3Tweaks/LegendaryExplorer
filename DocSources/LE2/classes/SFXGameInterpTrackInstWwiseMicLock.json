@@ -4,10 +4,13 @@
   "variables": {
     "m_mapCachedActors": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

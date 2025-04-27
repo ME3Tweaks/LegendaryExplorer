@@ -2,11 +2,13 @@
   "members": {
     "BoneNames": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "BodyPart": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioPawn",

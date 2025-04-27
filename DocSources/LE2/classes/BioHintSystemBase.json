@@ -4,59 +4,73 @@
   "variables": {
     "m_nCurrentlyDisplayedNotification": {
       "type": "SFXNotification",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_aHints": {
       "type": "HintDefinition",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_aNotifications": {
       "type": "SFXNotification",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_NotificationData": {
       "type": "SFXNotificationData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_mTrackingData": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "m_DefaultImage": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nNotificationBodyLength": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fMinimumTimeBetweenAnyHints": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fCurrentTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nCurrentlyDisplayedHint": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_bDisabledForTutorial": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bNotificationIsPaused": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bNotificationIsVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -64,8 +78,9 @@
       "documentation": null,
       "signature_members": {
         "sBody": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "string",
@@ -81,8 +96,9 @@
       "documentation": null,
       "signature_members": {
         "TimeDelta": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -92,8 +108,9 @@
       "documentation": null,
       "signature_members": {
         "fTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -103,12 +120,14 @@
       "documentation": null,
       "signature_members": {
         "oData": {
-          "type": null,
-          "documentation": null
+          "type": "HintTrackingData",
+          "documentation": null,
+          "flags": 384
         },
         "nAge": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -118,12 +137,14 @@
       "documentation": null,
       "signature_members": {
         "nmEvent": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nmContext": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "HintTrackingData",
@@ -139,12 +160,14 @@
       "documentation": null,
       "signature_members": {
         "nmEvent": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nmContext": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -172,8 +195,9 @@
       "documentation": null,
       "signature_members": {
         "bVal": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -183,12 +207,14 @@
       "documentation": null,
       "signature_members": {
         "srTitle": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "srDescription": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -198,12 +224,14 @@
       "documentation": null,
       "signature_members": {
         "srTitle": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "srDescription": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -213,16 +241,19 @@
       "documentation": null,
       "signature_members": {
         "oNoteData": {
-          "type": null,
-          "documentation": null
+          "type": "SFXNotificationData",
+          "documentation": null,
+          "flags": 4194690
         },
         "oNotification": {
-          "type": null,
-          "documentation": null
+          "type": "SFXNotification",
+          "documentation": null,
+          "flags": 4194688
         },
         "nParam1": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -232,8 +263,9 @@
       "documentation": null,
       "signature_members": {
         "nmNotificationType": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXNotificationData",
@@ -243,8 +275,9 @@
       "documentation": null,
       "signature_members": {
         "oNotification": {
-          "type": null,
-          "documentation": null
+          "type": "SFXNotification",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -254,44 +287,54 @@
       "documentation": null,
       "signature_members": {
         "nDisplayTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "sTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sSubtitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sBody": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Image": {
-          "type": null,
-          "documentation": null
+          "type": "Texture",
+          "documentation": null,
+          "flags": 128
         },
         "nRemoteEvent": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nmType": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         },
         "nmSound": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         },
         "Priority": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "FlourishID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -301,12 +344,14 @@
       "documentation": null,
       "signature_members": {
         "Data": {
-          "type": null,
-          "documentation": null
+          "type": "AchievementData",
+          "documentation": null,
+          "flags": 4194690
         },
         "Grinder": {
-          "type": null,
-          "documentation": null
+          "type": "GrinderAchievement",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -316,24 +361,29 @@
       "documentation": null,
       "signature_members": {
         "sTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sSubtitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sBody": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "currentCount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "totalCount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -343,8 +393,9 @@
       "documentation": null,
       "signature_members": {
         "nAmount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -354,8 +405,9 @@
       "documentation": null,
       "signature_members": {
         "nAmount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -365,8 +417,9 @@
       "documentation": null,
       "signature_members": {
         "nAmount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -376,8 +429,9 @@
       "documentation": null,
       "signature_members": {
         "nAmount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -387,8 +441,9 @@
       "documentation": null,
       "signature_members": {
         "nAmount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -398,8 +453,9 @@
       "documentation": null,
       "signature_members": {
         "nAmount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -409,8 +465,9 @@
       "documentation": null,
       "signature_members": {
         "nAmount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -420,8 +477,9 @@
       "documentation": null,
       "signature_members": {
         "nAmount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -431,8 +489,9 @@
       "documentation": null,
       "signature_members": {
         "nAmount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -442,8 +501,9 @@
       "documentation": null,
       "signature_members": {
         "nAmount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -465,8 +525,9 @@
       "documentation": null,
       "signature_members": {
         "oNotification": {
-          "type": null,
-          "documentation": null
+          "type": "SFXNotification",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -474,5 +535,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "Game",
   "documentation": null
 }

@@ -2,11 +2,13 @@
   "members": {
     "Cover": {
       "type": "CoverInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Enemy": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXPath_AvoidFireFromCover",

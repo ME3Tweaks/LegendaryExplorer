@@ -4,51 +4,63 @@
   "variables": {
     "Conv": {
       "type": "BioConversation",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oOwner": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fInterruptRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "setTargetBusyForDuration": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bConvReRunDetected": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bNoGestures": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bLookAtActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bDisableLookAtRangeCheck": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bDisableDelayUntilPreload": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bPreLoading": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bPlayRequested": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bEnterCombatModeOnEnd": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -62,8 +74,9 @@
       "documentation": null,
       "signature_members": {
         "fDelta": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -71,5 +84,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

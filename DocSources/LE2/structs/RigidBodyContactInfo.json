@@ -2,23 +2,28 @@
   "members": {
     "ContactPosition": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ContactNormal": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ContactPenetration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ContactVelocity": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PhysMaterial": {
       "type": "PhysicalMaterial",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "Actor",

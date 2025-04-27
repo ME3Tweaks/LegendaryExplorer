@@ -4,11 +4,13 @@
   "variables": {
     "SelectedIndices": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "NumHenchmen": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -20,5 +22,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

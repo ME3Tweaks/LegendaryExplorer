@@ -4,39 +4,48 @@
   "variables": {
     "m_aNode1": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_aNode2": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_aNode3": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_aNode4": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_aPuppet1_1": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_aPuppet1_2": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_aPuppet2_1": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_aPuppet2_2": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_aStage": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -50,16 +59,19 @@
       "documentation": null,
       "signature_members": {
         "oStage": {
-          "type": null,
-          "documentation": null
+          "type": "BioStage",
+          "documentation": null,
+          "flags": 128
         },
         "aInput": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "nmNodeName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -67,5 +79,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

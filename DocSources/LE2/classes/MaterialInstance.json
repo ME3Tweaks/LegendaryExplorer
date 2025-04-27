@@ -4,39 +4,48 @@
   "variables": {
     "StaticParameters": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101250
     },
     "StaticPermutationResources": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101250
     },
     "Resources": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101250
     },
     "ParentLightingGuid": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "PhysMaterial": {
       "type": "PhysicalMaterial",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Parent": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bHasStaticPermutationResource": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bStaticPermutationDirty": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "ReentrantFlag": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     }
   },
   "functions": {
@@ -56,16 +65,19 @@
       "documentation": null,
       "signature_members": {
         "ParameterName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "FontValue": {
-          "type": null,
-          "documentation": null
+          "type": "Font",
+          "documentation": null,
+          "flags": 128
         },
         "FontPage": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -75,8 +87,9 @@
       "documentation": null,
       "signature_members": {
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -86,8 +99,9 @@
       "documentation": null,
       "signature_members": {
         "EffectName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -97,12 +111,14 @@
       "documentation": null,
       "signature_members": {
         "ParameterName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "Texture",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -112,12 +128,14 @@
       "documentation": null,
       "signature_members": {
         "ParameterName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "InterpCurveFloat",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -127,12 +145,14 @@
       "documentation": null,
       "signature_members": {
         "ParameterName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -142,12 +162,14 @@
       "documentation": null,
       "signature_members": {
         "ParameterName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "LinearColor",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -157,8 +179,9 @@
       "documentation": null,
       "signature_members": {
         "NewParent": {
-          "type": null,
-          "documentation": null
+          "type": "MaterialInterface",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -166,5 +189,7 @@
     }
   },
   "states": {},
+  "classflags": 134217875,
+  "configname": "None",
   "documentation": null
 }

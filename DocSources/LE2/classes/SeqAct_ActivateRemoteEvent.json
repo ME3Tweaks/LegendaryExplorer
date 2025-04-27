@@ -4,19 +4,23 @@
   "variables": {
     "Parameters": {
       "type": "RemoteEventParameter",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Instigator": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "EventName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bStatusIsOk": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -28,5 +32,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

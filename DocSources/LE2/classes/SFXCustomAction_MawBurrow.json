@@ -4,15 +4,18 @@
   "variables": {
     "BS_MawLower": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BS_MawRaise": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_eCurrentBurrowAction": {
       "type": "EMawBurrowAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -20,16 +23,19 @@
       "documentation": null,
       "signature_members": {
         "SeqNode": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
         },
         "PlayedTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "ExcessTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -55,5 +61,7 @@
     }
   },
   "states": {},
+  "classflags": 22,
+  "configname": "Game",
   "documentation": null
 }

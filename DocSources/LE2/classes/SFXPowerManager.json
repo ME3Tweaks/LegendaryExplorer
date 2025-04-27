@@ -4,43 +4,53 @@
   "variables": {
     "Powers": {
       "type": "SFXPower",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "MyPawn": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RankUnlockText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "RequiredUnlockText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "PassiveRankIcon": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "LockedRankIcon": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "UnlockedRankIcon": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "EvolveRank": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_fSharedCooldownRemaining": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fSharedCooldownTotal": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -48,12 +58,14 @@
       "documentation": null,
       "signature_members": {
         "Power": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Rank": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -63,8 +75,9 @@
       "documentation": null,
       "signature_members": {
         "Power": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPower",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -86,8 +99,9 @@
       "documentation": null,
       "signature_members": {
         "PowerList": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPower",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -109,12 +123,14 @@
       "documentation": null,
       "signature_members": {
         "nmClassName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PowerClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -124,8 +140,9 @@
       "documentation": null,
       "signature_members": {
         "PowerList": {
-          "type": null,
-          "documentation": null
+          "type": "PowerSaveInfo",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -135,8 +152,9 @@
       "documentation": null,
       "signature_members": {
         "PowerList": {
-          "type": null,
-          "documentation": null
+          "type": "PowerSaveInfo",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -146,8 +164,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -157,8 +176,9 @@
       "documentation": null,
       "signature_members": {
         "fCooldown": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -174,8 +194,9 @@
       "documentation": null,
       "signature_members": {
         "fCooldown": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -191,12 +212,14 @@
       "documentation": null,
       "signature_members": {
         "Power": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPower",
+          "documentation": null,
+          "flags": 128
         },
         "EvolvedPower": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPower",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -206,8 +229,9 @@
       "documentation": null,
       "signature_members": {
         "PowerList": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPower",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -217,8 +241,9 @@
       "documentation": null,
       "signature_members": {
         "PowerClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXPower",
@@ -228,8 +253,9 @@
       "documentation": null,
       "signature_members": {
         "nmPowerName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXPower",
@@ -239,8 +265,9 @@
       "documentation": null,
       "signature_members": {
         "PowerClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -250,8 +277,9 @@
       "documentation": null,
       "signature_members": {
         "PowerClassName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXPower",
@@ -261,8 +289,9 @@
       "documentation": null,
       "signature_members": {
         "PowerClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXPower",
@@ -270,5 +299,7 @@
     }
   },
   "states": {},
+  "classflags": 134217878,
+  "configname": "Game",
   "documentation": null
 }

@@ -2,15 +2,18 @@
   "members": {
     "PlayerID": {
       "type": "UniqueNetId",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TeamID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Score": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "OnlineSubsystem",

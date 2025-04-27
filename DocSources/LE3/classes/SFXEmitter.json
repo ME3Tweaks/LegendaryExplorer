@@ -4,7 +4,8 @@
   "variables": {
     "bPooled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "Template": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -41,8 +43,9 @@
       "documentation": null,
       "signature_members": {
         "FinishedComponent": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystemComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -52,8 +55,9 @@
       "documentation": null,
       "signature_members": {
         "Seconds": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -61,5 +65,7 @@
     }
   },
   "states": {},
+  "classflags": 10486290,
+  "configname": "None",
   "documentation": null
 }

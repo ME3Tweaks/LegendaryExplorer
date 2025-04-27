@@ -4,147 +4,183 @@
   "variables": {
     "PlayerRecord": {
       "type": "PlayerSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "PlotRecord": {
       "type": "PlotTableSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "ME1PlotRecord": {
       "type": "ME1PlotTableRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "GalaxyMapRecord": {
       "type": "GalaxyMapSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "DependentDLC": {
       "type": "DependentDLCRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242881
     },
     "ME2ImportPowerMappings": {
       "type": "ME2ImportPowerMapping",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "Filename": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202497
     },
     "DebugName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202497
     },
     "LevelRecords": {
       "type": "LevelSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "StreamingRecords": {
       "type": "StreamingStateSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "TreasureRecords": {
       "type": "LevelTreasureSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "KismetRecords": {
       "type": "KismetBoolSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "DoorRecords": {
       "type": "DoorSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "PlaceableRecords": {
       "type": "PlaceableSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "PawnRecords": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "UseModuleRecords": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "HenchmanRecords": {
       "type": "HenchmanSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "PlayerVariableRecords": {
       "type": "PlayerVariableSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "ObjectiveMarkerRecords": {
       "type": "ObjectiveMarkerSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "TimeStamp": {
       "type": "SaveTimeStamp",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SaveLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SaveRotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BaseLevelName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BaseLevelNameDisplayOverrideAsRead": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BaseLevelNameDisplayOverrideToWriteAndClear": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SerializedSize": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "FileVersion": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "SecondsPlayed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Disc": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "EndGameState": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SavedObjectiveText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CurrentLoadingTip": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsValid": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "bIsGamerProfile": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "Difficulty": {
       "type": "EDifficultyOptions",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ConversationMode": {
       "type": "EAutoReplyModeOptions",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -158,8 +194,9 @@
       "documentation": null,
       "signature_members": {
         "Hench": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn_Henchman",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -169,8 +206,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -180,8 +218,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -191,8 +230,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -202,8 +242,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -219,8 +260,9 @@
       "documentation": null,
       "signature_members": {
         "Hench": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn_Henchman",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -230,8 +272,9 @@
       "documentation": null,
       "signature_members": {
         "Record": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerSaveRecord",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -241,36 +284,44 @@
       "documentation": null,
       "signature_members": {
         "IsFemale": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "CharacterClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 384
         },
         "firstName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         },
         "Origin": {
-          "type": null,
-          "documentation": null
+          "type": "EOriginType",
+          "documentation": null,
+          "flags": 384
         },
         "Notoriety": {
-          "type": null,
-          "documentation": null
+          "type": "ENotorietyType",
+          "documentation": null,
+          "flags": 384
         },
         "CombatPawn": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "InjuredPawn": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "CasualAppearance": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -280,16 +331,19 @@
       "documentation": null,
       "signature_members": {
         "Player": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn_Player",
+          "documentation": null,
+          "flags": 128
         },
         "Weapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         },
         "Record": {
-          "type": null,
-          "documentation": null
+          "type": "WeaponSaveRecord",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -299,12 +353,14 @@
       "documentation": null,
       "signature_members": {
         "Player": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn_Player",
+          "documentation": null,
+          "flags": 128
         },
         "Record": {
-          "type": null,
-          "documentation": null
+          "type": "AppearanceSaveRecord",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -314,12 +370,14 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn",
+          "documentation": null,
+          "flags": 128
         },
         "records": {
-          "type": null,
-          "documentation": null
+          "type": "GAWAssetSaveInfo",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -329,12 +387,14 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "records": {
-          "type": null,
-          "documentation": null
+          "type": "HotKeySaveRecord",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -344,8 +404,9 @@
       "documentation": null,
       "signature_members": {
         "InPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn_Player",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -355,8 +416,9 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -366,12 +428,14 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn",
+          "documentation": null,
+          "flags": 128
         },
         "records": {
-          "type": null,
-          "documentation": null
+          "type": "PowerSaveRecord",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -381,12 +445,14 @@
       "documentation": null,
       "signature_members": {
         "Player": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn_Player",
+          "documentation": null,
+          "flags": 128
         },
         "records": {
-          "type": null,
-          "documentation": null
+          "type": "WeaponModSaveRecord",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -396,12 +462,14 @@
       "documentation": null,
       "signature_members": {
         "Player": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn_Player",
+          "documentation": null,
+          "flags": 128
         },
         "records": {
-          "type": null,
-          "documentation": null
+          "type": "WeaponSaveRecord",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -411,16 +479,19 @@
       "documentation": null,
       "signature_members": {
         "Player": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn_Player",
+          "documentation": null,
+          "flags": 128
         },
         "Weapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         },
         "records": {
-          "type": null,
-          "documentation": null
+          "type": "WeaponSaveRecord",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -430,12 +501,14 @@
       "documentation": null,
       "signature_members": {
         "Player": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn_Player",
+          "documentation": null,
+          "flags": 128
         },
         "Record": {
-          "type": null,
-          "documentation": null
+          "type": "AppearanceSaveRecord",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -445,12 +518,14 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn_Player",
+          "documentation": null,
+          "flags": 128
         },
         "records": {
-          "type": null,
-          "documentation": null
+          "type": "GAWAssetSaveInfo",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -460,12 +535,14 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "records": {
-          "type": null,
-          "documentation": null
+          "type": "HotKeySaveRecord",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -475,12 +552,14 @@
       "documentation": null,
       "signature_members": {
         "Morph": {
-          "type": null,
-          "documentation": null
+          "type": "BioMorphFace",
+          "documentation": null,
+          "flags": 128
         },
         "Record": {
-          "type": null,
-          "documentation": null
+          "type": "MorphHeadSaveRecord",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -490,12 +569,14 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn",
+          "documentation": null,
+          "flags": 128
         },
         "records": {
-          "type": null,
-          "documentation": null
+          "type": "PowerSaveRecord",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -505,12 +586,14 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn",
+          "documentation": null,
+          "flags": 128
         },
         "records": {
-          "type": null,
-          "documentation": null
+          "type": "WeaponSaveRecord",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -520,8 +603,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerInfo": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerInfoEx",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -529,5 +613,7 @@
     }
   },
   "states": {},
+  "classflags": 136315038,
+  "configname": "Game",
   "documentation": null
 }

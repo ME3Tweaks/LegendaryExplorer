@@ -2,19 +2,23 @@
   "members": {
     "Label": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PlotID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ParagonPoints": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RenegadePoints": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioSeqAct_SetPlotPersuadeCheck",

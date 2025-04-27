@@ -7,12 +7,14 @@
       "documentation": null,
       "signature_members": {
         "Horizontal": {
-          "type": null,
-          "documentation": null
+          "type": "EUIAlignment",
+          "documentation": null,
+          "flags": 128
         },
         "Vertical": {
-          "type": null,
-          "documentation": null
+          "type": "EUIAlignment",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -20,5 +22,7 @@
     }
   },
   "states": {},
+  "classflags": 134234259,
+  "configname": "None",
   "documentation": null
 }

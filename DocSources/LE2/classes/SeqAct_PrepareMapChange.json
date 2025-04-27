@@ -4,22 +4,28 @@
   "variables": {
     "InitiallyLoadedSecondaryLevelNames": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "MainLevelName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsHighPriority": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bStatusIsOk": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

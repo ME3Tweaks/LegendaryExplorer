@@ -2,11 +2,13 @@
   "members": {
     "nmSpeakerTag": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "pSpeakerActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioConversationController",

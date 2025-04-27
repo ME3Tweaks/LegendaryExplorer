@@ -2,35 +2,43 @@
   "members": {
     "NetIdValue": {
       "type": "UniqueNetId",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StringValue": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ArrayValue": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "RangeValue": {
       "type": "UIRangeData",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AtlasCoordinates": {
       "type": "TextureCoordinates",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PropertyTag": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ImageValue": {
       "type": "Surface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PropertyType": {
       "type": "EUIDataProviderFieldType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "UIRoot",

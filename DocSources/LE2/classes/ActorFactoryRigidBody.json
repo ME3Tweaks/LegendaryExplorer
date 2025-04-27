@@ -4,46 +4,58 @@
   "variables": {
     "InitialVelocity": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AdditionalVelocity": {
       "type": "DistributionVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "InitialAngularVelocity": {
       "type": "DistributionVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "StayUprightTorqueFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StayUprightMaxTorque": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bStartAwake": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDamageAppliesImpulse": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bLocalSpaceInitialVelocity": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bEnableStayUprightSpring": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RBChannel": {
       "type": "ERBCollisionChannel",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142618774,
+  "configname": "Editor",
   "documentation": null
 }

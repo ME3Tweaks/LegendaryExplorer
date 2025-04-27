@@ -4,155 +4,193 @@
   "variables": {
     "CamPostProcessSettings": {
       "type": "PostProcessSettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ModifierList": {
       "type": "CameraModifier",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "CameraLensEffects": {
       "type": "EmitterCameraLensEffectBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "ActiveAnims": {
       "type": "CameraAnimInst",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "FreeAnims": {
       "type": "CameraAnimInst",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "CameraShakeCamModClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AnimInstPool": {
       "type": "CameraAnimInst",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ViewTarget": {
       "type": "TViewTarget",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PendingViewTarget": {
       "type": "TViewTarget",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CameraCache": {
       "type": "TCameraCache",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ColorScale": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DesiredColorScale": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OriginalColorScale": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BlendParams": {
       "type": "ViewTargetTransitionParams",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FreeCamOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PCOwner": {
       "type": "PlayerController",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CameraStyle": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FadeAlpha": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CameraShakeCamMod": {
       "type": "CameraModifier_CameraShake",
-      "documentation": null
+      "documentation": null,
+      "flags": 67117057
     },
     "AnimCameraActor": {
       "type": "DynamicCameraActor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "DefaultFOV": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LockedFOV": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ConstrainedAspectRatio": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DefaultAspectRatio": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FadeColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FadeAmount": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CamOverridePostProcessAlpha": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ColorScaleInterpDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ColorScaleInterpStartTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BlendTimeToGo": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FreeCamDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FadeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FadeTimeRemaining": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bLockedFOV": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bConstrainAspectRatio": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bEnableFading": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bEnableColorScaling": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bEnableColorScaleInterp": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -160,12 +198,14 @@
       "documentation": null,
       "signature_members": {
         "AnimInst": {
-          "type": null,
-          "documentation": null
+          "type": "CameraAnimInst",
+          "documentation": null,
+          "flags": 128
         },
         "bImmediate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -175,12 +215,14 @@
       "documentation": null,
       "signature_members": {
         "Anim": {
-          "type": null,
-          "documentation": null
+          "type": "CameraAnim",
+          "documentation": null,
+          "flags": 128
         },
         "bImmediate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -190,8 +232,9 @@
       "documentation": null,
       "signature_members": {
         "bImmediate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -201,40 +244,49 @@
       "documentation": null,
       "signature_members": {
         "Anim": {
-          "type": null,
-          "documentation": null
+          "type": "CameraAnim",
+          "documentation": null,
+          "flags": 128
         },
         "Rate": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "Scale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "BlendInTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "BlendOutTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bLoop": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bRandomStartTime": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "Duration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bSingleInstance": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "CameraAnimInst",
@@ -250,36 +302,44 @@
       "documentation": null,
       "signature_members": {
         "Shake": {
-          "type": null,
-          "documentation": null
+          "type": "CameraShake",
+          "documentation": null,
+          "flags": 128
         },
         "ShakeInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "Epicenter": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "InnerRadius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "OuterRadius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Falloff": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bTryForceFeedback": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bOrientShakeTowardsEpicenter": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -289,24 +349,29 @@
       "documentation": null,
       "signature_members": {
         "Cam": {
-          "type": null,
-          "documentation": null
+          "type": "Camera",
+          "documentation": null,
+          "flags": 128
         },
         "Epicenter": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "InnerRadius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "OuterRadius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Falloff": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -316,8 +381,9 @@
       "documentation": null,
       "signature_members": {
         "Shake": {
-          "type": null,
-          "documentation": null
+          "type": "CameraShake",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -327,20 +393,24 @@
       "documentation": null,
       "signature_members": {
         "Shake": {
-          "type": null,
-          "documentation": null
+          "type": "CameraShake",
+          "documentation": null,
+          "flags": 128
         },
         "Scale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "PlaySpace": {
-          "type": null,
-          "documentation": null
+          "type": "ECameraAnimPlaySpace",
+          "documentation": null,
+          "flags": 144
         },
         "UserPlaySpaceRot": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -356,8 +426,9 @@
       "documentation": null,
       "signature_members": {
         "Emitter": {
-          "type": null,
-          "documentation": null
+          "type": "EmitterCameraLensEffectBase",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -367,8 +438,9 @@
       "documentation": null,
       "signature_members": {
         "LensEffectEmitterClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -378,8 +450,9 @@
       "documentation": null,
       "signature_members": {
         "LensEffectEmitterClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "EmitterCameraLensEffectBase",
@@ -389,16 +462,19 @@
       "documentation": null,
       "signature_members": {
         "HUD": {
-          "type": null,
-          "documentation": null
+          "type": "HUD",
+          "documentation": null,
+          "flags": 128
         },
         "out_YL": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "out_YPos": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -414,16 +490,19 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "OutViewRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         },
         "OutDeltaRot": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -433,12 +512,14 @@
       "documentation": null,
       "signature_members": {
         "NewViewTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "TransitionParams": {
-          "type": null,
-          "documentation": null
+          "type": "ViewTargetTransitionParams",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -448,12 +529,14 @@
       "documentation": null,
       "signature_members": {
         "OutVT": {
-          "type": null,
-          "documentation": null
+          "type": "TViewTarget",
+          "documentation": null,
+          "flags": 384
         },
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -463,8 +546,9 @@
       "documentation": null,
       "signature_members": {
         "VT": {
-          "type": null,
-          "documentation": null
+          "type": "TViewTarget",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -474,8 +558,9 @@
       "documentation": null,
       "signature_members": {
         "NewPOV": {
-          "type": null,
-          "documentation": null
+          "type": "TPOV",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -485,16 +570,19 @@
       "documentation": null,
       "signature_members": {
         "A": {
-          "type": null,
-          "documentation": null
+          "type": "TViewTarget",
+          "documentation": null,
+          "flags": 386
         },
         "B": {
-          "type": null,
-          "documentation": null
+          "type": "TViewTarget",
+          "documentation": null,
+          "flags": 386
         },
         "Alpha": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "TPOV",
@@ -504,8 +592,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -515,12 +604,14 @@
       "documentation": null,
       "signature_members": {
         "NewColorScale": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "InterpTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -530,12 +621,14 @@
       "documentation": null,
       "signature_members": {
         "OutCamLoc": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "OutCamRot": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -545,8 +638,9 @@
       "documentation": null,
       "signature_members": {
         "NewFOV": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -562,8 +656,9 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -573,12 +668,14 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "OutPOV": {
-          "type": null,
-          "documentation": null
+          "type": "TPOV",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -600,8 +697,9 @@
       "documentation": null,
       "signature_members": {
         "ModifierClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "CameraModifier",
@@ -609,5 +707,7 @@
     }
   },
   "states": {},
+  "classflags": 144703642,
+  "configname": "None",
   "documentation": null
 }

@@ -4,11 +4,13 @@
   "variables": {
     "PRCInfo": {
       "type": "PRCInfo_t",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_ChoiceDataNoStrRef": {
       "type": "SFXGameChoiceGUIData_PRCShop",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -20,5 +22,7 @@
     }
   },
   "states": {},
+  "classflags": 136315038,
+  "configname": "UI",
   "documentation": null
 }

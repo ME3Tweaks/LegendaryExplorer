@@ -2,7 +2,8 @@
   "members": {
     "PlayerNetId": {
       "type": "UniqueNetId",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "classdef": "OnlineSubsystem",

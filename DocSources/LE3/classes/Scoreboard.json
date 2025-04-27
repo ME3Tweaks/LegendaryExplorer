@@ -4,7 +4,8 @@
   "variables": {
     "bDisplayMessages": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "bIsVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -39,5 +41,7 @@
     }
   },
   "states": {},
+  "classflags": 10485790,
+  "configname": "Game",
   "documentation": null
 }

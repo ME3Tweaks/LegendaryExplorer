@@ -2,31 +2,38 @@
   "members": {
     "Bonuses": {
       "type": "SFXGameEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "X": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Y": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaxLevel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Level": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Value": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StaticBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXGame",

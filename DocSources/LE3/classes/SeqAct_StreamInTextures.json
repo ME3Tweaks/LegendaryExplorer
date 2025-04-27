@@ -4,31 +4,38 @@
   "variables": {
     "LocationActors": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "ForceMaterials": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Seconds": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StopTimestamp": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "CinematicTextureGroups": {
       "type": "TextureGroupContainer",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "SelectedCinematicTextureGroups": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "bStreamingActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "functions": {
@@ -42,8 +49,9 @@
       "documentation": null,
       "signature_members": {
         "TargetObject": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -51,5 +59,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

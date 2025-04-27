@@ -4,18 +4,23 @@
   "variables": {
     "Input": {
       "type": "ExpressionInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Min": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Max": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

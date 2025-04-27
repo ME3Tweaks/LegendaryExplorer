@@ -2,15 +2,18 @@
   "members": {
     "Asset": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "GroupID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Floor": {
       "type": "SFXAreaMapLayout",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXSFHandler_AreaMap",

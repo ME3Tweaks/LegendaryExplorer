@@ -4,11 +4,13 @@
   "variables": {
     "PickupMesh": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "LightEnvironment": {
       "type": "LightEnvironmentComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     }
   },
   "functions": {
@@ -16,8 +18,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -27,8 +30,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -38,8 +42,9 @@
       "documentation": null,
       "signature_members": {
         "User": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -49,12 +54,14 @@
       "documentation": null,
       "signature_members": {
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "FloorActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -64,8 +71,9 @@
       "documentation": null,
       "signature_members": {
         "NewPickupMesh": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -78,5 +86,7 @@
       "documentation": null
     }
   },
+  "classflags": 10485778,
+  "configname": "None",
   "documentation": null
 }

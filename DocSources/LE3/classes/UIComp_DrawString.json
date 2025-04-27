@@ -4,67 +4,83 @@
   "variables": {
     "VfTable_IUIStyleResolver": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "StringStyle": {
       "type": "UIStyleReference",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StringClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "TextStyleCustomization": {
       "type": "UITextStyleOverride",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AutoSizeParameters": {
       "type": "AutoSizeData",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ClampRegion": {
       "type": "UIRenderingSubregion",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SubscriberOwner": {
       "type": "UIDataStoreSubscriber",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "DropShadowColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StyleResolverTag": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ValueString": {
       "type": "UIString",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "DropShadowOffset": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDropShadow": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIgnoreMarkup": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAllowBoundsAdjustment": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bRefreshString": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "bReapplyFormatting": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -138,12 +154,14 @@
       "documentation": null,
       "signature_members": {
         "Orientation": {
-          "type": null,
-          "documentation": null
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
         },
         "bShouldEnable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -153,12 +171,14 @@
       "documentation": null,
       "signature_members": {
         "Orientation": {
-          "type": null,
-          "documentation": null
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
         },
         "bShouldEnable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -168,8 +188,9 @@
       "documentation": null,
       "signature_members": {
         "DesiredMenuState": {
-          "type": null,
-          "documentation": null
+          "type": "UIState",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "UIStyle_Combo",
@@ -179,8 +200,9 @@
       "documentation": null,
       "signature_members": {
         "FinalStyleData": {
-          "type": null,
-          "documentation": null
+          "type": "UICombinedStyleData",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -196,8 +218,9 @@
       "documentation": null,
       "signature_members": {
         "Orientation": {
-          "type": null,
-          "documentation": null
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "EUIAlignment",
@@ -207,12 +230,14 @@
       "documentation": null,
       "signature_members": {
         "Orientation": {
-          "type": null,
-          "documentation": null
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
         },
         "OutputType": {
-          "type": null,
-          "documentation": null
+          "type": "EUIExtentEvalType",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "float",
@@ -222,12 +247,14 @@
       "documentation": null,
       "signature_members": {
         "Orientation": {
-          "type": null,
-          "documentation": null
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
         },
         "OutputType": {
-          "type": null,
-          "documentation": null
+          "type": "EUIExtentEvalType",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "float",
@@ -237,8 +264,9 @@
       "documentation": null,
       "signature_members": {
         "bReturnProcessedText": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "string",
@@ -254,8 +282,9 @@
       "documentation": null,
       "signature_members": {
         "Orientation": {
-          "type": null,
-          "documentation": null
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -265,20 +294,24 @@
       "documentation": null,
       "signature_members": {
         "ActiveSkin": {
-          "type": null,
-          "documentation": null
+          "type": "UISkin",
+          "documentation": null,
+          "flags": 128
         },
         "bClearExistingValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "CurrentMenuState": {
-          "type": null,
-          "documentation": null
+          "type": "UIState",
+          "documentation": null,
+          "flags": 144
         },
         "StylePropertyName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 146
         }
       },
       "returntype": "bool",
@@ -294,12 +327,14 @@
       "documentation": null,
       "signature_members": {
         "Orientation": {
-          "type": null,
-          "documentation": null
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
         },
         "NewAlignment": {
-          "type": null,
-          "documentation": null
+          "type": "EUIAlignment",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -309,8 +344,9 @@
       "documentation": null,
       "signature_members": {
         "NewAttributes": {
-          "type": null,
-          "documentation": null
+          "type": "UITextAttributes",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -320,12 +356,14 @@
       "documentation": null,
       "signature_members": {
         "NewAutoScaleMode": {
-          "type": null,
-          "documentation": null
+          "type": "ETextAutoScaleMode",
+          "documentation": null,
+          "flags": 128
         },
         "NewMinScaleValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -335,24 +373,29 @@
       "documentation": null,
       "signature_members": {
         "Orientation": {
-          "type": null,
-          "documentation": null
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
         },
         "MinValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "MaxValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "MinScaleType": {
-          "type": null,
-          "documentation": null
+          "type": "EUIExtentEvalType",
+          "documentation": null,
+          "flags": 128
         },
         "MaxScaleType": {
-          "type": null,
-          "documentation": null
+          "type": "EUIExtentEvalType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -362,24 +405,29 @@
       "documentation": null,
       "signature_members": {
         "Orientation": {
-          "type": null,
-          "documentation": null
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
         },
         "NearValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "FarValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "NearScaleType": {
-          "type": null,
-          "documentation": null
+          "type": "EUIExtentEvalType",
+          "documentation": null,
+          "flags": 128
         },
         "FarScaleType": {
-          "type": null,
-          "documentation": null
+          "type": "EUIExtentEvalType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -389,8 +437,9 @@
       "documentation": null,
       "signature_members": {
         "NewClipAlignment": {
-          "type": null,
-          "documentation": null
+          "type": "EUIAlignment",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -400,8 +449,9 @@
       "documentation": null,
       "signature_members": {
         "NewColor": {
-          "type": null,
-          "documentation": null
+          "type": "LinearColor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -411,8 +461,9 @@
       "documentation": null,
       "signature_members": {
         "NewFont": {
-          "type": null,
-          "documentation": null
+          "type": "Font",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -422,8 +473,9 @@
       "documentation": null,
       "signature_members": {
         "NewOpacity": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -433,12 +485,14 @@
       "documentation": null,
       "signature_members": {
         "HorizontalPadding": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "VerticalPadding": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -448,12 +502,14 @@
       "documentation": null,
       "signature_members": {
         "Orientation": {
-          "type": null,
-          "documentation": null
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
         },
         "NewScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -463,12 +519,14 @@
       "documentation": null,
       "signature_members": {
         "Orientation": {
-          "type": null,
-          "documentation": null
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
         },
         "NewSpacingAdjust": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -478,8 +536,9 @@
       "documentation": null,
       "signature_members": {
         "NewResolverTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -489,12 +548,14 @@
       "documentation": null,
       "signature_members": {
         "Orientation": {
-          "type": null,
-          "documentation": null
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
         },
         "NewValue": {
-          "type": null,
-          "documentation": null
+          "type": "EUIAlignment",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -504,16 +565,19 @@
       "documentation": null,
       "signature_members": {
         "Orientation": {
-          "type": null,
-          "documentation": null
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
         },
         "NewValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "EvalType": {
-          "type": null,
-          "documentation": null
+          "type": "EUIExtentEvalType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -523,16 +587,19 @@
       "documentation": null,
       "signature_members": {
         "Orientation": {
-          "type": null,
-          "documentation": null
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
         },
         "NewValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "EvalType": {
-          "type": null,
-          "documentation": null
+          "type": "EUIExtentEvalType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -542,8 +609,9 @@
       "documentation": null,
       "signature_members": {
         "NewText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -553,8 +621,9 @@
       "documentation": null,
       "signature_members": {
         "NewClipMode": {
-          "type": null,
-          "documentation": null
+          "type": "ETextClipMode",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -564,8 +633,9 @@
       "documentation": null,
       "signature_members": {
         "Orientation": {
-          "type": null,
-          "documentation": null
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -573,5 +643,7 @@
     }
   },
   "states": {},
+  "classflags": 134221970,
+  "configname": "None",
   "documentation": null
 }

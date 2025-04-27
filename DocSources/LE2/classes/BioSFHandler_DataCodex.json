@@ -4,63 +4,78 @@
   "variables": {
     "lstSections": {
       "type": "DataCodexEntryDetails",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "lstImages": {
       "type": "CodexImageDetails",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "sDefaultCodexImage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "sExternalTextureLink": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_oVoiceOver": {
       "type": "WwiseAudioComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     },
     "m_fScrollValue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nVoiceOverPage": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fTimeUntilVoiceOver": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fVoiceOverDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "fVoiceOverCancelFadeOut": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srMarkAllCompleteMessage": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srMarkAllCompleteMessageConfirm": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srMarkAllCompleteMessageCancel": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nUpStamp": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bAnalogScroll": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -74,12 +89,14 @@
       "documentation": null,
       "signature_members": {
         "nSection": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nPage": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -89,8 +106,9 @@
       "documentation": null,
       "signature_members": {
         "nSection": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -106,8 +124,9 @@
       "documentation": null,
       "signature_members": {
         "nSection": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -135,12 +154,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -148,5 +169,7 @@
     }
   },
   "states": {},
+  "classflags": 144703646,
+  "configname": "UI",
   "documentation": null
 }

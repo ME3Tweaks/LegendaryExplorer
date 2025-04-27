@@ -2,11 +2,13 @@
   "members": {
     "Resources": {
       "type": "RvrClientEffectResource",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MaxEffects": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "RvrClientEffectPool",

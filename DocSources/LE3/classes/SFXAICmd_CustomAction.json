@@ -4,7 +4,8 @@
   "variables": {
     "bPendingTransition": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -12,12 +13,14 @@
       "documentation": null,
       "signature_members": {
         "AI": {
-          "type": null,
-          "documentation": null
+          "type": "SFXAI_Core",
+          "documentation": null,
+          "flags": 128
         },
         "AICommandClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -27,8 +30,9 @@
       "documentation": null,
       "signature_members": {
         "AttemptCommand": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -95,5 +99,7 @@
       "documentation": null
     }
   },
+  "classflags": 18,
+  "configname": "None",
   "documentation": null
 }

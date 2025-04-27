@@ -4,27 +4,33 @@
   "variables": {
     "Planets": {
       "type": "BioPlanet",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SunColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StarColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FlareTint": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bHasMassRelay": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bShowNebula": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -32,8 +38,9 @@
       "documentation": null,
       "signature_members": {
         "Child": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGalaxyMapObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -43,8 +50,9 @@
       "documentation": null,
       "signature_members": {
         "Children": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGalaxyMapObject",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -58,5 +66,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

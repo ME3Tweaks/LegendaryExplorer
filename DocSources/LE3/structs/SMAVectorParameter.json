@@ -2,15 +2,18 @@
   "members": {
     "Parameter": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ParameterName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Group": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     }
   },
   "classdef": "SFXSkeletalMeshActor",

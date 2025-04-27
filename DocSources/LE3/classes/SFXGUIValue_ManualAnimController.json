@@ -4,43 +4,53 @@
   "variables": {
     "__OnAnimStarted__Delegate": {
       "type": "OnAnimStarted",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnAnimAborted__Delegate": {
       "type": "OnAnimAborted",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnAnimFinished__Delegate": {
       "type": "OnAnimFinished",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "StartFrame": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EndFrame": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ElapsedAnimationTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TotalAnimationTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "IsActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "IsPlaying": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AbortRequested": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -54,8 +64,9 @@
       "documentation": null,
       "signature_members": {
         "AnimationLength": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -101,8 +112,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -110,5 +122,7 @@
     }
   },
   "states": {},
+  "classflags": 134217882,
+  "configname": "None",
   "documentation": null
 }

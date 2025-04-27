@@ -4,15 +4,18 @@
   "variables": {
     "__OnGetRatingsComplete__Delegate": {
       "type": "OnGetRatingsComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MaxSecurityRating": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "getWarAssets": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -20,12 +23,14 @@
       "documentation": null,
       "signature_members": {
         "includeWarAssets": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "RequestCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnGetRatingsComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "SFXOnlineJobGaWHTTPGetRatings",
@@ -41,8 +46,9 @@
       "documentation": null,
       "signature_members": {
         "errorCode": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineJobErrorCode",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -52,20 +58,24 @@
       "documentation": null,
       "signature_members": {
         "updatedSecurityRatings": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194432
         },
         "updatedWarAssets": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194432
         },
         "Level": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "errorCode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -85,5 +95,7 @@
     }
   },
   "states": {},
+  "classflags": 134217878,
+  "configname": "Game",
   "documentation": null
 }

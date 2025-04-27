@@ -2,15 +2,18 @@
   "members": {
     "pWeapon": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bSpawned": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bCurrentlyEquipped": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXModule_Gestures",

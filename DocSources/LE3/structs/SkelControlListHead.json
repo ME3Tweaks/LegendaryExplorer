@@ -2,11 +2,13 @@
   "members": {
     "BoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ControlHead": {
       "type": "SkelControlBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     }
   },
   "classdef": "AnimTree",

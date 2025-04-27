@@ -4,38 +4,48 @@
   "variables": {
     "Environment": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "ConvolutionReverbSoundBank": {
       "type": "WwiseBank",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Id": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "fPrimaryControlValue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fOverrideControlValue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CurrentEnvironment": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIdResolved": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bOverrideLowerPriorityEnvironments": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

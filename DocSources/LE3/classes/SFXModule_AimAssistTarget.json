@@ -4,11 +4,13 @@
   "variables": {
     "AimNodes": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "AimAssistRegions": {
       "type": "AimAssistBox",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     }
   },
   "functions": {
@@ -26,5 +28,7 @@
     }
   },
   "states": {},
+  "classflags": 142610578,
+  "configname": "None",
   "documentation": null
 }

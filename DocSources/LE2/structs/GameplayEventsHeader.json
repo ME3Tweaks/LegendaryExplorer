@@ -2,27 +2,33 @@
   "members": {
     "EngineVersion": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "StatsWriterVersion": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "StreamOffset": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "FooterOffset": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "TotalStreamSize": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "FileSize": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "classdef": "GameplayEvents",

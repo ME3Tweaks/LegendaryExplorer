@@ -4,19 +4,23 @@
   "variables": {
     "DeathCam": {
       "type": "BioCameraBehaviorFlourish",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "ProlongLifeBoost": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ProlongLifeDecay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "StartBoostTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -42,20 +46,24 @@
       "documentation": null,
       "signature_members": {
         "OldCameraMode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 128
         },
         "PreserveTarget": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "TransitionTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "Transition": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode_Interpolate",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "SFXCameraMode",
@@ -77,8 +85,9 @@
       "documentation": null,
       "signature_members": {
         "TimeLeft": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -98,5 +107,7 @@
     }
   },
   "states": {},
+  "classflags": 10485782,
+  "configname": "Input",
   "documentation": null
 }

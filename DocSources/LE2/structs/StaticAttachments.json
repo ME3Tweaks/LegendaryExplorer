@@ -2,11 +2,13 @@
   "members": {
     "BoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StaticMesh": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioBaseAppearancePlaceable",

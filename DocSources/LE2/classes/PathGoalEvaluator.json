@@ -4,23 +4,28 @@
   "variables": {
     "NextEvaluator": {
       "type": "PathGoalEvaluator",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GeneratedGoal": {
       "type": "NavigationPoint",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxPathVisits": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CacheIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "AllowStartNodeToBeGoal": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -38,5 +43,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

@@ -2,15 +2,18 @@
   "members": {
     "sKey": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "sName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "sValue": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     }
   },
   "classdef": "ISFXOnlineComponentCommerce",

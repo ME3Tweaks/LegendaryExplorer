@@ -4,7 +4,8 @@
   "variables": {
     "pActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -18,8 +19,9 @@
       "documentation": null,
       "signature_members": {
         "bForceUpdate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -27,5 +29,7 @@
     }
   },
   "states": {},
+  "classflags": 142610579,
+  "configname": "None",
   "documentation": null
 }

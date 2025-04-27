@@ -4,7 +4,8 @@
   "variables": {
     "QueuedAudio": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -18,12 +19,14 @@
       "documentation": null,
       "signature_members": {
         "Buffer": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 4194688
         },
         "SamplesNeeded": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -33,8 +36,9 @@
       "documentation": null,
       "signature_members": {
         "Data": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -48,5 +52,7 @@
     }
   },
   "states": {},
+  "classflags": 136320178,
+  "configname": "None",
   "documentation": null
 }

@@ -4,7 +4,8 @@
   "variables": {
     "__OnReadNewsCompleted__Delegate": {
       "type": "OnReadNewsCompleted",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -12,12 +13,14 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "NewsType": {
-          "type": null,
-          "documentation": null
+          "type": "EOnlineNewsType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -27,12 +30,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "NewsType": {
-          "type": null,
-          "documentation": null
+          "type": "EOnlineNewsType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -42,8 +47,9 @@
       "documentation": null,
       "signature_members": {
         "ReadNewsDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadNewsCompleted",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -53,8 +59,9 @@
       "documentation": null,
       "signature_members": {
         "ReadNewsDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadNewsCompleted",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -64,12 +71,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "NewsType": {
-          "type": null,
-          "documentation": null
+          "type": "EOnlineNewsType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -77,5 +86,7 @@
     }
   },
   "states": {},
+  "classflags": 16403,
+  "configname": "None",
   "documentation": null
 }

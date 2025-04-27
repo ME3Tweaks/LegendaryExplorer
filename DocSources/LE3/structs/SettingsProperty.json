@@ -2,15 +2,18 @@
   "members": {
     "Data": {
       "type": "SettingsData",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PropertyId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AdvertisementType": {
       "type": "EOnlineDataAdvertisementType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "Settings",

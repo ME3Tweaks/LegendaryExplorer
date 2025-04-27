@@ -4,82 +4,103 @@
   "variables": {
     "SourceElement": {
       "type": "LensFlareElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827464
     },
     "ScreenPercentageMap": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "Reflections": {
       "type": "LensFlareElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827464
     },
     "FixedRelativeBoundingBox": {
       "type": "Box",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ThumbnailAngle": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SourceMesh": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CurveEdSetup": {
       "type": "InterpCurveEdSetup",
-      "documentation": null
+      "documentation": null,
+      "flags": 8
     },
     "ThumbnailImage": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OuterCone": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "InnerCone": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ConeFudgeFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Radius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ReflectionCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ThumbnailDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bUseFixedRelativeBoundingBox": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bRenderDebugLines": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ThumbnailImageOutOfDate": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SourceDPG": {
       "type": "ESceneDepthPriorityGroup",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ReflectionsDPG": {
       "type": "ESceneDepthPriorityGroup",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

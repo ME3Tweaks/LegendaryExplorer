@@ -4,47 +4,58 @@
   "variables": {
     "VfTable_IISFXOnlineComponent": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "mRequests": {
       "type": "SFXOnlineHTTPRequest",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "mHttpRef": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mDataResponse": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mCurrentRequest": {
       "type": "SFXOnlineHTTPRequest",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mDataCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mRequestTimeout": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "mRequestBuffer": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "mDebugVerbosity": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "mServiceStarted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mState": {
       "type": "ECHTTPManagerState",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     }
   },
   "functions": {
@@ -52,8 +63,9 @@
       "documentation": null,
       "signature_members": {
         "request": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineHTTPRequest",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -63,8 +75,9 @@
       "documentation": null,
       "signature_members": {
         "request": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineHTTPRequest",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -80,8 +93,9 @@
       "documentation": null,
       "signature_members": {
         "oOnlineSubsystem": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineSubsystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -97,8 +111,9 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -108,8 +123,9 @@
       "documentation": null,
       "signature_members": {
         "request": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineHTTPRequest",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -137,8 +153,9 @@
       "documentation": null,
       "signature_members": {
         "request": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineHTTPRequest",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -148,8 +165,9 @@
       "documentation": null,
       "signature_members": {
         "request": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineHTTPRequest",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -157,5 +175,7 @@
     }
   },
   "states": {},
+  "classflags": 134217878,
+  "configname": "Engine",
   "documentation": null
 }

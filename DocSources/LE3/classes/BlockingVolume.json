@@ -4,19 +4,23 @@
   "variables": {
     "lstAffectedActors": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "bBlockCamera": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bInclusionaryList": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSafeFall": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -24,8 +28,9 @@
       "documentation": null,
       "signature_members": {
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -33,5 +38,7 @@
     }
   },
   "states": {},
+  "classflags": 144704178,
+  "configname": "None",
   "documentation": null
 }

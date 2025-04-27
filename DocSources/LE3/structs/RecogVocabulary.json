@@ -2,27 +2,33 @@
   "members": {
     "WhoDictionary": {
       "type": "RecognisableWord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "WhatDictionary": {
       "type": "RecognisableWord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "WhereDictionary": {
       "type": "RecognisableWord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "VocabName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "VocabData": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "WorkingVocabData": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "classdef": "SpeechRecognition",

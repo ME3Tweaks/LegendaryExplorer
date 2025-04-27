@@ -2,11 +2,13 @@
   "members": {
     "PlaceHolder": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_eState": {
       "type": "EMoviePlayState",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXInterpTrackMovieBase",

@@ -4,59 +4,73 @@
   "variables": {
     "AnimatedReactions": {
       "type": "EAICustomAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ShieldCrust_Male": {
       "type": "BioVFXTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ShieldCrust_Female": {
       "type": "BioVFXTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ShieldDeathCrust": {
       "type": "BioVFXTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlayerVFX": {
       "type": "BioVisualEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HenchVFX": {
       "type": "BioVisualEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OwnerPawn": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ShieldExplosion": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108864
     },
     "ExplosionRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ExplosionDamage": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ExplosionForce": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ExplosionVFXParameter": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ExplosionShieldBoost": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bShieldDestroyed": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -76,8 +90,9 @@
       "documentation": null,
       "signature_members": {
         "PlayDeathCrust": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -99,8 +114,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaSeconds": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -114,5 +130,7 @@
     }
   },
   "states": {},
+  "classflags": 8388626,
+  "configname": "None",
   "documentation": null
 }

@@ -4,54 +4,68 @@
   "variables": {
     "LeftTrackVel": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RightTrackVel": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LeftTrackTorque": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RightTrackTorque": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxEngineTorque": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "EngineDamping": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "InsideTrackTorqueFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SteeringLatStiffnessFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TurnInPlaceThrottle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TurnMaxGripReduction": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TurnGripScaleRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bTurnInPlaceOnSteer": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

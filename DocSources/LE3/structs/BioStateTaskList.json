@@ -2,11 +2,13 @@
   "members": {
     "VfTable": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8400898
     },
     "lstTaskEvals": {
       "type": "BioTaskEval",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     }
   },
   "classdef": "BioDefine",

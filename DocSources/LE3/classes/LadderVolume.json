@@ -4,39 +4,48 @@
   "variables": {
     "WallDir": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LookDir": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ClimbDir": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LadderList": {
       "type": "Ladder",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "PendingClimber": {
       "type": "Pawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WallDirArrow": {
       "type": "ArrowComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "bNoPhysicalLadder": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAutoPath": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAllowLadderStrafing": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -44,8 +53,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -55,8 +65,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -66,8 +77,9 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -83,8 +95,9 @@
       "documentation": null,
       "signature_members": {
         "Ignored": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -92,5 +105,7 @@
     }
   },
   "states": {},
+  "classflags": 144704178,
+  "configname": "None",
   "documentation": null
 }

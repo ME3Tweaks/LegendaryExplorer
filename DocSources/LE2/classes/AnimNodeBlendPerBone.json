@@ -4,22 +4,28 @@
   "variables": {
     "BranchStartBoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Child2PerBoneWeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "LocalToCompReqBones": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "bForceLocalSpaceBlend": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

@@ -4,39 +4,48 @@
   "variables": {
     "m_aSpectateSpawnLocation": {
       "type": "PlayerStart",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "ViewSource": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Target": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fLockRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fLockHeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fLockPitch": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fLockYaw": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nSpectateCurrentLocation": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bSuppliedLocalizedParams": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -44,8 +53,9 @@
       "documentation": null,
       "signature_members": {
         "TimeDelta": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -55,8 +65,9 @@
       "documentation": null,
       "signature_members": {
         "NewTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -78,16 +89,19 @@
       "documentation": null,
       "signature_members": {
         "vPosition": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "rRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         },
         "rLockRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -97,16 +111,19 @@
       "documentation": null,
       "signature_members": {
         "vPosition": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "rRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         },
         "rLockRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -114,5 +131,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

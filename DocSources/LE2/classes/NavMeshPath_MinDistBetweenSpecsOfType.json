@@ -4,15 +4,18 @@
   "variables": {
     "InitLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MinDistBetweenEdgeTypes": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EdgeType": {
       "type": "ENavMeshEdgeType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -26,20 +29,24 @@
       "documentation": null,
       "signature_members": {
         "NavHandle": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationHandle",
+          "documentation": null,
+          "flags": 128
         },
         "InMinDist": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "InEdgeType": {
-          "type": null,
-          "documentation": null
+          "type": "ENavMeshEdgeType",
+          "documentation": null,
+          "flags": 128
         },
         "LastLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -47,5 +54,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

@@ -2,19 +2,23 @@
   "members": {
     "ShadowMaps": {
       "type": "ShadowMap2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "ShadowVertexBuffers": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "LightMap": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "OverrideVertexColors": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     }
   },
   "classdef": "StaticMeshComponent",

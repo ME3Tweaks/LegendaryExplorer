@@ -2,19 +2,23 @@
   "members": {
     "BWEntitlement": {
       "type": "BWEntitlementInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "sGroupName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "sEntitlementName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "sProductId": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     }
   },
   "classdef": "ISFXOnlineComponentNotification",

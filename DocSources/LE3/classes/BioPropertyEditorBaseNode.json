@@ -4,47 +4,58 @@
   "variables": {
     "m_sNodeDisplayName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aChildren": {
       "type": "BioPropertyEditorBaseNode",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aTraversedStack": {
       "type": "BioPropertyEditorBaseNode",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sParentGenName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_oTop": {
       "type": "BioInGamePropertyEditor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_oParent": {
       "type": "BioPropertyEditorBaseNode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nCurrentlySelectedChild": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nScrollBoxFirstIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nScrollBoxSize": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_colour": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nGeneration": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -58,8 +69,9 @@
       "documentation": null,
       "signature_members": {
         "selectable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -73,5 +85,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

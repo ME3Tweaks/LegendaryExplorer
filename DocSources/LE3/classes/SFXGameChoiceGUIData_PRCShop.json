@@ -4,7 +4,8 @@
   "variables": {
     "lstChoicesNoStrRef": {
       "type": "SFXChoiceEntryNoStrRef",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "oChoice": {
-          "type": null,
-          "documentation": null
+          "type": "SFXChoiceEntryNoStrRef",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -21,5 +23,7 @@
     }
   },
   "states": {},
+  "classflags": 136319126,
+  "configname": "UI",
   "documentation": null
 }

@@ -2,11 +2,13 @@
   "members": {
     "nmPerfName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nmPoseName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioGestureRulesData",

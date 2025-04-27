@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "Level": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -18,16 +19,19 @@
       "documentation": null,
       "signature_members": {
         "BaseDamage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -35,5 +39,7 @@
     }
   },
   "states": {},
+  "classflags": 10485815,
+  "configname": "Weapon",
   "documentation": null
 }

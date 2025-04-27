@@ -4,79 +4,98 @@
   "variables": {
     "m_ChoiceGUIHandler": {
       "type": "BioSFHandler_ChoiceGUI",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nmTag": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nmResource": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_srTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_srSubTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_srAButton": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_srBButton": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_srOptionalPaneTitleText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_srOptionalPaneItemValuePrefixText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nSelectionIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nSelectionID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nInitialSelectionID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_ShowOptionalPane": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bAutoClose": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bFinished": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bAborted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bAPressed": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bWasPaused": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_eResource": {
       "type": "EInventoryResourceTypes",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -90,12 +109,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -105,8 +126,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -114,5 +136,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

@@ -4,91 +4,113 @@
   "variables": {
     "__InputCallback__Delegate": {
       "type": "InputCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__UpdateCallback__Delegate": {
       "type": "UpdateCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__UpdateCallbackEx__Delegate": {
       "type": "UpdateCallbackEx",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__ChoiceDialogCallback__Delegate": {
       "type": "ChoiceDialogCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__WeaponChoiceCallback__Delegate": {
       "type": "WeaponChoiceCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "nInputCallbackContext": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fRScrollValue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fHintTimeRemaining": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "WeaponPickupUITitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "WeaponPickupAddToInventoryText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "WeaponPickupOpenInventoryText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "WeaponPickupEquipText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bHandleInput": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bShowMouse": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bIsModal": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bForcePlayersOnly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bInitialPlayersOnly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bCached": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bForceVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bDisplayingHint": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bCurrentlyActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bPausedPriorToWeaponChoice": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -96,8 +118,9 @@
       "documentation": null,
       "signature_members": {
         "bSkipFade": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -107,48 +130,59 @@
       "documentation": null,
       "signature_members": {
         "sMessage": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "sCancelText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "srOption1": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "nOption1ID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bOption1Enabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "sOption2": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "nOption2ID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bOption2Enabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "sOption3": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "nOption3ID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bOption3Enabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -158,8 +192,9 @@
       "documentation": null,
       "signature_members": {
         "bSkipTransition": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -169,20 +204,24 @@
       "documentation": null,
       "signature_members": {
         "sConsoleMessage": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sPCMessage": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "usingGamepad": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nPosition": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -192,40 +231,49 @@
       "documentation": null,
       "signature_members": {
         "sMessage": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sKBMMessage": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sAText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sBText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bNoFade": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nIconSet": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nIconIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nSkinType": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nTextAlign": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -235,16 +283,19 @@
       "documentation": null,
       "signature_members": {
         "oMsgBox": {
-          "type": null,
-          "documentation": null
+          "type": "BioSFHandler_MessageBox",
+          "documentation": null,
+          "flags": 128
         },
         "nChoiceID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bCancelled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -254,12 +305,14 @@
       "documentation": null,
       "signature_members": {
         "srMessage": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "stParams": {
-          "type": null,
-          "documentation": null
+          "type": "BioMessageBoxOptionalParams",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -269,12 +322,14 @@
       "documentation": null,
       "signature_members": {
         "sMessage": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "stParams": {
-          "type": null,
-          "documentation": null
+          "type": "BioMessageBoxOptionalParams",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -284,8 +339,9 @@
       "documentation": null,
       "signature_members": {
         "usingGamepad": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -295,12 +351,14 @@
       "documentation": null,
       "signature_members": {
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -310,12 +368,14 @@
       "documentation": null,
       "signature_members": {
         "bRemove": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bSkipFade": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -325,12 +385,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -340,8 +402,9 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -357,12 +420,14 @@
       "documentation": null,
       "signature_members": {
         "pDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "InputCallback",
+          "documentation": null,
+          "flags": 4194432
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -372,8 +437,9 @@
       "documentation": null,
       "signature_members": {
         "pDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "UpdateCallback",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -383,48 +449,59 @@
       "documentation": null,
       "signature_members": {
         "srMessage": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "srCancelText": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "srOption1": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "nOption1ID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bOption1Enabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "srOption2": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "nOption2ID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bOption2Enabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "srOption3": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 144
         },
         "nOption3ID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "bOption3Enabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -434,48 +511,59 @@
       "documentation": null,
       "signature_members": {
         "sMessage": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "sCancelText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "sOption1": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "nOption1ID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bOption1Enabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "sOption2": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "nOption2ID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bOption2Enabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "sOption3": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194450
         },
         "nOption3ID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "bOption3Enabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -485,44 +573,54 @@
       "documentation": null,
       "signature_members": {
         "srTitle": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "srDesc": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "sIconResource": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "nIconIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "srOption1": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "nOption1ID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "srOption2": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "nOption2ID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "srOption3": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "nOption3ID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -532,44 +630,54 @@
       "documentation": null,
       "signature_members": {
         "sTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "sDesc": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "sIconResource": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "nIconIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sOption1": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "nOption1ID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sOption2": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "nOption2ID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sOption3": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "nOption3ID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -579,8 +687,9 @@
       "documentation": null,
       "signature_members": {
         "oWeapClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -590,12 +699,14 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "oMsgBox": {
-          "type": null,
-          "documentation": null
+          "type": "BioSFHandler_MessageBox",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -605,12 +716,14 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "oMsgBox": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -620,12 +733,14 @@
       "documentation": null,
       "signature_members": {
         "oMsgBox": {
-          "type": null,
-          "documentation": null
+          "type": "BioSFHandler_MessageBox",
+          "documentation": null,
+          "flags": 128
         },
         "nChoiceID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -635,28 +750,34 @@
       "documentation": null,
       "signature_members": {
         "sOption1": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "nOption1ID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sOption2": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "nOption2ID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sOption3": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "nOption3ID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -666,20 +787,24 @@
       "documentation": null,
       "signature_members": {
         "sTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "sDesc": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "sIconResource": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "nIconIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -689,8 +814,9 @@
       "documentation": null,
       "signature_members": {
         "bSkipTransition": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -706,8 +832,9 @@
       "documentation": null,
       "signature_members": {
         "nChoiceID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -729,20 +856,24 @@
       "documentation": null,
       "signature_members": {
         "srConsoleMessage": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "srPCMessage": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "nIcon": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ePosition": {
-          "type": null,
-          "documentation": null
+          "type": "SFXHintPosition",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -752,8 +883,9 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -781,8 +913,9 @@
       "documentation": null,
       "signature_members": {
         "oCallback": {
-          "type": null,
-          "documentation": null
+          "type": "ChoiceDialogCallback",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -792,8 +925,9 @@
       "documentation": null,
       "signature_members": {
         "oCallback": {
-          "type": null,
-          "documentation": null
+          "type": "WeaponChoiceCallback",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -803,12 +937,14 @@
       "documentation": null,
       "signature_members": {
         "oWeapClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "oCallback": {
-          "type": null,
-          "documentation": null
+          "type": "WeaponChoiceCallback",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -818,8 +954,9 @@
       "documentation": null,
       "signature_members": {
         "nChoice": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -827,5 +964,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "UI",
   "documentation": null
 }

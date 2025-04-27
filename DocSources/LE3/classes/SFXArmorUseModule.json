@@ -4,19 +4,23 @@
   "variables": {
     "LastUpdateTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "UpdateFrequency": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bStopCustomTicking": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ArmorPiece": {
       "type": "EArmorTreasurePiece",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -30,8 +34,9 @@
       "documentation": null,
       "signature_members": {
         "User": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -41,8 +46,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -52,8 +58,9 @@
       "documentation": null,
       "signature_members": {
         "GameName": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 400
         }
       },
       "returntype": "bool",
@@ -67,5 +74,7 @@
     }
   },
   "states": {},
+  "classflags": 8392722,
+  "configname": "Game",
   "documentation": null
 }

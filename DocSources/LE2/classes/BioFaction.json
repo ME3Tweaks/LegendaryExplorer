@@ -4,19 +4,23 @@
   "variables": {
     "SquadRelations": {
       "type": "EBioFactionRelationship",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "SquadIcon": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bIsImmuneToPhysics": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SquadFaction": {
       "type": "EBioFactionTypes",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -24,8 +28,9 @@
       "documentation": null,
       "signature_members": {
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "EBioFactionTypes",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -35,8 +40,9 @@
       "documentation": null,
       "signature_members": {
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "EBioFactionTypes",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -44,5 +50,7 @@
     }
   },
   "states": {},
+  "classflags": 134221971,
+  "configname": "None",
   "documentation": null
 }

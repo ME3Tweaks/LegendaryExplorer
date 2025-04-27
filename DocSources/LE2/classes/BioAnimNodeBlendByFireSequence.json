@@ -4,31 +4,38 @@
   "variables": {
     "CachedAnimSeqLoop": {
       "type": "AnimNodeSequence",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "CachedAnimSeqEnd": {
       "type": "AnimNodeSequence",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "FlashLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "BlendDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "QueuedTransition": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "FlashCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CacheUpdated": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -36,8 +43,9 @@
       "documentation": null,
       "signature_members": {
         "Seq": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -47,8 +55,9 @@
       "documentation": null,
       "signature_members": {
         "Playing": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -56,5 +65,7 @@
     }
   },
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

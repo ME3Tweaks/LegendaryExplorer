@@ -4,38 +4,48 @@
   "variables": {
     "m_EmissionAreaWeights": {
       "type": "EmissionAreaWeight",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_ValidEmissionSet": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_EmissionAreaList": {
       "type": "BioEmissionAreaList",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BoneUpdateTickTag": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "m_bCheckAgainstValidEmissionSet": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bUseAttachedLocalSpace": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseRenderMeshAsSource": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_SpecificationType": {
       "type": "EmissionAreaSpecificationType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142610578,
+  "configname": "None",
   "documentation": null
 }

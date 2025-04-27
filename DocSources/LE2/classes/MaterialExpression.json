@@ -4,38 +4,48 @@
   "variables": {
     "Compound": {
       "type": "MaterialExpressionCompound",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bRealtimePreview": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bNeedToUpdatePreview": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIsParameterExpression": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bShowOutputNameOnPin": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bHidePreviewWindow": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaterialExpressionEditorX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 144115222435594240
     },
     "MaterialExpressionEditorY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 144115222435594240
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217875,
+  "configname": "None",
   "documentation": null
 }

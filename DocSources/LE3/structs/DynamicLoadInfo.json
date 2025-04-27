@@ -2,35 +2,43 @@
   "members": {
     "ObjectName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "RemotePlayerWithHandle": {
       "type": "PlayerController",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SeekFreePackageName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CachedObjectHandle": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LoadedLinkerRoot": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ObjectNetID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bReplicate": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bNetIDHasBeenSet": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "classdef": "SFXEngine",

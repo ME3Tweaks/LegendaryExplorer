@@ -4,91 +4,113 @@
   "variables": {
     "TemporaryComponents": {
       "type": "ParticleSystemComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71835656
     },
     "ReticleRot": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ReticleRotStart": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ReticleRotTopLeftClamp": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ReticleRotBottomRightClamp": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ScanReticleInputMovement": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ReticleEffect": {
       "type": "ParticleSystemComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     },
     "LandingSiteFeature": {
       "type": "SFXPlanetFeature",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ReticleDegreesPerSecond": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "InputAttenuation": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ControllerInputAttenuation": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ReticleScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ReticleMoveSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "SelectDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "fRescaleTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "fInitialScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "fNewScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "fMaxRescaleTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bMouseLock": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bCanLand": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bRescaling": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -114,8 +136,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -131,8 +154,9 @@
       "documentation": null,
       "signature_members": {
         "resize": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -148,20 +172,24 @@
       "documentation": null,
       "signature_members": {
         "OldCameraMode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 128
         },
         "PreserveTarget": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "TransitionTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "Transition": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode_Interpolate",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "SFXCameraMode",
@@ -189,8 +217,9 @@
       "documentation": null,
       "signature_members": {
         "Axis": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -200,8 +229,9 @@
       "documentation": null,
       "signature_members": {
         "Axis": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -217,8 +247,9 @@
       "documentation": null,
       "signature_members": {
         "bNewMouseLock": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -234,8 +265,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -245,8 +277,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -256,8 +289,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -265,5 +299,7 @@
     }
   },
   "states": {},
+  "classflags": 144703638,
+  "configname": "Input",
   "documentation": null
 }

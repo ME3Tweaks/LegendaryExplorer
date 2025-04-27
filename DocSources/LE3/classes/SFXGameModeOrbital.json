@@ -4,211 +4,263 @@
   "variables": {
     "TemporaryComponents": {
       "type": "ParticleSystemComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71835656
     },
     "Shake": {
       "type": "ScreenShakeStruct",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BigShake": {
       "type": "ScreenShakeStruct",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ReticleRot": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ReticleRotStart": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ReticleRotTopLeftClamp": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ReticleRotBottomRightClamp": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ProbeLaunchLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ProbeTargetLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ProbeControlPtLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ScanReticleInputMovement": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ReticleEffect": {
       "type": "ParticleSystemComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     },
     "ScanReticleEffect": {
       "type": "ParticleSystemComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     },
     "ScanWipeEffect": {
       "type": "ParticleSystemComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     },
     "ScanBlipEffect": {
       "type": "ParticleSystemComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     },
     "ScanDirectionEffect": {
       "type": "ParticleSystemComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     },
     "LaunchReticleEffect": {
       "type": "ParticleSystemComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     },
     "ProbeExplosionEffect": {
       "type": "ParticleSystemComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     },
     "ScanFFWaveForm": {
       "type": "ForceFeedbackWaveform",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AudioComponent": {
       "type": "WwiseAudioComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     },
     "PlanetRotationDegreesPerSecond": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ScanningPlanetRotationDegreesPerSecond": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ReticleDegreesPerSecond": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ScanningReticleDegreesPerSecond": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "InputAttenuation": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "RumbleScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MoveDist": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ControllerInputAttenuation": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ProbeControlAxisOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ProbeControlTargetOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ScannerRotateSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ProbeLaunchTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ProbeLaunchTimeMax": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ScanDist": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ScanDirectionPulseLifeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ScanDirectionPulseTimeToLive": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ReticleScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "Roll": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "fRescaleTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "fInitialScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "fNewScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "fMaxRescaleTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ImpactTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ImpactTimeMax": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlanetScanInputMovement": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "Scanning": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ProbeActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bRescaling": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bExiting": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ImpactActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "DrawProbeDebugLines": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bMouseLock": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -234,8 +286,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -245,8 +298,9 @@
       "documentation": null,
       "signature_members": {
         "resize": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -268,20 +322,24 @@
       "documentation": null,
       "signature_members": {
         "OldCameraMode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 128
         },
         "PreserveTarget": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "TransitionTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "Transition": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode_Interpolate",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "SFXCameraMode",
@@ -315,8 +373,9 @@
       "documentation": null,
       "signature_members": {
         "Axis": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -344,8 +403,9 @@
       "documentation": null,
       "signature_members": {
         "Axis": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -355,8 +415,9 @@
       "documentation": null,
       "signature_members": {
         "Axis": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -366,8 +427,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -377,8 +439,9 @@
       "documentation": null,
       "signature_members": {
         "fAttenuation": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -388,8 +451,9 @@
       "documentation": null,
       "signature_members": {
         "fDegPerSec": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -399,8 +463,9 @@
       "documentation": null,
       "signature_members": {
         "fDegPerSec": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -410,12 +475,14 @@
       "documentation": null,
       "signature_members": {
         "A": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "T": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -425,8 +492,9 @@
       "documentation": null,
       "signature_members": {
         "T": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -436,8 +504,9 @@
       "documentation": null,
       "signature_members": {
         "fDegPerSec": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -447,8 +516,9 @@
       "documentation": null,
       "signature_members": {
         "Scale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -458,8 +528,9 @@
       "documentation": null,
       "signature_members": {
         "A": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -469,8 +540,9 @@
       "documentation": null,
       "signature_members": {
         "fDegPerSec": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -480,16 +552,19 @@
       "documentation": null,
       "signature_members": {
         "X": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Y": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Z": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -499,16 +574,19 @@
       "documentation": null,
       "signature_members": {
         "X": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Y": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Z": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -518,16 +596,19 @@
       "documentation": null,
       "signature_members": {
         "X": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Y": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Z": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -537,16 +618,19 @@
       "documentation": null,
       "signature_members": {
         "X": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Y": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Z": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -556,8 +640,9 @@
       "documentation": null,
       "signature_members": {
         "T": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -573,16 +658,19 @@
       "documentation": null,
       "signature_members": {
         "PlanetData": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlanet",
+          "documentation": null,
+          "flags": 128
         },
         "pos": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Planet": {
-          "type": null,
-          "documentation": null
+          "type": "InterpActor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -616,8 +704,9 @@
       "documentation": null,
       "signature_members": {
         "bNewMouseLock": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -633,16 +722,19 @@
       "documentation": null,
       "signature_members": {
         "toLanding": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "flashIndicator": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -652,8 +744,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -663,8 +756,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -674,8 +768,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -685,8 +780,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -694,5 +790,7 @@
     }
   },
   "states": {},
+  "classflags": 10485782,
+  "configname": "Input",
   "documentation": null
 }

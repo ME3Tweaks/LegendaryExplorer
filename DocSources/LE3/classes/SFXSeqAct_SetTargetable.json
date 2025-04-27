@@ -4,11 +4,13 @@
   "variables": {
     "bTargetable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCombatTargetable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -26,5 +28,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

@@ -2,23 +2,28 @@
   "members": {
     "Keys": {
       "type": "KeyBind",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "KeysLocName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Subordinates": {
       "type": "SubordinateDesc",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Name": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCategory": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioSFHandler_PCOptions",

@@ -4,11 +4,13 @@
   "variables": {
     "CurveName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227075
     },
     "Points": {
       "type": "PresetGeneratedPoint",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -16,12 +18,14 @@
       "documentation": null,
       "signature_members": {
         "CurveIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Distribution": {
-          "type": null,
-          "documentation": null
+          "type": "DistributionFloat",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "bool",
@@ -29,5 +33,7 @@
     }
   },
   "states": {},
+  "classflags": 134222002,
+  "configname": "None",
   "documentation": null
 }

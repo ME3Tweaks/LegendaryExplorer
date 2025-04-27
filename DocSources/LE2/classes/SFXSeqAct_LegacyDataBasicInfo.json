@@ -4,19 +4,23 @@
   "variables": {
     "srClassNames": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Notoriety": {
       "type": "NotorietyMap",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Origin": {
       "type": "OriginMap",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "srShepard": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -34,5 +38,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

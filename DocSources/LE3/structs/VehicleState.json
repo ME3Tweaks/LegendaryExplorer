@@ -2,31 +2,38 @@
   "members": {
     "RBState": {
       "type": "RigidBodyState",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ServerView": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bServerHandbrake": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ServerBrake": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ServerGas": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ServerSteering": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ServerRise": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SVehicle",

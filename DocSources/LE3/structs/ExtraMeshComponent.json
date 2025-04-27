@@ -2,11 +2,13 @@
   "members": {
     "ExtraMeshes": {
       "type": "StaticMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827464
     },
     "Mod": {
       "type": "SFXWeaponMod",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXModule_WeaponModManager",

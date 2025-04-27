@@ -4,102 +4,128 @@
   "variables": {
     "ServerNonce": {
       "type": "QWord",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "OwningPlayerId": {
       "type": "UniqueNetId",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OwningPlayerName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 1077936128
     },
     "NumPublicConnections": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741824
     },
     "NumPrivateConnections": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741824
     },
     "NumOpenPublicConnections": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741824
     },
     "NumOpenPrivateConnections": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741824
     },
     "PingInMs": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741824
     },
     "MatchQuality": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741824
     },
     "BuildUniqueId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bShouldAdvertise": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741824
     },
     "bIsLanMatch": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741824
     },
     "bUsesStats": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741824
     },
     "bAllowJoinInProgress": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741824
     },
     "bAllowInvites": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741824
     },
     "bUsesPresence": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741824
     },
     "bAllowJoinViaPresence": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741824
     },
     "bAllowJoinViaPresenceFriendsOnly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741824
     },
     "bUsesArbitration": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741824
     },
     "bAntiCheatProtected": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741824
     },
     "bWasFromInvite": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bIsDedicated": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741824
     },
     "bHasSkillUpdateInProgress": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "GameState": {
       "type": "EOnlineGameState",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741826
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315058,
+  "configname": "None",
   "documentation": null
 }

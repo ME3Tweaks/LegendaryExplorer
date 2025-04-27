@@ -4,7 +4,8 @@
   "variables": {
     "bLoadingMovie": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -18,8 +19,9 @@
       "documentation": null,
       "signature_members": {
         "ModeSpecifier": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -33,5 +35,7 @@
     }
   },
   "states": {},
+  "classflags": 2097174,
+  "configname": "Input",
   "documentation": null
 }

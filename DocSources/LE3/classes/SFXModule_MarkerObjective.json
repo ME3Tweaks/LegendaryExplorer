@@ -4,10 +4,13 @@
   "variables": {
     "MarkerIconType": {
       "type": "EObjectiveMarkerIconType",
-      "documentation": null
+      "documentation": null,
+      "flags": 33
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134221970,
+  "configname": "None",
   "documentation": null
 }

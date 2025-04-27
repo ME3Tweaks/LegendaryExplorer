@@ -2,23 +2,28 @@
   "members": {
     "Times": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Num": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FirstTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "QueueHead": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioHintSystemBase",

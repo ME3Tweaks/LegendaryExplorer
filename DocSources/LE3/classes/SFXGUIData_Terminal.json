@@ -4,34 +4,43 @@
   "variables": {
     "TerminalItemArray": {
       "type": "TerminalItemData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "DefaultImage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "TerminalName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srTerminalTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srTerminalDescription": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srDefaultAButtonText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srDefaultBButtonText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136320150,
+  "configname": "UI",
   "documentation": null
 }

@@ -4,7 +4,8 @@
   "variables": {
     "AreaName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     }
   },
   "functions": {
@@ -16,5 +17,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

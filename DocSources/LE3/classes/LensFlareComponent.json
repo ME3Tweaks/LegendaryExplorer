@@ -4,67 +4,83 @@
   "variables": {
     "ReleaseResourcesFence": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "SourceColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Template": {
       "type": "LensFlare",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "PreviewInnerCone": {
       "type": "DrawLightConeComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633162
     },
     "PreviewOuterCone": {
       "type": "DrawLightConeComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633162
     },
     "PreviewRadius": {
       "type": "DrawLightRadiusComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633162
     },
     "OuterCone": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "InnerCone": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ConeFudgeFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "Radius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bAutoActivate": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bHasTranslucency": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bHasUnlitTranslucency": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bHasUnlitDistortion": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bUsesSceneColor": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -72,8 +88,9 @@
       "documentation": null,
       "signature_members": {
         "bInIsActive": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -83,8 +100,9 @@
       "documentation": null,
       "signature_members": {
         "InSourceColor": {
-          "type": null,
-          "documentation": null
+          "type": "LinearColor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -94,8 +112,9 @@
       "documentation": null,
       "signature_members": {
         "NewTemplate": {
-          "type": null,
-          "documentation": null
+          "type": "LensFlare",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -103,5 +122,7 @@
     }
   },
   "states": {},
+  "classflags": 2290094226,
+  "configname": "None",
   "documentation": null
 }

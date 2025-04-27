@@ -4,11 +4,13 @@
   "variables": {
     "m_DOFEffect": {
       "type": "DOFAndBloomEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 71311368
     },
     "m_bFromBrowserWheel": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -22,8 +24,9 @@
       "documentation": null,
       "signature_members": {
         "i_DOFEffect": {
-          "type": null,
-          "documentation": null
+          "type": "DOFAndBloomEffect",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -33,12 +36,14 @@
       "documentation": null,
       "signature_members": {
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -60,8 +65,9 @@
       "documentation": null,
       "signature_members": {
         "oMapData": {
-          "type": null,
-          "documentation": null
+          "type": "SFXAreaMapData",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -71,8 +77,9 @@
       "documentation": null,
       "signature_members": {
         "oMapData": {
-          "type": null,
-          "documentation": null
+          "type": "SFXAreaMapData",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -82,8 +89,9 @@
       "documentation": null,
       "signature_members": {
         "bFromBrowserWheel": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -103,5 +111,7 @@
     }
   },
   "states": {},
+  "classflags": 144703642,
+  "configname": "None",
   "documentation": null
 }

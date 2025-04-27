@@ -2,35 +2,43 @@
   "members": {
     "ChildName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SyncGroupMin": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SyncGroupMax": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TransitionDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AnimStartTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BlendInTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BlendOutTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXAnimNodeBlendByMoveTransition",

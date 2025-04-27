@@ -2,19 +2,23 @@
   "members": {
     "FullAssetPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "AssetClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AltCookedPackageName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AssetReference": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXAsyncAssetLoader",

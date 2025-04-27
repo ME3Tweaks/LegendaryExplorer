@@ -4,215 +4,268 @@
   "variables": {
     "VfTable_IUIDataStorePublisher": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "RowHeight": {
       "type": "UIScreenValue_Extent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MinColumnSize": {
       "type": "UIScreenValue_Extent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ColumnWidth": {
       "type": "UIScreenValue_Extent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "HeaderCellPadding": {
       "type": "UIScreenValue_Extent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "HeaderElementSpacing": {
       "type": "UIScreenValue_Extent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CellSpacing": {
       "type": "UIScreenValue_Extent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CellPadding": {
       "type": "UIScreenValue_Extent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Index": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "TopIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "MaxVisibleItems": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2236417
     },
     "ColumnCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RowCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ColumnAutoSizeMode": {
       "type": "ECellAutoSizeMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RowAutoSizeMode": {
       "type": "ECellAutoSizeMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CellLinkType": {
       "type": "ECellLinkType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "WrapType": {
       "type": "EListWrapBehavior",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bEnableMultiSelect": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bEnableVerticalScrollbar": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bInitializeScrollbars": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bAllowDisabledItemSelection": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSingleClickSubmission": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUpdateItemUnderCursor": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bHoverStateOverridesSelected": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bForceFullPageDisplay": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAllowColumnResizing": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDisplayDataBindings": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "bSortingList": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "VerticalScrollbar": {
       "type": "UIScrollbar",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GlobalCellStyle": {
       "type": "UIStyleReference",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ColumnHeaderStyle": {
       "type": "UIStyleReference",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ColumnHeaderBackgroundStyle": {
       "type": "UIStyleReference",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ItemOverlayStyle": {
       "type": "UIStyleReference",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ResizeColumn": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "SetIndexMutex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ValueChangeNotificationMutex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "DataSource": {
       "type": "UIDataStoreBinding",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "DataProvider": {
       "type": "UIListElementProvider",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "Items": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202498
     },
     "SelectedItems": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "BackgroundImageComponent": {
       "type": "UIComp_DrawImage",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "SortComponent": {
       "type": "UIComp_ListElementSorter",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "CellDataComponent": {
       "type": "UIComp_ListPresenterBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "SubmitDataSuccessCue": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SubmitDataFailedCue": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DecrementIndexCue": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "IncrementIndexCue": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SortAscendingCue": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SortDescendingCue": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "__OnSubmitSelection__Delegate": {
       "type": "OnSubmitSelection",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnListElementsSorted__Delegate": {
       "type": "OnListElementsSorted",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__ShouldDisableElement__Delegate": {
       "type": "ShouldDisableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnOverrideListElementState__Delegate": {
       "type": "OnOverrideListElementState",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -220,20 +273,24 @@
       "documentation": null,
       "signature_members": {
         "Sender": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "NewlyActiveState": {
-          "type": null,
-          "documentation": null
+          "type": "UIState",
+          "documentation": null,
+          "flags": 128
         },
         "PreviouslyActiveState": {
-          "type": null,
-          "documentation": null
+          "type": "UIState",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -243,16 +300,19 @@
       "documentation": null,
       "signature_members": {
         "Sender": {
-          "type": null,
-          "documentation": null
+          "type": "UIScrollbar",
+          "documentation": null,
+          "flags": 128
         },
         "PositionPerc": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -268,8 +328,9 @@
       "documentation": null,
       "signature_members": {
         "bShouldRenderColHeaders": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -315,8 +376,9 @@
       "documentation": null,
       "signature_members": {
         "bDispatchUpdates": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -350,12 +412,14 @@
       "documentation": null,
       "signature_members": {
         "out_BoundDataStores": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataStore",
+          "documentation": null,
+          "flags": 4194688
         },
         "BindingIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -377,8 +441,9 @@
       "documentation": null,
       "signature_members": {
         "out_BoundDataStores": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataStore",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -388,24 +453,29 @@
       "documentation": null,
       "signature_members": {
         "SourceDataStore": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataStore",
+          "documentation": null,
+          "flags": 128
         },
         "bValuesInvalidated": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "PropertyTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "SourceProvider": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 128
         },
         "ArrayIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -415,8 +485,9 @@
       "documentation": null,
       "signature_members": {
         "BindingIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -426,8 +497,9 @@
       "documentation": null,
       "signature_members": {
         "BindingIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "string",
@@ -437,12 +509,14 @@
       "documentation": null,
       "signature_members": {
         "MarkupText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "BindingIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -458,8 +532,9 @@
       "documentation": null,
       "signature_members": {
         "bShouldUpdateItemUnderCursor": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -469,8 +544,9 @@
       "documentation": null,
       "signature_members": {
         "ElementIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -480,8 +556,9 @@
       "documentation": null,
       "signature_members": {
         "ElementIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -491,8 +568,9 @@
       "documentation": null,
       "signature_members": {
         "ElementIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -502,12 +580,14 @@
       "documentation": null,
       "signature_members": {
         "NewTopIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bClampValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -517,16 +597,19 @@
       "documentation": null,
       "signature_members": {
         "bIncrementIndex": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bFullPage": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bHorizontalNavigation": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -536,16 +619,19 @@
       "documentation": null,
       "signature_members": {
         "NewIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bClampValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bSkipNotification": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -555,12 +641,14 @@
       "documentation": null,
       "signature_members": {
         "ItemValue": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "CellIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -570,8 +658,9 @@
       "documentation": null,
       "signature_members": {
         "ElementIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "EUIListElementState",
@@ -581,12 +670,14 @@
       "documentation": null,
       "signature_members": {
         "ElementIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "NewElementState": {
-          "type": null,
-          "documentation": null
+          "type": "EUIListElementState",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -596,12 +687,14 @@
       "documentation": null,
       "signature_members": {
         "ElementIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "CellIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "string",
@@ -623,8 +716,9 @@
       "documentation": null,
       "signature_members": {
         "ClickedCell": {
-          "type": null,
-          "documentation": null
+          "type": "CellHitDetectionInfo",
+          "documentation": null,
+          "flags": 400
         }
       },
       "returntype": "int",
@@ -634,8 +728,9 @@
       "documentation": null,
       "signature_members": {
         "bRequireValidIndex": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -651,16 +746,19 @@
       "documentation": null,
       "signature_members": {
         "RowIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "bColHeader": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bReturnUnformattedValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "float",
@@ -670,16 +768,19 @@
       "documentation": null,
       "signature_members": {
         "ColumnIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "bColHeader": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bReturnUnformattedValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "float",
@@ -689,8 +790,9 @@
       "documentation": null,
       "signature_members": {
         "NewRowCount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -700,8 +802,9 @@
       "documentation": null,
       "signature_members": {
         "NewColumnCount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -747,8 +850,9 @@
       "documentation": null,
       "signature_members": {
         "ElementToRemove": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -758,16 +862,19 @@
       "documentation": null,
       "signature_members": {
         "Sender": {
-          "type": null,
-          "documentation": null
+          "type": "UIScrollbar",
+          "documentation": null,
+          "flags": 128
         },
         "PositionChange": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bPositionMaxed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -777,20 +884,24 @@
       "documentation": null,
       "signature_members": {
         "Sender": {
-          "type": null,
-          "documentation": null
+          "type": "UIList",
+          "documentation": null,
+          "flags": 128
         },
         "ElementIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "CurrentState": {
-          "type": null,
-          "documentation": null
+          "type": "EUIListElementState",
+          "documentation": null,
+          "flags": 128
         },
         "NewElementState": {
-          "type": null,
-          "documentation": null
+          "type": "EUIListElementState",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "EUIListElementState",
@@ -800,12 +911,14 @@
       "documentation": null,
       "signature_members": {
         "Sender": {
-          "type": null,
-          "documentation": null
+          "type": "UIList",
+          "documentation": null,
+          "flags": 128
         },
         "ElementIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -815,8 +928,9 @@
       "documentation": null,
       "signature_members": {
         "Sender": {
-          "type": null,
-          "documentation": null
+          "type": "UIList",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -826,12 +940,14 @@
       "documentation": null,
       "signature_members": {
         "Sender": {
-          "type": null,
-          "documentation": null
+          "type": "UIList",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -839,5 +955,7 @@
     }
   },
   "states": {},
+  "classflags": 144704150,
+  "configname": "UI",
   "documentation": null
 }

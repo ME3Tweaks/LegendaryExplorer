@@ -2,31 +2,38 @@
   "members": {
     "m_PlotNames": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_GalaxyMapObject": {
       "type": "SFXGalaxyMapObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_actor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_Name": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_Visited": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_State": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_Visible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioCameraBehaviorGalaxy",

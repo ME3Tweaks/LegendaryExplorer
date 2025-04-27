@@ -2,15 +2,18 @@
   "members": {
     "ParamName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FloatParam": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "WaveParam": {
       "type": "SoundNodeWave",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "AudioComponent",

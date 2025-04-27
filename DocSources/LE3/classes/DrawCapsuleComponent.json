@@ -4,30 +4,38 @@
   "variables": {
     "CapsuleColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CapsuleMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CapsuleHeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CapsuleRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDrawWireCapsule": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDrawLitCapsule": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 2155884946,
+  "configname": "None",
   "documentation": null
 }

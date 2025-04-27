@@ -4,67 +4,83 @@
   "variables": {
     "SpringMaxForceTimeScale": {
       "type": "InterpCurveFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "SpringData": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "Component1": {
       "type": "PrimitiveComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633162
     },
     "BoneName1": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "Component2": {
       "type": "PrimitiveComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633162
     },
     "BoneName2": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "SceneIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "TimeSinceActivation": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "MinBodyMass": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "SpringSaturateDist": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SpringMaxForce": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaxForceMassRatio": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DampSaturateVel": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DampMaxForce": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bInHardware": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "bEnableForceMassRatio": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -78,28 +94,34 @@
       "documentation": null,
       "signature_members": {
         "InComponent1": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "InBoneName1": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Position1": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "InComponent2": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "InBoneName2": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Position2": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -107,5 +129,7 @@
     }
   },
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

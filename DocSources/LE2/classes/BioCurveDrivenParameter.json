@@ -4,23 +4,28 @@
   "variables": {
     "m_curve": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "sParameterName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "nmParameterName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bScaleToLifetime": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bLoop": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -28,12 +33,14 @@
       "documentation": null,
       "signature_members": {
         "fTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "fScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "float",
@@ -41,5 +48,7 @@
     }
   },
   "states": {},
+  "classflags": 142610578,
+  "configname": "None",
   "documentation": null
 }

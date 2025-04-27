@@ -2,35 +2,43 @@
   "members": {
     "Threshold": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Emissive": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Normal": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "EyeEmissive": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "FemaleEmissive": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "FemaleNormal": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "FemaleEyeEmissive": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Color": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioDefine",

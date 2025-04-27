@@ -4,51 +4,63 @@
   "variables": {
     "m_focusConfig": {
       "type": "BioZoomFocusConfig",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "m_magnificationConfig": {
       "type": "BioZoomMagnificationConfig",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "m_nCurrentMagnificationLevel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fFOVTarget": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fFOVRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fFOVMin": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fFOVMax": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fCamStickScalarTarget": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fCamStickScalarRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fCamStickScalarMin": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fFocusDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fFocusDistanceTarget": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -56,12 +68,14 @@
       "documentation": null,
       "signature_members": {
         "fDistance": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "pWorldInfo": {
-          "type": null,
-          "documentation": null
+          "type": "BioWorldInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -77,8 +91,9 @@
       "documentation": null,
       "signature_members": {
         "PPSettings": {
-          "type": null,
-          "documentation": null
+          "type": "PostProcessSettings",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -88,16 +103,19 @@
       "documentation": null,
       "signature_members": {
         "TimeDelta": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "FOV": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "CamStickScalar": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -105,5 +123,7 @@
     }
   },
   "states": {},
+  "classflags": 134217878,
+  "configname": "Game",
   "documentation": null
 }

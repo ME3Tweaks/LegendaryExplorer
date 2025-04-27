@@ -2,11 +2,13 @@
   "members": {
     "vPos": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioMorphFace",

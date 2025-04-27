@@ -4,43 +4,53 @@
   "variables": {
     "m_aGestures": {
       "type": "BioGestureData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "nmStartingPoseSet": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nmStartingPoseAnim": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fStartPoseOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bARPUGenerated": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bAutoGenFemaleTrack": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bUseDynamicAnimsets": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ePoseFilter": {
       "type": "EBioTrackAllPoseGroups",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "eStartingPose": {
       "type": "EBioGestureAllPoses",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "eOverrideType": {
       "type": "EBioGestureOverrideType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -76,5 +86,7 @@
     }
   },
   "states": {},
+  "classflags": 136323218,
+  "configname": "None",
   "documentation": null
 }

@@ -4,7 +4,8 @@
   "variables": {
     "VfTable_IUIListElementCellProvider": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     }
   },
   "functions": {
@@ -18,8 +19,9 @@
       "documentation": null,
       "signature_members": {
         "InPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -27,5 +29,7 @@
     }
   },
   "states": {},
+  "classflags": 136315034,
+  "configname": "None",
   "documentation": null
 }

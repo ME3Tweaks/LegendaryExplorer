@@ -2,11 +2,13 @@
   "members": {
     "HenchTag": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PackageName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXGame",

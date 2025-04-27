@@ -4,14 +4,18 @@
   "variables": {
     "Font": {
       "type": "Font",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FontTexturePage": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134226066,
+  "configname": "None",
   "documentation": null
 }

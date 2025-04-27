@@ -2,15 +2,18 @@
   "members": {
     "Atoms": {
       "type": "BoneAtom",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Attachment": {
       "type": "Attachment",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633152
     },
     "LOD": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "RvrCEffectModuleSpawnActorInstance",

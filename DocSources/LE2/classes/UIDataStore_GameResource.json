@@ -4,15 +4,18 @@
   "variables": {
     "VfTable_IUIListElementProvider": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "ElementProviderTypes": {
       "type": "GameResourceDataProvider",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "ListElementProviders": {
       "type": "MultiMap_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     }
   },
   "functions": {
@@ -20,16 +23,19 @@
       "documentation": null,
       "signature_members": {
         "ProviderTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "SearchField": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ValueToSearchFor": {
-          "type": null,
-          "documentation": null
+          "type": "UIProviderScriptFieldValue",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "int",
@@ -39,20 +45,24 @@
       "documentation": null,
       "signature_members": {
         "ProviderTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "SearchField": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ProviderIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "out_FieldValue": {
-          "type": null,
-          "documentation": null
+          "type": "UIProviderScriptFieldValue",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -62,12 +72,14 @@
       "documentation": null,
       "signature_members": {
         "ProviderTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ProviderFieldTags": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -77,12 +89,14 @@
       "documentation": null,
       "signature_members": {
         "ProviderTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "out_Providers": {
-          "type": null,
-          "documentation": null
+          "type": "UIResourceDataProvider",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -92,8 +106,9 @@
       "documentation": null,
       "signature_members": {
         "ProviderTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -103,12 +118,14 @@
       "documentation": null,
       "signature_members": {
         "ProviderIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "InstanceIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -118,8 +135,9 @@
       "documentation": null,
       "signature_members": {
         "ProviderTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -127,5 +145,7 @@
     }
   },
   "states": {},
+  "classflags": 136315038,
+  "configname": "Game",
   "documentation": null
 }

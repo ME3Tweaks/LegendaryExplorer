@@ -4,38 +4,48 @@
   "variables": {
     "Brightness": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "ColorOverLife": {
       "type": "RawDistributionVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "Radius": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "m_pLightClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bCastShadows": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bCastStaticShadows": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bCastDynamicShadows": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bCastCompositeShadow": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144707730,
+  "configname": "None",
   "documentation": null
 }

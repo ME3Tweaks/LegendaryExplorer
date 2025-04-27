@@ -4,47 +4,58 @@
   "variables": {
     "CustomActionClasses": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "CustomActions": {
       "type": "BioCustomAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 71442433
     },
     "m_AIGoHereTarget": {
       "type": "NavigationPoint",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nMantleCostModifier": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LastShotAtTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nEnabledFlags": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fNextTimeForReachableCheck": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bAIGoHereTargetArrived": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bDisableAIOnRagdoll": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bCanSkipNodes": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentCustomAction": {
       "type": "EAICustomAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -58,8 +69,9 @@
       "documentation": null,
       "signature_members": {
         "vMove": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -93,12 +105,14 @@
       "documentation": null,
       "signature_members": {
         "vLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "fOffset": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -108,8 +122,9 @@
       "documentation": null,
       "signature_members": {
         "vSteering": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -119,8 +134,9 @@
       "documentation": null,
       "signature_members": {
         "vSteering": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -130,12 +146,14 @@
       "documentation": null,
       "signature_members": {
         "oActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 384
         },
         "vLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -145,12 +163,14 @@
       "documentation": null,
       "signature_members": {
         "bEnable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nRequestedBy": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -166,8 +186,9 @@
       "documentation": null,
       "signature_members": {
         "CAction": {
-          "type": null,
-          "documentation": null
+          "type": "EAICustomAction",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -177,8 +198,9 @@
       "documentation": null,
       "signature_members": {
         "pAction": {
-          "type": null,
-          "documentation": null
+          "type": "BioCustomAction",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -188,12 +210,14 @@
       "documentation": null,
       "signature_members": {
         "oActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "oLevel": {
-          "type": null,
-          "documentation": null
+          "type": "Level",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -203,8 +227,9 @@
       "documentation": null,
       "signature_members": {
         "oLevel": {
-          "type": null,
-          "documentation": null
+          "type": "Level",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -212,5 +237,7 @@
     }
   },
   "states": {},
+  "classflags": 211813014,
+  "configname": "AI",
   "documentation": null
 }

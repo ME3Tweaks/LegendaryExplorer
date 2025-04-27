@@ -4,39 +4,48 @@
   "variables": {
     "FuseSound": {
       "type": "WwiseEventPairObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "GrenadeWarningStartSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "GrenadeWarningStopSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ProjectileSpeedMin": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ProjectileSpeedMax": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RotationsPerSecond": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SpeedThresholdFuseLength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bExploded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108872
     },
     "bSpeedThresholdFuseSet": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -44,12 +53,14 @@
       "documentation": null,
       "signature_members": {
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -59,16 +70,19 @@
       "documentation": null,
       "signature_members": {
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Wall": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "WallComp": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -84,8 +98,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -95,16 +110,19 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -114,16 +132,19 @@
       "documentation": null,
       "signature_members": {
         "HitActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -139,20 +160,24 @@
       "documentation": null,
       "signature_members": {
         "oCaster": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "fTravelSpeed": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "fRadius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "oPower": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerCustomAction",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -160,5 +185,7 @@
     }
   },
   "states": {},
+  "classflags": 10485782,
+  "configname": "Game",
   "documentation": null
 }

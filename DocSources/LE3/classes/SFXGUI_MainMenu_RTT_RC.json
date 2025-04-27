@@ -4,7 +4,8 @@
   "variables": {
     "ReplacementTextureSymbol": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -18,8 +19,9 @@
       "documentation": null,
       "signature_members": {
         "aMessage": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGUI_MainMenu_Message_Image",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -29,16 +31,19 @@
       "documentation": null,
       "signature_members": {
         "strTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "strBody": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "nMessageId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "GFxValue",
@@ -66,12 +71,14 @@
       "documentation": null,
       "signature_members": {
         "sMessage": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -81,8 +88,9 @@
       "documentation": null,
       "signature_members": {
         "bVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -92,8 +100,9 @@
       "documentation": null,
       "signature_members": {
         "bVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -103,8 +112,9 @@
       "documentation": null,
       "signature_members": {
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -114,8 +124,9 @@
       "documentation": null,
       "signature_members": {
         "OrderedMessageIds": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "int",
@@ -125,16 +136,19 @@
       "documentation": null,
       "signature_members": {
         "strTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "strBody": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "nMessageId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -144,8 +158,9 @@
       "documentation": null,
       "signature_members": {
         "aMessage": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGUI_MainMenu_Message_Image",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -153,5 +168,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "UI",
   "documentation": null
 }

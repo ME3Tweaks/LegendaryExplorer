@@ -4,7 +4,8 @@
   "variables": {
     "bEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -18,8 +19,9 @@
       "documentation": null,
       "signature_members": {
         "Record": {
-          "type": null,
-          "documentation": null
+          "type": "CheckpointRecord",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -29,8 +31,9 @@
       "documentation": null,
       "signature_members": {
         "Record": {
-          "type": null,
-          "documentation": null
+          "type": "CheckpointRecord",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -38,5 +41,7 @@
     }
   },
   "states": {},
+  "classflags": 144704178,
+  "configname": "None",
   "documentation": null
 }

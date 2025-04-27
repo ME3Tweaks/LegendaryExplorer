@@ -4,18 +4,23 @@
   "variables": {
     "AudioComponent": {
       "type": "AudioComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67764235
     },
     "bAutoPlay": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsPlaying": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144704154,
+  "configname": "None",
   "documentation": null
 }

@@ -2,47 +2,58 @@
   "members": {
     "AccessoryMeshes": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "MorphFeatures": {
       "type": "MorphFeatureSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "OffsetBones": {
       "type": "OffsetBoneSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "LOD0Vertices": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "LOD1Vertices": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "LOD2Vertices": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "LOD3Vertices": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "ScalarParameters": {
       "type": "ScalarParameterSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "VectorParameters": {
       "type": "VectorParameterSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "TextureParameters": {
       "type": "TextureParameterSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "HairMesh": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXSaveGame",

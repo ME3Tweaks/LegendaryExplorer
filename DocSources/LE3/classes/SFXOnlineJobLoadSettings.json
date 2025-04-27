@@ -4,19 +4,23 @@
   "variables": {
     "Settings": {
       "type": "SettingsPair",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__LoadSettingsCallback__Delegate": {
       "type": "LoadSettingsCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "CallbackArg": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RunningErrorCode": {
       "type": "OnlineJobErrorCode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -24,12 +28,14 @@
       "documentation": null,
       "signature_members": {
         "InCallback": {
-          "type": null,
-          "documentation": null
+          "type": "LoadSettingsCallback",
+          "documentation": null,
+          "flags": 4194432
         },
         "InCallbackArg": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXOnlineJobLoadSettings",
@@ -39,20 +45,24 @@
       "documentation": null,
       "signature_members": {
         "errorCode": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineJobErrorCode",
+          "documentation": null,
+          "flags": 128
         },
         "InJobId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "InSettings": {
-          "type": null,
-          "documentation": null
+          "type": "SettingsPair",
+          "documentation": null,
+          "flags": 4194432
         },
         "InCallbackArg": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -72,5 +82,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "Game",
   "documentation": null
 }

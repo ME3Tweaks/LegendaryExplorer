@@ -2,23 +2,28 @@
   "members": {
     "ImageURL": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "TrackingID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "offerId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MessageTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MessageText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXSaveManagerMP",

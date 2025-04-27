@@ -2,31 +2,38 @@
   "members": {
     "MaterialInstances": {
       "type": "MaterialInstance",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Offset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Rotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Actor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SpawnTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Lifetime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CopyDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "RvrCEffectModuleSpawnActorInstance",

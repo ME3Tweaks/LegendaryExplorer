@@ -2,11 +2,13 @@
   "members": {
     "OrClauses": {
       "type": "OnlineGameSearchORClause",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SortClauses": {
       "type": "OnlineGameSearchSortClause",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "classdef": "OnlineGameSearch",

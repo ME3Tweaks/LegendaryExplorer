@@ -2,11 +2,13 @@
   "members": {
     "Angle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TargetWeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "MorphNodeWeightByBoneAngle",

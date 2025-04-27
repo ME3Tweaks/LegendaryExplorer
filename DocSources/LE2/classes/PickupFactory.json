@@ -4,47 +4,58 @@
   "variables": {
     "InventoryType": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     },
     "PickupMesh": {
       "type": "PrimitiveComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     },
     "ReplacementFactory": {
       "type": "PickupFactory",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OriginalFactory": {
       "type": "PickupFactory",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RespawnEffectTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxDesireability": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOnlyReplicateHidden": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bPickupHidden": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     },
     "bPredictRespawns": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsSuperItem": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bRespawnPaused": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -94,8 +105,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -105,8 +117,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -116,8 +129,9 @@
       "documentation": null,
       "signature_members": {
         "MaxWait": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -127,8 +141,9 @@
       "documentation": null,
       "signature_members": {
         "Recipient": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -138,12 +153,14 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "PathWeight": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -177,8 +194,9 @@
       "documentation": null,
       "signature_members": {
         "W": {
-          "type": null,
-          "documentation": null
+          "type": "WorldInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -218,8 +236,9 @@
       "documentation": null,
       "signature_members": {
         "VarName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -233,8 +252,9 @@
           "documentation": null,
           "signature_members": {
             "NextStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -244,8 +264,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -273,8 +294,9 @@
           "documentation": null,
           "signature_members": {
             "MaxWait": {
-              "type": null,
-              "documentation": null
+              "type": "float",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -289,8 +311,9 @@
           "documentation": null,
           "signature_members": {
             "NextStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -300,8 +323,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -317,8 +341,9 @@
           "documentation": null,
           "signature_members": {
             "MaxWait": {
-              "type": null,
-              "documentation": null
+              "type": "float",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -333,8 +358,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -355,8 +381,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -372,20 +399,24 @@
           "documentation": null,
           "signature_members": {
             "Other": {
-              "type": null,
-              "documentation": null
+              "type": "Actor",
+              "documentation": null,
+              "flags": 128
             },
             "OtherComp": {
-              "type": null,
-              "documentation": null
+              "type": "PrimitiveComponent",
+              "documentation": null,
+              "flags": 67108992
             },
             "HitLocation": {
-              "type": null,
-              "documentation": null
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
             },
             "HitNormal": {
-              "type": null,
-              "documentation": null
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -401,8 +432,9 @@
           "documentation": null,
           "signature_members": {
             "Other": {
-              "type": null,
-              "documentation": null
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -412,8 +444,9 @@
           "documentation": null,
           "signature_members": {
             "MaxWait": {
-              "type": null,
-              "documentation": null
+              "type": "float",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -423,12 +456,14 @@
           "documentation": null,
           "signature_members": {
             "Other": {
-              "type": null,
-              "documentation": null
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
             },
             "PathWeight": {
-              "type": null,
-              "documentation": null
+              "type": "float",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -438,5 +473,7 @@
       "documentation": null
     }
   },
+  "classflags": 144706195,
+  "configname": "None",
   "documentation": null
 }

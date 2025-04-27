@@ -13,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -22,5 +23,7 @@
     }
   },
   "states": {},
+  "classflags": 2097174,
+  "configname": "UI",
   "documentation": null
 }

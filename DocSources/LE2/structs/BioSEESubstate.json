@@ -2,31 +2,38 @@
   "members": {
     "VfTable": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8400898
     },
     "nGlobalBool": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bNewState": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bUseParam": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bParentTypeOr": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nParentIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "lstSiblingIndices": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     }
   },
   "classdef": "BioDefine",

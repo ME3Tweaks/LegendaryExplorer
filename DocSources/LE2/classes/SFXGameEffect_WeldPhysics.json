@@ -4,23 +4,28 @@
   "variables": {
     "Caster": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CrustTemplate": {
       "type": "BioVFXTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CrustEffect": {
       "type": "BioVisualEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bFreezeSucceeded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CustomActionType": {
       "type": "EAICustomAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -44,5 +49,7 @@
     }
   },
   "states": {},
+  "classflags": 18,
+  "configname": "None",
   "documentation": null
 }

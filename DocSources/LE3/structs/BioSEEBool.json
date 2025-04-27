@@ -2,19 +2,23 @@
   "members": {
     "VfTable": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8400898
     },
     "nGlobalBool": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bNewState": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bUseParam": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioDefine",

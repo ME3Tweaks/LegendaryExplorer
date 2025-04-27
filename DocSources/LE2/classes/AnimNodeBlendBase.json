@@ -4,15 +4,18 @@
   "variables": {
     "Children": {
       "type": "AnimBlendChild",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303240
     },
     "bFixNumChildren": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BlendTypeAlpha": {
       "type": "AlphaBlendType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -32,16 +35,19 @@
       "documentation": null,
       "signature_members": {
         "bLoop": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "Rate": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "StartTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -49,5 +55,7 @@
     }
   },
   "states": {},
+  "classflags": 144703635,
+  "configname": "None",
   "documentation": null
 }

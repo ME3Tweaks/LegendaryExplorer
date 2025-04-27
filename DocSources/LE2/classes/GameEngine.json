@@ -4,87 +4,108 @@
   "variables": {
     "LastURL": {
       "type": "URL",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "LastRemoteURL": {
       "type": "URL",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PendingLevelPlayerControllerClassName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "ServerActors": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "TravelURL": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "LevelsToLoadForPendingMapChange": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "LoadedLevelsForPendingMapChange": {
       "type": "Level",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "PendingMapChangeFailureDescription": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "PendingLevelStreamingStatusUpdates": {
       "type": "LevelStreamingStatus",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "ObjectReferencers": {
       "type": "ObjectReferencer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "PackagesToFullyLoad": {
       "type": "FullyLoadedPackagesInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "NamedNetDrivers": {
       "type": "NamedNetDriver",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202498
     },
     "GPendingLevel": {
       "type": "PendingLevel",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OnlineSubsystem": {
       "type": "OnlineSubsystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxDeltaTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nSkipFrames": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NumPendingNonLatentOcclusionFrames": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bWorldWasLoadedThisTick": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bShouldCommitPendingMapChange": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bClearAnimSetLinkupCachesOnLoadMap": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "TravelType": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -110,8 +131,9 @@
       "documentation": null,
       "signature_members": {
         "nFrames": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -121,8 +143,9 @@
       "documentation": null,
       "signature_members": {
         "NetDriverName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -132,8 +155,9 @@
       "documentation": null,
       "signature_members": {
         "NetDriverName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -141,5 +165,7 @@
     }
   },
   "states": {},
+  "classflags": 136315038,
+  "configname": "Engine",
   "documentation": null
 }

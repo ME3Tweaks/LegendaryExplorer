@@ -2,47 +2,58 @@
   "members": {
     "LinkedVariables": {
       "type": "SequenceVariable",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "LinkDesc": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ExpectedType": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LinkVar": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PropertyName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CachedProperty": {
       "type": "Property",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "MinVars": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxVars": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bWriteable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bModifiesLinkedObject": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAllowAnyType": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SequenceOp",

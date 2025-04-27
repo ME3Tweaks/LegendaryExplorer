@@ -2,11 +2,13 @@
   "members": {
     "InputKeyName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ModifierKeyFlags": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "UIRoot",

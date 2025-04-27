@@ -2,7 +2,8 @@
   "members": {
     "AnimName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     }
   },
   "classdef": "BioPawn",

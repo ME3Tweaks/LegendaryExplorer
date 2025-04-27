@@ -7,12 +7,14 @@
       "documentation": null,
       "signature_members": {
         "bAllow": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bUpdateServer": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -58,8 +60,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -93,8 +96,9 @@
       "documentation": null,
       "signature_members": {
         "bEnable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -104,8 +108,9 @@
       "documentation": null,
       "signature_members": {
         "Enabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -115,8 +120,9 @@
       "documentation": null,
       "signature_members": {
         "allAvailableDLCs": {
-          "type": null,
-          "documentation": null
+          "type": "MPDLCInfo",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -126,8 +132,9 @@
       "documentation": null,
       "signature_members": {
         "protocolVersion": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -137,8 +144,9 @@
       "documentation": null,
       "signature_members": {
         "serverRulesVersion": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -154,12 +162,14 @@
       "documentation": null,
       "signature_members": {
         "missingDLCs": {
-          "type": null,
-          "documentation": null
+          "type": "MPDLCInfo",
+          "documentation": null,
+          "flags": 4194688
         },
         "bInvitee": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -175,8 +185,9 @@
       "documentation": null,
       "signature_members": {
         "wasKicked": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -190,5 +201,7 @@
     }
   },
   "states": {},
+  "classflags": 134234259,
+  "configname": "None",
   "documentation": null
 }

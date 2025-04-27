@@ -2,31 +2,38 @@
   "members": {
     "m_LocalEmissionAreas": {
       "type": "LocalEmissionAreaWeight",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "m_EmissionAreaPreviousWorldToLocal": {
       "type": "Matrix",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "m_EmissionAreaPreviousWorldToLocalValid": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "m_NextEmissionAreas": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "m_CachedSpawnMeshes": {
       "type": "MeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "m_pOwningModule": {
       "type": "BioParticleModuleLocationAttachedMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_CachedNumSpawnMeshes": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioParticleModuleLocationAttachedMesh",

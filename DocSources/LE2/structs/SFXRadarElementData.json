@@ -2,39 +2,48 @@
   "members": {
     "vActorLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "vPosition": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nSize": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nRelativeZ": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bLocked": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bUpdate": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bUpdateLock": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "eRadarType": {
       "type": "EBioRadarType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXSFHandler_PowerWheel",

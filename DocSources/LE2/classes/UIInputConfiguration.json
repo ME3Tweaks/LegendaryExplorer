@@ -4,11 +4,13 @@
   "variables": {
     "WidgetInputAliases": {
       "type": "UIInputAliasClassMap",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210690
     },
     "AxisEmulationDefinitions": {
       "type": "UIAxisEmulationDefinition",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210690
     }
   },
   "functions": {
@@ -26,5 +28,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "Input",
   "documentation": null
 }

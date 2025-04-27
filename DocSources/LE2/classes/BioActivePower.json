@@ -4,135 +4,168 @@
   "variables": {
     "m_vOriginalCameraLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_rOriginalCameraRotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_vLocationToAimAt": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_oPower": {
       "type": "BioPower",
-      "documentation": null
+      "documentation": null,
+      "flags": 67117056
     },
     "m_oCaster": {
       "type": "Pawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_oCasterAsBioPawn": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_oCasterBehavior": {
       "type": "BioEpicPawnBehavior",
-      "documentation": null
+      "documentation": null,
+      "flags": 67117056
     },
     "m_oCasterAsPlayerController": {
       "type": "BioPlayerController",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_oAnimSet": {
       "type": "AnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_oTargetToAimAt": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nReservationID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fPowerStateElapsed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fMaxWaitTimeForAnimation": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_fCurrentWaitTimeForAnimation": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fCastingBeamTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nTag": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bCasterIsHenchman": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bSkipPowerCooldown": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_bManualIgnoreCooldown": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bUsePowerReservation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bInstantPowerUse": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bPlayAnimations": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bAnimationReadyForPowerRelease": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bReleaseAnimEnded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bWaitingForAnimationToStart": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bShowPowerAiming": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bEnablePowerCooldown": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bShowPowerImpactText": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bDisplayingCastingBeam": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bPlayerOrderedPowerUse": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bIgnoreSuppression": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_ePowerState": {
       "type": "EBioPowerState",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_ePreviousCoverAction": {
       "type": "ECoverAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -146,16 +179,19 @@
       "documentation": null,
       "signature_members": {
         "Target": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "Caster": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "Power": {
-          "type": null,
-          "documentation": null
+          "type": "BioPower",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -213,12 +249,14 @@
       "documentation": null,
       "signature_members": {
         "bOrderedByPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bIgnoreSuppression": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -228,8 +266,9 @@
       "documentation": null,
       "signature_members": {
         "vLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -239,8 +278,9 @@
       "documentation": null,
       "signature_members": {
         "oTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -250,8 +290,9 @@
       "documentation": null,
       "signature_members": {
         "bOnlyCancelIfCasting": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -265,5 +306,7 @@
     }
   },
   "states": {},
+  "classflags": 142606486,
+  "configname": "Game",
   "documentation": null
 }

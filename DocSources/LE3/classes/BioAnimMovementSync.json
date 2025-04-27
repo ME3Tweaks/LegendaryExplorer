@@ -4,14 +4,18 @@
   "variables": {
     "MovementNodes": {
       "type": "BioAnimMovementSyncNode",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "bInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217882,
+  "configname": "None",
   "documentation": null
 }

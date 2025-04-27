@@ -4,59 +4,73 @@
   "variables": {
     "Aim": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PreviousAim": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "HorizontalRange": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "VerticalRange": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AngleOffset": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AnimName_LU": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AnimName_LC": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AnimName_LD": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AnimName_CU": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AnimName_CC": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AnimName_CD": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AnimName_RU": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AnimName_RC": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AnimName_RD": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -68,5 +82,7 @@
     }
   },
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

@@ -4,55 +4,68 @@
   "variables": {
     "CollisionDisableTable": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "Bodies": {
       "type": "RB_BodyInstance",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303178
     },
     "Constraints": {
       "type": "RB_ConstraintInstance",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303178
     },
     "Owner": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "RootBodyIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "LinearSpringScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "LinearDampingScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "LinearForceLimitScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "AngularSpringScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "AngularDampingScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "AngularForceLimitScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bInitBodies": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bHasFixedBody": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -60,12 +73,14 @@
       "documentation": null,
       "signature_members": {
         "ConName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "InAsset": {
-          "type": null,
-          "documentation": null
+          "type": "PhysicsAsset",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "RB_ConstraintInstance",
@@ -75,12 +90,14 @@
       "documentation": null,
       "signature_members": {
         "BodyName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "InAsset": {
-          "type": null,
-          "documentation": null
+          "type": "PhysicsAsset",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "RB_BodyInstance",
@@ -90,12 +107,14 @@
       "documentation": null,
       "signature_members": {
         "bNewFixed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "SkelMesh": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -105,12 +124,14 @@
       "documentation": null,
       "signature_members": {
         "bNewBlockRigidBody": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "SkelMesh": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -120,16 +141,19 @@
       "documentation": null,
       "signature_members": {
         "bNewBlockRigidBody": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "BoneNames": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194432
         },
         "SkelMesh": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -139,24 +163,29 @@
       "documentation": null,
       "signature_members": {
         "bEnable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "BoneNames": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194432
         },
         "InBoneLinearSpring": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "InBoneAngularSpring": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "SkelMeshComp": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -166,24 +195,29 @@
       "documentation": null,
       "signature_members": {
         "bEnableSwingDrive": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bEnableTwistDrive": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "BoneNames": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194432
         },
         "SkelMeshComp": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "bSetOtherBodiesToComplement": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -193,24 +227,29 @@
       "documentation": null,
       "signature_members": {
         "bEnableSwingDrive": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bEnableTwistDrive": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "BoneNames": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194432
         },
         "SkelMeshComp": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "bSetOtherBodiesToComplement": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -220,24 +259,29 @@
       "documentation": null,
       "signature_members": {
         "InSpring": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "InDamping": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "InForceLimit": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "SkelMesh": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67109008
         },
         "bSkipFullAnimWeightBodies": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -247,20 +291,24 @@
       "documentation": null,
       "signature_members": {
         "bEnableSwingDrive": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bEnableTwistDrive": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "SkelMeshComp": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "bSkipFullAnimWeightBodies": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -270,20 +318,24 @@
       "documentation": null,
       "signature_members": {
         "bEnableSwingDrive": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bEnableTwistDrive": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "SkelMesh": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67109008
         },
         "bSkipFullAnimWeightBodies": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -293,20 +345,24 @@
       "documentation": null,
       "signature_members": {
         "InBoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 386
         },
         "InAsset": {
-          "type": null,
-          "documentation": null
+          "type": "PhysicsAsset",
+          "documentation": null,
+          "flags": 128
         },
         "InSkelMesh": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "InbInstanceAlwaysFullAnimWeight": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -316,24 +372,29 @@
       "documentation": null,
       "signature_members": {
         "bNewFixed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "BoneNames": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194432
         },
         "SkelMesh": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "bSetOtherBodiesToComplement": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bSkipFullAnimWeightBodies": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -343,8 +404,9 @@
       "documentation": null,
       "signature_members": {
         "bNewFixed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -354,16 +416,19 @@
       "documentation": null,
       "signature_members": {
         "InBoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "InAsset": {
-          "type": null,
-          "documentation": null
+          "type": "PhysicsAsset",
+          "documentation": null,
+          "flags": 128
         },
         "InSkelMesh": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMesh",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -373,16 +438,19 @@
       "documentation": null,
       "signature_members": {
         "InAngularSpringScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "InAngularDampingScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "InAngularForceLimitScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -392,16 +460,19 @@
       "documentation": null,
       "signature_members": {
         "InLinearSpringScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "InLinearDampingScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "InLinearForceLimitScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -409,5 +480,7 @@
     }
   },
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

@@ -4,7 +4,8 @@
   "variables": {
     "srGameOverString": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -24,12 +25,14 @@
       "documentation": null,
       "signature_members": {
         "Behavior": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
         },
         "attributesClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -48,5 +51,7 @@
       "documentation": null
     }
   },
+  "classflags": 144703670,
+  "configname": "Game",
   "documentation": null
 }

@@ -2,19 +2,23 @@
   "members": {
     "SecondsSinceMidnight": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Day": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Month": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Year": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXSaveGame",

@@ -4,19 +4,23 @@
   "variables": {
     "GameOverString": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "BadResumeGameText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "AcceptBadResumeGameText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "AbleToLoad": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -42,8 +46,9 @@
       "documentation": null,
       "signature_members": {
         "sText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -53,12 +58,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Context": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -74,8 +81,9 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -91,8 +99,9 @@
       "documentation": null,
       "signature_members": {
         "oMovie": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGUIMovie",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -114,8 +123,9 @@
       "documentation": null,
       "signature_members": {
         "oMovie": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGUIMovie",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -131,8 +141,9 @@
       "documentation": null,
       "signature_members": {
         "messageId": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -146,5 +157,7 @@
     }
   },
   "states": {},
+  "classflags": 2097174,
+  "configname": "UI",
   "documentation": null
 }

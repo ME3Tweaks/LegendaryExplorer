@@ -2,23 +2,28 @@
   "members": {
     "sPreviousFriendRankBlob": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "aRankResults": {
       "type": "LeaderboardRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "nPreviousLocalUserRank": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "srFriendBeatMe": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "srFriendBeatByMe": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXOnlineComponentBlazeLeaderboard",

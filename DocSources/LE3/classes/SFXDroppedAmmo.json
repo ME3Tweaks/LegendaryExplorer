@@ -4,23 +4,28 @@
   "variables": {
     "AmmoMesh": {
       "type": "StaticMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "AmmoPickupSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LightEnvironment": {
       "type": "LightEnvironmentComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "DecayTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bPooled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -28,8 +33,9 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -39,12 +45,14 @@
       "documentation": null,
       "signature_members": {
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "FloorActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -72,8 +80,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -83,8 +92,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -94,8 +104,9 @@
       "documentation": null,
       "signature_members": {
         "ChkPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -105,8 +116,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -116,12 +128,14 @@
       "documentation": null,
       "signature_members": {
         "CollisionRadius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "CollisionHeight": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -131,8 +145,9 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -158,8 +173,9 @@
           "documentation": null,
           "signature_members": {
             "Other": {
-              "type": null,
-              "documentation": null
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -169,20 +185,24 @@
           "documentation": null,
           "signature_members": {
             "Other": {
-              "type": null,
-              "documentation": null
+              "type": "Actor",
+              "documentation": null,
+              "flags": 128
             },
             "OtherComp": {
-              "type": null,
-              "documentation": null
+              "type": "PrimitiveComponent",
+              "documentation": null,
+              "flags": 67108992
             },
             "HitLocation": {
-              "type": null,
-              "documentation": null
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
             },
             "HitNormal": {
-              "type": null,
-              "documentation": null
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -192,8 +212,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -203,5 +224,7 @@
       "documentation": null
     }
   },
+  "classflags": 10485778,
+  "configname": "Weapon",
   "documentation": null
 }

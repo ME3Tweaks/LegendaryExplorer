@@ -4,71 +4,88 @@
   "variables": {
     "m_sResourceCostColorHTML_CanAfford": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_sResourceCostColorHTML_CantAfford": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "__InputCallback__Delegate": {
       "type": "InputCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__UpdateCallback__Delegate": {
       "type": "UpdateCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__UpdateCallbackEx__Delegate": {
       "type": "UpdateCallbackEx",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_ChoiceData": {
       "type": "SFXGameChoiceGUIData",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nInputCallbackContext": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_srResourceTextCredits": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srResourceTextEzo": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srResourceTextIridium": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srResourceTextPalladium": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srResourceTextPlatinum": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srResourceTextProbes": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srResourceCostFormat": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srResourceAvailFormat": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nInfoScrollSpeed": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_bStopScroll": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -88,8 +105,9 @@
       "documentation": null,
       "signature_members": {
         "nResource": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -99,8 +117,9 @@
       "documentation": null,
       "signature_members": {
         "nResource": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -122,8 +141,9 @@
       "documentation": null,
       "signature_members": {
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -133,12 +153,14 @@
       "documentation": null,
       "signature_members": {
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -148,8 +170,9 @@
       "documentation": null,
       "signature_members": {
         "eResource": {
-          "type": null,
-          "documentation": null
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -159,8 +182,9 @@
       "documentation": null,
       "signature_members": {
         "ChoiceData": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGameChoiceGUIData",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -170,8 +194,9 @@
       "documentation": null,
       "signature_members": {
         "bRemove": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -187,8 +212,9 @@
       "documentation": null,
       "signature_members": {
         "pDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "UpdateCallback",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -198,12 +224,14 @@
       "documentation": null,
       "signature_members": {
         "pDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "InputCallback",
+          "documentation": null,
+          "flags": 4194432
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -213,12 +241,14 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "oChoiceGUI": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -228,12 +258,14 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "oChoiceGUI": {
-          "type": null,
-          "documentation": null
+          "type": "BioSFHandler_ChoiceGUI",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -243,12 +275,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -256,5 +290,7 @@
     }
   },
   "states": {},
+  "classflags": 136315038,
+  "configname": "UI",
   "documentation": null
 }

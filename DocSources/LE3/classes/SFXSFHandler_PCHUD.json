@@ -4,7 +4,8 @@
   "variables": {
     "m_srPOIAction": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "eActionIcon": {
-          "type": null,
-          "documentation": null
+          "type": "ESFXHUDActionIcon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -23,16 +25,19 @@
       "documentation": null,
       "signature_members": {
         "sStatus": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bInteractive": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bInRange": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -40,5 +45,7 @@
     }
   },
   "states": {},
+  "classflags": 2097182,
+  "configname": "UI",
   "documentation": null
 }

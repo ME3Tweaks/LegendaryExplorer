@@ -4,31 +4,38 @@
   "variables": {
     "QueuedTags": {
       "type": "SFXGUIScoreTag",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ActiveScoreTagAnim": {
       "type": "SFXGUIValue_ManualAnimController",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LocationX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "LocationY": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "Lifetime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ScreenLocationX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ScreenLocationY": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -48,8 +55,9 @@
       "documentation": null,
       "signature_members": {
         "ScoreText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -65,12 +73,14 @@
       "documentation": null,
       "signature_members": {
         "Amount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Message": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -84,5 +94,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "UI",
   "documentation": null
 }

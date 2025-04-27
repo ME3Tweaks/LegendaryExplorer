@@ -2,75 +2,93 @@
   "members": {
     "AssetName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ImagePath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "NotificationImagePath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ModTargets": {
       "type": "GAWAssetModificationTarget",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "UnlockPlotStates": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DebugConditionalDescription": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 144115188080050176
     },
     "Id": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GUICategoryID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StartingStrength": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GUIName": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GUIDescription": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentStrength": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxStrength": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ConflictZoneID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsExploration": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bShowNotificationOnAward": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Type": {
       "type": "EGAWAssetType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SubType": {
       "type": "EGAWAssetSubType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXGAWAssetsHandler",

@@ -4,11 +4,13 @@
   "variables": {
     "ShotsTillMissTracer": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bPlayingMuzzleFlashEffect": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -22,8 +24,9 @@
       "documentation": null,
       "signature_members": {
         "ImpactSounds": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPhysicalMaterialImpactSounds",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "WwiseEvent",
@@ -33,8 +36,9 @@
       "documentation": null,
       "signature_members": {
         "ImpactEffects": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPhysicalMaterialImpactEffects",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "ParticleSystem",
@@ -44,12 +48,14 @@
       "documentation": null,
       "signature_members": {
         "DecalEffects": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPhysicalMaterialDecals",
+          "documentation": null,
+          "flags": 128
         },
         "FadeTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "DecalComponent",
@@ -65,12 +71,14 @@
       "documentation": null,
       "signature_members": {
         "FiringMode": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -90,5 +98,7 @@
     }
   },
   "states": {},
+  "classflags": 10485814,
+  "configname": "Weapon",
   "documentation": null
 }

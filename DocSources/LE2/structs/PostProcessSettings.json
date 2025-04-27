@@ -2,343 +2,428 @@
   "members": {
     "ColorGradingLUT": {
       "type": "LUTBlender",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "RimShader_Color": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DOF_FocusPosition": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Scene_HighLights": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "Scene_MidTones": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "Scene_Shadows": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "ColorGrading_LookupTable": {
       "type": "Texture",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Bloom_Scale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "Bloom_Threshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "Bloom_Tint": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "Bloom_ScreenBlendThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "Bloom_InterpolationDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DOF_FalloffExponent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "DOF_FStop": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "DOF_BlurKernelSize": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "DOF_BlurBloomKernelSize": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "DOF_MaxNearBlurAmount": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "DOF_MaxFarBlurAmount": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "DOF_ModulateBlurColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DOF_FocusInnerRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "DOF_FocusDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "DOF_InterpolationDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MotionBlur_MaxVelocity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "MotionBlur_Amount": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "MotionBlur_CameraRotationThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "MotionBlur_CameraTranslationThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "MotionBlur_InterpolationDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Scene_Desaturation": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "Scene_InterpolationDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RimShader_InterpolationDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PP_DesaturationMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "PP_HighlightsMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "PP_MidTonesMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "PP_ShadowsMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bOverride_EnableBloom": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_EnableDOF": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_EnableMotionBlur": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_EnableSceneEffect": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_AllowAmbientOcclusion": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_OverrideRimShaderColor": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_Bloom_Scale": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_Bloom_Threshold": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_Bloom_Tint": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_Bloom_ScreenBlendThreshold": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_Bloom_InterpolationDuration": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_DOF_FalloffExponent": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_DOF_FStop": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_DOF_BlurKernelSize": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_DOF_BlurBloomKernelSize": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_DOF_MaxNearBlurAmount": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_DOF_MaxFarBlurAmount": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_DOF_ModulateBlurColor": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_DOF_FocusType": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_DOF_FocusInnerRadius": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_DOF_FocusDistance": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_DOF_FocusPosition": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_DOF_InterpolationDuration": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_MotionBlur_MaxVelocity": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_MotionBlur_Amount": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_MotionBlur_FullMotionBlur": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_MotionBlur_CameraRotationThreshold": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_MotionBlur_CameraTranslationThreshold": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_MotionBlur_InterpolationDuration": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_Scene_Desaturation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_Scene_HighLights": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_Scene_MidTones": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_Scene_Shadows": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_Scene_InterpolationDuration": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_RimShader_Color": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverride_RimShader_InterpolationDuration": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bEnableBloom": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bEnableDOF": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bEnableMotionBlur": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bEnableSceneEffect": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAllowAmbientOcclusion": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bOverrideRimShaderColor": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bOverride_EnableFilmic": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bEnableFilmic": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bEnableFilmicAlternateLUT": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bOverride_EnableVignette": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bEnableVignette": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bOverride_EnableFilmGrain": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bEnableFilmGrain": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MotionBlur_FullMotionBlur": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DOF_FocusType": {
       "type": "EFocusType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "PostProcessVolume",

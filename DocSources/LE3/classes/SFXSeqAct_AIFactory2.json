@@ -4,75 +4,93 @@
   "variables": {
     "ClusterOffsets": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SpawnSets": {
       "type": "AISpawnInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "SpawnPoints": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "SubSpawns": {
       "type": "Pawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "PendingSpawnedPawns": {
       "type": "Pawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SpawnerActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ProjectileStartLocation": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DefaultSquad": {
       "type": "BioBaseSquad",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NumDeadThreshold": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DeadCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAllSpawned": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAllDead": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAbortSpawns": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bEnteredCombat": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bResetDeadLinkCount": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bActivatedDeadLink": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bPreventSave": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SpawnSelectionType": {
       "type": "ESpawnSortType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -80,8 +98,9 @@
       "documentation": null,
       "signature_members": {
         "NewPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -103,8 +122,9 @@
       "documentation": null,
       "signature_members": {
         "Set": {
-          "type": null,
-          "documentation": null
+          "type": "AISpawnInfo",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "Projectile",
@@ -120,8 +140,9 @@
       "documentation": null,
       "signature_members": {
         "TargetPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -129,5 +150,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

@@ -4,91 +4,113 @@
   "variables": {
     "HideBones": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "RelativeBoneLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RelativeBoneRotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RelativeBoneScale": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Rotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Mesh": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DestroyedMesh": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PhysMaterialOverride": {
       "type": "PhysicalMaterial",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PhysicsAsset": {
       "type": "PhysicsAsset",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AttachInstance": {
       "type": "PrimitiveComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     },
     "AttachSocket": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PS_Destruction": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DestructionSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ArmourName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaxHealth": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CurrentHealth": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bMeshStartsHidden": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bStartsDetached": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCanBeDamaged": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bNotifyOnHit": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPassThroughDamage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -96,8 +118,9 @@
       "documentation": null,
       "signature_members": {
         "oTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -107,8 +130,9 @@
       "documentation": null,
       "signature_members": {
         "oTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -118,16 +142,19 @@
       "documentation": null,
       "signature_members": {
         "oTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "bDestroyed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -143,12 +170,14 @@
       "documentation": null,
       "signature_members": {
         "SkelMeshComp": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "NewWeight": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -156,5 +185,7 @@
     }
   },
   "states": {},
+  "classflags": 142610578,
+  "configname": "None",
   "documentation": null
 }

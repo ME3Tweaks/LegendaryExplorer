@@ -4,27 +4,33 @@
   "variables": {
     "m_mapAnimSetReference": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "m_aNewGestureData": {
       "type": "BioGestDataKey",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_fGestureBlendTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nGestureState": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bTransitioning": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bGesturePlaying": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -32,8 +38,9 @@
       "documentation": null,
       "signature_members": {
         "bEnabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -41,5 +48,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

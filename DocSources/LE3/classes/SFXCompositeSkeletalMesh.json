@@ -4,11 +4,13 @@
   "variables": {
     "SourceMeshNames": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "OverrideInfo": {
       "type": "BoneOverrideInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -16,16 +18,19 @@
       "documentation": null,
       "signature_members": {
         "BaseMesh": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMesh",
+          "documentation": null,
+          "flags": 128
         },
         "AdditionalMeshes": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMesh",
+          "documentation": null,
+          "flags": 4194432
         },
         "HeadMeshComponent": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "bool",
@@ -35,16 +40,19 @@
       "documentation": null,
       "signature_members": {
         "BaseMesh": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMesh",
+          "documentation": null,
+          "flags": 128
         },
         "AdditionalMeshes": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMesh",
+          "documentation": null,
+          "flags": 4194432
         },
         "HeadMeshComponent": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "SFXCompositeSkeletalMesh",
@@ -52,5 +60,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

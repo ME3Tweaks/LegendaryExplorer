@@ -4,27 +4,33 @@
   "variables": {
     "VfTable_IISFXOnlineComponent": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "mPresenceString": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mGamePresenceString": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mQueryAchievementsTimeOut": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "mServiceStarted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mIsLoggedIn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     }
   },
   "functions": {
@@ -38,8 +44,9 @@
       "documentation": null,
       "signature_members": {
         "cached": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCachedAchievements",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -49,12 +56,14 @@
       "documentation": null,
       "signature_members": {
         "presence": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "gamePresence": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -94,8 +103,9 @@
       "documentation": null,
       "signature_members": {
         "oOnlineSubsystem": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineSubsystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -103,5 +113,7 @@
     }
   },
   "states": {},
+  "classflags": 134217878,
+  "configname": "Engine",
   "documentation": null
 }

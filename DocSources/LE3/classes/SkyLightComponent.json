@@ -4,14 +4,18 @@
   "variables": {
     "LowerBrightness": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "LowerColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144707730,
+  "configname": "None",
   "documentation": null
 }

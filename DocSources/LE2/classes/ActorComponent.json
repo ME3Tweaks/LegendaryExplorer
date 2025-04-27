@@ -4,35 +4,43 @@
   "variables": {
     "Scene": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "Owner": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bAttached": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "bTickInEditor": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bNeedsReattach": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bNeedsUpdateTransform": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "TickGroup": {
       "type": "ETickingGroup",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "ComponentType": {
       "type": "EComponentType",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "functions": {
@@ -46,8 +54,9 @@
       "documentation": null,
       "signature_members": {
         "bTransformOnly": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -57,8 +66,9 @@
       "documentation": null,
       "signature_members": {
         "bFixed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -68,8 +78,9 @@
       "documentation": null,
       "signature_members": {
         "NewTickGroup": {
-          "type": null,
-          "documentation": null
+          "type": "ETickingGroup",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -77,5 +88,7 @@
     }
   },
   "states": {},
+  "classflags": 403,
+  "configname": "None",
   "documentation": null
 }

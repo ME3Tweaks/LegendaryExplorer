@@ -4,55 +4,68 @@
   "variables": {
     "m_vTargetOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_vExploreModeOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nmTargetBoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_pTarget": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fFov": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fTransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fDurationRemaining": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bAutoActivate": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bDisableOtherPOIs": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bDisableMovementInput": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bPOIActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bDurationUpdating": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -60,8 +73,9 @@
       "documentation": null,
       "signature_members": {
         "pBPC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -71,8 +85,9 @@
       "documentation": null,
       "signature_members": {
         "pBPC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -82,20 +97,24 @@
       "documentation": null,
       "signature_members": {
         "vCameraLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "vUnderneathCamLoc": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
         },
         "vTargetLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
         },
         "fTimeDelta": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -105,8 +124,9 @@
       "documentation": null,
       "signature_members": {
         "vLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -116,12 +136,14 @@
       "documentation": null,
       "signature_members": {
         "pBPC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "bPlayerInputRequest": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -131,8 +153,9 @@
       "documentation": null,
       "signature_members": {
         "pBPC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -142,12 +165,14 @@
       "documentation": null,
       "signature_members": {
         "pCamMode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraAction_FollowTarget",
+          "documentation": null,
+          "flags": 128
         },
         "fTimeDelta": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -155,5 +180,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

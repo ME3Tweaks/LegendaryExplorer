@@ -2,43 +2,53 @@
   "members": {
     "HitLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HitNormal": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "VectorParameter": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Template": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HitActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HitComponent": {
       "type": "PrimitiveComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "HitBoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "VectorParameterName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Instigator": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Scale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXDuringAsyncWorkTicker",

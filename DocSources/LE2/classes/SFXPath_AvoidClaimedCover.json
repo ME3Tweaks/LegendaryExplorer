@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -16,5 +17,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

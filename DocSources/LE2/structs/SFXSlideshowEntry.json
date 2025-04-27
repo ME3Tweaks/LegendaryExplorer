@@ -2,35 +2,43 @@
   "members": {
     "ImagePath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Image": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DisplayTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MinDisplayTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "NextText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PrevText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ExitText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CanExit": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXSFHandler_Slideshow",

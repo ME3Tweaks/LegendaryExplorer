@@ -2,35 +2,43 @@
   "members": {
     "Emissive": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "Normal": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "EyeEmissive": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "FemaleEmissive": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "FemaleNormal": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "FemaleEyeEmissive": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "Color": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "Threshold": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     }
   },
   "classdef": "SFXPawn_Player",

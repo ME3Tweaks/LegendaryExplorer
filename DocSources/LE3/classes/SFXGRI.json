@@ -4,143 +4,178 @@
   "variables": {
     "__GenericTimerCallback__Delegate": {
       "type": "GenericTimerCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DifficultyHandlerClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "VocManagerClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ObjectPool": {
       "type": "SFXObjectPool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PreAsyncWorker": {
       "type": "SFXPreAsyncWorkTicker",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DuringAsyncWorker": {
       "type": "SFXDuringAsyncWorkTicker",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "gameconfig": {
       "type": "SFXGameConfig",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "VocManager": {
       "type": "SFXVocalizationManager",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MarkerModuleManager": {
       "type": "SFXMarkerModuleManager",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "DifficultyHandler": {
       "type": "SFXDifficultyHandler",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "WaveCoordinator": {
       "type": "SFXWaveCoordinator",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "m_pClientEffectManager": {
       "type": "RvrClientEffectManager",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "m_pClientEffectPool": {
       "type": "RvrClientEffectPool",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "StormStamina": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "StormRegen": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "StormStaminaNonCombat": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "StormRegenNonCombat": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "HackCrouchCoverOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "WaveDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bCanSpawnHenchmen": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bPlayerCanChangeSquad": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bPauseForCommand": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAllowTimeDilation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAlwaysInCombat": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bMultiplayer": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsMultiplayerCharacter": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bCanShowMap": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bCanShowCodex": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bCanShowJournal": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bCanSave": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bInCombat": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8224
     },
     "bForceCombat": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8224
     },
     "EnableDamage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bForceOperationWave": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxUniquePlayers": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 8224
     }
   },
   "functions": {
@@ -172,12 +207,14 @@
       "documentation": null,
       "signature_members": {
         "ControllerId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -199,28 +236,34 @@
       "documentation": null,
       "signature_members": {
         "VocalizationID": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "Recipient": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 144
         },
         "Delay": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "fChanceToPlayModifier": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bReplicated": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -230,8 +273,9 @@
       "documentation": null,
       "signature_members": {
         "OldGRI": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGRI",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -241,40 +285,49 @@
       "documentation": null,
       "signature_members": {
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 384
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "injured": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "DamageCalc": {
-          "type": null,
-          "documentation": null
+          "type": "DamageCalculationAlgorithm",
+          "documentation": null,
+          "flags": 384
         },
         "DamageCauser": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -284,12 +337,14 @@
       "documentation": null,
       "signature_members": {
         "Medal": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ReplaceMedal": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -299,8 +354,9 @@
       "documentation": null,
       "signature_members": {
         "Callback": {
-          "type": null,
-          "documentation": null
+          "type": "GenericTimerCallback",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -310,8 +366,9 @@
       "documentation": null,
       "signature_members": {
         "WaveCoordinatorClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -357,8 +414,9 @@
       "documentation": null,
       "signature_members": {
         "Medal": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -410,20 +468,24 @@
       "documentation": null,
       "signature_members": {
         "InWwiseEvent": {
-          "type": null,
-          "documentation": null
+          "type": "WwiseBaseSoundObject",
+          "documentation": null,
+          "flags": 128
         },
         "SoundLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "RTPCName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         },
         "RTPCValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -445,12 +507,14 @@
       "documentation": null,
       "signature_members": {
         "InRate": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Callback": {
-          "type": null,
-          "documentation": null
+          "type": "GenericTimerCallback",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -460,8 +524,9 @@
       "documentation": null,
       "signature_members": {
         "MatchTime": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -469,5 +534,7 @@
     }
   },
   "states": {},
+  "classflags": 144703638,
+  "configname": "Game",
   "documentation": null
 }

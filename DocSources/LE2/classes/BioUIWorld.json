@@ -4,87 +4,108 @@
   "variables": {
     "m_CurrentPostProcessSettings": {
       "type": "PostProcessSettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aCommandQueue": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "m_aoInitialActors": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "m_sMapFile": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "m_AppliedVFX": {
       "type": "AppliedVFXPair",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202498
     },
     "m_pWorld": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "m_pCriticalSection": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "m_mSpawnedPawnMap": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "m_CustomLightingData": {
       "type": "BioConvLightingData",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "m_fnCameraActorName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "m_pCameraActor": {
       "type": "CameraActor",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "m_pFullBioticEffectTemplate": {
       "type": "BioVFXTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_pHalfBioticEffectTemplate": {
       "type": "BioVFXTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_pTechToolEffectTemplate": {
       "type": "BioVFXTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_pFullBioticEffect": {
       "type": "BioVisualEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_pHalfBioticEffect": {
       "type": "BioVisualEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_pTechToolEffect": {
       "type": "BioVisualEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_oNCHandler": {
       "type": "BioSFHandler_NewCharacter",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_PostProcessChain": {
       "type": "PostProcessChain",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "m_bLoaded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -92,8 +113,9 @@
       "documentation": null,
       "signature_members": {
         "PawnToClear": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -103,12 +125,14 @@
       "documentation": null,
       "signature_members": {
         "a_pOriginalPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "a_newRot": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -118,8 +142,9 @@
       "documentation": null,
       "signature_members": {
         "a_pOriginalPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "BioPawn",
@@ -135,12 +160,14 @@
       "documentation": null,
       "signature_members": {
         "a_pOriginalPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "bHidden": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -150,12 +177,14 @@
       "documentation": null,
       "signature_members": {
         "SourcePawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "AnimSet": {
-          "type": null,
-          "documentation": null
+          "type": "AnimSet",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -165,8 +194,9 @@
       "documentation": null,
       "signature_members": {
         "SourcePawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -176,12 +206,14 @@
       "documentation": null,
       "signature_members": {
         "SourcePawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "Template": {
-          "type": null,
-          "documentation": null
+          "type": "BioVFXTemplate",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -191,12 +223,14 @@
       "documentation": null,
       "signature_members": {
         "a_pSourcePawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "a_fnClassName": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -206,8 +240,9 @@
       "documentation": null,
       "signature_members": {
         "a_pSourcePawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -217,12 +252,14 @@
       "documentation": null,
       "signature_members": {
         "a_pSourcePawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "a_fnClassName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -232,12 +269,14 @@
       "documentation": null,
       "signature_members": {
         "a_pOriginalPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "a_fnNewLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -247,20 +286,24 @@
       "documentation": null,
       "signature_members": {
         "a_pSourcePawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "a_fnSourceVarName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "a_pOtherPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "a_fnOtherVarName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -276,12 +319,14 @@
       "documentation": null,
       "signature_members": {
         "a_fnVariableName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "a_bValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -291,12 +336,14 @@
       "documentation": null,
       "signature_members": {
         "a_fnVariableName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "a_nmValue": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -306,12 +353,14 @@
       "documentation": null,
       "signature_members": {
         "a_fnVariableName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "a_pValue": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -321,8 +370,9 @@
       "documentation": null,
       "signature_members": {
         "pOriginalPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -332,16 +382,19 @@
       "documentation": null,
       "signature_members": {
         "a_pOriginalPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "a_AnimSet": {
-          "type": null,
-          "documentation": null
+          "type": "AnimSet",
+          "documentation": null,
+          "flags": 144
         },
         "a_Flags": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -351,8 +404,9 @@
       "documentation": null,
       "signature_members": {
         "a_pOriginalPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -362,28 +416,34 @@
       "documentation": null,
       "signature_members": {
         "a_pOriginalPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "a_fnSpawnLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "a_fnSpawnVariable": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "InAnimSet": {
-          "type": null,
-          "documentation": null
+          "type": "AnimSet",
+          "documentation": null,
+          "flags": 144
         },
         "a_fnRemoteEvent": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         },
         "a_Flags": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -393,12 +453,14 @@
       "documentation": null,
       "signature_members": {
         "a_fnEventName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "a_pCaller": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -406,5 +468,7 @@
     }
   },
   "states": {},
+  "classflags": 134217878,
+  "configname": "UI",
   "documentation": null
 }

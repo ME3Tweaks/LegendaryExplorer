@@ -4,54 +4,68 @@
   "variables": {
     "OldLocalToWorld": {
       "type": "Matrix",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "TrailBoneLocations": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "FakeVelocity": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ChainLength": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TrailRelaxation": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StretchLimit": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ThisTimstep": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bInvertChainBoneAxis": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bLimitStretch": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bActorSpaceFakeVel": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bHadValidStrength": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ChainBoneAxis": {
       "type": "EAxis",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

@@ -4,15 +4,18 @@
   "variables": {
     "OptionProviders": {
       "type": "MultiMap_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "DynamicProviders": {
       "type": "UIDataProvider_MenuItem",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "CurrentGameSettingsTag": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "functions": {
@@ -20,8 +23,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerOwner": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -31,8 +35,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerOwner": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -42,12 +47,14 @@
       "documentation": null,
       "signature_members": {
         "SourceProvider": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 128
         },
         "PropTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -57,12 +64,14 @@
       "documentation": null,
       "signature_members": {
         "SetName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "OutProviders": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataProvider_MenuItem",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -72,12 +81,14 @@
       "documentation": null,
       "signature_members": {
         "SetName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "NumOptions": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -87,8 +98,9 @@
       "documentation": null,
       "signature_members": {
         "SetName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -96,5 +108,7 @@
     }
   },
   "states": {},
+  "classflags": 136315038,
+  "configname": "UI",
   "documentation": null
 }

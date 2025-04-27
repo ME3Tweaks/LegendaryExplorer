@@ -4,19 +4,23 @@
   "variables": {
     "PartialOccludedBuildingMesh": {
       "type": "BuildingMeshInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "BuildingMeshes": {
       "type": "BuildingMeshInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "bDoOcclusionTest": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bBlockAll": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -28,5 +32,7 @@
     }
   },
   "states": {},
+  "classflags": 144715922,
+  "configname": "None",
   "documentation": null
 }

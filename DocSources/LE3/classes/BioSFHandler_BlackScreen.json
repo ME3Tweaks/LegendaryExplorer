@@ -4,23 +4,28 @@
   "variables": {
     "m_ASPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_CurrentAlpha": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_AccumulatedFadeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_FadeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_eDisplayMode": {
       "type": "BlackScreenDisplayModes",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -28,12 +33,14 @@
       "documentation": null,
       "signature_members": {
         "bWithFade": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "FadeTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -61,12 +68,14 @@
       "documentation": null,
       "signature_members": {
         "bWithFade": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "FadeTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -74,5 +83,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "UI",
   "documentation": null
 }

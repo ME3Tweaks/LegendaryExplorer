@@ -4,79 +4,98 @@
   "variables": {
     "BleedoutVFXCurve": {
       "type": "InterpCurveFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "BleedoutSFXCurve": {
       "type": "InterpCurveFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "BleedOutRTPC": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "CE_Bleedout_GUID": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CE_BleedOut": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MIC_Bleedout": {
       "type": "MaterialInstanceConstant",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WwiseComponent": {
       "type": "WwiseAudioComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     },
     "BleedOutEventPair": {
       "type": "WwiseEventPairObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HealthRegenPct": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "SoftMaxHealth": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "SavedHealth": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ShieldPresentationTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "BleedoutStartThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "InitialBleedoutPct": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "BleedoutVFXInterpSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "CurrentBleedoutVFXParam": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "BleedoutSFXInterpSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "CurrentBleedoutSFXParam": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "HealthRatio": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -84,8 +103,9 @@
       "documentation": null,
       "signature_members": {
         "bResetHealth": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -95,8 +115,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -106,32 +127,39 @@
       "documentation": null,
       "signature_members": {
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 384
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "DamageCauser": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -141,24 +169,29 @@
       "documentation": null,
       "signature_members": {
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "AppliedDamage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -204,12 +237,14 @@
       "documentation": null,
       "signature_members": {
         "NewHealth": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bRecomputeHealthSegment": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -219,8 +254,9 @@
       "documentation": null,
       "signature_members": {
         "Health": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -246,5 +282,7 @@
     }
   },
   "states": {},
+  "classflags": 8392726,
+  "configname": "Game",
   "documentation": null
 }

@@ -4,199 +4,248 @@
   "variables": {
     "CareerList": {
       "type": "SaveGUICareerRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "CorruptedSaveGames": {
       "type": "SFXSaveDescriptor",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202497
     },
     "ImportPlotTable": {
       "type": "BioGlobalVariableTable",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "loadingCareerMessageBox": {
       "type": "BioSFHandler_MessageBox",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LoadGameLoseProgressText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "ConfirmLoadGameText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "CancelLoadGameText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "CharNameText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "DeleteCareerText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "ConfirmDeleteCareerText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "CancelDeleteCareerText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "CorruptSaveWarningText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "ConfirmDeleteCorruptText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "CancelDeleteCorruptText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "LoadActionText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "CareerActionText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "SearchingForCareers": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srNewGamePlusLoadCareerConfirmation": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srSavedRachniiQueen": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srKilledRachniiQueen": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srAshSurvivedVirimire": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srKaidenSurvivedVirimire": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srSavedTheCouncil": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srSacrificedTheCouncil": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srDestroyedMaelonsData": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srNotDestroyedMaelonsData": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srWrexAlive": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srWrexDead": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srWrexIgnored": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srHeretics_Rewrite": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srHeretics_Destroyed": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srCollectorBase_Irradiate": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srCollectorBase_Destroyed": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srNumberSurvivors": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srME1_SFXRomanced_Ashley": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srME1_SFXRomanced_Kaidan": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srME1_SFXRomanced_Liara": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srME1_SFXRomanced_NO_ONE": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srME2_SFXRomanced_Tali": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srME2_SFXRomanced_Jack": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srME2_SFXRomanced_Thane": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srME2_SFXRomanced_Jacob": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srME2_SFXRomanced_Garrus": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srME2_SFXRomanced_Miranda": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "srME2_SFXRomanced_NO_ONE": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24577
     },
     "CurrentCareerIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "bShouldRescanCareers": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bShowingSearchingCharacterOverlay": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LoadMode": {
       "type": "ELoadGuiMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -204,8 +253,9 @@
       "documentation": null,
       "signature_members": {
         "fScroll": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -227,12 +277,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Context": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -248,8 +300,9 @@
       "documentation": null,
       "signature_members": {
         "Args": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGameCommandEventArgs",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -259,8 +312,9 @@
       "documentation": null,
       "signature_members": {
         "Args": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGameCommandEventArgs",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -276,8 +330,9 @@
       "documentation": null,
       "signature_members": {
         "aSave": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGame",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -287,12 +342,14 @@
       "documentation": null,
       "signature_members": {
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -344,12 +401,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "CareerIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -359,12 +418,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Context": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -374,12 +435,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Context": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -389,8 +452,9 @@
       "documentation": null,
       "signature_members": {
         "nCareerIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -400,8 +464,9 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -417,8 +482,9 @@
       "documentation": null,
       "signature_members": {
         "nSaveIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -428,8 +494,9 @@
       "documentation": null,
       "signature_members": {
         "CareerIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -439,8 +506,9 @@
       "documentation": null,
       "signature_members": {
         "nCareerIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -450,8 +518,9 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -461,8 +530,9 @@
       "documentation": null,
       "signature_members": {
         "Args": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGameCommandEventArgs",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -484,8 +554,9 @@
       "documentation": null,
       "signature_members": {
         "Args": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGameCommandEventArgs",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -495,8 +566,9 @@
       "documentation": null,
       "signature_members": {
         "Args": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGameCommandEventArgs",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -506,8 +578,9 @@
       "documentation": null,
       "signature_members": {
         "nCareerIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -515,5 +588,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "UI",
   "documentation": null
 }

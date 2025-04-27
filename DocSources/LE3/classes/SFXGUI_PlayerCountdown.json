@@ -4,15 +4,18 @@
   "variables": {
     "Animations": {
       "type": "SFXGUIValue_ManualAnimController",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastBleedOutTimer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bTappingPromptVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -20,8 +23,9 @@
       "documentation": null,
       "signature_members": {
         "AnimType": {
-          "type": null,
-          "documentation": null
+          "type": "EPlayerCountdownTypes",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -37,8 +41,9 @@
       "documentation": null,
       "signature_members": {
         "AnimType": {
-          "type": null,
-          "documentation": null
+          "type": "EPlayerCountdownTypes",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -48,8 +53,9 @@
       "documentation": null,
       "signature_members": {
         "AnimType": {
-          "type": null,
-          "documentation": null
+          "type": "EPlayerCountdownTypes",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -59,8 +65,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -106,8 +113,9 @@
       "documentation": null,
       "signature_members": {
         "PCText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -171,12 +179,14 @@
       "documentation": null,
       "signature_members": {
         "AnimType": {
-          "type": null,
-          "documentation": null
+          "type": "EPlayerCountdownTypes",
+          "documentation": null,
+          "flags": 128
         },
         "AnimationLength": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -186,12 +196,14 @@
       "documentation": null,
       "signature_members": {
         "bVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bForce": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -205,5 +217,7 @@
     }
   },
   "states": {},
+  "classflags": 2097182,
+  "configname": "UI",
   "documentation": null
 }

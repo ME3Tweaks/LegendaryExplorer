@@ -4,27 +4,33 @@
   "variables": {
     "StormSlowDown": {
       "type": "InterpCurveFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "BP": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Controller": {
       "type": "BioPlayerController",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CustomTimeDilation": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PostStormDilationTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TimeSinceStorm": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -50,8 +56,9 @@
       "documentation": null,
       "signature_members": {
         "TimeDelta": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -59,5 +66,7 @@
     }
   },
   "states": {},
+  "classflags": 18,
+  "configname": "None",
   "documentation": null
 }

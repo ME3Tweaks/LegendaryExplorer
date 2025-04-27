@@ -4,26 +4,33 @@
   "variables": {
     "SceneProxy": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 16789506
     },
     "Strength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "Phase": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "Frequency": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "Speed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134230162,
+  "configname": "None",
   "documentation": null
 }

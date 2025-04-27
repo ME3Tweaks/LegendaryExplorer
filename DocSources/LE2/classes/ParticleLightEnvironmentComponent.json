@@ -4,14 +4,18 @@
   "variables": {
     "ReferenceCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bAllowDLESharing": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

@@ -4,22 +4,28 @@
   "variables": {
     "BestGoalDist": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MinGoalDist": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaxGoalDist": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bHardLimits": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

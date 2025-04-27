@@ -4,18 +4,23 @@
   "variables": {
     "RandomInfo": {
       "type": "RandomAnimInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303233
     },
     "PlayingSeqNode": {
       "type": "AnimNodeSequence",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "PendingChildIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

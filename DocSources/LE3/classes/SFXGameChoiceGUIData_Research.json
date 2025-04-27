@@ -4,54 +4,68 @@
   "variables": {
     "Tech": {
       "type": "TechData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4218880
     },
     "Research": {
       "type": "TechData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4218880
     },
     "m_srTechTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srTechSubTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srTechAText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srTechBText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srResearchTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srResearchSubTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srResearchAText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srResearchBText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srResearchErrorTooExpensive": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srResearchErrorCanNotLearn": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 2101270,
+  "configname": "UI",
   "documentation": null
 }

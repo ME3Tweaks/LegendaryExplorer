@@ -4,11 +4,13 @@
   "variables": {
     "StickFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FullTurnRecenter": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -22,8 +24,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -33,16 +36,19 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "OutViewRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         },
         "OutDeltaRot": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -56,5 +62,7 @@
     }
   },
   "states": {},
+  "classflags": 18,
+  "configname": "None",
   "documentation": null
 }

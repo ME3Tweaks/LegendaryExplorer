@@ -2,11 +2,13 @@
   "members": {
     "StyleReferenceTag": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "StyleProperty": {
       "type": "Property",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     }
   },
   "classdef": "UIRoot",

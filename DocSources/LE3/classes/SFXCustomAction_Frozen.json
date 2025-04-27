@@ -4,7 +4,8 @@
   "variables": {
     "bWelded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -30,12 +31,14 @@
       "documentation": null,
       "signature_members": {
         "OldCustomAction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "NewCustomAction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -73,5 +76,7 @@
     }
   },
   "states": {},
+  "classflags": 10485782,
+  "configname": "Game",
   "documentation": null
 }

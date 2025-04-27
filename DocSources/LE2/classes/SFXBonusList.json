@@ -4,703 +4,878 @@
   "variables": {
     "RchAssaultRifleName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchAutoPistolName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchBioDmgUpgradeName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchExploreScannerName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchGruntUpgradeName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchHWAmmoName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchHeavyPistolName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchJackUpgradeName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchLegionUpgradeName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMedigelName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMiniGameDecryptName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMiniGameHackName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMordinUpgradeName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchQuarianShieldName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchHealthUpgradeName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShieldUpgradeName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShipProbesName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShipFuelName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShipScannerName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShotgunName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchSniperRifleName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchTechDmgUpgradeName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchARResistanceDamageName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchAssaultRifleAccuracyName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchAutoPistolResistanceDmgName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchAutoPistolMaxAmmoName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchBioticDurationName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchBioticCooldownName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchHPistolArmorDmgName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchHPistolBonusShotName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMediGelHealName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMediGelShieldName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShepardMeleeResistanceName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMeleeUpgradeName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShieldRestoreName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShieldDamageName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShotgunResistanceDmgName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShotgunMagCountName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchSniperArmorDmgName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchSniperHeadShotDmgName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchTechDurationName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchTechCooldownName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchBovineFortitudeName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchAssaultRifleID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchAssaultRifleBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchAssaultRifleCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchAutoPistolID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchAutoPistolBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchAutoPistolCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchBioDmgUpgradeID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchBioDmgUpgradeBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchBioDmgUpgradeCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchExploreScannerID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchExploreScannerBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchExploreScannerCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchGruntUpgradeID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchGruntUpgradeBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchGruntUpgradeCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchHWAmmoID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchHWAmmoBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchHWAmmoCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchHeavyPistolID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchHeavyPistolBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchHeavyPistolCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchJackUpgradeID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchJackUpgradeBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchJackUpgradeCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchLegionUpgradeID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchLegionUpgradeBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchLegionUpgradeCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMedigelID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMedigelCache": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMiniGameDecryptID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMiniGameDecryptBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMiniGameDecryptCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMiniGameHackID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMiniGameHackBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMiniGameHackCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMordinUpgradeID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMordinUpgradeBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMordinUpgradeCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchQuarianShieldID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchQuarianShieldBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchQuarianShieldCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchHealthUpgradeID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchHealthUpgradeBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchHealthUpgradeCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShieldUpgradeID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShieldUpgradeBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShieldUpgradeCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShipProbesID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShipProbesBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShipProbesCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShipFuelID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShipFuelBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShipFuelCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShipScannerID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShipScannerBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShipScannerCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShotgunID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShotgunBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShotgunCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchSniperRifleID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchSniperRifleBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchSniperRifleCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchTechDmgUpgradeID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchTechDmgUpgradeBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchTechDmgUpgradeCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchARResistanceDamageID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchARResistanceDamageBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchARResistanceDamageCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchAssaultRifleAccuracyID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchAssaultRifleAccuracyBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchAssaultRifleAccuracyCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchAutoPistolResistanceDmgID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchAutoPistolResistanceDmgBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchAutoPistolResistanceDmgCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchAutoPistolMaxAmmoID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchAutoPistolMaxAmmoBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchAutoPistolMaxAmmoCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchBioticDurationID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchBioticDurationBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchBioticDurationCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchBioticCooldownID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchBioticCooldownBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchBioticCooldownCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchHPistolArmorDmgID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchHPistolArmorDmgBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchHPistolArmorDmgCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchHPistolBonusShotID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchHPistolBonusShotBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchHPistolBonusShotCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchHPistolBonusShotChance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMediGelHealID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMediGelHealCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMediGelShieldID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMediGelShieldCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShepardMeleeResistanceID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShepardMeleeResistanceBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShepardMeleeResistanceCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMeleeUpgradeID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMeleeUpgradeBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMeleeUpgradeCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMeleePhysLevelBonus": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchMeleePhysLevelCache": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShieldRestoreID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShieldRestoreBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShieldRestoreCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShieldRestoreChance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShieldDamageID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShieldDamageBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShieldDamageCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShotgunResistanceDmgID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShotgunResistanceDmgBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShotgunResistanceDmgCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShotgunMagCountID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShotgunMagCountBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchShotgunMagCountCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchSniperArmorDmgID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchSniperArmorDmgBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchSniperArmorDmgCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchSniperHeadShotDmgID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchSniperHeadShotDmgBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchSniperHeadShotDmgCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchTechDurationID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchTechDurationBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchTechDurationCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchTechCooldownID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchTechCooldownBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchTechCooldownCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchBovineFortitudeID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchBovineFortitudeBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchBovineFortitudeCache": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RchBovineFortitudeChance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ExportIDsCached": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -708,8 +883,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -719,8 +895,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -730,8 +907,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -741,8 +919,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -752,8 +931,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -763,12 +943,14 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         },
         "Player": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -778,8 +960,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -789,8 +972,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -800,8 +984,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -811,12 +996,14 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         },
         "Squad": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -826,8 +1013,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -837,8 +1025,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -848,8 +1037,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -859,8 +1049,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -870,8 +1061,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -881,8 +1073,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -892,8 +1085,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -903,12 +1097,14 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         },
         "Player": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -918,8 +1114,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -929,12 +1126,14 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         },
         "Squad": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -944,8 +1143,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -955,8 +1155,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -966,12 +1167,14 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         },
         "Squad": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -981,12 +1184,14 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         },
         "Squad": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -996,8 +1201,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1007,8 +1213,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1018,8 +1225,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1029,12 +1237,14 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         },
         "Squad": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1044,12 +1254,14 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         },
         "Player": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1059,12 +1271,14 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         },
         "Squad": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1074,8 +1288,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1085,8 +1300,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1096,8 +1312,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1107,8 +1324,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1118,12 +1336,14 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         },
         "Squad": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1133,8 +1353,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1144,12 +1365,14 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         },
         "Squad": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1159,12 +1382,14 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         },
         "Player": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1174,12 +1399,14 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         },
         "Squad": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1189,8 +1416,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1200,8 +1428,9 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1211,12 +1440,14 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         },
         "Squad": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1226,12 +1457,14 @@
       "documentation": null,
       "signature_members": {
         "gv": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         },
         "Squad": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1241,8 +1474,9 @@
       "documentation": null,
       "signature_members": {
         "Squad": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1252,12 +1486,14 @@
       "documentation": null,
       "signature_members": {
         "WeaponClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Squad": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1267,16 +1503,19 @@
       "documentation": null,
       "signature_members": {
         "WorldInfo": {
-          "type": null,
-          "documentation": null
+          "type": "BioWorldInfo",
+          "documentation": null,
+          "flags": 128
         },
         "Squad": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 4194688
         },
         "Player": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -1286,12 +1525,14 @@
       "documentation": null,
       "signature_members": {
         "nmTech": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "WorldInfo": {
-          "type": null,
-          "documentation": null
+          "type": "BioWorldInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1301,8 +1542,9 @@
       "documentation": null,
       "signature_members": {
         "WorldInfo": {
-          "type": null,
-          "documentation": null
+          "type": "BioWorldInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1318,8 +1560,9 @@
       "documentation": null,
       "signature_members": {
         "WorldInfo": {
-          "type": null,
-          "documentation": null
+          "type": "BioWorldInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1327,5 +1570,7 @@
     }
   },
   "states": {},
+  "classflags": 18,
+  "configname": "None",
   "documentation": null
 }

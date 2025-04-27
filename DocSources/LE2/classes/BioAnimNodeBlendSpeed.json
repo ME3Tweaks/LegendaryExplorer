@@ -4,58 +4,73 @@
   "variables": {
     "BlendTimeToIdle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BlendTimeFromIdle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BlendTimeMoving": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "WalkSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RunSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "WalkRateScaled": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RunRateScaled": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fStartSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fCurrentSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fStartCheckTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bIsStarting": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bIsStarted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SpeedType": {
       "type": "EBioAnim_SpeedType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

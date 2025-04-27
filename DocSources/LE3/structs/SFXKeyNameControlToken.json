@@ -2,11 +2,13 @@
   "members": {
     "Key": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "token": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXGUIInteraction",

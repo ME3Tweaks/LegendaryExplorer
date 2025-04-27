@@ -4,50 +4,63 @@
   "variables": {
     "BoneToAimMap": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "OwningActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "LastAimOffset": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "LastPostProcessedAimOffset": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "MotionAimOffset": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "TurnInPlaceOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8195
     },
     "TurnAroundTimeToGo": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "TurnAroundBlendTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AngVelAimOffsetChangeSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AngVelAimOffsetScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AimInput": {
       "type": "EAimInputType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

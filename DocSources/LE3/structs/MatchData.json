@@ -2,39 +2,48 @@
   "members": {
     "MapId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ZoneRatingIncrease": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EnemyID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DifficultyID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Waves": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TotalMatchTime": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OverallRatingIncrease": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bResult": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ZoneID": {
       "type": "EGAWZone",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXMatchResultsData",

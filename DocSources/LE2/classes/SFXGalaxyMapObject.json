@@ -4,71 +4,88 @@
   "variables": {
     "Tag": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "PosX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PosY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TableID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "DisplayName": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Scale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "nPreviouslySelectedIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "VisibleConditional": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "VisibleParameter": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "UsableConditional": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "UsableParameter": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "VisibleConditionalRegion": {
       "type": "EBioRegionAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "VisibleConditionalPlot": {
       "type": "EGalaxyObjectVisiblePlotAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "VisibleConditionalName": {
       "type": "EGalaxyObjectVisibleAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "UsableConditionalRegion": {
       "type": "EBioRegionAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "UsableConditionalPlot": {
       "type": "EGalaxyObjectUsablePlotAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "UsableConditionalName": {
       "type": "EGalaxyObjectUsableAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -82,8 +99,9 @@
       "documentation": null,
       "signature_members": {
         "Children": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGalaxyMapObject",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -93,8 +111,9 @@
       "documentation": null,
       "signature_members": {
         "Child": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGalaxyMapObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -108,5 +127,7 @@
     }
   },
   "states": {},
+  "classflags": 134217875,
+  "configname": "Game",
   "documentation": null
 }

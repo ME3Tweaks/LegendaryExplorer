@@ -4,7 +4,8 @@
   "variables": {
     "m_pPSysComponent": {
       "type": "ParticleSystemComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "PSystem": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystemComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -21,5 +23,7 @@
     }
   },
   "states": {},
+  "classflags": 142606490,
+  "configname": "None",
   "documentation": null
 }

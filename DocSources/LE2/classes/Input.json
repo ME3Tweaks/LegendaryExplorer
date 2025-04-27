@@ -4,35 +4,43 @@
   "variables": {
     "AxisArray": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 1052674
     },
     "Bindings": {
       "type": "KeyBind",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "PressedKeys": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "NameToPtr": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "KeyToModifiers": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "CurrentDelta": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "CurrentDeltaTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "CurrentEvent": {
       "type": "EInputEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "functions": {
@@ -40,12 +48,14 @@
       "documentation": null,
       "signature_members": {
         "BindName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 386
         },
         "Command": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -55,20 +65,24 @@
       "documentation": null,
       "signature_members": {
         "Key": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 386
         },
         "Control": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Shift": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Alt": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -82,5 +96,7 @@
     }
   },
   "states": {},
+  "classflags": 136315038,
+  "configname": "Input",
   "documentation": null
 }

@@ -4,135 +4,168 @@
   "variables": {
     "LightProbeVolumeStack": {
       "type": "SFXLightProbeBlendVolume",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "BioState": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "KeyLightScale": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "FillLightScale": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "AmbientLightScale": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "TargetBoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481985
     },
     "CinematicLightRig": {
       "type": "SFXLightRig",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481985
     },
     "SHAmbientScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014407099432961
     },
     "BlendTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509498369
     },
     "PopAngleLimit": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509498369
     },
     "SurfaceBoundsRatio": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509498369
     },
     "MinPolarAngle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509498369
     },
     "RimLightYaw": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "RimLightPitch": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "RimLightScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "RimLightColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "WrapLightingDirectMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "WrapLightingIndirectMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LightRigOrientation": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481985
     },
     "LastFrameWeight_Cinematic": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "LastFrameWeight_Exploration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "LightAxisEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509498369
     },
     "DisplayDebugLines": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481985
     },
     "ForcePolarKeyFill": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509498369
     },
     "UseOptimizedLightingPath": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509498369
     },
     "UseTargetBoneAsOrigin": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481985
     },
     "bLockEnvironment": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481985
     },
     "SmoothShadowLight_Cinematic": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "SmoothShadowLight_Exploration": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "bHasDirtyInterpProperties": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bSupportsLightProbes": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "QualityType": {
       "type": "EDLEStateType",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481987
     },
     "RimLightControl": {
       "type": "ERimLightControlType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -140,8 +173,9 @@
       "documentation": null,
       "signature_members": {
         "InActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 130
         }
       },
       "returntype": "BioDynamicLightEnvironmentComponent",
@@ -151,8 +185,9 @@
       "documentation": null,
       "signature_members": {
         "Quality": {
-          "type": null,
-          "documentation": null
+          "type": "EDLEStateType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -162,8 +197,9 @@
       "documentation": null,
       "signature_members": {
         "InVolume": {
-          "type": null,
-          "documentation": null
+          "type": "SFXLightProbeBlendVolume",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -173,8 +209,9 @@
       "documentation": null,
       "signature_members": {
         "InVolume": {
-          "type": null,
-          "documentation": null
+          "type": "SFXLightProbeBlendVolume",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -230,5 +267,7 @@
     }
   },
   "states": {},
+  "classflags": 142606486,
+  "configname": "Engine",
   "documentation": null
 }

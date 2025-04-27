@@ -2,11 +2,13 @@
   "members": {
     "SourceIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BoneFlipAxis": {
       "type": "EAxis",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SkeletalMesh",

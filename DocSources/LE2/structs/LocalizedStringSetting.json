@@ -2,15 +2,18 @@
   "members": {
     "Id": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ValueIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AdvertisementType": {
       "type": "EOnlineDataAdvertisementType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "Settings",

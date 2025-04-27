@@ -2,15 +2,18 @@
   "members": {
     "Comment": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Location": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Rotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "Engine",

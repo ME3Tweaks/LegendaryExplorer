@@ -4,15 +4,18 @@
   "variables": {
     "RespawnTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BonusAmmo": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bRespawns": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -20,8 +23,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -53,8 +57,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -81,8 +86,9 @@
           "documentation": null,
           "signature_members": {
             "NextStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -92,8 +98,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -109,5 +116,7 @@
       "documentation": null
     }
   },
+  "classflags": 10486294,
+  "configname": "Weapon",
   "documentation": null
 }

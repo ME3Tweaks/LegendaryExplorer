@@ -4,10 +4,13 @@
   "variables": {
     "OutcomeMapping": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

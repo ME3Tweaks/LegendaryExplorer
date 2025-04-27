@@ -2,23 +2,28 @@
   "members": {
     "SourceStyleID": {
       "type": "STYLE_ID",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OwnerStyle": {
       "type": "UIStyle",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SourceStyle": {
       "type": "UIStyle",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "SourceState": {
       "type": "UIState",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CustomStyleData": {
       "type": "UIStyle_Data",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "UIStyle_Combo",

@@ -7,16 +7,19 @@
       "documentation": null,
       "signature_members": {
         "AnimSeqInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
         },
         "NotifyClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "OutEvent": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNotifyEvent",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -24,5 +27,7 @@
     }
   },
   "states": {},
+  "classflags": 134230163,
+  "configname": "None",
   "documentation": null
 }

@@ -2,7 +2,8 @@
   "members": {
     "MaterialOptions": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     }
   },
   "classdef": "PBRuleNodeMesh",

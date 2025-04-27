@@ -2,27 +2,33 @@
   "members": {
     "Data": {
       "type": "PowerData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "EvolvedBonuses": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BarLength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "srDisplayTotalToken": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "srStatBarDisplayTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Formula": {
       "type": "EPowerStatBarFormula",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXPowerCustomActionBase",

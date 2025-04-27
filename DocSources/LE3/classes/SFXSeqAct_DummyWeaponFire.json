@@ -4,103 +4,128 @@
   "variables": {
     "WeaponClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MultipleTargetParams": {
       "type": "DummyFireObjectListParams",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MultipleOriginParams": {
       "type": "DummyFireObjectListParams",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SpawnedWeapon": {
       "type": "SFXWeapon_NativeBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OriginSocketName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ReplicatedActor": {
       "type": "SFXDummyWeaponFireActor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ShotsToFire": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "InaccuracyDegrees": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RemainingFireTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ShotsFired": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bShootUntilStopped": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bStopped": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bFinished": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bSuppressMuzzleFlash": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSuppressTracers": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSuppressImpactFX": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSuppressAudio": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSuppressDamage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDamagesFriends": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bFiring": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAlignWeaponMeshToSocket": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSuppressCameraShake": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSuppressLineCheck": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FiringMode": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TeamIndex": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -108,16 +133,19 @@
       "documentation": null,
       "signature_members": {
         "AlignTo": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "AimAt": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "bForceComponentUpdate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -133,8 +161,9 @@
       "documentation": null,
       "signature_members": {
         "DummyFiringMode": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -144,12 +173,14 @@
       "documentation": null,
       "signature_members": {
         "OriginActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "TargetActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -159,12 +190,14 @@
       "documentation": null,
       "signature_members": {
         "OriginActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "TargetActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -172,5 +205,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

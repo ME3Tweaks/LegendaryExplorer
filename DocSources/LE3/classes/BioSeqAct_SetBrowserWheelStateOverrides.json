@@ -4,7 +4,8 @@
   "variables": {
     "PageStates": {
       "type": "SubPageState",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     }
   },
   "functions": {
@@ -16,5 +17,7 @@
     }
   },
   "states": {},
+  "classflags": 10485778,
+  "configname": "None",
   "documentation": null
 }

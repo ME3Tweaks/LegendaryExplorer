@@ -4,19 +4,23 @@
   "variables": {
     "Markers": {
       "type": "SFXGUIValue_Marker",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ObjectiveTextActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 274877906944
     },
     "ObjectiveText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 274877906944
     },
     "TextStayUpDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -36,8 +40,9 @@
       "documentation": null,
       "signature_members": {
         "NewMarkerActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -59,12 +64,14 @@
       "documentation": null,
       "signature_members": {
         "Text": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "StayUpDuration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -74,8 +81,9 @@
       "documentation": null,
       "signature_members": {
         "Text": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -85,8 +93,9 @@
       "documentation": null,
       "signature_members": {
         "MovieClip": {
-          "type": null,
-          "documentation": null
+          "type": "GFxValue",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -126,8 +135,9 @@
       "documentation": null,
       "signature_members": {
         "Text": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -155,8 +165,9 @@
       "documentation": null,
       "signature_members": {
         "MarkerActorToRemove": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -166,12 +177,14 @@
       "documentation": null,
       "signature_members": {
         "NewObjectiveText": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "NewObjectiveTextActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -179,5 +192,7 @@
     }
   },
   "states": {},
+  "classflags": 136315038,
+  "configname": "UI",
   "documentation": null
 }

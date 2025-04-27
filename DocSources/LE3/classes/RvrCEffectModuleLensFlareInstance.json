@@ -4,10 +4,13 @@
   "variables": {
     "m_pLFComponent": {
       "type": "LensFlareComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142606490,
+  "configname": "None",
   "documentation": null
 }

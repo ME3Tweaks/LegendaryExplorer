@@ -2,35 +2,43 @@
   "members": {
     "Command": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "Name": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "Control": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "Shift": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "Alt": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bIgnoreCtrl": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bIgnoreShift": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bIgnoreAlt": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "classdef": "Input",

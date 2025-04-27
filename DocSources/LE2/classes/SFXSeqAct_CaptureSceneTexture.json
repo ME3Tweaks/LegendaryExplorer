@@ -4,18 +4,23 @@
   "variables": {
     "Destination": {
       "type": "TextureRenderTarget2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ViewId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FilterFactor": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

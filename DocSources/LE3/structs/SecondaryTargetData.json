@@ -2,15 +2,18 @@
   "members": {
     "TargetCoverInfo": {
       "type": "CoverInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FireTarget": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PawnTarget": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXCovGoal_CanFireAtSecondaries",

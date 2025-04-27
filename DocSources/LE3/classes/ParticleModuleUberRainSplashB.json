@@ -4,42 +4,53 @@
   "variables": {
     "Lifetime": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "StartSize": {
       "type": "RawDistributionVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "ColorOverLife": {
       "type": "RawDistributionVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "AlphaOverLife": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "LifeMultiplier": {
       "type": "RawDistributionVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "StartRotationRate": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "MultiplyX": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MultiplyY": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MultiplyZ": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142618770,
+  "configname": "None",
   "documentation": null
 }

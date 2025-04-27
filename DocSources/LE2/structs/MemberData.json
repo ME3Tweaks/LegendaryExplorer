@@ -2,31 +2,38 @@
   "members": {
     "vTarget": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "vHoldPosition": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SquadMember": {
       "type": "Pawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "oDestinationIndicator": {
       "type": "BioTacticalMoveToIndicator",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nmPower": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "oOrderedAttackTarget": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bMoveOrderAssigned": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioBaseSquad",

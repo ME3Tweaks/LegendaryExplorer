@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "Target": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "EAICustomAction",
@@ -16,5 +17,7 @@
     }
   },
   "states": {},
+  "classflags": 54,
+  "configname": "Weapon",
   "documentation": null
 }

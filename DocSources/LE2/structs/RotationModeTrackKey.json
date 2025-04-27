@@ -2,11 +2,13 @@
   "members": {
     "FindActorTag": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "InterpTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioInterpTrackRotationMode",

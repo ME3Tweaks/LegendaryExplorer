@@ -2,15 +2,18 @@
   "members": {
     "TargetObject": {
       "type": "WwiseComponentCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TargetEvent": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CallbackFlags": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "WwiseComponentCallback",

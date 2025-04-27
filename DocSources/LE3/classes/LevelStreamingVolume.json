@@ -4,27 +4,33 @@
   "variables": {
     "StreamingLevels": {
       "type": "LevelStreaming",
-      "documentation": null
+      "documentation": null,
+      "flags": 21102595
     },
     "TestVolumeDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bEditorPreVisOnly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDisabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bTestDistanceToVolume": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StreamingUsage": {
       "type": "EStreamingVolumeUsage",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -32,8 +38,9 @@
       "documentation": null,
       "signature_members": {
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -43,8 +50,9 @@
       "documentation": null,
       "signature_members": {
         "Record": {
-          "type": null,
-          "documentation": null
+          "type": "CheckpointRecord",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -54,8 +62,9 @@
       "documentation": null,
       "signature_members": {
         "Record": {
-          "type": null,
-          "documentation": null
+          "type": "CheckpointRecord",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -63,5 +72,7 @@
     }
   },
   "states": {},
+  "classflags": 144704178,
+  "configname": "None",
   "documentation": null
 }

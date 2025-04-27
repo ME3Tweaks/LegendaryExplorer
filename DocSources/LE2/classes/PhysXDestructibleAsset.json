@@ -4,22 +4,28 @@
   "variables": {
     "ChunkTree": {
       "type": "PhysXDestructibleAssetChunk",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Meshes": {
       "type": "SkeletalMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194307
     },
     "Assets": {
       "type": "PhysicsAsset",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194307
     },
     "MaxDepth": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

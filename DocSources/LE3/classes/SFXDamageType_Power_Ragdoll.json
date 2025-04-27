@@ -4,10 +4,13 @@
   "variables": {
     "AnimatedPowerRagdollType": {
       "type": "EAICustomAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 54,
+  "configname": "Weapon",
   "documentation": null
 }

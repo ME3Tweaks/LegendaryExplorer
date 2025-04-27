@@ -4,62 +4,78 @@
   "variables": {
     "SynchGroupName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "MovementSync": {
       "type": "BioAnimMovementSync",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "BlendSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "BlendSpeedLeanIn": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "BlendSpeedLeanOut": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "AngleLeanLeft": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "AngleLeanRight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "AngleAscend": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "AngleDescend": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "MinSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "MidSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "MaxSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "Lean": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "Incline": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

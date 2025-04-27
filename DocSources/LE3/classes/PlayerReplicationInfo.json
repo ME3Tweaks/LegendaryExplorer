@@ -4,183 +4,228 @@
   "variables": {
     "UniqueId": {
       "type": "UniqueNetId",
-      "documentation": null
+      "documentation": null,
+      "flags": 5368709152
     },
     "PlayerName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5372903456
     },
     "OldName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "StringSpectating": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "StringUnknown": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "SavedNetworkAddress": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "GameMessageClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlayerLocationHint": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "Team": {
       "type": "TeamInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     },
     "SessionName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "AutomatedTestingData": {
       "type": "AutomatedTestingDatum",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Avatar": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "Score": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 5368709152
     },
     "Deaths": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741856
     },
     "NumLives": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlayerID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "SplitscreenIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "StartTime": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "Kills": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741824
     },
     "ExactPing": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StatConnectionCounts": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StatPingTotals": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StatPingMin": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StatPingMax": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StatPKLTotal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StatPKLMin": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StatPKLMax": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StatMaxInBPS": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StatAvgInBPS": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StatMaxOutBPS": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StatAvgOutBPS": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAdmin": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "bIsFemale": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "bIsSpectator": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "bOnlySpectator": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "bWaitingPlayer": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "bReadyToPlay": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "bOutOfLives": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "bBot": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "bHasFlag": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "bHasBeenWelcomed": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsInactive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     },
     "bFromPreviousLevel": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Ping": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "TTSSpeaker": {
       "type": "ETTSSpeaker",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -212,8 +257,9 @@
       "documentation": null,
       "signature_members": {
         "VarName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -223,8 +269,9 @@
       "documentation": null,
       "signature_members": {
         "VarName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -240,8 +287,9 @@
       "documentation": null,
       "signature_members": {
         "S": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -257,8 +305,9 @@
       "documentation": null,
       "signature_members": {
         "TimeStamp": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -268,16 +317,19 @@
       "documentation": null,
       "signature_members": {
         "HUD": {
-          "type": null,
-          "documentation": null
+          "type": "HUD",
+          "documentation": null,
+          "flags": 128
         },
         "YL": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "YPos": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -305,8 +357,9 @@
       "documentation": null,
       "signature_members": {
         "C": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -316,8 +369,9 @@
       "documentation": null,
       "signature_members": {
         "PRI": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -345,8 +399,9 @@
       "documentation": null,
       "signature_members": {
         "Amt": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -368,8 +423,9 @@
       "documentation": null,
       "signature_members": {
         "PRI": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -385,8 +441,9 @@
       "documentation": null,
       "signature_members": {
         "NewPRI": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -396,8 +453,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -407,8 +465,9 @@
       "documentation": null,
       "signature_members": {
         "NewTeam": {
-          "type": null,
-          "documentation": null
+          "type": "TeamInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -418,8 +477,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -429,8 +489,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerUniqueId": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -440,8 +501,9 @@
       "documentation": null,
       "signature_members": {
         "B": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -451,8 +513,9 @@
       "documentation": null,
       "signature_members": {
         "bExiting": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -468,8 +531,9 @@
       "documentation": null,
       "signature_members": {
         "PropertyName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -489,5 +553,7 @@
     }
   },
   "states": {},
+  "classflags": 144705714,
+  "configname": "None",
   "documentation": null
 }

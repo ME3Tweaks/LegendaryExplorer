@@ -4,58 +4,73 @@
   "variables": {
     "EffectName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "NodePosY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NodePosX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DrawWidth": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DrawHeight": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OutDrawY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "InDrawY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bShowInEditor": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bShowInGame": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseWorldSettings": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bMergePostUber": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAffectsLightingOnly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SceneDPG": {
       "type": "ESceneDepthPriorityGroup",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

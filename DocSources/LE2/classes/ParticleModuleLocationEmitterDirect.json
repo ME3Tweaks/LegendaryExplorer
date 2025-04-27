@@ -4,10 +4,13 @@
   "variables": {
     "EmitterName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 33554441
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142610578,
+  "configname": "None",
   "documentation": null
 }

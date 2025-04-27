@@ -4,83 +4,103 @@
   "variables": {
     "SequenceObjects": {
       "type": "SequenceObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194314
     },
     "ActiveSequenceOps": {
       "type": "SequenceOp",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "NestedSequences": {
       "type": "Sequence",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202498
     },
     "UnregisteredEvents": {
       "type": "SequenceEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "DelayedActivatedOps": {
       "type": "ActivateOp",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "QueuedActivations": {
       "type": "QueuedActivationInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aBioNotifyOfStasis": {
       "type": "SequenceObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aBioDynAnimSets": {
       "type": "BioDynamicAnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aBioPreTickedSequences": {
       "type": "Sequence",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "LogFile": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "DefaultViewX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DefaultViewY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DefaultViewZoom": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nTotalRecursiveKismetCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nTotalRecursiveMemoryUsage": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nTotalRecursiveSequences": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nApproximateKismetLoadTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "IsLocalized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "bEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bBioForceReUpdate": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -88,8 +108,9 @@
       "documentation": null,
       "signature_members": {
         "bInEnabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -105,20 +126,24 @@
       "documentation": null,
       "signature_members": {
         "SeqObjName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bCheckComment": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "OutputObjects": {
-          "type": null,
-          "documentation": null
+          "type": "SequenceObject",
+          "documentation": null,
+          "flags": 4194688
         },
         "bRecursive": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -128,16 +153,19 @@
       "documentation": null,
       "signature_members": {
         "DesiredClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "bRecursive": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "OutputObjects": {
-          "type": null,
-          "documentation": null
+          "type": "SequenceObject",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -145,5 +173,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

@@ -4,91 +4,113 @@
   "variables": {
     "m_aQuickSlotIcons": {
       "type": "SFXPowerWheelIconPower",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_oDragPowerIcon": {
       "type": "SFXPowerWheelIconPower",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_oDragSlotIcon": {
       "type": "SFXPowerWheelIconPower",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_oCenterWeaponIcon": {
       "type": "SFXPowerWheelIconWeapon",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_oHench1WeaponIcon": {
       "type": "SFXPowerWheelIconWeapon",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_oHench2WeaponIcon": {
       "type": "SFXPowerWheelIconWeapon",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_vMouseDownPos": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_vDragOffsets": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nDraggingIcon": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nCurrentDropTarget": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fQuickslotIconUpdateInterval": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nCurrentQuickSlot": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_srMaximizeText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srMinimizeText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fDragStartThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_bDashboardWeaponsOpen": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bDraggingPower": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bDraggingKey": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bDoingDrag": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bQuickSlotExpanded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bQuickSlotVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bEvalQuickSlotPowers": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -102,12 +124,14 @@
       "documentation": null,
       "signature_members": {
         "nIconIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bSelected": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -117,8 +141,9 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -128,8 +153,9 @@
       "documentation": null,
       "signature_members": {
         "nSlotID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -139,8 +165,9 @@
       "documentation": null,
       "signature_members": {
         "nSlotID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -150,8 +177,9 @@
       "documentation": null,
       "signature_members": {
         "nIcon": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -161,8 +189,9 @@
       "documentation": null,
       "signature_members": {
         "sIconID": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -172,8 +201,9 @@
       "documentation": null,
       "signature_members": {
         "sIconID": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -183,8 +213,9 @@
       "documentation": null,
       "signature_members": {
         "sIconID": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -194,8 +225,9 @@
       "documentation": null,
       "signature_members": {
         "sIconID": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -205,8 +237,9 @@
       "documentation": null,
       "signature_members": {
         "sIconID": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -216,8 +249,9 @@
       "documentation": null,
       "signature_members": {
         "sIconID": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -227,8 +261,9 @@
       "documentation": null,
       "signature_members": {
         "sIconID": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -238,8 +273,9 @@
       "documentation": null,
       "signature_members": {
         "sIconID": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -249,12 +285,14 @@
       "documentation": null,
       "signature_members": {
         "sIconID": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "nFoundIcon": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "SFXPowerWheelMode",
@@ -276,12 +314,14 @@
       "documentation": null,
       "signature_members": {
         "bExpand": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bSkipTransition": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -291,8 +331,9 @@
       "documentation": null,
       "signature_members": {
         "pHench": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -314,8 +355,9 @@
       "documentation": null,
       "signature_members": {
         "nWeaponIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -325,12 +367,14 @@
       "documentation": null,
       "signature_members": {
         "nWeapIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "eNewWeapState": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerWheelWeaponState",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -340,12 +384,14 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "aWeapons": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -355,20 +401,24 @@
       "documentation": null,
       "signature_members": {
         "sText1": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "eIcon1": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerWheelMapButtonIcon",
+          "documentation": null,
+          "flags": 128
         },
         "sText2": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         },
         "eIcon2": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerWheelMapButtonIcon",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -378,8 +428,9 @@
       "documentation": null,
       "signature_members": {
         "sText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -389,8 +440,9 @@
       "documentation": null,
       "signature_members": {
         "bVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -406,8 +458,9 @@
       "documentation": null,
       "signature_members": {
         "i_bValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -423,8 +476,9 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -434,20 +488,24 @@
       "documentation": null,
       "signature_members": {
         "nSlot": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nDraggingIconID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bDraggingPower": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bSilently": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -455,5 +513,7 @@
     }
   },
   "states": {},
+  "classflags": 136315038,
+  "configname": "UI",
   "documentation": null
 }

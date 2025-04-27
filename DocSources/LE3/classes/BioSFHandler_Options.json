@@ -4,147 +4,183 @@
   "variables": {
     "m_aContentOptions": {
       "type": "SFXGUI_OptionsObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_lstOptsToReset": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "TelemetryInfo": {
       "type": "OptionTelemetryInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "TextSliderOptions": {
       "type": "TextSliderOption",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "RadioGroupOptions": {
       "type": "RadioGroupOption",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "SliderOptions": {
       "type": "SliderOption",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "GamePopulatedOptionPages": {
       "type": "GamePopulatedOptionPage",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "OptionPages": {
       "type": "OptionPage",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "NewGameOptionPages": {
       "type": "OptionPage",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "MPOptionPages": {
       "type": "OptionPage",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "IgnoreDifficultyMapNames": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "__AddTelem__Delegate": {
       "type": "AddTelem",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnCloseCallback__Delegate": {
       "type": "OnCloseCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "NewSettings": {
       "type": "SFXProfileSettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "ResetToDefaultsText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "ConfirmResetToDefaultsText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "CancelResetToDefaultsText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "ExitConfirmText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "ConfirmExitFromMenuText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "CancelExitFromMenuText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "srSkipConfirm": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "srYes": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "srNo": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ResolutionStory": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "GammaStory": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "VCInputStory": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "VCOutputStory": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "HDREnabledStory": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "HDRBrightnessStory": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "HDRContrastStory": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MonitorStory": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "CappedFramerateStory": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_bSelfPanelClose": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bWaitingOnMsgBox": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "GuiMode": {
       "type": "EOptionsGuiMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "CachedDifficulty": {
       "type": "EDifficultyOptions",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -152,20 +188,24 @@
       "documentation": null,
       "signature_members": {
         "Attributes": {
-          "type": null,
-          "documentation": null
+          "type": "TelemetryAttribute",
+          "documentation": null,
+          "flags": 4194688
         },
         "TelemetryKey": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "eOptionId": {
-          "type": null,
-          "documentation": null
+          "type": "EGuiOptions",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -175,20 +215,24 @@
       "documentation": null,
       "signature_members": {
         "Attributes": {
-          "type": null,
-          "documentation": null
+          "type": "TelemetryAttribute",
+          "documentation": null,
+          "flags": 4194688
         },
         "TelemetryKey": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "eOptionId": {
-          "type": null,
-          "documentation": null
+          "type": "EGuiOptions",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -198,20 +242,24 @@
       "documentation": null,
       "signature_members": {
         "Attributes": {
-          "type": null,
-          "documentation": null
+          "type": "TelemetryAttribute",
+          "documentation": null,
+          "flags": 4194688
         },
         "TelemetryKey": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "eOptionId": {
-          "type": null,
-          "documentation": null
+          "type": "EGuiOptions",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -221,20 +269,24 @@
       "documentation": null,
       "signature_members": {
         "Attributes": {
-          "type": null,
-          "documentation": null
+          "type": "TelemetryAttribute",
+          "documentation": null,
+          "flags": 4194688
         },
         "TelemetryKey": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "eOptionId": {
-          "type": null,
-          "documentation": null
+          "type": "EGuiOptions",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -244,20 +296,24 @@
       "documentation": null,
       "signature_members": {
         "Attributes": {
-          "type": null,
-          "documentation": null
+          "type": "TelemetryAttribute",
+          "documentation": null,
+          "flags": 4194688
         },
         "TelemetryKey": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "eOptionId": {
-          "type": null,
-          "documentation": null
+          "type": "EGuiOptions",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -267,16 +323,19 @@
       "documentation": null,
       "signature_members": {
         "Attributes": {
-          "type": null,
-          "documentation": null
+          "type": "TelemetryAttribute",
+          "documentation": null,
+          "flags": 4194688
         },
         "eOptionId": {
-          "type": null,
-          "documentation": null
+          "type": "EGuiOptions",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -286,8 +345,9 @@
       "documentation": null,
       "signature_members": {
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "EProfileSetting",
@@ -297,12 +357,14 @@
       "documentation": null,
       "signature_members": {
         "lstProfSettings": {
-          "type": null,
-          "documentation": null
+          "type": "EProfileSetting",
+          "documentation": null,
+          "flags": 4194688
         },
         "lstTypes": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -336,8 +398,9 @@
       "documentation": null,
       "signature_members": {
         "sPackedIDs": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -353,8 +416,9 @@
       "documentation": null,
       "signature_members": {
         "Hook": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -364,12 +428,14 @@
       "documentation": null,
       "signature_members": {
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -379,8 +445,9 @@
       "documentation": null,
       "signature_members": {
         "Settings": {
-          "type": null,
-          "documentation": null
+          "type": "SFXProfileSettings",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -390,8 +457,9 @@
       "documentation": null,
       "signature_members": {
         "TextOption": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGUI_Option_TextLanguage",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -401,20 +469,24 @@
       "documentation": null,
       "signature_members": {
         "Attributes": {
-          "type": null,
-          "documentation": null
+          "type": "TelemetryAttribute",
+          "documentation": null,
+          "flags": 4194688
         },
         "TelemetryKey": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "eOptionId": {
-          "type": null,
-          "documentation": null
+          "type": "EGuiOptions",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -424,20 +496,24 @@
       "documentation": null,
       "signature_members": {
         "Attributes": {
-          "type": null,
-          "documentation": null
+          "type": "TelemetryAttribute",
+          "documentation": null,
+          "flags": 4194688
         },
         "TelemetryKey": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "eOptionId": {
-          "type": null,
-          "documentation": null
+          "type": "EGuiOptions",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -447,20 +523,24 @@
       "documentation": null,
       "signature_members": {
         "Attributes": {
-          "type": null,
-          "documentation": null
+          "type": "TelemetryAttribute",
+          "documentation": null,
+          "flags": 4194688
         },
         "TelemetryKey": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "eOptionId": {
-          "type": null,
-          "documentation": null
+          "type": "EGuiOptions",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -470,20 +550,24 @@
       "documentation": null,
       "signature_members": {
         "Attributes": {
-          "type": null,
-          "documentation": null
+          "type": "TelemetryAttribute",
+          "documentation": null,
+          "flags": 4194688
         },
         "TelemetryKey": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "eOptionId": {
-          "type": null,
-          "documentation": null
+          "type": "EGuiOptions",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -493,12 +577,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Context": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -514,8 +600,9 @@
       "documentation": null,
       "signature_members": {
         "usingGamepad": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -525,12 +612,14 @@
       "documentation": null,
       "signature_members": {
         "GuiMan": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGUIInteraction",
+          "documentation": null,
+          "flags": 128
         },
         "pInputDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "BioSFHandler_MessageBox.InputCallback",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -540,12 +629,14 @@
       "documentation": null,
       "signature_members": {
         "lstOptIDs": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
         },
         "sPackedIDs": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -573,8 +664,9 @@
       "documentation": null,
       "signature_members": {
         "fn_OnCloseDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnCloseCallback",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -588,5 +680,7 @@
     }
   },
   "states": {},
+  "classflags": 144703638,
+  "configname": "UI",
   "documentation": null
 }

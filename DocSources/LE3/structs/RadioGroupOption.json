@@ -2,39 +2,48 @@
   "members": {
     "TelemetryKey": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "AddTelemFunc": {
       "type": "AddTelem",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "UClass": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Value0": {
       "type": "OptionText",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Value1": {
       "type": "OptionText",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Label": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Story": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DefaultVal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Id": {
       "type": "EGuiOptions",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioSFHandler_Options",

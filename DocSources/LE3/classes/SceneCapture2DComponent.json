@@ -4,31 +4,38 @@
   "variables": {
     "ViewMatrix": {
       "type": "Matrix",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "ProjMatrix": {
       "type": "Matrix",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "TextureTarget": {
       "type": "TextureRenderTarget2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "FieldOfView": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "NearPlane": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "FarPlane": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUpdateMatrices": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -36,20 +43,24 @@
       "documentation": null,
       "signature_members": {
         "NewTextureTarget": {
-          "type": null,
-          "documentation": null
+          "type": "TextureRenderTarget2D",
+          "documentation": null,
+          "flags": 144
         },
         "NewFOV": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "NewNearPlane": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "NewFarPlane": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -59,12 +70,14 @@
       "documentation": null,
       "signature_members": {
         "NewLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "NewRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -72,5 +85,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

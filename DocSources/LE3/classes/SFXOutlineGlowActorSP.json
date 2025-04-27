@@ -4,14 +4,18 @@
   "variables": {
     "EnemyColour": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "HenchmenColour": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

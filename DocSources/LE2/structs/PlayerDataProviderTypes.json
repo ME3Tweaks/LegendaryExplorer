@@ -2,19 +2,23 @@
   "members": {
     "PlayerOwnerDataProviderClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "CurrentWeaponDataProviderClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "WeaponDataProviderClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "PowerupDataProviderClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "classdef": "PlayerOwnerDataStore",

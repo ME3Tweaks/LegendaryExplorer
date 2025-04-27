@@ -4,23 +4,28 @@
   "variables": {
     "Sounds": {
       "type": "BioSFSoundAssetResource",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "LoadScreenTips": {
       "type": "BioSFScreenTip",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303179
     },
     "Movies": {
       "type": "GFxMovieInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "BioScreenTipEntries": {
       "type": "BioSFScreenTipEntry",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "bUsingGamepad": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -28,8 +33,9 @@
       "documentation": null,
       "signature_members": {
         "gamepad": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -43,5 +49,7 @@
     }
   },
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

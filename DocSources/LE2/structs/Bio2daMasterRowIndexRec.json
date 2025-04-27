@@ -2,11 +2,13 @@
   "members": {
     "pTable": {
       "type": "Bio2DA",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nRowIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "Bio2DA",

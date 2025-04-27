@@ -4,19 +4,23 @@
   "variables": {
     "AffectedComponents": {
       "type": "PrimitiveComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71835656
     },
     "AffectingDominantLight": {
       "type": "LightComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641354
     },
     "bEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bForceNonCompositeDynamicLights": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -30,8 +34,9 @@
       "documentation": null,
       "signature_members": {
         "bNewEnabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -39,5 +44,7 @@
     }
   },
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

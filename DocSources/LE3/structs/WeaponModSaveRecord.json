@@ -2,11 +2,13 @@
   "members": {
     "WeaponModClassNames": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "WeaponClassName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXSaveGame",

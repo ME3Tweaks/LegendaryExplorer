@@ -4,7 +4,8 @@
   "variables": {
     "NextWeapon": {
       "type": "SFXWeapon",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -12,12 +13,14 @@
       "documentation": null,
       "signature_members": {
         "AI": {
-          "type": null,
-          "documentation": null
+          "type": "SFXAI_Core",
+          "documentation": null,
+          "flags": 128
         },
         "oWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -54,5 +57,7 @@
       "documentation": null
     }
   },
+  "classflags": 18,
+  "configname": "None",
   "documentation": null
 }

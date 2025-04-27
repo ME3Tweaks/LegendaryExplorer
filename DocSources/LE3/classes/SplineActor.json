@@ -4,51 +4,63 @@
   "variables": {
     "SplineVelocityOverTime": {
       "type": "InterpCurveFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     },
     "Connections": {
       "type": "SplineConnection",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718592
     },
     "LinksFrom": {
       "type": "SplineActor",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SplineActorTangent": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "nextOrdered": {
       "type": "SplineActor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "prevOrdered": {
       "type": "SplineActor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "previousPath": {
       "type": "SplineActor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "SplineColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bestPathWeight": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "visitedWeight": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bDisableDestination": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAlreadyVisited": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -56,8 +68,9 @@
       "documentation": null,
       "signature_members": {
         "NextActor": {
-          "type": null,
-          "documentation": null
+          "type": "SplineActor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -79,8 +92,9 @@
       "documentation": null,
       "signature_members": {
         "NextActor": {
-          "type": null,
-          "documentation": null
+          "type": "SplineActor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -90,8 +104,9 @@
       "documentation": null,
       "signature_members": {
         "NextActor": {
-          "type": null,
-          "documentation": null
+          "type": "SplineActor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SplineComponent",
@@ -101,12 +116,14 @@
       "documentation": null,
       "signature_members": {
         "Goal": {
-          "type": null,
-          "documentation": null
+          "type": "SplineActor",
+          "documentation": null,
+          "flags": 128
         },
         "OutRoute": {
-          "type": null,
-          "documentation": null
+          "type": "SplineActor",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -116,8 +133,9 @@
       "documentation": null,
       "signature_members": {
         "SplineComp": {
-          "type": null,
-          "documentation": null
+          "type": "SplineComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "SplineActor",
@@ -127,8 +145,9 @@
       "documentation": null,
       "signature_members": {
         "OutSet": {
-          "type": null,
-          "documentation": null
+          "type": "SplineActor",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -138,12 +157,14 @@
       "documentation": null,
       "signature_members": {
         "DesiredDir": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "bUseLinksFrom": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "SplineActor",
@@ -153,8 +174,9 @@
       "documentation": null,
       "signature_members": {
         "bUseLinksFrom": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "SplineActor",
@@ -170,12 +192,14 @@
       "documentation": null,
       "signature_members": {
         "NextActor": {
-          "type": null,
-          "documentation": null
+          "type": "SplineActor",
+          "documentation": null,
+          "flags": 128
         },
         "bCheckForDisableDestination": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -185,8 +209,9 @@
       "documentation": null,
       "signature_members": {
         "inAction": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -196,8 +221,9 @@
       "documentation": null,
       "signature_members": {
         "bFinish": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -207,8 +233,9 @@
       "documentation": null,
       "signature_members": {
         "bFinish": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -216,5 +243,7 @@
     }
   },
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

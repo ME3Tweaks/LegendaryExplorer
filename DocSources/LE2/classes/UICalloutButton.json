@@ -4,27 +4,33 @@
   "variables": {
     "DefaultMarkupStringTemplate": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210690
     },
     "CalloutDataStoreTag": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "InputAliasTag": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "bSupportsButtonRepeat": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bPlayErrorSoundWhenDisabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "IconAlignment": {
       "type": "EUIAlignment",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     }
   },
   "functions": {
@@ -32,8 +38,9 @@
       "documentation": null,
       "signature_members": {
         "bCreateIfNecessary": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "UIEvent_CalloutButtonInputProxy",
@@ -55,8 +62,9 @@
       "documentation": null,
       "signature_members": {
         "WidgetOwner": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -72,8 +80,9 @@
       "documentation": null,
       "signature_members": {
         "InputAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "string",
@@ -83,8 +92,9 @@
       "documentation": null,
       "signature_members": {
         "AlternateInputAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "string",
@@ -100,8 +110,9 @@
       "documentation": null,
       "signature_members": {
         "NewInputAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -111,8 +122,9 @@
       "documentation": null,
       "signature_members": {
         "EventParms": {
-          "type": null,
-          "documentation": null
+          "type": "InputEventParameters",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "bool",
@@ -122,16 +134,19 @@
       "documentation": null,
       "signature_members": {
         "InputProxy": {
-          "type": null,
-          "documentation": null
+          "type": "UIEvent_CalloutButtonInputProxy",
+          "documentation": null,
+          "flags": 128
         },
         "bUpdateProxyOutputLinks": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -141,16 +156,19 @@
       "documentation": null,
       "signature_members": {
         "InputProxy": {
-          "type": null,
-          "documentation": null
+          "type": "UIEvent_CalloutButtonInputProxy",
+          "documentation": null,
+          "flags": 128
         },
         "bUpdateProxyOutputLinks": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -160,8 +178,9 @@
       "documentation": null,
       "signature_members": {
         "NewInputAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -171,8 +190,9 @@
       "documentation": null,
       "signature_members": {
         "AlternatePlayer": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "UIDataStore_InputAlias",
@@ -180,5 +200,7 @@
     }
   },
   "states": {},
+  "classflags": 144704150,
+  "configname": "UI",
   "documentation": null
 }

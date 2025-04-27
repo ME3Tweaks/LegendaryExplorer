@@ -4,31 +4,38 @@
   "variables": {
     "Description": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "__AllowEventActivation__Delegate": {
       "type": "AllowEventActivation",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "EventOwner": {
       "type": "UIScreenObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 16777216
     },
     "EventActivator": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SubobjectVersionModifier": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bShouldRegisterEvent": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bPropagateEvent": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -48,8 +55,9 @@
       "documentation": null,
       "signature_members": {
         "TargetObject": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -65,24 +73,29 @@
       "documentation": null,
       "signature_members": {
         "ControllerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "InEventOwner": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
         },
         "InEventActivator": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 144
         },
         "bActivateImmediately": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "IndicesToActivate": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194706
         }
       },
       "returntype": "bool",
@@ -92,24 +105,29 @@
       "documentation": null,
       "signature_members": {
         "ControllerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "InEventOwner": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
         },
         "InEventActivator": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 144
         },
         "bActivateImmediately": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "IndicesToActivate": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194706
         }
       },
       "returntype": "bool",
@@ -119,24 +137,29 @@
       "documentation": null,
       "signature_members": {
         "ControllerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "InEventOwner": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
         },
         "InEventActivator": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 144
         },
         "bActivateImmediately": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "IndicesToActivate": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194706
         }
       },
       "returntype": "bool",
@@ -158,24 +181,29 @@
       "documentation": null,
       "signature_members": {
         "ControllerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "InEventOwner": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
         },
         "InEventActivator": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         },
         "bActivateImmediately": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "IndicesToActivate": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "bool",
@@ -183,5 +211,7 @@
     }
   },
   "states": {},
+  "classflags": 136315571,
+  "configname": "None",
   "documentation": null
 }

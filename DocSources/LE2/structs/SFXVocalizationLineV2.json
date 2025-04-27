@@ -2,23 +2,28 @@
   "members": {
     "Instigator": {
       "type": "SFXVocalizationParam",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Recipient": {
       "type": "SFXVocalizationParam",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ThirdParam": {
       "type": "SFXVocalizationParam",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DebugText": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 144115188080050176
     },
     "Sound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXVocalizationBank",

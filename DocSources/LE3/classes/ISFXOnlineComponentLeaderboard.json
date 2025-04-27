@@ -4,15 +4,18 @@
   "variables": {
     "__OnReadLbListCompleted__Delegate": {
       "type": "OnReadLbListCompleted",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnGetRankNotificationsCompleted__Delegate": {
       "type": "OnGetRankNotificationsCompleted",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnResultsRetrieved__Delegate": {
       "type": "OnResultsRetrieved",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -20,8 +23,9 @@
       "documentation": null,
       "signature_members": {
         "Callback": {
-          "type": null,
-          "documentation": null
+          "type": "OnGetRankNotificationsCompleted",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -37,16 +41,19 @@
       "documentation": null,
       "signature_members": {
         "pLbId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "funcResultsRetrieved": {
-          "type": null,
-          "documentation": null
+          "type": "OnResultsRetrieved",
+          "documentation": null,
+          "flags": 4194432
         },
         "pExternalData": {
-          "type": null,
-          "documentation": null
+          "type": "Pointer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -56,24 +63,29 @@
       "documentation": null,
       "signature_members": {
         "pLbId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nPlayerId": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "nRankRange": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "funcResultsRetrieved": {
-          "type": null,
-          "documentation": null
+          "type": "OnResultsRetrieved",
+          "documentation": null,
+          "flags": 4194432
         },
         "pExternalData": {
-          "type": null,
-          "documentation": null
+          "type": "Pointer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -83,24 +95,29 @@
       "documentation": null,
       "signature_members": {
         "pLbId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nRankStart": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nRankRange": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "funcResultsRetrieved": {
-          "type": null,
-          "documentation": null
+          "type": "OnResultsRetrieved",
+          "documentation": null,
+          "flags": 4194432
         },
         "pExternalData": {
-          "type": null,
-          "documentation": null
+          "type": "Pointer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -110,8 +127,9 @@
       "documentation": null,
       "signature_members": {
         "aLBDefinitions": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardDefinition",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -121,8 +139,9 @@
       "documentation": null,
       "signature_members": {
         "aLBDefTableRows": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardMapGroup",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -138,8 +157,9 @@
       "documentation": null,
       "signature_members": {
         "RankBypassNotificationArray": {
-          "type": null,
-          "documentation": null
+          "type": "RankBypassNotification",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -149,8 +169,9 @@
       "documentation": null,
       "signature_members": {
         "errorCode": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -160,28 +181,34 @@
       "documentation": null,
       "signature_members": {
         "aColumnInfo": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardColumn",
+          "documentation": null,
+          "flags": 4194432
         },
         "aResults": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardRecord",
+          "documentation": null,
+          "flags": 4194432
         },
         "iTotalRanks": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "uidEntity": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "nErrorCode": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardStatsError",
+          "documentation": null,
+          "flags": 128
         },
         "pExternalData": {
-          "type": null,
-          "documentation": null
+          "type": "Pointer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -191,12 +218,14 @@
       "documentation": null,
       "signature_members": {
         "funcReadLbListCompleted": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadLbListCompleted",
+          "documentation": null,
+          "flags": 4194432
         },
         "jobIds": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -206,8 +235,9 @@
       "documentation": null,
       "signature_members": {
         "Callback": {
-          "type": null,
-          "documentation": null
+          "type": "OnGetRankNotificationsCompleted",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -217,24 +247,29 @@
       "documentation": null,
       "signature_members": {
         "LeaderboardDef": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardDefinition",
+          "documentation": null,
+          "flags": 4194432
         },
         "nPlayerId": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "nRankRange": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "funcResultsRetrieved": {
-          "type": null,
-          "documentation": null
+          "type": "OnResultsRetrieved",
+          "documentation": null,
+          "flags": 4194432
         },
         "pExternalData": {
-          "type": null,
-          "documentation": null
+          "type": "Pointer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -244,24 +279,29 @@
       "documentation": null,
       "signature_members": {
         "LeaderboardDef": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardDefinition",
+          "documentation": null,
+          "flags": 4194432
         },
         "nRankStart": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nRankRange": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "funcResultsRetrieved": {
-          "type": null,
-          "documentation": null
+          "type": "OnResultsRetrieved",
+          "documentation": null,
+          "flags": 4194432
         },
         "pExternalData": {
-          "type": null,
-          "documentation": null
+          "type": "Pointer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -277,12 +317,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "Record": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardRecord",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "int",
@@ -308,5 +350,7 @@
     }
   },
   "states": {},
+  "classflags": 134234259,
+  "configname": "None",
   "documentation": null
 }

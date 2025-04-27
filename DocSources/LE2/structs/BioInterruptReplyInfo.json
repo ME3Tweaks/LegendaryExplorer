@@ -2,27 +2,33 @@
   "members": {
     "nReplyListIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fWindowStartTimeRemaining": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fWindowTimeRemaining": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bActivated": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "eInterruptType": {
       "type": "EInterruptionType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioConversation",

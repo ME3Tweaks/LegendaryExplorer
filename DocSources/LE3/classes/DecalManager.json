@@ -4,31 +4,38 @@
   "variables": {
     "PoolDecals": {
       "type": "DecalComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827464
     },
     "ActiveDecals": {
       "type": "ActiveDecalInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718592
     },
     "DecalTemplate": {
       "type": "DecalComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "DecalBlendRange": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxActiveDecals": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DecalLifeSpan": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "DecalDepthBias": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -42,12 +49,14 @@
       "documentation": null,
       "signature_members": {
         "InDecalComponent": {
-          "type": null,
-          "documentation": null
+          "type": "DecalComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "InDecalLifeSpan": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -63,8 +72,9 @@
       "documentation": null,
       "signature_members": {
         "Decal": {
-          "type": null,
-          "documentation": null
+          "type": "DecalComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -86,76 +96,94 @@
       "documentation": null,
       "signature_members": {
         "TheDecal": {
-          "type": null,
-          "documentation": null
+          "type": "DecalComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "DecalMaterial": {
-          "type": null,
-          "documentation": null
+          "type": "MaterialInterface",
+          "documentation": null,
+          "flags": 128
         },
         "DecalLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DecalOrientation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         },
         "Width": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Height": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Thickness": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bNoClip": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "DecalRotation": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "HitComponent": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "bProjectOnTerrain": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bProjectOnSkeletalMeshes": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "HitBone": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "HitNodeIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "HitLevelIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "InFracturedStaticMeshComponentIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "DepthBias": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "BlendRange": {
-          "type": null,
-          "documentation": null
+          "type": "Vector2D",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -165,76 +193,94 @@
       "documentation": null,
       "signature_members": {
         "DecalMaterial": {
-          "type": null,
-          "documentation": null
+          "type": "MaterialInterface",
+          "documentation": null,
+          "flags": 128
         },
         "DecalLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DecalOrientation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         },
         "Width": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Height": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Thickness": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bNoClip": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "DecalRotation": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "HitComponent": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67109008
         },
         "bProjectOnTerrain": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bProjectOnSkeletalMeshes": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "HitBone": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         },
         "HitNodeIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "HitLevelIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "InDecalLifeSpan": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "InFracturedStaticMeshComponentIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "InDepthBias": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "InBlendRange": {
-          "type": null,
-          "documentation": null
+          "type": "Vector2D",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "DecalComponent",
@@ -242,5 +288,7 @@
     }
   },
   "states": {},
+  "classflags": 144703638,
+  "configname": "Game",
   "documentation": null
 }

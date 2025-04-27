@@ -4,43 +4,53 @@
   "variables": {
     "m_TargetOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108873
     },
     "LensFlareComp": {
       "type": "SFXSelectionLensFlareComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "LensFlareTemplate": {
       "type": "LensFlare",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TargetSaveBool": {
       "type": "SeqVar_Bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CombatTargetSaveBool": {
       "type": "SeqVar_Bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_srTargetTipText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108873
     },
     "m_srGameName": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108873
     },
     "m_fSelectionRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108873
     },
     "m_bTargetable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108873
     },
     "m_bCombatTargetable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108873
     }
   },
   "functions": {
@@ -54,8 +64,9 @@
       "documentation": null,
       "signature_members": {
         "bTargetable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -65,8 +76,9 @@
       "documentation": null,
       "signature_members": {
         "bTargetable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -80,5 +92,7 @@
     }
   },
   "states": {},
+  "classflags": 142610578,
+  "configname": "None",
   "documentation": null
 }

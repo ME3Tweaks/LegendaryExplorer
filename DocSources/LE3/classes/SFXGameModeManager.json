@@ -4,31 +4,38 @@
   "variables": {
     "SupportedModes": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "GameModes": {
       "type": "SFXGameModeBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "KeyNames": {
       "type": "LocalizedKeyName",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "sAudioGameModeRTPCName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "KEY_BINDING_VERSION": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bDisableInput": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentMode": {
       "type": "EGameModes",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -72,12 +79,14 @@
       "documentation": null,
       "signature_members": {
         "mode": {
-          "type": null,
-          "documentation": null
+          "type": "EGameModes",
+          "documentation": null,
+          "flags": 128
         },
         "ModeSpecifier": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -87,12 +96,14 @@
       "documentation": null,
       "signature_members": {
         "mode": {
-          "type": null,
-          "documentation": null
+          "type": "EGameModes",
+          "documentation": null,
+          "flags": 128
         },
         "ModeSpecifier": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -108,20 +119,24 @@
       "documentation": null,
       "signature_members": {
         "Key": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Control": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Shift": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Alt": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -137,8 +152,9 @@
       "documentation": null,
       "signature_members": {
         "resize": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -154,8 +170,9 @@
       "documentation": null,
       "signature_members": {
         "GalaxyOrConversationMode": {
-          "type": null,
-          "documentation": null
+          "type": "EGameModes",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXCameraMode",
@@ -183,8 +200,9 @@
       "documentation": null,
       "signature_members": {
         "mode": {
-          "type": null,
-          "documentation": null
+          "type": "EGameModes",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -194,8 +212,9 @@
       "documentation": null,
       "signature_members": {
         "mode": {
-          "type": null,
-          "documentation": null
+          "type": "EGameModes",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -355,20 +374,24 @@
       "documentation": null,
       "signature_members": {
         "OldCameraMode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 128
         },
         "PreserveTarget": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "TransitionTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "Transition": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode_Interpolate",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "SFXCameraMode",
@@ -402,12 +425,14 @@
       "documentation": null,
       "signature_members": {
         "Key": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Command": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -417,12 +442,14 @@
       "documentation": null,
       "signature_members": {
         "Key": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Command": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -432,32 +459,39 @@
       "documentation": null,
       "signature_members": {
         "TargetMode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGameModeBase",
+          "documentation": null,
+          "flags": 128
         },
         "SourceKey": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "TargetKey": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bSwapBindings": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "OverrideSourceCommand": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         },
         "OverrideTargetCommand": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         },
         "bUseDefaultBindings": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -467,12 +501,14 @@
       "documentation": null,
       "signature_members": {
         "SourceKey": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "TargetKey": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -524,8 +560,9 @@
       "documentation": null,
       "signature_members": {
         "bSwapCrossCircle": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -535,8 +572,9 @@
       "documentation": null,
       "signature_members": {
         "ConfigOption": {
-          "type": null,
-          "documentation": null
+          "type": "EStickConfigOptions",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -546,8 +584,9 @@
       "documentation": null,
       "signature_members": {
         "ConfigOption": {
-          "type": null,
-          "documentation": null
+          "type": "ETriggerConfigOptions",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -555,5 +594,7 @@
     }
   },
   "states": {},
+  "classflags": 134217878,
+  "configname": "Game",
   "documentation": null
 }

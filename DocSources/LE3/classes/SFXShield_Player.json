@@ -4,47 +4,58 @@
   "variables": {
     "TimeDilation": {
       "type": "InterpCurveFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "BreachTimeDilation": {
       "type": "InterpCurveFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "BreachShake": {
       "type": "ScreenShakeStruct",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PS_CriticalHit": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CE_ShieldBreak": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PCShieldsBreakSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PCShieldsUpSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ShieldBreakPainVoc": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PartialBreakPct": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "TimeDilationLength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BreachTimeDilationLength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -52,12 +63,14 @@
       "documentation": null,
       "signature_members": {
         "ObjectPool": {
-          "type": null,
-          "documentation": null
+          "type": "SFXObjectPool",
+          "documentation": null,
+          "flags": 128
         },
         "ClientEffects": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectManager",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -67,32 +80,39 @@
       "documentation": null,
       "signature_members": {
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 128
         },
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "TotalDamageDone": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -108,8 +128,9 @@
       "documentation": null,
       "signature_members": {
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -135,5 +156,7 @@
     }
   },
   "states": {},
+  "classflags": 10485814,
+  "configname": "Weapon",
   "documentation": null
 }

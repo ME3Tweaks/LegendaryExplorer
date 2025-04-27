@@ -2,7 +2,8 @@
   "members": {
     "Uid": {
       "type": "QWord",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "OnlineSubsystem",

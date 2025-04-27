@@ -4,7 +4,8 @@
   "variables": {
     "PlayedME2VarIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "functions": {
@@ -16,5 +17,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

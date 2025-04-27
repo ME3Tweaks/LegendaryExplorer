@@ -2,11 +2,13 @@
   "members": {
     "Resource": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Texture": {
       "type": "Texture",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "GFxMovie",

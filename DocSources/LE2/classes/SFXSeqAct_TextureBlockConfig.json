@@ -4,7 +4,8 @@
   "variables": {
     "TextureBlockBehavior": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -16,5 +17,7 @@
     }
   },
   "states": {},
+  "classflags": 2097174,
+  "configname": "Game",
   "documentation": null
 }

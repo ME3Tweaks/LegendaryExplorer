@@ -2,15 +2,18 @@
   "members": {
     "StatName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StatRange": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bStatActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXDifficultyHandler",

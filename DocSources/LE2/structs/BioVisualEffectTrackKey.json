@@ -2,15 +2,18 @@
   "members": {
     "m_Effect": {
       "type": "BioVisualEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Time": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Duration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioVisualEffectTrack",

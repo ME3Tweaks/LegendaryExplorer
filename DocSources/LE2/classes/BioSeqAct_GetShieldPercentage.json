@@ -4,23 +4,28 @@
   "variables": {
     "m_oPawn": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fShieldPct": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fShieldMax": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fShieldCurrent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "eType": {
       "type": "EShieldType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -38,5 +43,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

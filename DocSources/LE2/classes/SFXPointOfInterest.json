@@ -7,12 +7,14 @@
       "documentation": null,
       "signature_members": {
         "oAttacker": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "Power": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPower",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -22,12 +24,14 @@
       "documentation": null,
       "signature_members": {
         "oAttacker": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "WeaponName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -41,5 +45,7 @@
     }
   },
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

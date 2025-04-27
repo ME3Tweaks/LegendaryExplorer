@@ -4,39 +4,48 @@
   "variables": {
     "OnRequestActionCallbacks": {
       "type": "OnRequestActionDelegate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnRequestExitCallback__Delegate": {
       "type": "OnRequestExitCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnRequestActionDelegate__Delegate": {
       "type": "OnRequestActionDelegate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "TerminalData": {
       "type": "SFXGUIData_Terminal",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsFinished": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIsAborted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bWasPaused": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIsFlashLoaded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIsScriptLoaded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -44,16 +53,19 @@
       "documentation": null,
       "signature_members": {
         "sTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sDesc": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bDisabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -63,16 +75,19 @@
       "documentation": null,
       "signature_members": {
         "sTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sAText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sBText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -82,8 +97,9 @@
       "documentation": null,
       "signature_members": {
         "usingGamepad": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -93,8 +109,9 @@
       "documentation": null,
       "signature_members": {
         "InitialTerminalGUIData": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGUIData_Terminal",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -140,8 +157,9 @@
       "documentation": null,
       "signature_members": {
         "fn_OnRequestActionDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnRequestActionDelegate",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -151,8 +169,9 @@
       "documentation": null,
       "signature_members": {
         "isApt": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -174,8 +193,9 @@
       "documentation": null,
       "signature_members": {
         "nRequest": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -191,8 +211,9 @@
       "documentation": null,
       "signature_members": {
         "fn_OnRequestExitDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnRequestExitCallback",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -200,5 +221,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "UI",
   "documentation": null
 }

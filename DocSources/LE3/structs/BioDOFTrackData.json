@@ -2,47 +2,58 @@
   "members": {
     "vFocusPosition": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fFalloffExponent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fFStop": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fBlurKernelSize": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fMaxNearBlurAmount": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fMaxFarBlurAmount": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "cModulateBlurColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fFocusInnerRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fFocusDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fInterpolateSeconds": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bEnableDOF": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioEvtSysTrackDOF",

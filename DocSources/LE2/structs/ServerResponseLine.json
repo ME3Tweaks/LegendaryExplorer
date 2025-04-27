@@ -2,51 +2,63 @@
   "members": {
     "IP": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242881
     },
     "ServerName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242881
     },
     "MapName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242881
     },
     "GameType": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242881
     },
     "ServerInfo": {
       "type": "KeyValuePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242881
     },
     "PlayerInfo": {
       "type": "PlayerResponseLine",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242881
     },
     "ServerID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048577
     },
     "Port": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048577
     },
     "QueryPort": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048577
     },
     "CurrentPlayers": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048577
     },
     "MaxPlayers": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048577
     },
     "Ping": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048577
     }
   },
   "classdef": "Info",

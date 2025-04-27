@@ -4,47 +4,58 @@
   "variables": {
     "oPawn": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "oTarget": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fReqStab": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fAbortStab": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fReqRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fTimeOut": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nReason": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nCompletionReason": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIgnorePerception": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bDone": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_eFireMode": {
       "type": "EBioEpicPawnBehaviorWeaponFireMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -56,5 +67,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

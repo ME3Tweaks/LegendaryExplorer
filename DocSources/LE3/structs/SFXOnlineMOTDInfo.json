@@ -2,35 +2,43 @@
   "members": {
     "Message": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Title": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Image": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "TrackingID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Priority": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BWEntId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "offerId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Type": {
       "type": "SFXOnlineConnection_MessageType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "ISFXOnlineComponentNotification",

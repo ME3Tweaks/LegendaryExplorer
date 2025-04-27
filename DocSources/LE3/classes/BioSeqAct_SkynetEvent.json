@@ -4,30 +4,38 @@
   "variables": {
     "m_sString1": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_sString2": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_iInt1": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_iInt2": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bIsPartyMember": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_eEventType": {
       "type": "eventEnumID",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

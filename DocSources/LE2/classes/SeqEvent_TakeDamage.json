@@ -4,35 +4,43 @@
   "variables": {
     "DamageTypes": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "IgnoreDamageTypes": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "vHitLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "oDamagedActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MinDamageAmount": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DamageThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CurrentDamage": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bResetDamageOnToggle": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -58,28 +66,34 @@
       "documentation": null,
       "signature_members": {
         "InOriginator": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "InInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "inDamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "inAmount": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "inHitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "DamageCauser": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -89,8 +103,9 @@
       "documentation": null,
       "signature_members": {
         "inDamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -98,5 +113,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

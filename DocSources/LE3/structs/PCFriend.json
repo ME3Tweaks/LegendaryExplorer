@@ -2,39 +2,48 @@
   "members": {
     "FriendID": {
       "type": "QWord",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PersonaId": {
       "type": "QWord",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FriendName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "AvatarID": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Title": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "TitleId": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Group": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PresenceState": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FriendState": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXOnlineComponentOrigin",

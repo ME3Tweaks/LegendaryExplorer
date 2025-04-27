@@ -4,38 +4,48 @@
   "variables": {
     "Brush": {
       "type": "Model",
-      "documentation": null
+      "documentation": null,
+      "flags": 10
     },
     "BrushComponent": {
       "type": "BrushComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67764234
     },
     "BrushColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PolyFlags": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bColored": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSolidWhenSelected": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bPlaceableFromClassBrowser": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CsgOper": {
       "type": "ECsgOper",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

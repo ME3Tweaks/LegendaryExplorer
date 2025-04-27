@@ -2,11 +2,13 @@
   "members": {
     "Node": {
       "type": "AnimNode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NodeWeight": {
       "type": "AnimNode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioAnimMovementSync",

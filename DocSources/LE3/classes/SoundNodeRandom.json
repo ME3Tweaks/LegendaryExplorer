@@ -4,22 +4,28 @@
   "variables": {
     "Weights": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194369
     },
     "HasBeenUsed": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "NumRandomUsed": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bRandomizeWithoutReplacement": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134221970,
+  "configname": "None",
   "documentation": null
 }

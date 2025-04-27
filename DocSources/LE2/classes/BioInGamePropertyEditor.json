@@ -4,91 +4,113 @@
   "variables": {
     "m_sFooterText": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sFileName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sEditableRootName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sCameraRootName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sAnimNodeName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sNewLoadSaveNodeName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sStateNodeName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sActionMappingName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_oPropertyEditorNodes": {
       "type": "BioPropertyEditorBaseNode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fHUDRelativePropertyEditorOriginX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fHUDRelativePropertyEditorOriginY": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fPropertyEditorSizeX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fPropertyEditorSizeY": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fPropertyEditorRelativeColumnOneX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fPropertyEditorRelativeColumnTwoX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fPropertyEditorRelativeColumnThreeX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fPropertyEditorRelativeColumnY": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fColumnHeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bIsActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bDebugBones": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bSortByType": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bSortByName": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -96,8 +118,9 @@
       "documentation": null,
       "signature_members": {
         "Input": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "string",
@@ -107,8 +130,9 @@
       "documentation": null,
       "signature_members": {
         "oHUD": {
-          "type": null,
-          "documentation": null
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -118,16 +142,19 @@
       "documentation": null,
       "signature_members": {
         "Parent": {
-          "type": null,
-          "documentation": null
+          "type": "BioPropertyEditorBaseNode",
+          "documentation": null,
+          "flags": 128
         },
         "CmdName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Command": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -137,16 +164,19 @@
       "documentation": null,
       "signature_members": {
         "Parent": {
-          "type": null,
-          "documentation": null
+          "type": "BioPropertyEditorBaseNode",
+          "documentation": null,
+          "flags": 128
         },
         "O": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         },
         "ObjName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -156,8 +186,9 @@
       "documentation": null,
       "signature_members": {
         "Parent": {
-          "type": null,
-          "documentation": null
+          "type": "BioPropertyEditorBaseNode",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -167,8 +198,9 @@
       "documentation": null,
       "signature_members": {
         "oHUD": {
-          "type": null,
-          "documentation": null
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -250,8 +282,9 @@
       "documentation": null,
       "signature_members": {
         "oHUD": {
-          "type": null,
-          "documentation": null
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -261,8 +294,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -288,5 +322,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

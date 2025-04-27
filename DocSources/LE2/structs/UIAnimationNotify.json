@@ -2,11 +2,13 @@
   "members": {
     "NotifyName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NotifyType": {
       "type": "EUIAnimNotifyType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "UIAnimation",

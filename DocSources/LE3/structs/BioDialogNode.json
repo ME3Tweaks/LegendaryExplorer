@@ -2,71 +2,88 @@
   "members": {
     "sText": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "pCue": {
       "type": "WwiseBaseSoundObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "srText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "nConditionalFunc": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "nConditionalParam": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "nStateTransition": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "nStateTransitionParam": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "nExportID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     },
     "nScriptIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "nCameraIntimacy": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bFireConditional": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAmbient": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bNonTextLine": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSoundLoaded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIgnoreBodyGestures": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAlwaysHideSubtitle": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "eGUIStyle": {
       "type": "EConvGUIStyles",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioConversation",

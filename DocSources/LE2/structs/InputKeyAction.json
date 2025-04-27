@@ -2,15 +2,18 @@
   "members": {
     "TriggeredOps": {
       "type": "SeqOpOutputInputLink",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "InputKeyName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "InputKeyState": {
       "type": "EInputEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "UIRoot",

@@ -2,39 +2,48 @@
   "members": {
     "Powers": {
       "type": "PowerSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Weapons": {
       "type": "WeaponSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "WeaponMods": {
       "type": "WeaponModSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "LoadoutWeapons": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Tag": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MappedPower": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CharacterLevel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TalentPoints": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Grenades": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXSaveGame",

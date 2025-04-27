@@ -4,35 +4,43 @@
   "variables": {
     "TextureTarget": {
       "type": "TextureRenderTarget2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "SkeletalMeshComp": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641354
     },
     "RenderSection": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ForceLOD": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FadingStartTimeAfterHit": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FadingPercentage": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FadingDurationTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FadingIntervalTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -40,16 +48,19 @@
       "documentation": null,
       "signature_members": {
         "InMaskPosition": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 130
         },
         "InMaskRadius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 130
         },
         "InStartupPosition": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 130
         }
       },
       "returntype": "None",
@@ -59,8 +70,9 @@
       "documentation": null,
       "signature_members": {
         "InTextureTarget": {
-          "type": null,
-          "documentation": null
+          "type": "TextureRenderTarget2D",
+          "documentation": null,
+          "flags": 130
         }
       },
       "returntype": "None",
@@ -68,5 +80,7 @@
     }
   },
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

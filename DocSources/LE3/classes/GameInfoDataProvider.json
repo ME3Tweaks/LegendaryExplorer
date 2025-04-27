@@ -4,7 +4,8 @@
   "variables": {
     "GameDataSource": {
       "type": "GameReplicationInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "DataSourceInstance": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -21,5 +23,7 @@
     }
   },
   "states": {},
+  "classflags": 136315034,
+  "configname": "None",
   "documentation": null
 }

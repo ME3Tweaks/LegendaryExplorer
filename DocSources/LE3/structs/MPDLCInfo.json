@@ -2,15 +2,18 @@
   "members": {
     "MapPackageNames": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "ModuleID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PrettyName": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXOnlineDefine",

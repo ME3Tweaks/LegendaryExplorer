@@ -2,11 +2,13 @@
   "members": {
     "ISOCode": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "Description": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     }
   },
   "classdef": "ISFXOnlineComponentLogin",

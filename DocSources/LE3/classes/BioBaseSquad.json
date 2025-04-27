@@ -4,43 +4,53 @@
   "variables": {
     "Members": {
       "type": "Pawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PlaypenVolumes": {
       "type": "BioPlaypenVolume",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "CombatZones": {
       "type": "SFXCombatZone",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "TargetData": {
       "type": "BioSquadTargetData",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CachedPlayerPawn": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bSquadHasVehicle": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsPlayerSquad": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_bCombatEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bSquadEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PathingTowardCombatZone": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -48,8 +58,9 @@
       "documentation": null,
       "signature_members": {
         "CombatZone": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCombatZone",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -59,12 +70,14 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "bCheckPlaypens": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -74,8 +87,9 @@
       "documentation": null,
       "signature_members": {
         "Volume": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlaypenVolume",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -97,12 +111,14 @@
       "documentation": null,
       "signature_members": {
         "Position": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Origin": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -112,8 +128,9 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "BioTacticalMoveToIndicator",
@@ -123,8 +140,9 @@
       "documentation": null,
       "signature_members": {
         "oPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Actor",
@@ -134,8 +152,9 @@
       "documentation": null,
       "signature_members": {
         "oPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Actor",
@@ -145,8 +164,9 @@
       "documentation": null,
       "signature_members": {
         "CombatZone": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCombatZone",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -162,8 +182,9 @@
       "documentation": null,
       "signature_members": {
         "oActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -173,8 +194,9 @@
       "documentation": null,
       "signature_members": {
         "oActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -184,8 +206,9 @@
       "documentation": null,
       "signature_members": {
         "SlotMarker": {
-          "type": null,
-          "documentation": null
+          "type": "CoverSlotMarker",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -195,8 +218,9 @@
       "documentation": null,
       "signature_members": {
         "Position": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -206,8 +230,9 @@
       "documentation": null,
       "signature_members": {
         "vLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "bool",
@@ -217,8 +242,9 @@
       "documentation": null,
       "signature_members": {
         "vLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "bool",
@@ -228,8 +254,9 @@
       "documentation": null,
       "signature_members": {
         "Volume": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlaypenVolume",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -245,8 +272,9 @@
       "documentation": null,
       "signature_members": {
         "oPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -268,8 +296,9 @@
       "documentation": null,
       "signature_members": {
         "CombatZone": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCombatZone",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -279,8 +308,9 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -290,8 +320,9 @@
       "documentation": null,
       "signature_members": {
         "Volume": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlaypenVolume",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -301,12 +332,14 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "oIndicator": {
-          "type": null,
-          "documentation": null
+          "type": "BioTacticalMoveToIndicator",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -316,8 +349,9 @@
       "documentation": null,
       "signature_members": {
         "oController": {
-          "type": null,
-          "documentation": null
+          "type": "BioAiController",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -333,12 +367,14 @@
       "documentation": null,
       "signature_members": {
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -366,8 +402,9 @@
       "documentation": null,
       "signature_members": {
         "oPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -375,5 +412,7 @@
     }
   },
   "states": {},
+  "classflags": 144703635,
+  "configname": "None",
   "documentation": null
 }

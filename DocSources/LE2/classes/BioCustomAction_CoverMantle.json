@@ -4,11 +4,13 @@
   "variables": {
     "aBumpList": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "vStartLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -16,12 +18,14 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -31,16 +35,19 @@
       "documentation": null,
       "signature_members": {
         "SeqNode": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
         },
         "PlayedTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "ExcessTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -60,5 +67,7 @@
     }
   },
   "states": {},
+  "classflags": 22,
+  "configname": "Game",
   "documentation": null
 }

@@ -4,7 +4,8 @@
   "variables": {
     "ActionMap": {
       "type": "MultiMap_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "TargetObject": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -21,5 +23,7 @@
     }
   },
   "states": {},
+  "classflags": 136315578,
+  "configname": "None",
   "documentation": null
 }

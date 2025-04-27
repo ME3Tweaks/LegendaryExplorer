@@ -2,11 +2,13 @@
   "members": {
     "MetadataItems": {
       "type": "SettingsProperty",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ContentType": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "OnlineSubsystem",

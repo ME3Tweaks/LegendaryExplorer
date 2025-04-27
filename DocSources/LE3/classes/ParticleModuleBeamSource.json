@@ -4,46 +4,58 @@
   "variables": {
     "SourceRw": {
       "type": "BioRawDistributionRwVector3",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "SourceTangentRw": {
       "type": "BioRawDistributionRwVector3",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "SourceStrength": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "SourceName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSourceAbsolute": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bLockSource": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bLockSourceTangent": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bLockSourceStength": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SourceMethod": {
       "type": "Beam2SourceTargetMethod",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SourceTangentMethod": {
       "type": "Beam2SourceTargetTangentMethod",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142610578,
+  "configname": "None",
   "documentation": null
 }

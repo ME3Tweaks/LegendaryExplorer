@@ -4,30 +4,38 @@
   "variables": {
     "SphereColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SphereMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SphereRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SphereSides": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDrawWireSphere": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDrawLitSphere": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 2155884946,
+  "configname": "None",
   "documentation": null
 }

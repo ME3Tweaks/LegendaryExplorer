@@ -4,19 +4,23 @@
   "variables": {
     "PersistentCollectionData": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "RuntimeCollectionData": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "PersistentDataFields": {
       "type": "UIProviderScriptFieldValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "RuntimeDataFields": {
       "type": "UIProviderScriptFieldValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202497
     }
   },
   "functions": {
@@ -24,20 +28,24 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "FieldType": {
-          "type": null,
-          "documentation": null
+          "type": "EUIDataProviderFieldType",
+          "documentation": null,
+          "flags": 144
         },
         "bPersistent": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "out_InsertPosition": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 400
         }
       },
       "returntype": "bool",
@@ -47,16 +55,19 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bPersistent": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "CellTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -66,8 +77,9 @@
       "documentation": null,
       "signature_members": {
         "bReinitializeRuntimeFields": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -77,20 +89,24 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ValueToFind": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "bPersistent": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "CellTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -100,12 +116,14 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bSearchPersistentFields": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -115,24 +133,29 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ValueIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "out_Value": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         },
         "bPersistent": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "CellTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -142,20 +165,24 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "out_DataValueArray": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         },
         "bPersistent": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "CellTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -165,16 +192,19 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "out_CellTagArray": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         },
         "bPersistent": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -184,12 +214,14 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "out_Field": {
-          "type": null,
-          "documentation": null
+          "type": "UIProviderScriptFieldValue",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -205,28 +237,34 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "NewValue": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "InsertIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "bPersistent": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bAllowDuplicateValues": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "CellTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -236,20 +274,24 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ValueToRemove": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "bPersistent": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "CellTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -259,20 +301,24 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ValueIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bPersistent": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "CellTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -282,8 +328,9 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -293,24 +340,29 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "CurrentValue": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "NewValue": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "bPersistent": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "CellTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -320,24 +372,29 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ValueIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "NewValue": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "bPersistent": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "CellTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -353,28 +410,34 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "CollectionValues": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "bClearExisting": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "InsertIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "bPersistent": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "CellTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -384,16 +447,19 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "FieldValue": {
-          "type": null,
-          "documentation": null
+          "type": "UIProviderScriptFieldValue",
+          "documentation": null,
+          "flags": 4194690
         },
         "bChangeExistingOnly": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -401,5 +467,7 @@
     }
   },
   "states": {},
+  "classflags": 136316054,
+  "configname": "UI",
   "documentation": null
 }

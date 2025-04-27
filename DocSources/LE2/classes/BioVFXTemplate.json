@@ -4,175 +4,218 @@
   "variables": {
     "m_rawIntensityVsDistanceDistribution": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "m_aSoundsForIntensityLevels": {
       "type": "WwiseBaseSoundObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "aPostProcessParameters": {
       "type": "BioCurveDrivenParameter",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     },
     "aInstanceParameters": {
       "type": "BioCurveDrivenParameter",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     },
     "Decals": {
       "type": "BioDecalComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 105381897
     },
     "m_afCostTable": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "oPrefab": {
       "type": "Prefab",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "oSoundCue": {
       "type": "WwiseBaseSoundObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "oFrameBufferEffect": {
       "type": "PostProcessChain",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "oSharedFramebufferEffect": {
       "type": "BioVFXTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "oInstancedSharedFrameBufferEffect": {
       "type": "BioVisualEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nmEffectsMaterial": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_cameraShake": {
       "type": "BioCameraShake",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "fLifeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fFadeInTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fFadeOutTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fImpactRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fParticleTimeout": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fEffectMaterialTimeout": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fInstancePoolRechargePeriod": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nInstancePoolMax": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nDefaultPoolMax": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nDefaultPoolMin": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "nMaxInstancesAllowed": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "nNumActiveInstances": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fMaxRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fPercentageOfDirection": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCreateNewSoundEverySpawn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bFadeOnPause": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bEnableCollision": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseActorScale": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsCrustEffect": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsImpactCrustEffect": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAllowParticlesToFinish": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAttachToNearestBone": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bInstancePoolEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bDisableBoolDecay": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPlayerOnly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSharedBetweenInstances": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bUseIntensityCurve": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ePriority": {
       "type": "EBioVFXPriority",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "eCost": {
       "type": "EBioVFXCost",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -184,5 +227,7 @@
     }
   },
   "states": {},
+  "classflags": 144703638,
+  "configname": "Game",
   "documentation": null
 }

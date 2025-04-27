@@ -4,10 +4,13 @@
   "variables": {
     "Dialog": {
       "type": "BioSimpleDialog",
-      "documentation": null
+      "documentation": null,
+      "flags": 274949210120
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 10485778,
+  "configname": "None",
   "documentation": null
 }

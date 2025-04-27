@@ -2,19 +2,23 @@
   "members": {
     "Sound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAnyEvolved": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bReplaceBaseSound": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EvolveChoice": {
       "type": "EEvolveChoice",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXPowerCustomAction",

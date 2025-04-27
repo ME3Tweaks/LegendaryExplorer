@@ -4,83 +4,103 @@
   "variables": {
     "Powers": {
       "type": "SFXPowerCustomActionBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "PowerReleasedDelegates": {
       "type": "OnPowerReleased",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "BioticComboDelegates": {
       "type": "OnBioticCombo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PowerImpactedDelegates": {
       "type": "OnPowerImpacted",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnPowerReleased__Delegate": {
       "type": "OnPowerReleased",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnBioticCombo__Delegate": {
       "type": "OnBioticCombo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnPowerImpacted__Delegate": {
       "type": "OnPowerImpacted",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MyPawn": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LastPowerAnimSet": {
       "type": "AnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RankUnlockText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "RequiredUnlockText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "PassiveRankIcon": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "LockedRankIcon": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "UnlockedRankIcon": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "EvolveRank": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "CooldownMethod": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NumFreePowers": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PowerCastCounter": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DisableCasterCrusts": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SharedCooldownDisabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -94,8 +114,9 @@
       "documentation": null,
       "signature_members": {
         "nmPowerName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXPowerCustomActionBase",
@@ -105,8 +126,9 @@
       "documentation": null,
       "signature_members": {
         "PowerClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXPowerCustomActionBase",
@@ -116,8 +138,9 @@
       "documentation": null,
       "signature_members": {
         "PowerList": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerCustomActionBase",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -127,12 +150,14 @@
       "documentation": null,
       "signature_members": {
         "oPower": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerCustomAction",
+          "documentation": null,
+          "flags": 128
         },
         "oImpacted": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -142,8 +167,9 @@
       "documentation": null,
       "signature_members": {
         "oPower": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerCustomAction",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -153,8 +179,9 @@
       "documentation": null,
       "signature_members": {
         "oPower": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerCustomAction",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -164,8 +191,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -175,8 +203,9 @@
       "documentation": null,
       "signature_members": {
         "PowerClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXPowerCustomActionBase",
@@ -186,8 +215,9 @@
       "documentation": null,
       "signature_members": {
         "PowerClassName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXPowerCustomActionBase",
@@ -197,48 +227,59 @@
       "documentation": null,
       "signature_members": {
         "oPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "Parameter": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Bonus": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Duration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Category": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         },
         "SourcePower": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerCustomActionBase",
+          "documentation": null,
+          "flags": 144
         },
         "bApplyToSourcePower": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bApplyToBiotics": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bApplyToTech": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bApplyToCombat": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bApplyToWeapons": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -248,12 +289,14 @@
       "documentation": null,
       "signature_members": {
         "oPower": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerCustomAction",
+          "documentation": null,
+          "flags": 128
         },
         "oTarget": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -269,12 +312,14 @@
       "documentation": null,
       "signature_members": {
         "Power": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Rank": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -290,8 +335,9 @@
       "documentation": null,
       "signature_members": {
         "PowerList": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerCustomActionBase",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -319,8 +365,9 @@
       "documentation": null,
       "signature_members": {
         "PowerList": {
-          "type": null,
-          "documentation": null
+          "type": "PowerSaveInfo",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -348,8 +395,9 @@
       "documentation": null,
       "signature_members": {
         "oPower": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerCustomAction",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -359,8 +407,9 @@
       "documentation": null,
       "signature_members": {
         "oPower": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerCustomAction",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -382,8 +431,9 @@
       "documentation": null,
       "signature_members": {
         "oCallback": {
-          "type": null,
-          "documentation": null
+          "type": "OnBioticCombo",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -393,8 +443,9 @@
       "documentation": null,
       "signature_members": {
         "oImpactedCallback": {
-          "type": null,
-          "documentation": null
+          "type": "OnPowerImpacted",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -404,8 +455,9 @@
       "documentation": null,
       "signature_members": {
         "oReleasedCallback": {
-          "type": null,
-          "documentation": null
+          "type": "OnPowerReleased",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -415,8 +467,9 @@
       "documentation": null,
       "signature_members": {
         "PowerClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -432,8 +485,9 @@
       "documentation": null,
       "signature_members": {
         "PowerList": {
-          "type": null,
-          "documentation": null
+          "type": "PowerSaveInfo",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -443,8 +497,9 @@
       "documentation": null,
       "signature_members": {
         "Cooldown": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -454,8 +509,9 @@
       "documentation": null,
       "signature_members": {
         "fCooldown": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -471,8 +527,9 @@
       "documentation": null,
       "signature_members": {
         "oCallback": {
-          "type": null,
-          "documentation": null
+          "type": "OnBioticCombo",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -482,8 +539,9 @@
       "documentation": null,
       "signature_members": {
         "oImpactedCallback": {
-          "type": null,
-          "documentation": null
+          "type": "OnPowerImpacted",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -493,8 +551,9 @@
       "documentation": null,
       "signature_members": {
         "oReleasedCallback": {
-          "type": null,
-          "documentation": null
+          "type": "OnPowerReleased",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -502,5 +561,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "Game",
   "documentation": null
 }

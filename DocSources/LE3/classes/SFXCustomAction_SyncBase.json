@@ -4,43 +4,53 @@
   "variables": {
     "BS_Instigator": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "BS_Target": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "TargetAnimInfo": {
       "type": "SFXAnimSetCookSpec",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "InstigatorPlayRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "InstigatorBlendInTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "InstigatorBlendOutTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TargetAnimDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TargetPlayRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TargetBlendInTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TargetBlendOutTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -48,8 +58,9 @@
       "documentation": null,
       "signature_members": {
         "UsedAnims": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -105,5 +116,7 @@
     }
   },
   "states": {},
+  "classflags": 10485783,
+  "configname": "Game",
   "documentation": null
 }

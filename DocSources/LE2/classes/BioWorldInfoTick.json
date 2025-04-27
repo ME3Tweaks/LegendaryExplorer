@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -16,5 +17,7 @@
     }
   },
   "states": {},
+  "classflags": 10485778,
+  "configname": "None",
   "documentation": null
 }

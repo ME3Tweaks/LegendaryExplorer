@@ -4,11 +4,13 @@
   "variables": {
     "CustomPendingBlendOutTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsPlayingCustomAnim": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -22,28 +24,34 @@
       "documentation": null,
       "signature_members": {
         "AnimName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Rate": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "BlendInTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "BlendOutTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bLooping": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bOverride": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "float",
@@ -53,28 +61,34 @@
       "documentation": null,
       "signature_members": {
         "AnimName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Duration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "BlendInTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "BlendOutTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bLooping": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bOverride": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -84,8 +98,9 @@
       "documentation": null,
       "signature_members": {
         "bNewStatus": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -95,8 +110,9 @@
       "documentation": null,
       "signature_members": {
         "AnimName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -106,16 +122,19 @@
       "documentation": null,
       "signature_members": {
         "AxisX": {
-          "type": null,
-          "documentation": null
+          "type": "ERootBoneAxis",
+          "documentation": null,
+          "flags": 144
         },
         "AxisY": {
-          "type": null,
-          "documentation": null
+          "type": "ERootBoneAxis",
+          "documentation": null,
+          "flags": 144
         },
         "AxisZ": {
-          "type": null,
-          "documentation": null
+          "type": "ERootBoneAxis",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -125,8 +144,9 @@
       "documentation": null,
       "signature_members": {
         "BlendOutTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -134,5 +154,7 @@
     }
   },
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

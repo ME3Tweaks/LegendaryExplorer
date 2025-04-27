@@ -2,27 +2,33 @@
   "members": {
     "Scale3D": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StaticMesh": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PSTemplate": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AccelRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Speed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaxSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXWeapon",

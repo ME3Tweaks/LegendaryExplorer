@@ -4,7 +4,8 @@
   "variables": {
     "bEnteredMountedGun": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -27,5 +28,7 @@
       "documentation": null
     }
   },
+  "classflags": 18,
+  "configname": "None",
   "documentation": null
 }

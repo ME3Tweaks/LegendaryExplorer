@@ -2,31 +2,38 @@
   "members": {
     "mapActions": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "sMesh": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "vOffsetLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "rOffsetRotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "vOffsetScale": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nmPropName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nmAttachTo": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioGestureRuntimeData",

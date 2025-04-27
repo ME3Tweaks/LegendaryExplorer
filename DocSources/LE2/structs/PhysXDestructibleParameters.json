@@ -2,43 +2,53 @@
   "members": {
     "DepthParameters": {
       "type": "PhysXDestructibleDepthParameters",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194369
     },
     "FractureSound": {
       "type": "SoundCue",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CrumbleParticleSystem": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DamageThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DamageToRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DamageCap": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ForceToDamage": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CrumbleParticleSize": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ScaledDamageToRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAccumulateDamage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "PhysXDestructible",

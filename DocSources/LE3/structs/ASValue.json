@@ -2,19 +2,23 @@
   "members": {
     "S": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242881
     },
     "N": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "B": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Type": {
       "type": "ASType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "GFxMovie",

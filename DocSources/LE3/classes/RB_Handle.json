@@ -4,71 +4,88 @@
   "variables": {
     "HandleData": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "KinActorData": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "LinearStiffnessScale3D": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LinearDampingScale3D": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Destination": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StepSize": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "location": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GrabbedComponent": {
       "type": "PrimitiveComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "GrabbedBoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SceneIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "LinearDamping": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LinearStiffness": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AngularDamping": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AngularStiffness": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bInHardware": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "bRotationConstrained": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "bInterpolating": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -82,20 +99,24 @@
       "documentation": null,
       "signature_members": {
         "Component": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "InBoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "GrabLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "bConstrainRotation": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -111,8 +132,9 @@
       "documentation": null,
       "signature_members": {
         "NewLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -122,8 +144,9 @@
       "documentation": null,
       "signature_members": {
         "NewOrientation": {
-          "type": null,
-          "documentation": null
+          "type": "Quat",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -133,12 +156,14 @@
       "documentation": null,
       "signature_members": {
         "NewLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "MoveTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -148,8 +173,9 @@
       "documentation": null,
       "signature_members": {
         "NewLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -157,5 +183,7 @@
     }
   },
   "states": {},
+  "classflags": 142614674,
+  "configname": "None",
   "documentation": null
 }

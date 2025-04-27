@@ -4,15 +4,18 @@
   "variables": {
     "Targets": {
       "type": "MorphTarget",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "MorphNames": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Weights": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     }
   },
   "functions": {
@@ -20,12 +23,14 @@
       "documentation": null,
       "signature_members": {
         "Target": {
-          "type": null,
-          "documentation": null
+          "type": "MorphTarget",
+          "documentation": null,
+          "flags": 128
         },
         "InWeight": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -35,8 +40,9 @@
       "documentation": null,
       "signature_members": {
         "MorphTargetName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -46,12 +52,14 @@
       "documentation": null,
       "signature_members": {
         "MorphTargetName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "InWeight": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -59,5 +67,7 @@
     }
   },
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

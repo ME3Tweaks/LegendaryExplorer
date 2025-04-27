@@ -2,7 +2,8 @@
   "members": {
     "Cells": {
       "type": "UIListElementCellTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     }
   },
   "classdef": "UIComp_ListPresenter",

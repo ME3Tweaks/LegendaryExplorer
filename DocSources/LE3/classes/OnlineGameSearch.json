@@ -4,51 +4,63 @@
   "variables": {
     "ManualSkillOverride": {
       "type": "OverrideSkill",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "FilterQuery": {
       "type": "OnlineGameSearchQuery",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "Results": {
       "type": "OnlineGameSearchResult",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "NamedProperties": {
       "type": "NamedObjectProperty",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "AdditionalSearchCriteria": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "GameSettingsClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Query": {
       "type": "LocalizedStringSetting",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxSearchResults": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PingBucketSize": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsLanQuery": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741824
     },
     "bUsesArbitration": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741824
     },
     "bIsSearchInProgress": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "functions": {
@@ -62,12 +74,14 @@
       "documentation": null,
       "signature_members": {
         "LeaderboardId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Players": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -75,5 +89,7 @@
     }
   },
   "states": {},
+  "classflags": 136315058,
+  "configname": "None",
   "documentation": null
 }

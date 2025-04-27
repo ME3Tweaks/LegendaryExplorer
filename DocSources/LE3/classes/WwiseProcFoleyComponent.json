@@ -4,35 +4,43 @@
   "variables": {
     "Info": {
       "type": "ProcFoleyInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_AudioComp": {
       "type": "WwiseAudioComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "m_FoleySound": {
       "type": "WwiseEventPairObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fLastMaxVel": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fSmoothFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fMaxThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nProcFoleyRTPCId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bIsPlaying": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -44,5 +52,7 @@
     }
   },
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

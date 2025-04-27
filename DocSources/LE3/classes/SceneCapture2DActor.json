@@ -4,10 +4,13 @@
   "variables": {
     "DrawFrustum": {
       "type": "DrawFrustumComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633162
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

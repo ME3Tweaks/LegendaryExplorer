@@ -4,7 +4,8 @@
   "variables": {
     "ParticleTemplate": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "VarName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -23,12 +25,14 @@
       "documentation": null,
       "signature_members": {
         "NewTemplate": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
         },
         "bDestroyOnFinish": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -36,5 +40,7 @@
     }
   },
   "states": {},
+  "classflags": 10486290,
+  "configname": "None",
   "documentation": null
 }

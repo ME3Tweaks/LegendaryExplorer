@@ -2,7 +2,8 @@
   "members": {
     "Elements": {
       "type": "RvrClientEffectComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827464
     }
   },
   "classdef": "RvrClientEffectManager",

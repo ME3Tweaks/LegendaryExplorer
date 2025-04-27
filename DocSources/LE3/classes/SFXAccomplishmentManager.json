@@ -4,55 +4,68 @@
   "variables": {
     "AccomplishmentData": {
       "type": "Accomplishment",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "AccomplishmentIsComplete": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "AccomplishmentCompletionTimes": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "AccomplishmentProgressData": {
       "type": "AccomplishmentProgress",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "GrinderAccomplishmentData": {
       "type": "GrinderAccomplishment",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "Rewards": {
       "type": "AchievementReward",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "Challenges": {
       "type": "ChallengeEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "AccomplishmentStorage": {
       "type": "SFXAccomplishmentStorage",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bChallengeSystemEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "IsDataValidated": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIsSaving": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bPendingSave": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bSaveRequired": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -60,8 +73,9 @@
       "documentation": null,
       "signature_members": {
         "AchievementId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXOnlineJobSendMessage",
@@ -89,8 +103,9 @@
       "documentation": null,
       "signature_members": {
         "AccomplishmentIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -100,8 +115,9 @@
       "documentation": null,
       "signature_members": {
         "AccomplishmentProgressIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -111,8 +127,9 @@
       "documentation": null,
       "signature_members": {
         "PointsEarned": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -122,8 +139,9 @@
       "documentation": null,
       "signature_members": {
         "ParentAccomplishment": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -133,8 +151,9 @@
       "documentation": null,
       "signature_members": {
         "AccomplishmentName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -144,16 +163,19 @@
       "documentation": null,
       "signature_members": {
         "CurrentProgress": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "GrinderIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "AccomplishmentIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -163,12 +185,14 @@
       "documentation": null,
       "signature_members": {
         "AchievementId": {
-          "type": null,
-          "documentation": null
+          "type": "EAchievementID",
+          "documentation": null,
+          "flags": 128
         },
         "IsMultiplayerOnly": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "EAccomplishmentStorage",
@@ -178,8 +202,9 @@
       "documentation": null,
       "signature_members": {
         "ArrayIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "EAccomplishmentStorage",
@@ -189,12 +214,14 @@
       "documentation": null,
       "signature_members": {
         "CurrentEvent": {
-          "type": null,
-          "documentation": null
+          "type": "ChallengeEvent",
+          "documentation": null,
+          "flags": 4194688
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -204,12 +231,14 @@
       "documentation": null,
       "signature_members": {
         "nRewardID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "nRewardLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -219,12 +248,14 @@
       "documentation": null,
       "signature_members": {
         "CurrentEvent": {
-          "type": null,
-          "documentation": null
+          "type": "ChallengeEvent",
+          "documentation": null,
+          "flags": 4194688
         },
         "Accomplishments": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -234,16 +265,19 @@
       "documentation": null,
       "signature_members": {
         "KilledPawnClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "CurrentEvent": {
-          "type": null,
-          "documentation": null
+          "type": "ChallengeEvent",
+          "documentation": null,
+          "flags": 4194688
         },
         "Accomplishments": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -253,12 +287,14 @@
       "documentation": null,
       "signature_members": {
         "AccomplishmentName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "GAList": {
-          "type": null,
-          "documentation": null
+          "type": "GrinderAccomplishment",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -268,12 +304,14 @@
       "documentation": null,
       "signature_members": {
         "AccomplishmentProgressName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -283,20 +321,24 @@
       "documentation": null,
       "signature_members": {
         "KilledPawnClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "KillingDamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "CurrentEvent": {
-          "type": null,
-          "documentation": null
+          "type": "ChallengeEvent",
+          "documentation": null,
+          "flags": 4194688
         },
         "Accomplishments": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -306,12 +348,14 @@
       "documentation": null,
       "signature_members": {
         "CurrentEvent": {
-          "type": null,
-          "documentation": null
+          "type": "ChallengeEvent",
+          "documentation": null,
+          "flags": 4194688
         },
         "Accomplishments": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -321,12 +365,14 @@
       "documentation": null,
       "signature_members": {
         "CurrentEvent": {
-          "type": null,
-          "documentation": null
+          "type": "ChallengeEvent",
+          "documentation": null,
+          "flags": 4194688
         },
         "Accomplishments": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -336,12 +382,14 @@
       "documentation": null,
       "signature_members": {
         "CurrentEvent": {
-          "type": null,
-          "documentation": null
+          "type": "ChallengeEvent",
+          "documentation": null,
+          "flags": 4194688
         },
         "Accomplishments": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -351,16 +399,19 @@
       "documentation": null,
       "signature_members": {
         "PowerDamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "CurrentEvent": {
-          "type": null,
-          "documentation": null
+          "type": "ChallengeEvent",
+          "documentation": null,
+          "flags": 4194688
         },
         "Accomplishments": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -370,8 +421,9 @@
       "documentation": null,
       "signature_members": {
         "AccomplishmentProgressName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "EProfileSetting",
@@ -387,12 +439,14 @@
       "documentation": null,
       "signature_members": {
         "CurrentEvent": {
-          "type": null,
-          "documentation": null
+          "type": "ChallengeEvent",
+          "documentation": null,
+          "flags": 4194688
         },
         "Accomplishments": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -402,12 +456,14 @@
       "documentation": null,
       "signature_members": {
         "AccomplishmentProgressName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -417,12 +473,14 @@
       "documentation": null,
       "signature_members": {
         "AccomplishmentProgressName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -432,8 +490,9 @@
       "documentation": null,
       "signature_members": {
         "AccomplishmentName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -443,12 +502,14 @@
       "documentation": null,
       "signature_members": {
         "AchievementsList": {
-          "type": null,
-          "documentation": null
+          "type": "AchievementDetails",
+          "documentation": null,
+          "flags": 4194432
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -458,8 +519,9 @@
       "documentation": null,
       "signature_members": {
         "CurrentProfileSettings": {
-          "type": null,
-          "documentation": null
+          "type": "SFXProfileSettings",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -469,12 +531,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -484,12 +548,14 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "BWEntitlementId",
+          "documentation": null,
+          "flags": 128
         },
         "nResult": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -499,20 +565,24 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "IsComplete": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "bSaveProfile": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -528,8 +598,9 @@
       "documentation": null,
       "signature_members": {
         "ChallengeGroupName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -545,12 +616,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -566,12 +639,14 @@
       "documentation": null,
       "signature_members": {
         "AccomplishmentName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -581,12 +656,14 @@
       "documentation": null,
       "signature_members": {
         "AccomplishmentName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -596,8 +673,9 @@
       "documentation": null,
       "signature_members": {
         "nRewardID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -607,16 +685,19 @@
       "documentation": null,
       "signature_members": {
         "AccomplishmentProgressName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Progress": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -626,16 +707,19 @@
       "documentation": null,
       "signature_members": {
         "AccomplishmentProgressName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Progress": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -645,20 +729,24 @@
       "documentation": null,
       "signature_members": {
         "AccomplishmentName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PointsEarned": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bIsMultiplayerOnly": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -668,12 +756,14 @@
       "documentation": null,
       "signature_members": {
         "ParentAccomplishment": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -683,16 +773,19 @@
       "documentation": null,
       "signature_members": {
         "Score": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "DamageSource": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -702,16 +795,19 @@
       "documentation": null,
       "signature_members": {
         "KilledPawnClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Score": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -721,16 +817,19 @@
       "documentation": null,
       "signature_members": {
         "UpdateValue": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "AccomplishmentProgressName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -740,28 +839,34 @@
       "documentation": null,
       "signature_members": {
         "KilledPawnClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "KillingDamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "KillingSource": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "bHeadShot": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bHeadGib": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -771,12 +876,14 @@
       "documentation": null,
       "signature_members": {
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -786,12 +893,14 @@
       "documentation": null,
       "signature_members": {
         "Medal": {
-          "type": null,
-          "documentation": null
+          "type": "MPMedalType",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -801,12 +910,14 @@
       "documentation": null,
       "signature_members": {
         "ChallengeType": {
-          "type": null,
-          "documentation": null
+          "type": "ChallengeEventType",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -816,12 +927,14 @@
       "documentation": null,
       "signature_members": {
         "n7Rating": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -831,20 +944,24 @@
       "documentation": null,
       "signature_members": {
         "PowerName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PowerDamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "bCombo": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -854,8 +971,9 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -869,5 +987,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "Game",
   "documentation": null
 }

@@ -2,31 +2,38 @@
   "members": {
     "EdgeEnd": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EdgeStart": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ScopeAIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ScopeBIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EdgeAngle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ScopeAEdge": {
       "type": "EScopeEdge",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ScopeBEdge": {
       "type": "EScopeEdge",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "ProcBuilding",

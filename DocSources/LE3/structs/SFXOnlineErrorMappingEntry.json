@@ -2,15 +2,18 @@
   "members": {
     "LocalizationKey": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ErrorContext": {
       "type": "SFXOnlineErrorContext",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "errorCode": {
       "type": "SFXOnlineError",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXOnlineDefine",

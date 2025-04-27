@@ -4,58 +4,73 @@
   "variables": {
     "Weapons": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "ShieldLoadouts": {
       "type": "ShieldLoadout",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Powers": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "PowerLevelUpInfo": {
       "type": "PowerLevelUp",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Armor": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ShieldOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "WeaponLevelRange": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ArmorLevelRange": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaxHealth": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "HealthLevelRange": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ShieldScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TechResistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BioticResistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

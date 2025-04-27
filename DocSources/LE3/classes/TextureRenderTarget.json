@@ -4,18 +4,23 @@
   "variables": {
     "bUpdateImmediate": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bNeedsTwoCopies": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bRenderOnce": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217875,
+  "configname": "None",
   "documentation": null
 }

@@ -2,11 +2,13 @@
   "members": {
     "Subscribers": {
       "type": "UIScreenObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "KeyName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     }
   },
   "classdef": "UIRoot",

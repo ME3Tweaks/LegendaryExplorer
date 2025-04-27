@@ -4,18 +4,23 @@
   "variables": {
     "m_aBioPreloadData": {
       "type": "BioResourcePreloadItem",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_fSceneLength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fPlayRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134226066,
+  "configname": "None",
   "documentation": null
 }

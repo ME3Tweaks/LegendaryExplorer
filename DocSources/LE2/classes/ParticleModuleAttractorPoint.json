@@ -4,34 +4,43 @@
   "variables": {
     "PositionRw": {
       "type": "BioRawDistributionRwVector3",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "Range": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "Strength": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "StrengthByDistance": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAffectBaseVelocity": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bOverrideVelocity": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseWorldSpacePosition": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142610578,
+  "configname": "None",
   "documentation": null
 }

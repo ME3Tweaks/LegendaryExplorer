@@ -4,47 +4,58 @@
   "variables": {
     "BS_InteractionStart": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "BS_InteractionLoop": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "BS_InteractionEnd": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "fStartBlendInTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fStartBlendOutTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fLoopBlendInTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fLoopBlendOutTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fEndBlendInTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fEndBlendOutTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bTriggeredEnd": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "InteractionStage": {
       "type": "EInteractionAnimStage",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -58,16 +69,19 @@
       "documentation": null,
       "signature_members": {
         "SeqNode": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
         },
         "PlayedTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "ExcessTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -93,5 +107,7 @@
     }
   },
   "states": {},
+  "classflags": 10485783,
+  "configname": "Game",
   "documentation": null
 }

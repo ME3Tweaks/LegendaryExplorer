@@ -2,19 +2,23 @@
   "members": {
     "VfTable": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8400898
     },
     "nQuestAdded": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bQuestUpdated": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "lstTaskHistory": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     }
   },
   "classdef": "BioDefine",

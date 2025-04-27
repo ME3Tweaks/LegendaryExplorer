@@ -4,11 +4,13 @@
   "variables": {
     "GesturesPackageName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_pRuntimeData": {
       "type": "BioGestureRuntimeData",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -20,5 +22,7 @@
     }
   },
   "states": {},
+  "classflags": 134217878,
+  "configname": "Game",
   "documentation": null
 }

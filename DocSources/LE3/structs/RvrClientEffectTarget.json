@@ -2,51 +2,63 @@
   "members": {
     "Id": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HitLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RefinedHitLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RefinedRayDir": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HitNormal": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RayDir": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SpawnValue": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Instigator": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HitActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HitBone": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "HitMaterial": {
       "type": "PhysicalMaterial",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bHasRefinedHitLocation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "RvrClientEffectInterface",

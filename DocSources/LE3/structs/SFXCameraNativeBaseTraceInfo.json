@@ -2,31 +2,38 @@
   "members": {
     "m_vCollVectorLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_vCollVectorNormal": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_oCollVectorActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_clrDebugDraw": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bCollDetected": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bCollisionDirty": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bDebugDraw": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXCameraNativeBase",

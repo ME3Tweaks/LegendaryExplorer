@@ -2,15 +2,18 @@
   "members": {
     "PlayerStorageName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Provider": {
       "type": "UIDataProvider_OnlinePlayerStorageArray",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlayerStorageId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "UIDataProvider_OnlinePlayerStorage",

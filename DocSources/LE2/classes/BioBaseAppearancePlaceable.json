@@ -4,94 +4,118 @@
   "variables": {
     "MaterialVariationList": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "AnimSets": {
       "type": "AnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "VisualEffects": {
       "type": "VisualEffectAttachment",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     },
     "VFXOnInstigator": {
       "type": "VisualEffectAttachment",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     },
     "sThumbnailLabel": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "sMenuLabel": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "pNewActorClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_vTargetLocationOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PackageName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlaceablePrefix": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PhysicsAsset": {
       "type": "PhysicsAsset",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DestroyedPhysicsAsset": {
       "type": "PhysicsAsset",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FSM": {
       "type": "BioFSM",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oStaticMesh": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oDestroyedStaticMesh": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oSkeletalMesh": {
       "type": "SkeletalMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oDestroyedSkeletalMesh": {
       "type": "SkeletalMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AnimationTree": {
       "type": "AnimTree",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaterialPerVariation": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "nInstigatorVFXOffset": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Scale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bOneAnimFrameStates": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703635,
+  "configname": "None",
   "documentation": null
 }

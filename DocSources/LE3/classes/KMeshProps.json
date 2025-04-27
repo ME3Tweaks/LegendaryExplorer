@@ -4,18 +4,23 @@
   "variables": {
     "COMNudge": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AggGeom": {
       "type": "KAggregateGeom",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "UmbraBoundsExtension": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 2097554,
+  "configname": "None",
   "documentation": null
 }

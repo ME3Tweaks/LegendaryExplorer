@@ -4,27 +4,33 @@
   "variables": {
     "PrimaryAction": {
       "type": "SFXUIControlState",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "EscapeAction": {
       "type": "SFXUIControlState",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ActionTokenString": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "bMoveToMouse": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bMouseMovementEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bActionTextVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -38,8 +44,9 @@
       "documentation": null,
       "signature_members": {
         "usingGamepad": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -49,12 +56,14 @@
       "documentation": null,
       "signature_members": {
         "nEvent": {
-          "type": null,
-          "documentation": null
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -70,8 +79,9 @@
       "documentation": null,
       "signature_members": {
         "bVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -81,8 +91,9 @@
       "documentation": null,
       "signature_members": {
         "bVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -92,8 +103,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -103,8 +115,9 @@
       "documentation": null,
       "signature_members": {
         "bAllow": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -114,8 +127,9 @@
       "documentation": null,
       "signature_members": {
         "sText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -125,8 +139,9 @@
       "documentation": null,
       "signature_members": {
         "sText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -152,5 +167,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "UI",
   "documentation": null
 }

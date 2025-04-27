@@ -4,23 +4,28 @@
   "variables": {
     "VfTable_IISFXOnlineComponentMessaging": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "VfTable_Blaze::BlazeStateEventHandler": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "mBlazeMsgRequests": {
       "type": "BlazeMsgRequest",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mMessagingAPI": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mAchievementMsgStrRef": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -34,8 +39,9 @@
       "documentation": null,
       "signature_members": {
         "InMapId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXOnlineJobPurgeMessages",
@@ -69,8 +75,9 @@
       "documentation": null,
       "signature_members": {
         "oOnlineSubsystem": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineSubsystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -98,16 +105,19 @@
       "documentation": null,
       "signature_members": {
         "sendToPersonaNames": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "msgType": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineMessageType",
+          "documentation": null,
+          "flags": 128
         },
         "Params": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -115,5 +125,7 @@
     }
   },
   "states": {},
+  "classflags": 134217878,
+  "configname": "Game",
   "documentation": null
 }

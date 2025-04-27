@@ -4,18 +4,23 @@
   "variables": {
     "Sounds": {
       "type": "BioSFSoundAssetResource",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "LoadScreenTips": {
       "type": "BioSFScreenTip",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303179
     },
     "Movies": {
       "type": "GFxMovieInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

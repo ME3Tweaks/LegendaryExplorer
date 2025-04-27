@@ -4,23 +4,28 @@
   "variables": {
     "ProfileSettings": {
       "type": "OnlineProfileSetting",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ProfileMappings": {
       "type": "SettingsPropertyPropertyMetaData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__NotifySettingValueUpdated__Delegate": {
       "type": "NotifySettingValueUpdated",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "VersionNumber": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "AsyncState": {
       "type": "EOnlinePlayerStorageAsyncState",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "functions": {
@@ -34,8 +39,9 @@
       "documentation": null,
       "signature_members": {
         "SettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -45,8 +51,9 @@
       "documentation": null,
       "signature_members": {
         "SettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -56,12 +63,14 @@
       "documentation": null,
       "signature_members": {
         "ProfileId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "OutValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -71,12 +80,14 @@
       "documentation": null,
       "signature_members": {
         "ProfileId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "NewValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -86,24 +97,29 @@
       "documentation": null,
       "signature_members": {
         "ProfileId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "OutMinValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "OutMaxValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "RangeIncrement": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "bFormatAsInt": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -113,12 +129,14 @@
       "documentation": null,
       "signature_members": {
         "ProfileId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "IDs": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -128,12 +146,14 @@
       "documentation": null,
       "signature_members": {
         "ProfileId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "OutType": {
-          "type": null,
-          "documentation": null
+          "type": "EPropertyValueMappingType",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -143,12 +163,14 @@
       "documentation": null,
       "signature_members": {
         "ProfileSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -158,12 +180,14 @@
       "documentation": null,
       "signature_members": {
         "ProfileSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -173,12 +197,14 @@
       "documentation": null,
       "signature_members": {
         "ProfileSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -188,12 +214,14 @@
       "documentation": null,
       "signature_members": {
         "ProfileSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -203,12 +231,14 @@
       "documentation": null,
       "signature_members": {
         "ProfileSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -218,16 +248,19 @@
       "documentation": null,
       "signature_members": {
         "ProfileSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ValueId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "ListIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 400
         }
       },
       "returntype": "bool",
@@ -237,12 +270,14 @@
       "documentation": null,
       "signature_members": {
         "ProfileSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "NewValue": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "bool",
@@ -252,12 +287,14 @@
       "documentation": null,
       "signature_members": {
         "ProfileSettingName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "NewValue": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "bool",
@@ -267,12 +304,14 @@
       "documentation": null,
       "signature_members": {
         "ProfileSettingName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -282,12 +321,14 @@
       "documentation": null,
       "signature_members": {
         "ProfileSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Values": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -297,8 +338,9 @@
       "documentation": null,
       "signature_members": {
         "ProfileSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -308,16 +350,19 @@
       "documentation": null,
       "signature_members": {
         "ProfileSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         },
         "ValueMapID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -327,8 +372,9 @@
       "documentation": null,
       "signature_members": {
         "ProfileSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -338,8 +384,9 @@
       "documentation": null,
       "signature_members": {
         "ProfileSettingName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -349,8 +396,9 @@
       "documentation": null,
       "signature_members": {
         "ProfileSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -360,8 +408,9 @@
       "documentation": null,
       "signature_members": {
         "ProfileSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -371,8 +420,9 @@
       "documentation": null,
       "signature_members": {
         "ProfileSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -382,8 +432,9 @@
       "documentation": null,
       "signature_members": {
         "ProfileSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -393,12 +444,14 @@
       "documentation": null,
       "signature_members": {
         "ProfileSettingName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ProfileSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -408,8 +461,9 @@
       "documentation": null,
       "signature_members": {
         "SettingName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -417,5 +471,7 @@
     }
   },
   "states": {},
+  "classflags": 136315058,
+  "configname": "None",
   "documentation": null
 }

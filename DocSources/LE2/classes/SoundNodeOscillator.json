@@ -4,46 +4,58 @@
   "variables": {
     "AmplitudeMin": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AmplitudeMax": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FrequencyMin": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FrequencyMax": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OffsetMin": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OffsetMax": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CenterMin": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CenterMax": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bModulateVolume": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bModulatePitch": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142610578,
+  "configname": "None",
   "documentation": null
 }

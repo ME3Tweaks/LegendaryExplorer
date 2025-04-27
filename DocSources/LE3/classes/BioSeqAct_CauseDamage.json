@@ -4,23 +4,28 @@
   "variables": {
     "DamageType": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "InstigatorController": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DamageAmount": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MomentumScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bForceCinematicDamage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -38,5 +43,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

@@ -4,22 +4,28 @@
   "variables": {
     "m_mapAnimSetOwners": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "m_mapMeshProps": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "m_tWeaponPropData": {
       "type": "BioWeaponPropData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sGlobalDefaultPose": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

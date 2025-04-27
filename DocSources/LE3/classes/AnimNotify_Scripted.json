@@ -7,12 +7,14 @@
       "documentation": null,
       "signature_members": {
         "Owner": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "AnimSeqInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -20,5 +22,7 @@
     }
   },
   "states": {},
+  "classflags": 134230163,
+  "configname": "None",
   "documentation": null
 }

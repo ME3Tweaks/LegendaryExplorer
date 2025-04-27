@@ -4,14 +4,18 @@
   "variables": {
     "ValueA": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "ValueB": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

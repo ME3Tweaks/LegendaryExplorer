@@ -4,23 +4,28 @@
   "variables": {
     "__MatchesStyleData__Delegate": {
       "type": "MatchesStyleData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "StyleColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StylePadding": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDirty": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -28,8 +33,9 @@
       "documentation": null,
       "signature_members": {
         "OtherStyle": {
-          "type": null,
-          "documentation": null
+          "type": "UIStyle_Data",
+          "documentation": null,
+          "flags": 130
         }
       },
       "returntype": "bool",
@@ -37,5 +43,7 @@
     }
   },
   "states": {},
+  "classflags": 134217875,
+  "configname": "None",
   "documentation": null
 }

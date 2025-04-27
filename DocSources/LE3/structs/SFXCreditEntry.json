@@ -2,47 +2,58 @@
   "members": {
     "Title": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Names": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FontScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Columns": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StartTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FadeInTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HoldTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FadeOutTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DelayTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BreakSpace": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Type": {
       "type": "ECreditEntryType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXGUI_Credits",

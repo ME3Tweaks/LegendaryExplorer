@@ -4,15 +4,18 @@
   "variables": {
     "VfTable_FCurveEdInterface": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "bCanBeBaked": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsDirty": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -20,12 +23,14 @@
       "documentation": null,
       "signature_members": {
         "F": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "LastExtreme": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Vector",
@@ -33,5 +38,7 @@
     }
   },
   "states": {},
+  "classflags": 134230163,
+  "configname": "None",
   "documentation": null
 }

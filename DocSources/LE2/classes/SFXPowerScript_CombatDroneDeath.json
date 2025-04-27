@@ -4,11 +4,13 @@
   "variables": {
     "m_oPower": {
       "type": "SFXPower_CombatDroneDeath",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PS_DeathVFX": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108864
     }
   },
   "functions": {
@@ -16,20 +18,24 @@
       "documentation": null,
       "signature_members": {
         "oCaster": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "fCasterStability": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "oImpacted": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "nPreviouslyImpacted": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -39,16 +45,19 @@
       "documentation": null,
       "signature_members": {
         "ePhase": {
-          "type": null,
-          "documentation": null
+          "type": "EBioPowerState",
+          "documentation": null,
+          "flags": 128
         },
         "oCaster": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "fDuration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -56,5 +65,7 @@
     }
   },
   "states": {},
+  "classflags": 8388626,
+  "configname": "None",
   "documentation": null
 }

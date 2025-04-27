@@ -4,63 +4,78 @@
   "variables": {
     "m_oChoiceImage": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nmResource": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_srChoiceName": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_srChoiceTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_srChoiceImageTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_srChoiceDescription": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nOptionalPaneItemValue": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nChoiceColor": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nChoiceID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_srActionText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OverrideDefaultResource": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bDefaultSelection": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bDisabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bNested": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_eResource": {
       "type": "EInventoryResourceTypes",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -72,5 +87,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

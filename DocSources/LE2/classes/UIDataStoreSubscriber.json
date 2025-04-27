@@ -13,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "out_BoundDataStores": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataStore",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -24,24 +25,29 @@
       "documentation": null,
       "signature_members": {
         "SourceDataStore": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataStore",
+          "documentation": null,
+          "flags": 128
         },
         "bValuesInvalidated": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "PropertyTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "SourceProvider": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 128
         },
         "ArrayIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -51,8 +57,9 @@
       "documentation": null,
       "signature_members": {
         "BindingIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -62,8 +69,9 @@
       "documentation": null,
       "signature_members": {
         "BindingIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "string",
@@ -73,12 +81,14 @@
       "documentation": null,
       "signature_members": {
         "MarkupText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "BindingIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -86,5 +96,7 @@
     }
   },
   "states": {},
+  "classflags": 134234259,
+  "configname": "None",
   "documentation": null
 }

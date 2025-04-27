@@ -4,22 +4,28 @@
   "variables": {
     "MotionBlurAmount": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "InterpolateSeconds": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "InterpolateElapsed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OldMotionBlurAmount": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

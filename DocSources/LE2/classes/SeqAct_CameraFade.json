@@ -4,27 +4,33 @@
   "variables": {
     "CachedPCs": {
       "type": "PlayerController",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "FadeColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FadeOpacity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FadeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FadeTimeRemaining": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bPersistFade": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -36,5 +42,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

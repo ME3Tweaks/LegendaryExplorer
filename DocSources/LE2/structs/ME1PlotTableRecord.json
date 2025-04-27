@@ -2,15 +2,18 @@
   "members": {
     "BoolVariables": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "IntVariables": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "FloatVariables": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     }
   },
   "classdef": "SFXSaveGame",

@@ -4,35 +4,43 @@
   "variables": {
     "HenchmenInfo": {
       "type": "HenchmanInfoStruct",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "HelmetMesh": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "m_GUI_Icon": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_GUI_Icon_Dead": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nmMappedPower": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PowerUseDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bHelmetHidesHead": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bHelmetHidesHair": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     }
   },
   "functions": {
@@ -40,8 +48,9 @@
       "documentation": null,
       "signature_members": {
         "ChkLoadout": {
-          "type": null,
-          "documentation": null
+          "type": "SFXLoadoutData",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -51,12 +60,14 @@
       "documentation": null,
       "signature_members": {
         "HTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "DLoadout": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -78,8 +89,9 @@
       "documentation": null,
       "signature_members": {
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -89,8 +101,9 @@
       "documentation": null,
       "signature_members": {
         "WwiseComponent": {
-          "type": null,
-          "documentation": null
+          "type": "WwiseAudioComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -100,8 +113,9 @@
       "documentation": null,
       "signature_members": {
         "bDeadIcon": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Texture2D",
@@ -117,8 +131,9 @@
       "documentation": null,
       "signature_members": {
         "DesiredLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -134,12 +149,14 @@
       "documentation": null,
       "signature_members": {
         "PercentOfHealthRegained": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bIsInstantaneous": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -149,8 +166,9 @@
       "documentation": null,
       "signature_members": {
         "User": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -166,8 +184,9 @@
       "documentation": null,
       "signature_members": {
         "Power": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPower",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -189,8 +208,9 @@
       "documentation": null,
       "signature_members": {
         "dmgType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -206,8 +226,9 @@
       "documentation": null,
       "signature_members": {
         "bHelmetVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -217,8 +238,9 @@
       "documentation": null,
       "signature_members": {
         "bShowHelmet": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -243,8 +265,9 @@
           "documentation": null,
           "signature_members": {
             "NextStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -254,8 +277,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -265,5 +289,7 @@
       "documentation": null
     }
   },
+  "classflags": 10486327,
+  "configname": "Game",
   "documentation": null
 }

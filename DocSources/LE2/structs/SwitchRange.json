@@ -2,11 +2,13 @@
   "members": {
     "Min": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Max": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SeqAct_RangeSwitch",

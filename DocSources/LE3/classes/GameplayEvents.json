@@ -4,55 +4,68 @@
   "variables": {
     "CurrentSessionInfo": {
       "type": "GameSessionInformation",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "StatsFileName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "PlayerList": {
       "type": "PlayerInformationNew",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "TeamList": {
       "type": "TeamInformation",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "SupportedEvents": {
       "type": "GameplayEventMetaData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "WeaponClassArray": {
       "type": "WeaponClassEventData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DamageClassArray": {
       "type": "DamageClassEventData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ProjectileClassArray": {
       "type": "ProjectileClassEventData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PawnClassArray": {
       "type": "PawnClassEventData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ActorArray": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SoundCueArray": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Archive": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "Header": {
       "type": "GameplayEventsHeader",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -72,8 +85,9 @@
       "documentation": null,
       "signature_members": {
         "Filename": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -81,5 +95,7 @@
     }
   },
   "states": {},
+  "classflags": 136315027,
+  "configname": "Game",
   "documentation": null
 }

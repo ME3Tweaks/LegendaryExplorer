@@ -4,78 +4,98 @@
   "variables": {
     "RotTransitions": {
       "type": "RotTransitionInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "BioPawnOwner": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "LastPawnYaw": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "PawnRotationRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "LastRootBoneYaw": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "YawOffset": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8195
     },
     "TransitionBlendInTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TransitionBlendOutTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CurrentTransitionIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "TransitionThresholdAngle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fRotationResetRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AbortThresholdPercentage": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AbortTransitionBlendTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bRootRotInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bDelayBlendOutToPlayAnim": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPlayingTurnTransition": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bTransitioningToIdle": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

@@ -4,47 +4,58 @@
   "variables": {
     "m_aLocalStoppableEffects": {
       "type": "RvrClientEffectSpawnable",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_aTargets": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_aStacks": {
       "type": "RvrClientEffectStack",
-      "documentation": null
+      "documentation": null,
+      "flags": 4726784
     },
     "m_fMaxDistance_Multiplayer_Bias": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_fMaxDistance_LocalPlayer_Bias": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_fMaxDistance_Debug_Override_Value": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fMaxDistance_Debug_Bias": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bMaxDistance_Debug_Override": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bOnVisible_Debug_Override": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bOnVisible_Debug_Override_Value": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bLogOnCleanup_Debug": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -64,12 +75,14 @@
       "documentation": null,
       "signature_members": {
         "pOnActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "bHide": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -79,16 +92,19 @@
       "documentation": null,
       "signature_members": {
         "pEffect": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectInterface",
+          "documentation": null,
+          "flags": 128
         },
         "pInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "vParams": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -98,24 +114,29 @@
       "documentation": null,
       "signature_members": {
         "pEffect": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectInterface",
+          "documentation": null,
+          "flags": 128
         },
         "vLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "vNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "vParams": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "pOwner": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -125,20 +146,24 @@
       "documentation": null,
       "signature_members": {
         "pEffect": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectInterface",
+          "documentation": null,
+          "flags": 128
         },
         "pInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "oImpactInfo": {
-          "type": null,
-          "documentation": null
+          "type": "ImpactInfo",
+          "documentation": null,
+          "flags": 386
         },
         "vParams": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -148,16 +173,19 @@
       "documentation": null,
       "signature_members": {
         "pEffect": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectInterface",
+          "documentation": null,
+          "flags": 128
         },
         "oTarget": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectTarget",
+          "documentation": null,
+          "flags": 386
         },
         "pOwner": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -167,12 +195,14 @@
       "documentation": null,
       "signature_members": {
         "pEffect": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectInterface",
+          "documentation": null,
+          "flags": 128
         },
         "MinCount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -182,8 +212,9 @@
       "documentation": null,
       "signature_members": {
         "pClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -193,16 +224,19 @@
       "documentation": null,
       "signature_members": {
         "pEffect": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectInterface",
+          "documentation": null,
+          "flags": 128
         },
         "pInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "vParams": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Guid",
@@ -212,24 +246,29 @@
       "documentation": null,
       "signature_members": {
         "pEffect": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectInterface",
+          "documentation": null,
+          "flags": 128
         },
         "vLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "vNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "vParams": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "pOwner": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Guid",
@@ -239,20 +278,24 @@
       "documentation": null,
       "signature_members": {
         "pEffect": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectInterface",
+          "documentation": null,
+          "flags": 128
         },
         "pInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "oImpactInfo": {
-          "type": null,
-          "documentation": null
+          "type": "ImpactInfo",
+          "documentation": null,
+          "flags": 386
         },
         "vParams": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Guid",
@@ -262,16 +305,19 @@
       "documentation": null,
       "signature_members": {
         "pEffect": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectInterface",
+          "documentation": null,
+          "flags": 128
         },
         "oTarget": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectTarget",
+          "documentation": null,
+          "flags": 386
         },
         "pOwner": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Guid",
@@ -281,20 +327,24 @@
       "documentation": null,
       "signature_members": {
         "pEffect": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectInterface",
+          "documentation": null,
+          "flags": 128
         },
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "Guid",
+          "documentation": null,
+          "flags": 128
         },
         "bAllowCooldown": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "pOwner": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -302,5 +352,7 @@
     }
   },
   "states": {},
+  "classflags": 144703638,
+  "configname": "Game",
   "documentation": null
 }

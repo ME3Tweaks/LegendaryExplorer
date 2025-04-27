@@ -4,27 +4,33 @@
   "variables": {
     "VfTable_IISFXOnlineComponentAPI": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "BlazeServiceName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210690
     },
     "BlazeClientName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210690
     },
     "BlazeEnv": {
       "type": "SFXOnlineComponentBlazeHubEnvironment",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "CurrentBlazeHub": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "BlazeNetworkAdapter": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     }
   },
   "functions": {
@@ -32,8 +38,9 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -61,8 +68,9 @@
       "documentation": null,
       "signature_members": {
         "oOnlineSubsystem": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineSubsystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -70,5 +78,7 @@
     }
   },
   "states": {},
+  "classflags": 134217878,
+  "configname": "Engine",
   "documentation": null
 }

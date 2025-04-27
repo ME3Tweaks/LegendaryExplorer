@@ -4,10 +4,13 @@
   "variables": {
     "MApexAsset": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

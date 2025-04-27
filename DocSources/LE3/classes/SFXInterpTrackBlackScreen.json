@@ -4,11 +4,13 @@
   "variables": {
     "m_aBlackScreenKeyData": {
       "type": "SFXBlackScreenTrackData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_BlackScreenSeq": {
       "type": "BioSeqAct_BlackScreen",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -38,5 +40,7 @@
     }
   },
   "states": {},
+  "classflags": 134226066,
+  "configname": "Game",
   "documentation": null
 }

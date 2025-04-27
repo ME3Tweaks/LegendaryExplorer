@@ -4,11 +4,13 @@
   "variables": {
     "TransitionParams": {
       "type": "ViewTargetTransitionParams",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "CameraTarget": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -20,5 +22,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

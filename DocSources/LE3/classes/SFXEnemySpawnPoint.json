@@ -4,18 +4,23 @@
   "variables": {
     "SupportedCustomActions": {
       "type": "EAICustomAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "SupportedReachSpecs": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Weight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 10486290,
+  "configname": "None",
   "documentation": null
 }

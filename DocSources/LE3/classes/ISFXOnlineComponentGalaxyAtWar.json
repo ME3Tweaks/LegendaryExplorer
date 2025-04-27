@@ -4,27 +4,33 @@
   "variables": {
     "__OnGetRatingsComplete__Delegate": {
       "type": "OnGetRatingsComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnIncreaseRatingsComplete__Delegate": {
       "type": "OnIncreaseRatingsComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnSendMessageComplete__Delegate": {
       "type": "OnSendMessageComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnGetMessagesComplete__Delegate": {
       "type": "OnGetMessagesComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnTouchMessagesComplete__Delegate": {
       "type": "OnTouchMessagesComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__AuthenticateCompleted__Delegate": {
       "type": "AuthenticateCompleted",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -32,8 +38,9 @@
       "documentation": null,
       "signature_members": {
         "errorCode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -49,16 +56,19 @@
       "documentation": null,
       "signature_members": {
         "token": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "tokenType": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "pSFXOnlineHTTPRequest": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineHTTPRequest",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -68,12 +78,14 @@
       "documentation": null,
       "signature_members": {
         "msgType": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "pSFXOnlineHTTPRequest": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineHTTPRequest",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -83,20 +95,24 @@
       "documentation": null,
       "signature_members": {
         "defaultRatingIncrease": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "securityRatingsIncrease": {
-          "type": null,
-          "documentation": null
+          "type": "MapEntry",
+          "documentation": null,
+          "flags": 4194432
         },
         "warAssetsIncrease": {
-          "type": null,
-          "documentation": null
+          "type": "MapEntry",
+          "documentation": null,
+          "flags": 4194432
         },
         "pSFXOnlineHTTPRequest": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineHTTPRequest",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -106,12 +122,14 @@
       "documentation": null,
       "signature_members": {
         "msgType": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "funcOnRequestComplete": {
-          "type": null,
-          "documentation": null
+          "type": "OnGetMessagesComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -121,16 +139,19 @@
       "documentation": null,
       "signature_members": {
         "getWarAssets": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bCached": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "funcOnRequestComplete": {
-          "type": null,
-          "documentation": null
+          "type": "OnGetRatingsComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -140,12 +161,14 @@
       "documentation": null,
       "signature_members": {
         "getAssets": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "pSFXOnlineHTTPRequest": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineHTTPRequest",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -155,24 +178,29 @@
       "documentation": null,
       "signature_members": {
         "msgType": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "param1": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "param2": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "param3": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "pSFXOnlineHTTPRequest": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineHTTPRequest",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -182,12 +210,14 @@
       "documentation": null,
       "signature_members": {
         "msgType": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "pSFXOnlineHTTPRequest": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineHTTPRequest",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -197,20 +227,24 @@
       "documentation": null,
       "signature_members": {
         "defaultRatingIncrease": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "securityRatingIncrease": {
-          "type": null,
-          "documentation": null
+          "type": "MapEntry",
+          "documentation": null,
+          "flags": 4194432
         },
         "warAssetIncrease": {
-          "type": null,
-          "documentation": null
+          "type": "MapEntry",
+          "documentation": null,
+          "flags": 4194432
         },
         "funcOnRequestComplete": {
-          "type": null,
-          "documentation": null
+          "type": "OnIncreaseRatingsComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -232,12 +266,14 @@
       "documentation": null,
       "signature_members": {
         "Messages": {
-          "type": null,
-          "documentation": null
+          "type": "MessageEntry",
+          "documentation": null,
+          "flags": 4194432
         },
         "errorCode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -247,20 +283,24 @@
       "documentation": null,
       "signature_members": {
         "updatedSecurityRatings": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194432
         },
         "updatedWarAssets": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194432
         },
         "Level": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "errorCode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -270,20 +310,24 @@
       "documentation": null,
       "signature_members": {
         "updatedSecurityRatings": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194432
         },
         "updatedWarAssets": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194432
         },
         "Level": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "errorCode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -293,16 +337,19 @@
       "documentation": null,
       "signature_members": {
         "messageId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "messageIds": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194432
         },
         "errorCode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -312,12 +359,14 @@
       "documentation": null,
       "signature_members": {
         "Count": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "errorCode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -327,8 +376,9 @@
       "documentation": null,
       "signature_members": {
         "request": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineHTTPRequest",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -338,16 +388,19 @@
       "documentation": null,
       "signature_members": {
         "request": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineHTTPRequest",
+          "documentation": null,
+          "flags": 128
         },
         "messageEntries": {
-          "type": null,
-          "documentation": null
+          "type": "MessageEntry",
+          "documentation": null,
+          "flags": 4194688
         },
         "errorCode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -357,24 +410,29 @@
       "documentation": null,
       "signature_members": {
         "request": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineHTTPRequest",
+          "documentation": null,
+          "flags": 128
         },
         "updatedSecurityRatings": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
         },
         "updatedWarAssets": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
         },
         "Level": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "errorCode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -384,20 +442,24 @@
       "documentation": null,
       "signature_members": {
         "request": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineHTTPRequest",
+          "documentation": null,
+          "flags": 128
         },
         "messageId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "messageIds": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
         },
         "errorCode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -407,16 +469,19 @@
       "documentation": null,
       "signature_members": {
         "request": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineHTTPRequest",
+          "documentation": null,
+          "flags": 128
         },
         "numMsgs": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "errorCode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -426,24 +491,29 @@
       "documentation": null,
       "signature_members": {
         "msgType": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sendMsgParam1": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "ParamType": {
-          "type": null,
-          "documentation": null
+          "type": "EGawParamType",
+          "documentation": null,
+          "flags": 128
         },
         "sendMsgParam3": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "OnSendMessageComplete": {
-          "type": null,
-          "documentation": null
+          "type": "OnSendMessageComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -453,8 +523,9 @@
       "documentation": null,
       "signature_members": {
         "BaseUrl": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -464,12 +535,14 @@
       "documentation": null,
       "signature_members": {
         "msgType": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "funcOnRequestComplete": {
-          "type": null,
-          "documentation": null
+          "type": "OnTouchMessagesComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -477,5 +550,7 @@
     }
   },
   "states": {},
+  "classflags": 134234259,
+  "configname": "None",
   "documentation": null
 }

@@ -4,22 +4,28 @@
   "variables": {
     "m_fStartHeading": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LeftStartTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RightStartTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bIsStarting": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

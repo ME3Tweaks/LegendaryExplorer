@@ -4,23 +4,28 @@
   "variables": {
     "m_vTargetLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "nmPowerToUse": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_oTargetActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bPlayerOrder": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bTargetSpecified": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -28,12 +33,14 @@
       "documentation": null,
       "signature_members": {
         "oTargetActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "vTargetLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -49,28 +56,34 @@
       "documentation": null,
       "signature_members": {
         "AI": {
-          "type": null,
-          "documentation": null
+          "type": "SFXAI_Core",
+          "documentation": null,
+          "flags": 128
         },
         "nmPower": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "oTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
         },
         "vTargetLoc": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "bUseSpecifiedTarget": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bOrdered": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -107,5 +120,7 @@
       "documentation": null
     }
   },
+  "classflags": 18,
+  "configname": "None",
   "documentation": null
 }

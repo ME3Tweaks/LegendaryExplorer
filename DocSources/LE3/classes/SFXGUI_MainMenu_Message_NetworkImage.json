@@ -13,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "nMessageId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXGUI_MainMenu_Message",
@@ -24,8 +25,9 @@
       "documentation": null,
       "signature_members": {
         "request": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineImageRequest",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -33,5 +35,7 @@
     }
   },
   "states": {},
+  "classflags": 26,
+  "configname": "UI",
   "documentation": null
 }

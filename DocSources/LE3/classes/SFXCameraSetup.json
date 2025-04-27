@@ -4,223 +4,278 @@
   "variables": {
     "ZoomSnapCurve": {
       "type": "InterpCurveFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "CombatCam": {
       "type": "SFXCameraMode_Combat",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "RollCam": {
       "type": "SFXCameraMode_Roll",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "CombatTightAim": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "ExploreCam": {
       "type": "SFXCameraMode_Explore",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "CombatStormCam": {
       "type": "SFXCameraMode_CombatStorm",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "ExploreStormCam": {
       "type": "SFXCameraMode_ExploreStorm",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "SSCombatCam": {
       "type": "SFXCameraMode_SplitScreenCombat",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "JumpCam": {
       "type": "SFXCameraMode_JumpStart",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "EnterCoverCam": {
       "type": "SFXCameraMode_EnterCover",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "MeleeCam": {
       "type": "SFXCameraMode_Melee",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "LadderUp": {
       "type": "SFXCameraMode_LadderUp",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "LadderDown": {
       "type": "SFXCameraMode_LadderDown",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "HitReact": {
       "type": "SFXCameraMode_HitReaction",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "ZoomSnapTransition": {
       "type": "SFXCameraTransition_ZoomSnap",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "DefaultCrouch": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "DefaultStand": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "PeekLeftCrouch": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "PeekLeftStand": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "PeekRightCrouch": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "PeekRightStand": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "DefaultAimback": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "AimbackTightAim": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "BlindLeftCrouch": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "BlindLeftStand": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "BlindRightCrouch": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "BlindRightStand": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "BlindUp": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "PopUp": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "LeanLeftCrouch": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "LeanLeftStand": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "LeanRightCrouch": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "LeanRightStand": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "PowerCoverPopup": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "PowerCoverMidLeanLeft": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "PowerCoverMidLeanRight": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "PowerCoverStdLeanLeft": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "PowerCoverStdLeanRight": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "SprintTransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SprintFastTransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DefaultAimTransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DefaultAimTransitionExit": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DefaultCombatTransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CoverEnter": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LeanCoverTransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CoverTransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CoverSlowTransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SniperZoomTransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ZoomSnapTransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PeekTransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StormEntranceTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "VehicleTransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fCustomCameraTransitionIn": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fCustomCameraTransitionOut": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCustomCameraMode": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -228,16 +283,19 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "NewCameraMode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 384
         },
         "TransitionTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -247,24 +305,29 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "OldCameraMode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 128
         },
         "PreserveTarget": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "TransitionTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "Transition": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode_Interpolate",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "SFXCameraMode",
@@ -280,24 +343,29 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "OldCameraMode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 128
         },
         "PreserveTarget": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "TransitionTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "Transition": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode_Interpolate",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "SFXCameraMode",
@@ -307,16 +375,19 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "NewCameraMode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 384
         },
         "fCustomTransitionTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -326,16 +397,19 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "NewCameraMode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 384
         },
         "TransitionTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -345,20 +419,24 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "OldCameraMode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 128
         },
         "NewCameraMode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 384
         },
         "TransitionTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -368,16 +446,19 @@
       "documentation": null,
       "signature_members": {
         "OldCameraMode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 384
         },
         "NewCameraMode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 384
         },
         "TransitionTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -387,8 +468,9 @@
       "documentation": null,
       "signature_members": {
         "inPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -396,5 +478,7 @@
     }
   },
   "states": {},
+  "classflags": 10485778,
+  "configname": "None",
   "documentation": null
 }

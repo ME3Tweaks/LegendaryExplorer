@@ -4,27 +4,33 @@
   "variables": {
     "DialogLinesMale": {
       "type": "SimpleDialogLine",
-      "documentation": null
+      "documentation": null,
+      "flags": 274882101248
     },
     "DialogLinesFemale": {
       "type": "SimpleDialogLine",
-      "documentation": null
+      "documentation": null,
+      "flags": 274882101248
     },
     "DialogLines": {
       "type": "SimpleDialogLine",
-      "documentation": null
+      "documentation": null,
+      "flags": 274882109440
     },
     "SimpleVOEvents": {
       "type": "SimpleVOEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SubtitleColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "LastEventDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -32,16 +38,19 @@
       "documentation": null,
       "signature_members": {
         "EventName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "EventReplyLine": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "EventLine": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SimpleVOEvent",
@@ -51,12 +60,14 @@
       "documentation": null,
       "signature_members": {
         "DialogLineSr": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "ControllerToPlayOn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -66,12 +77,14 @@
       "documentation": null,
       "signature_members": {
         "DialogLineIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ControllerToPlayOn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -81,16 +94,19 @@
       "documentation": null,
       "signature_members": {
         "EventName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "LineIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ControllerToPlayOn": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPlayerController",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -100,12 +116,14 @@
       "documentation": null,
       "signature_members": {
         "EventName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ControllerToPlayOn": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPlayerController",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -113,5 +131,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

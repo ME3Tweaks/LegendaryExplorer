@@ -4,19 +4,23 @@
   "variables": {
     "ArchetypeToInstanceMap": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "PI_ObjectMap": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "SourcePrefab": {
       "type": "UIPrefab",
-      "documentation": null
+      "documentation": null,
+      "flags": 1099511627778
     },
     "PrefabInstanceVersion": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "functions": {
@@ -28,5 +32,7 @@
     }
   },
   "states": {},
+  "classflags": 211813014,
+  "configname": "UI",
   "documentation": null
 }

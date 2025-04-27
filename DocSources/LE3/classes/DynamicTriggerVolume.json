@@ -4,7 +4,8 @@
   "variables": {
     "bEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -16,5 +17,7 @@
     }
   },
   "states": {},
+  "classflags": 10486322,
+  "configname": "None",
   "documentation": null
 }

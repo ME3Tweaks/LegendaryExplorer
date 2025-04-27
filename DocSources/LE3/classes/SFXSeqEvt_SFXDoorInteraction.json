@@ -13,12 +13,14 @@
       "documentation": null,
       "signature_members": {
         "CurrentState": {
-          "type": null,
-          "documentation": null
+          "type": "ESFXDoorState",
+          "documentation": null,
+          "flags": 128
         },
         "EventInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -28,16 +30,19 @@
       "documentation": null,
       "signature_members": {
         "NewState": {
-          "type": null,
-          "documentation": null
+          "type": "ESFXDoorState",
+          "documentation": null,
+          "flags": 128
         },
         "PrevState": {
-          "type": null,
-          "documentation": null
+          "type": "ESFXDoorState",
+          "documentation": null,
+          "flags": 128
         },
         "EventInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -45,5 +50,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

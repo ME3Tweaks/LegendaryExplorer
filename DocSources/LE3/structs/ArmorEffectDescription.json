@@ -2,15 +2,18 @@
   "members": {
     "ArmorEffect": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "EffectDescription": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "EffectToken": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "classdef": "SFXPawn_Player",

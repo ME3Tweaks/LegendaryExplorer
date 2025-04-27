@@ -2,15 +2,18 @@
   "members": {
     "pCodexEntry": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "nQuestAdded": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bQuestComplete": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXGUI_JournalCodex",

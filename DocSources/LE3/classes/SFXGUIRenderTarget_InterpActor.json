@@ -4,14 +4,18 @@
   "variables": {
     "RenderTextureUVChannel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MouseSupport": {
       "type": "MouseSupportLevel",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

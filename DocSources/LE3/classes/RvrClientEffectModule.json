@@ -4,126 +4,158 @@
   "variables": {
     "m_aParameters": {
       "type": "RvrCEParameterDistribution",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "m_pInstanceClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nmTag": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fDrawScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fTimeScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nSortBias": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fMaxDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fMaxBehindDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fActivationValue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nLoops": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bSoftStopsAreHard": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bIgnoreSoftStops": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bExclusiveOnTarget": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bLocalPlayerOnly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bEndOnInstigatorDestroy": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bHideInstigatorOnEnd": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bSinglePlayerOnly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bOnVisibleInstigatorOnly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bIsCoolDownModule": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bCapsFailKillsEffect": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bAllowPendingMode": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bLooping": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bLoopsAreHard": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bSupportsInfiniteDuration": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_eModuleTickGroup": {
       "type": "EModuleTickGroup",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_eActivationOperation": {
       "type": "EValueModifierOperation",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_eActivationSelection": {
       "type": "EValueModifierSelection",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144707731,
+  "configname": "None",
   "documentation": null
 }

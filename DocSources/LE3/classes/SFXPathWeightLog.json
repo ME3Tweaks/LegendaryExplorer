@@ -4,11 +4,13 @@
   "variables": {
     "BestWeight": {
       "type": "NavWeight",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "NavWeights": {
       "type": "NavWeight",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     }
   },
   "functions": {
@@ -16,12 +18,14 @@
       "documentation": null,
       "signature_members": {
         "Nav": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         },
         "NumConstraints": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -31,20 +35,24 @@
       "documentation": null,
       "signature_members": {
         "NavIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Weight": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "ConstraintIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "bRejected": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -52,5 +60,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

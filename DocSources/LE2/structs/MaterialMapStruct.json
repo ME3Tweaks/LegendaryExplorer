@@ -2,11 +2,13 @@
   "members": {
     "Material": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "MeshName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXGameEffect_CloakVFX",

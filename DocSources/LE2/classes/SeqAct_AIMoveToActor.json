@@ -4,27 +4,33 @@
   "variables": {
     "Destination": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "LookAt": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MovementSpeedModifier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LastDestinationChoice": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bInterruptable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPickClosest": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -32,8 +38,9 @@
       "documentation": null,
       "signature_members": {
         "Requestor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Actor",
@@ -47,5 +54,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

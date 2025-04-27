@@ -4,75 +4,93 @@
   "variables": {
     "m_mapUsedMeshProps": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "m_mapFoundWeapons": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "m_aBackupAnimSets": {
       "type": "AnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_aPropActionQueue": {
       "type": "BioQueuedAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_aRetriggerData": {
       "type": "BioQueuedAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_tPosePlayingData": {
       "type": "BioGesturesPosePlaying",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nmDefaultPoseAnim": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481984
     },
     "m_pDefaultPoseSet": {
       "type": "AnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481984
     },
     "m_pPerfGameData": {
       "type": "SFXAmbPerfGameData",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481984
     },
     "m_pAnimSetMgr": {
       "type": "BioGestureAnimSetMgr",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "m_nCurrentPerfPose": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fTimeSinceLastPerfChoice": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nTransPoseIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nPlayingGestureIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bInMatinee": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bGestIsOneShot": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bPerfPaused": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bDisableBlinksAndNoise": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481985
     }
   },
   "functions": {
@@ -80,20 +98,24 @@
       "documentation": null,
       "signature_members": {
         "cWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "pWep": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         },
         "bSpawned": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bCurrentlyEquipped": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -103,16 +125,19 @@
       "documentation": null,
       "signature_members": {
         "cWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "nSpawned": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "bCurrentlyEquipped": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Object",
@@ -122,8 +147,9 @@
       "documentation": null,
       "signature_members": {
         "cWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -133,8 +159,9 @@
       "documentation": null,
       "signature_members": {
         "pActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SkeletalMeshComponent",
@@ -142,5 +169,7 @@
     }
   },
   "states": {},
+  "classflags": 144707730,
+  "configname": "None",
   "documentation": null
 }

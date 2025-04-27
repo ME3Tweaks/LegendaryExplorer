@@ -4,22 +4,28 @@
   "variables": {
     "Input": {
       "type": "ExpressionInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GrimeScaleParamName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "GrimeTexParamName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "GrimeTex": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

@@ -4,27 +4,33 @@
   "variables": {
     "MoveIndicators": {
       "type": "BioTacticalMoveToIndicator",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_playerPawn": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_InitialPlayerPawn": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fRevivalRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_fPercentHealthOnResurrection": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_bEngagedHostileAction": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -32,12 +38,14 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "bCheckPlaypens": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -53,8 +61,9 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "BioTacticalMoveToIndicator",
@@ -70,8 +79,9 @@
       "documentation": null,
       "signature_members": {
         "oPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -99,8 +109,9 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -110,12 +121,14 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "oIndicator": {
-          "type": null,
-          "documentation": null
+          "type": "BioTacticalMoveToIndicator",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -125,8 +138,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -136,12 +150,14 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -151,8 +167,9 @@
       "documentation": null,
       "signature_members": {
         "oPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -162,8 +179,9 @@
       "documentation": null,
       "signature_members": {
         "bEngageEnemy": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -177,5 +195,7 @@
     }
   },
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

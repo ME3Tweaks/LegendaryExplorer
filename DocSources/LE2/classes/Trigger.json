@@ -4,15 +4,18 @@
   "variables": {
     "CylinderComponent": {
       "type": "CylinderComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67764235
     },
     "AITriggerDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bRecentlyTriggered": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -20,8 +23,9 @@
       "documentation": null,
       "signature_members": {
         "Record": {
-          "type": null,
-          "documentation": null
+          "type": "CheckpointRecord",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -31,8 +35,9 @@
       "documentation": null,
       "signature_members": {
         "Record": {
-          "type": null,
-          "documentation": null
+          "type": "CheckpointRecord",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -48,8 +53,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Projectile",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -71,20 +77,24 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "OtherComp": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -92,5 +102,7 @@
     }
   },
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

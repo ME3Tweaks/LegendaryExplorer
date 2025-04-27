@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -18,24 +19,29 @@
       "documentation": null,
       "signature_members": {
         "ParentBoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "FromSkelComp": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "ToSkelComp": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "FromInst": {
-          "type": null,
-          "documentation": null
+          "type": "PhysicsAssetInstance",
+          "documentation": null,
+          "flags": 128
         },
         "ToInst": {
-          "type": null,
-          "documentation": null
+          "type": "PhysicsAssetInstance",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -45,12 +51,14 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "BoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -58,5 +66,7 @@
     }
   },
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

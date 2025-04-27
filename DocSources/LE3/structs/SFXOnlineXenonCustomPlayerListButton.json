@@ -2,11 +2,13 @@
   "members": {
     "CustomText": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Type": {
       "type": "SFXOnlineXenonPlayerListButtonType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXOnlineComponentPlatformXenon",

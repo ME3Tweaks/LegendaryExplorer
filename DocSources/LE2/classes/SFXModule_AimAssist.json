@@ -4,115 +4,143 @@
   "variables": {
     "DebugAdhesion_PerfectAim": {
       "type": "Quat",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "DebugAdhesion_StrafeAssist": {
       "type": "Quat",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "AdhesionSmoothRot": {
       "type": "Quat",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LastCamLoc": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DebugAdhesion_Smoothed": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "DebugAdhesion_Combined": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "DebugAdhesion_Final": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ZoomSnapTarget": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentAimAssistBoneLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LastAdhesionTarget": {
       "type": "Pawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LastFrictionTarget": {
       "type": "Pawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LastZoomSnapTarget": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentAimAssistTarget": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "GlobalFrictionFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "GlobalAimCorrectionFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "GlobalAdhesionFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "EnemyMovementAdhesionFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "LastDistToTarget": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastDistMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastDistFromAimZ": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastDistFromAimY": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastFrictionMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastTargetRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastTargetHeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AdhesionSmoothRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FrictionSmoothValue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "FrictionSmoothRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentAimAssistSoftMargin": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -120,8 +148,9 @@
       "documentation": null,
       "signature_members": {
         "H": {
-          "type": null,
-          "documentation": null
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -137,8 +166,9 @@
       "documentation": null,
       "signature_members": {
         "H": {
-          "type": null,
-          "documentation": null
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -148,8 +178,9 @@
       "documentation": null,
       "signature_members": {
         "Q": {
-          "type": null,
-          "documentation": null
+          "type": "Quat",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -159,12 +190,14 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Weapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Rotator",
@@ -174,8 +207,9 @@
       "documentation": null,
       "signature_members": {
         "H": {
-          "type": null,
-          "documentation": null
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -185,12 +219,14 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Weapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -200,12 +236,14 @@
       "documentation": null,
       "signature_members": {
         "W": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         },
         "StartFireLoc": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Rotator",
@@ -215,24 +253,29 @@
       "documentation": null,
       "signature_members": {
         "StartFireLoc": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "BaseAimRot": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         },
         "MaxAngle": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Threshold": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Range": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Rotator",
@@ -242,12 +285,14 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "ViewRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -261,5 +306,7 @@
     }
   },
   "states": {},
+  "classflags": 22,
+  "configname": "Game",
   "documentation": null
 }

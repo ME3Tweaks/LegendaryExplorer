@@ -4,7 +4,8 @@
   "variables": {
     "RegistryDataProvider": {
       "type": "UIDynamicFieldProvider",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -16,5 +17,7 @@
     }
   },
   "states": {},
+  "classflags": 136315034,
+  "configname": "None",
   "documentation": null
 }

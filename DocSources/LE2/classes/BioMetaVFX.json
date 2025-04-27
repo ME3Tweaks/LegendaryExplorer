@@ -4,11 +4,13 @@
   "variables": {
     "m_aCreatureVFXs": {
       "type": "BioVFXTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_aPlaceableVFXs": {
       "type": "BioVFXTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     }
   },
   "functions": {
@@ -16,16 +18,19 @@
       "documentation": null,
       "signature_members": {
         "MetaEffect": {
-          "type": null,
-          "documentation": null
+          "type": "BioMetaVFX",
+          "documentation": null,
+          "flags": 128
         },
         "Target": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         },
         "fLifeTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -35,16 +40,19 @@
       "documentation": null,
       "signature_members": {
         "sEffect": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Target": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         },
         "fLifeTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -52,5 +60,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

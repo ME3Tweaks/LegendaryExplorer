@@ -4,31 +4,38 @@
   "variables": {
     "oImage": {
       "type": "Texture",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "nRemoteEvent": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Priority": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "sTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "sSubtitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "sBody": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fDisplayTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -40,5 +47,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

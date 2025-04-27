@@ -2,11 +2,13 @@
   "members": {
     "Points": {
       "type": "InterpCurvePointQuat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "InterpMethod": {
       "type": "EInterpMethodType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "Object",

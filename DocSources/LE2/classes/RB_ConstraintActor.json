@@ -4,39 +4,48 @@
   "variables": {
     "ConstraintActor1": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ConstraintActor2": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PulleyPivotActor1": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PulleyPivotActor2": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ConstraintSetup": {
       "type": "RB_ConstraintSetup",
-      "documentation": null
+      "documentation": null,
+      "flags": 104857609
     },
     "ConstraintInstance": {
       "type": "RB_ConstraintInstance",
-      "documentation": null
+      "documentation": null,
+      "flags": 104857609
     },
     "bDisableCollision": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUpdateActor1RefFrame": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUpdateActor2RefFrame": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -44,8 +53,9 @@
       "documentation": null,
       "signature_members": {
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_ToggleConstraintDrive",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -55,8 +65,9 @@
       "documentation": null,
       "signature_members": {
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -66,8 +77,9 @@
       "documentation": null,
       "signature_members": {
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_Destroy",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -83,24 +95,29 @@
       "documentation": null,
       "signature_members": {
         "Actor1": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "Actor2": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "Actor1Bone": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         },
         "Actor2Bone": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         },
         "BreakThreshold": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -110,8 +127,9 @@
       "documentation": null,
       "signature_members": {
         "NewDisableCollision": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -119,5 +137,7 @@
     }
   },
   "states": {},
+  "classflags": 144704147,
+  "configname": "None",
   "documentation": null
 }

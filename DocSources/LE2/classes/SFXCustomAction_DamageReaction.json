@@ -4,67 +4,83 @@
   "variables": {
     "BS_Reaction": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BS_ReactionExplore": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PS_Impact": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Instigator": {
       "type": "Controller",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "fAnimPlayRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fAnimBlendInTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fAnimBlendOutTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fAnimStartTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fReactionDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RotationTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ImpactScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAnimLooping": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAllowAnimInterrupt": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bRagdollOnFinish": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bRotateOnHit": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ERootMotionMode": {
       "type": "ERootMotionMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -72,16 +88,19 @@
       "documentation": null,
       "signature_members": {
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -103,16 +122,19 @@
       "documentation": null,
       "signature_members": {
         "SeqNode": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
         },
         "PlayedTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "ExcessTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -140,24 +162,29 @@
       "documentation": null,
       "signature_members": {
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 128
         },
         "bPlayImpact": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Inst": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -165,5 +192,7 @@
     }
   },
   "states": {},
+  "classflags": 23,
+  "configname": "Game",
   "documentation": null
 }

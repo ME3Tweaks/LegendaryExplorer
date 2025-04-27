@@ -13,12 +13,14 @@
       "documentation": null,
       "signature_members": {
         "OriginalVarTable": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         },
         "NewVarTable": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -34,8 +36,9 @@
       "documentation": null,
       "signature_members": {
         "ImportVarTable": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -57,8 +60,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -72,5 +76,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

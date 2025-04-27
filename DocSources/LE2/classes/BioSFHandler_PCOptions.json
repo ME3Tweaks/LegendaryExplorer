@@ -4,71 +4,88 @@
   "variables": {
     "KeyBinds": {
       "type": "KeyBind",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "AliasMap": {
       "type": "GuiBind",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202497
     },
     "UnBindableKeys": {
       "type": "NonBindableKeyDefinition",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202497
     },
     "MonitorList": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "IncomingKey": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ConfirmDisplayMessageBox": {
       "type": "BioSFHandler_MessageBox",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "KeyHasBeenBound": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "KeyHasBeenUnbound": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "ResetPCBindingsText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "ConfirmResetPCBindingsText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "CancelResetPCBindingsText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "CannotBindConstantKey": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "DisplayChangeText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "RebindWarning": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "OldAliasIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CaptureBindIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CaptureBindNumber": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -82,8 +99,9 @@
       "documentation": null,
       "signature_members": {
         "monitorIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -99,12 +117,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -114,12 +134,14 @@
       "documentation": null,
       "signature_members": {
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -129,8 +151,9 @@
       "documentation": null,
       "signature_members": {
         "Settings": {
-          "type": null,
-          "documentation": null
+          "type": "SFXProfileSettings",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -158,8 +181,9 @@
       "documentation": null,
       "signature_members": {
         "lstOptsToReset": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -175,8 +199,9 @@
       "documentation": null,
       "signature_members": {
         "Defaults": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -198,24 +223,29 @@
       "documentation": null,
       "signature_members": {
         "ControllerId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Key": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "EventType": {
-          "type": null,
-          "documentation": null
+          "type": "EInputEvent",
+          "documentation": null,
+          "flags": 128
         },
         "AmountDepressed": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bGamepad": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -225,8 +255,9 @@
       "documentation": null,
       "signature_members": {
         "usingGamepad": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -236,12 +267,14 @@
       "documentation": null,
       "signature_members": {
         "BindIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "BindNumber": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -257,12 +290,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "context": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -278,12 +313,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "context": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -293,8 +330,9 @@
       "documentation": null,
       "signature_members": {
         "sPackedIDs": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -304,12 +342,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "context": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -337,12 +377,14 @@
       "documentation": null,
       "signature_members": {
         "Command": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "lstArguments": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -362,5 +404,7 @@
     }
   },
   "states": {},
+  "classflags": 144703642,
+  "configname": "None",
   "documentation": null
 }

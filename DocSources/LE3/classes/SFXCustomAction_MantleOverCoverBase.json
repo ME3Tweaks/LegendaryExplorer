@@ -4,15 +4,18 @@
   "variables": {
     "MyMantleInfo": {
       "type": "MantleInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PlaceholderCylinder": {
       "type": "SFXReachSpecPlaceholderCylinder",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlaceholderCylinder2": {
       "type": "SFXReachSpecPlaceholderCylinder",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -38,8 +41,9 @@
       "documentation": null,
       "signature_members": {
         "FallDuration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -49,16 +53,19 @@
       "documentation": null,
       "signature_members": {
         "SeqNode": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
         },
         "PlayedTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "ExcessTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -68,8 +75,9 @@
       "documentation": null,
       "signature_members": {
         "bForced": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -79,12 +87,14 @@
       "documentation": null,
       "signature_members": {
         "SyncPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "bForced": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -118,16 +128,19 @@
       "documentation": null,
       "signature_members": {
         "NewAction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Sync": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 144
         },
         "NewPowerAction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -141,5 +154,7 @@
     }
   },
   "states": {},
+  "classflags": 144703639,
+  "configname": "Game",
   "documentation": null
 }

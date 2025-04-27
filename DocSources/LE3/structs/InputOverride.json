@@ -2,19 +2,23 @@
   "members": {
     "Alias": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "InputDelegate": {
       "type": "InputDelegate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "bPress": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bExclusive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioPlayerInput",

@@ -4,43 +4,53 @@
   "variables": {
     "m_vCameraFocusPoint": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_vProceduralCameraPosition": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_rProceduralCameraRotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_pDefaultFaceFXAsset": {
       "type": "FaceFXAsset",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fFov": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fNearClip": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fDOFFocusInnerRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fDOFFocusDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bDisableFacefx": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bInConversation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -48,8 +58,9 @@
       "documentation": null,
       "signature_members": {
         "pActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -57,5 +68,7 @@
     }
   },
   "states": {},
+  "classflags": 134221970,
+  "configname": "None",
   "documentation": null
 }

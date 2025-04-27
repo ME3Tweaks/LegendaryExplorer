@@ -2,11 +2,13 @@
   "members": {
     "sDisplayName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "sFuncPropName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioSeqAct_InteractProperty",

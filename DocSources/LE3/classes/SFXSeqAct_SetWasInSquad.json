@@ -4,15 +4,18 @@
   "variables": {
     "Index_InSquad": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Index_WasInSquad": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "bSetNotRestore": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -30,5 +33,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

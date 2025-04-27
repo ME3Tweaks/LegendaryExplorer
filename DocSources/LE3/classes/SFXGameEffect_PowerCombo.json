@@ -4,83 +4,103 @@
   "variables": {
     "EffectsRemovedOnCombo": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "DetonationScreenShakeClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DetonationRumbleClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DamageType": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxRagdollDmgTypeOverride": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DetonationParameters": {
       "type": "AreaEffectParameters",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "CrustGuid": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SourcePower": {
       "type": "SFXPowerCustomAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 1152921504606846976
     },
     "CurrentDetonationPower": {
       "type": "SFXPowerCustomAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 1152921504606846976
     },
     "DetonationVFX": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DetonationSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TargetCrustVFX": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ComboDamage": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ComboForce": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ComboRadius": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxTargets": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "fPowerRatio": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaximumRagdollTargets": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaximumRagdollTargetsMP": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bOnlyOnDeath": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -88,24 +108,29 @@
       "documentation": null,
       "signature_members": {
         "Resistance": {
-          "type": null,
-          "documentation": null
+          "type": "EPowerResistance",
+          "documentation": null,
+          "flags": 128
         },
         "oImpacted": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "nPreviouslyImpacted": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -121,8 +146,9 @@
       "documentation": null,
       "signature_members": {
         "DetonationPowerRank": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -132,20 +158,24 @@
       "documentation": null,
       "signature_members": {
         "oActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "CustomActionReactionType": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "DetonationPowerRank": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "MiscFlags": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -155,8 +185,9 @@
       "documentation": null,
       "signature_members": {
         "fRatio": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -166,8 +197,9 @@
       "documentation": null,
       "signature_members": {
         "fRatio": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -183,16 +215,19 @@
       "documentation": null,
       "signature_members": {
         "DetonationPower": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerCustomAction",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -200,5 +235,7 @@
     }
   },
   "states": {},
+  "classflags": 23,
+  "configname": "Game",
   "documentation": null
 }

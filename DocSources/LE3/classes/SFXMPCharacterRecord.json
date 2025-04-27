@@ -4,83 +4,103 @@
   "variables": {
     "CharacterName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Powers": {
       "type": "PowerRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Weapons": {
       "type": "WeaponRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "WeaponMods": {
       "type": "WeaponModRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "TimeStamp": {
       "type": "SaveTimeStamp",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "className": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "KitName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Tint1ID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Tint2ID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PatternID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PatternColorID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PhongID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EmissiveID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SkinToneID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SecondsPlayed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TalentPointsAvailable": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TalentPointsInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Deployed": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LeveledUp": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bSerializedFromBlaze": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -94,8 +114,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerPawn": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn_Player",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -105,8 +126,9 @@
       "documentation": null,
       "signature_members": {
         "PowerRank": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -134,8 +156,9 @@
       "documentation": null,
       "signature_members": {
         "CharacterClassName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -163,8 +186,9 @@
       "documentation": null,
       "signature_members": {
         "PowerClassName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "Class",
@@ -180,8 +204,9 @@
       "documentation": null,
       "signature_members": {
         "RetainCustomization": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -197,8 +222,9 @@
       "documentation": null,
       "signature_members": {
         "bLeveledUp": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -208,8 +234,9 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -219,8 +246,9 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn_Player",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -230,8 +258,9 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn_Player",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -247,12 +276,14 @@
       "documentation": null,
       "signature_members": {
         "SavedPowers": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         },
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn_Player",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -260,5 +291,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

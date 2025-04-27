@@ -4,39 +4,48 @@
   "variables": {
     "m_sSubtitle": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_FontColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fTimeRemaining": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_FontSize": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bAlert": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bSubtitleVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bNewSubtitle": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_DefaultRenderMode": {
       "type": "ESubtitlesRenderMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_CurrentRenderMode": {
       "type": "ESubtitlesRenderMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -44,8 +53,9 @@
       "documentation": null,
       "signature_members": {
         "fPixelOffset": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -67,24 +77,29 @@
       "documentation": null,
       "signature_members": {
         "strSubtitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "nRenderMode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nColor": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nAlpha": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bAlert": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -94,16 +109,19 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bAllowSubtitle": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bIsConversationActive": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -119,8 +137,9 @@
       "documentation": null,
       "signature_members": {
         "bAlert": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -136,8 +155,9 @@
       "documentation": null,
       "signature_members": {
         "oColor": {
-          "type": null,
-          "documentation": null
+          "type": "Color",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -153,12 +173,14 @@
       "documentation": null,
       "signature_members": {
         "strSubtitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "nSize": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -174,12 +196,14 @@
       "documentation": null,
       "signature_members": {
         "RenderMode": {
-          "type": null,
-          "documentation": null
+          "type": "ESubtitlesRenderMode",
+          "documentation": null,
+          "flags": 128
         },
         "bForceDisplay": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "ESubtitlesRenderMode",
@@ -201,16 +225,19 @@
       "documentation": null,
       "signature_members": {
         "sSubtitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "fDuration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "nSize": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -218,5 +245,7 @@
     }
   },
   "states": {},
+  "classflags": 134217878,
+  "configname": "Game",
   "documentation": null
 }

@@ -4,91 +4,113 @@
   "variables": {
     "DeathString": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227075
     },
     "FemaleSuicide": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227075
     },
     "MaleSuicide": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227075
     },
     "DamagedFFWaveform": {
       "type": "ForceFeedbackWaveform",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "KilledFFWaveform": {
       "type": "ForceFeedbackWaveform",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "KDamageImpulse": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "KDeathVel": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "KDeathUpKick": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RadialDamageImpulse": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "VehicleDamageScaling": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "VehicleMomentumScaling": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FracturedMeshDamage": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bArmorStops": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAlwaysGibs": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bNeverGibs": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bLocationalHit": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCausesBlood": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCausedByWorld": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bExtraMomentumZ": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bCausesFracture": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIgnoreDriverDamageMult": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bRadialDamageVelChange": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -96,12 +118,14 @@
       "documentation": null,
       "signature_members": {
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
         },
         "Victim": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -111,8 +135,9 @@
       "documentation": null,
       "signature_members": {
         "Victim": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -122,8 +147,9 @@
       "documentation": null,
       "signature_members": {
         "V": {
-          "type": null,
-          "documentation": null
+          "type": "Vehicle",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -131,5 +157,7 @@
     }
   },
   "states": {},
+  "classflags": 134217907,
+  "configname": "None",
   "documentation": null
 }

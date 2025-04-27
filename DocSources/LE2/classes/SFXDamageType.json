@@ -4,131 +4,163 @@
   "variables": {
     "HitReactions": {
       "type": "HitReaction",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "Resistance": {
       "type": "ResistanceInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ShieldHitFFWaveform": {
       "type": "ForceFeedbackWaveform",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DeathEffect": {
       "type": "BioVFXTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlayerFrameBufferEffect": {
       "type": "BioVFXTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DamageRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ShieldBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ArmorBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fChanceOfRagdoll": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "fPhysicsReactionTimeScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "HeavyWeaponId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bRadiusDamage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bSpawnWeaponImpacts": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bNoShieldBreakVFX": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIgnoreShields": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIgnoreShieldHitLimit": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPartBasedDamageDisabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIgnoreArmor": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bHealthDamage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDamagesFriends": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIgnoresBleedout": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCausesPhysicsImpact": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "bCausesRagdoll": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "bResearchBonus_SniperArmorDamage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bResearchBonus_HeavyPistolArmorDamage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bResearchBonus_AssaultRifleResistanceDamage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bResearchBonus_AutoPistolResistanceDamage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bResearchBonus_ShotgunResistanceDamage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bResearchBonus_SniperHeadShotBonus": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bImmediateDeath": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIgnoresCoverDirection": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FalloffType": {
       "type": "ESFXDamageFalloffType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -136,12 +168,14 @@
       "documentation": null,
       "signature_members": {
         "Weapon": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Range": {
-          "type": null,
-          "documentation": null
+          "type": "EWeaponRange",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -149,5 +183,7 @@
     }
   },
   "states": {},
+  "classflags": 134217911,
+  "configname": "Weapon",
   "documentation": null
 }

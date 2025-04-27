@@ -4,63 +4,78 @@
   "variables": {
     "WeaponClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LastWeaponPickedUp": {
       "type": "SFXWeapon",
-      "documentation": null
+      "documentation": null,
+      "flags": 1152921504606846976
     },
     "WeaponSelectionMovieInfo": {
       "type": "GFxMovieInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GUI_WeaponSelection": {
       "type": "SFXGUI_WeaponSelection",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PickupSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RespawnTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AmmoInClip": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ReserveAmmo": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "UpgradeLevels_Normal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "UpgradeLevels_NewGamePlus": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NewGamePlusID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastUpdateTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "UpdateFrequency": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ForceRespawn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bStopCustomTicking": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -68,8 +83,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -115,8 +131,9 @@
       "documentation": null,
       "signature_members": {
         "User": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -126,12 +143,14 @@
       "documentation": null,
       "signature_members": {
         "oUI": {
-          "type": null,
-          "documentation": null
+          "type": "BioSFHandler_MessageBox",
+          "documentation": null,
+          "flags": 128
         },
         "nSelection": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -139,5 +158,7 @@
     }
   },
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

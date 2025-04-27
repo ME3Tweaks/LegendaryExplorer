@@ -2,11 +2,13 @@
   "members": {
     "ScoreEvents": {
       "type": "ScoreEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Player": {
       "type": "SFXPawn_Player",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXPawn",

@@ -2,55 +2,68 @@
   "members": {
     "m_sName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aoSliderData": {
       "type": "BioMorphFaceFESliderBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_fRandWeights": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aSliderModifiers": {
       "type": "SliderModifier",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_iIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_iValue": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_iSteps": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_iStringRef": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_iDescriptionStringRef": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fRandWeightsTotal": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fRandMin": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fRandMax": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bNotched": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioMorphFaceFrontEnd",

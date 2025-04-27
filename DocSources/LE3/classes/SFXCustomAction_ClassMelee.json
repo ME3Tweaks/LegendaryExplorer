@@ -4,63 +4,78 @@
   "variables": {
     "BS_Attacker": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "BS_Victim": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DamageType": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PowerClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AnimInfo": {
       "type": "SFXAnimSetCookSpec",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Power": {
       "type": "SFXPowerCustomAction_MeleePassivePower",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SyncAttackTimer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AnimPlayRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AttackerBlendInTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AttackerBlendOut": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "VictimPlayRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "VictimBlendInTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DamageAmount": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bApplyDamage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "eVictimRootMotionMode": {
       "type": "ERootMotionMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -80,8 +95,9 @@
       "documentation": null,
       "signature_members": {
         "Stance": {
-          "type": null,
-          "documentation": null
+          "type": "BodyStance",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -91,8 +107,9 @@
       "documentation": null,
       "signature_members": {
         "Stance": {
-          "type": null,
-          "documentation": null
+          "type": "BodyStance",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -102,12 +119,14 @@
       "documentation": null,
       "signature_members": {
         "SyncPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "bForced": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -157,5 +176,7 @@
     }
   },
   "states": {},
+  "classflags": 10485783,
+  "configname": "Game",
   "documentation": null
 }

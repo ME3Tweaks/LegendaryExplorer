@@ -4,38 +4,48 @@
   "variables": {
     "prop": {
       "type": "Property",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_arrayProperty": {
       "type": "Property",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "integerVal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "floatVal": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StepSize": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "boolVal": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "alreadyEdited": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "byteVal": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

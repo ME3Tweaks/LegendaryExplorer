@@ -4,235 +4,293 @@
   "variables": {
     "ActorGameName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_aRegisteredActive": {
       "type": "BioActive",
-      "documentation": null
+      "documentation": null,
+      "flags": 1152921504611049472
     },
     "m_aRegisteredReactive": {
       "type": "BioReactive",
-      "documentation": null
+      "documentation": null,
+      "flags": 1152921504611049472
     },
     "m_aPendingReactive": {
       "type": "BioReactive",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_aActivatedReactive": {
       "type": "BioReactive",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_aTargetTipDefaults": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_aPowerText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_oCurrentModalActive": {
       "type": "BioActive",
-      "documentation": null
+      "documentation": null,
+      "flags": 1152921504606855168
     },
     "m_InstantPowerActive": {
       "type": "BioActive",
-      "documentation": null
+      "documentation": null,
+      "flags": 1152921504606855168
     },
     "m_nmPowerAffectingActor": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_oAppearanceType": {
       "type": "BioInterface_Appearance",
-      "documentation": null
+      "documentation": null,
+      "flags": 71434249
     },
     "m_cameraShakeInterface": {
       "type": "BioCameraShakeInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "ActorGameNameStrRef": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ActorGameNameColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fInteractionRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fHenchAimLagFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_fMaxHenchAimDist": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_nPreviousSuperMode": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fPowerAffectingActorTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nInvulnerabilityCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_srStasisPowerText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fUseRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nRequiredScanLevel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nMaxTargetTipStrings": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nTargetTipTextOverridden": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fPhysicsDamagePerRelVel": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fPhysicsDamageImpulsePerRelVel": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fPhysicsDamageTimer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fPhysicsDamageTimerMax": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fPhysicsSoundLastTimePlayed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bAreShieldsDisabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ActorGameNameOverride": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bMin1HealthOverride": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bMin1Health": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseStringRefActorGameName": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bDisableFacefx": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "Mountable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AllowFall": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "HadSuperMode": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bIsBusy": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bInActionStation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bTargetable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bTargetableOverride": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bCombatTargetable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bCombatTargetableOverride": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bUseRangeOverride": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bRequiredScanLevelOverride": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bTargetTipTextOverride": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bDefaultActionPossibleOverridden": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bDefaultActionPossible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bPhysicsDamageEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_bPhysicsDamageLoggingEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_bPhysicsDamageIgnored": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bPlotProtected": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bPlotProtectedOverride": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bSuppressDisintegration": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bSuppressDisintegrationOverride": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -240,8 +298,9 @@
       "documentation": null,
       "signature_members": {
         "bSetActive": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -251,8 +310,9 @@
       "documentation": null,
       "signature_members": {
         "sPowerText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -274,8 +334,9 @@
       "documentation": null,
       "signature_members": {
         "oActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -285,24 +346,29 @@
       "documentation": null,
       "signature_members": {
         "sActorResource": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "vLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "rRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         },
         "fLifeSpan": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "oOwner": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Actor",
@@ -324,8 +390,9 @@
       "documentation": null,
       "signature_members": {
         "bSetBusy": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -335,16 +402,19 @@
       "documentation": null,
       "signature_members": {
         "oAnimation": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
         },
         "PlayedTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "ExcessTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -354,32 +424,39 @@
       "documentation": null,
       "signature_members": {
         "BaseDamage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "DamageRadius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "HurtOrigin": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "oDirectlyHitActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
         },
         "pDamage": {
-          "type": null,
-          "documentation": null
+          "type": "DamageType",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -389,8 +466,9 @@
       "documentation": null,
       "signature_members": {
         "newActorGameName": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -412,12 +490,14 @@
       "documentation": null,
       "signature_members": {
         "eEnableType": {
-          "type": null,
-          "documentation": null
+          "type": "EDisableType",
+          "documentation": null,
+          "flags": 128
         },
         "nmSubType": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -427,16 +507,19 @@
       "documentation": null,
       "signature_members": {
         "bEnable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "eEnableType": {
-          "type": null,
-          "documentation": null
+          "type": "EDisableType",
+          "documentation": null,
+          "flags": 128
         },
         "nmSubType": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -464,8 +547,9 @@
       "documentation": null,
       "signature_members": {
         "oReactive": {
-          "type": null,
-          "documentation": null
+          "type": "BioReactive",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -475,8 +559,9 @@
       "documentation": null,
       "signature_members": {
         "oActiveToRelease": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -492,12 +577,14 @@
       "documentation": null,
       "signature_members": {
         "clsReactive": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "oInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "BioReactive",
@@ -507,8 +594,9 @@
       "documentation": null,
       "signature_members": {
         "clsActive": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "BioActive",
@@ -518,12 +606,14 @@
       "documentation": null,
       "signature_members": {
         "clsActive": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "bAutoStartActive": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "BioActive",
@@ -533,12 +623,14 @@
       "documentation": null,
       "signature_members": {
         "clsReactive": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "oReactive": {
-          "type": null,
-          "documentation": null
+          "type": "BioReactive",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -548,12 +640,14 @@
       "documentation": null,
       "signature_members": {
         "clsActive": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "oActive": {
-          "type": null,
-          "documentation": null
+          "type": "BioActive",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -569,8 +663,9 @@
       "documentation": null,
       "signature_members": {
         "bState": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -586,8 +681,9 @@
       "documentation": null,
       "signature_members": {
         "vRefLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -603,8 +699,9 @@
       "documentation": null,
       "signature_members": {
         "nInstigatorScanLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -614,12 +711,14 @@
       "documentation": null,
       "signature_members": {
         "pSourcePawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "strTip": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -629,8 +728,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -638,5 +738,7 @@
     }
   },
   "states": {},
+  "classflags": 144707734,
+  "configname": "Game",
   "documentation": null
 }

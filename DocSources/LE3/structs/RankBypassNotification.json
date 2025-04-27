@@ -2,11 +2,13 @@
   "members": {
     "sEntityName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "srMessage": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     }
   },
   "classdef": "ISFXOnlineComponentLeaderboard",

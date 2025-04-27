@@ -4,59 +4,73 @@
   "variables": {
     "RequiredBones": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "AimCpntBoneIndex": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "AimCpntIndexLUT": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "Profiles": {
       "type": "AimOffsetProfile",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194369
     },
     "Aim": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AngleOffset": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TemplateNode": {
       "type": "AnimNodeAimOffset",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "PassThroughAtOrAboveLOD": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CurrentProfileIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "bForceAimDir": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bBakeFromAnimations": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPassThroughWhenNotRendered": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSynchronizeNodesInEditor": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ForcedAimDir": {
       "type": "EAnimAimDir",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -64,8 +78,9 @@
       "documentation": null,
       "signature_members": {
         "ProfileIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -75,8 +90,9 @@
       "documentation": null,
       "signature_members": {
         "ProfileName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -84,5 +100,7 @@
     }
   },
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

@@ -4,110 +4,138 @@
   "variables": {
     "FluidActor": {
       "type": "FluidSurfaceActor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CurrentFluidActor": {
       "type": "FluidSurfaceActor",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "MaxDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "WaveStrength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "WaveFrequency": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "WavePhase": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "WaveRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "RaindropAreaRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "RaindropRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "RaindropStrength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "RaindropRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "FlowSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "FlowNumRipples": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "FlowSideMotionRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "FlowWaveRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "FlowStrength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "FlowFrequency": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "SphereOuterRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "SphereInnerRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "SphereStrength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "CurrentAngle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "CurrentTimer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "bActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RaindropFillEntireFluid": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "bIsToggleTriggered": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "InfluenceType": {
       "type": "EInfluenceType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 2290094226,
+  "configname": "None",
   "documentation": null
 }

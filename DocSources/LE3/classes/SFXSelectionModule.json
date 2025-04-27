@@ -4,71 +4,88 @@
   "variables": {
     "m_GameName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_TargetOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398576590857
     },
     "m_nmNonPawnBoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398576590857
     },
     "LensFlareComp": {
       "type": "SFXSelectionLensFlareComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "LensFlareTemplate": {
       "type": "LensFlare",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TargetSaveBool": {
       "type": "SeqVar_Bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CombatTargetSaveBool": {
       "type": "SeqVar_Bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_srGameName": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398576590857
     },
     "m_fSelectionRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398576590857
     },
     "m_fMaxSelectionRangeSqr": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398576590857
     },
     "m_bTargetable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398576590857
     },
     "m_bCombatTargetable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398576590857
     },
     "OldCombatTargetable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "OldTargeTable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIgnoreFacing": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bHighPriority": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_TargetTipText": {
       "type": "ETargetTipText",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398576590857
     }
   },
   "functions": {
@@ -100,12 +117,14 @@
       "documentation": null,
       "signature_members": {
         "bTargetable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bSetTargetSave": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -115,12 +134,14 @@
       "documentation": null,
       "signature_members": {
         "bTargetable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bSetTargetSave": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -128,5 +149,7 @@
     }
   },
   "states": {},
+  "classflags": 142610578,
+  "configname": "None",
   "documentation": null
 }

@@ -4,47 +4,58 @@
   "variables": {
     "TracerPool": {
       "type": "SFXObjectPoolTracers",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ProjectilePool": {
       "type": "SFXObjectPoolProjectiles",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DroppedPool": {
       "type": "SFXObjectPoolDroppedAmmos",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ImpactPSCPool": {
       "type": "SFXObjectPoolImpactPSCs",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718592
     },
     "GenericPSCPool": {
       "type": "SFXObjectPoolPSCs",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718592
     },
     "EmitterPool": {
       "type": "SFXObjectPoolEmitters",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "WwiseACPool": {
       "type": "WwiseAudioComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "MaxTracers": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "MaxImpacts": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "WwiseNextIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDebugLogOnCleanup": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -52,12 +63,14 @@
       "documentation": null,
       "signature_members": {
         "PSC": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystemComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "HitActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -67,12 +80,14 @@
       "documentation": null,
       "signature_members": {
         "PSC": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystemComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "EffectLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -82,32 +97,39 @@
       "documentation": null,
       "signature_members": {
         "PSC": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystemComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "HitActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "HitComponent": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "HitBone": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "bStaticLocation": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -117,16 +139,19 @@
       "documentation": null,
       "signature_members": {
         "PSC": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystemComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "HitComponent": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "Socket": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -136,16 +161,19 @@
       "documentation": null,
       "signature_members": {
         "bPreserveRunningEffects": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bClearAmmo": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bIsMultiplayerWaveEnd": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -155,12 +183,14 @@
       "documentation": null,
       "signature_members": {
         "DroppedAmmoClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "SpawnLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "DroppedPickup",
@@ -170,8 +200,9 @@
       "documentation": null,
       "signature_members": {
         "Template": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Emitter",
@@ -181,12 +212,14 @@
       "documentation": null,
       "signature_members": {
         "ProjClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "SpawnLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Projectile",
@@ -196,12 +229,14 @@
       "documentation": null,
       "signature_members": {
         "DroppedAmmoClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "SpawnLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "DroppedPickup",
@@ -211,8 +246,9 @@
       "documentation": null,
       "signature_members": {
         "Template": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "ParticleSystemComponent",
@@ -222,16 +258,19 @@
       "documentation": null,
       "signature_members": {
         "Template": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
         },
         "SpawnLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "SpawnRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Emitter",
@@ -241,8 +280,9 @@
       "documentation": null,
       "signature_members": {
         "Template": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "ParticleSystemComponent",
@@ -252,24 +292,29 @@
       "documentation": null,
       "signature_members": {
         "ProjectileClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "ProjOwner": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "ProjInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "ProjLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "ProjRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Projectile",
@@ -279,12 +324,14 @@
       "documentation": null,
       "signature_members": {
         "Mesh": {
-          "type": null,
-          "documentation": null
+          "type": "StaticMesh",
+          "documentation": null,
+          "flags": 128
         },
         "Template": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXTracer",
@@ -300,8 +347,9 @@
       "documentation": null,
       "signature_members": {
         "Template": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -311,8 +359,9 @@
       "documentation": null,
       "signature_members": {
         "Template": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -322,12 +371,14 @@
       "documentation": null,
       "signature_members": {
         "Template": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
         },
         "MinCount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -337,8 +388,9 @@
       "documentation": null,
       "signature_members": {
         "ProjectileClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -348,16 +400,19 @@
       "documentation": null,
       "signature_members": {
         "Mesh": {
-          "type": null,
-          "documentation": null
+          "type": "StaticMesh",
+          "documentation": null,
+          "flags": 128
         },
         "Template": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
         },
         "MinCount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -367,8 +422,9 @@
       "documentation": null,
       "signature_members": {
         "ParOwner": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -378,12 +434,14 @@
       "documentation": null,
       "signature_members": {
         "PSC": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystemComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "bHide": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -393,8 +451,9 @@
       "documentation": null,
       "signature_members": {
         "Dropped": {
-          "type": null,
-          "documentation": null
+          "type": "DroppedPickup",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -404,8 +463,9 @@
       "documentation": null,
       "signature_members": {
         "Emit": {
-          "type": null,
-          "documentation": null
+          "type": "Emitter",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -415,8 +475,9 @@
       "documentation": null,
       "signature_members": {
         "Proj": {
-          "type": null,
-          "documentation": null
+          "type": "Projectile",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -426,16 +487,19 @@
       "documentation": null,
       "signature_members": {
         "Template": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
         },
         "SpawnLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "SpawnRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXEmitter",
@@ -443,5 +507,7 @@
     }
   },
   "states": {},
+  "classflags": 144703646,
+  "configname": "Game",
   "documentation": null
 }

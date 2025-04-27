@@ -4,11 +4,13 @@
   "variables": {
     "BlendTargetList": {
       "type": "ChildBoneBlendInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "SourceRequiredBones": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     }
   },
   "functions": {
@@ -16,16 +18,19 @@
       "documentation": null,
       "signature_members": {
         "TargetIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "StartBoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PerBoneIncrease": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -33,5 +38,7 @@
     }
   },
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

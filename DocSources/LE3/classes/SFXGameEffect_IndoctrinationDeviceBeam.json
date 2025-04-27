@@ -4,43 +4,53 @@
   "variables": {
     "CrustTemplateGuid": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BeamTargetLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PSC_Beam": {
       "type": "ParticleSystemComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "BeamAttachBoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BeamSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TargetShield": {
       "type": "SFXShield_Base",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CE_CrustTemplate": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "IndocDevice": {
       "type": "SFXPlaceable_IndoctrinationDevice",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "UpdateTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RegenPerTick": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -64,5 +74,7 @@
     }
   },
   "states": {},
+  "classflags": 8388626,
+  "configname": "None",
   "documentation": null
 }

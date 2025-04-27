@@ -31,8 +31,9 @@
       "documentation": null,
       "signature_members": {
         "Recipient": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -58,5 +59,7 @@
     }
   },
   "states": {},
+  "classflags": 144704147,
+  "configname": "None",
   "documentation": null
 }

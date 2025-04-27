@@ -2,11 +2,13 @@
   "members": {
     "Name": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 32770
     },
     "Id": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "classdef": "Settings",

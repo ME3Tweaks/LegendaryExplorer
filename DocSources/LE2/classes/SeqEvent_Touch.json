@@ -4,31 +4,38 @@
   "variables": {
     "ClassProximityTypes": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "IgnoredClassProximityTypes": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "TouchedList": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "bForceOverlapping": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseInstigator": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bIgnoreVehicleTransitions": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAllowDeadPawns": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -42,8 +49,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -59,16 +67,19 @@
       "documentation": null,
       "signature_members": {
         "InOriginator": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "InInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "bTest": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -78,16 +89,19 @@
       "documentation": null,
       "signature_members": {
         "InOriginator": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "InInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "bTest": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -95,5 +109,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

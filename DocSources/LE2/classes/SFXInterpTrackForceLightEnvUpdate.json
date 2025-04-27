@@ -4,7 +4,8 @@
   "variables": {
     "m_SeqForceUpdateLight": {
       "type": "BioSeqAct_ForceLightEnvUpdate",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -34,5 +35,7 @@
     }
   },
   "states": {},
+  "classflags": 134226066,
+  "configname": "Game",
   "documentation": null
 }

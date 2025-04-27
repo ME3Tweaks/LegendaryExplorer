@@ -2,11 +2,13 @@
   "members": {
     "Ref": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Type": {
       "type": "EOriginType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXSeqAct_LegacyDataBasicInfo",

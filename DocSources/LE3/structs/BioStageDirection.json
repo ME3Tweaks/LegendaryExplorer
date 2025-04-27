@@ -2,11 +2,13 @@
   "members": {
     "sText": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "srStrRef": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioConversation",

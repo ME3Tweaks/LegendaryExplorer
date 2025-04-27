@@ -4,39 +4,48 @@
   "variables": {
     "ChildCommand": {
       "type": "GameAICommand",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "ChildStatus": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "GameAIOwner": {
       "type": "GameAIController",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "Status": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bAllowNewSameClassInstance": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bReplaceActiveSameClassInstance": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAborted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIgnoreNotifies": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bPendingPop": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -50,8 +59,9 @@
       "documentation": null,
       "signature_members": {
         "NewCommand": {
-          "type": null,
-          "documentation": null
+          "type": "GameAICommand",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -61,8 +71,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -72,12 +83,14 @@
       "documentation": null,
       "signature_members": {
         "H": {
-          "type": null,
-          "documentation": null
+          "type": "HUD",
+          "documentation": null,
+          "flags": 128
         },
         "Category": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -87,8 +100,9 @@
       "documentation": null,
       "signature_members": {
         "NewCommand": {
-          "type": null,
-          "documentation": null
+          "type": "GameAICommand",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -104,8 +118,9 @@
       "documentation": null,
       "signature_members": {
         "AI": {
-          "type": null,
-          "documentation": null
+          "type": "GameAIController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -121,8 +136,9 @@
       "documentation": null,
       "signature_members": {
         "OldCommandName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -132,8 +148,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -149,8 +166,9 @@
       "documentation": null,
       "signature_members": {
         "StateName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -160,8 +178,9 @@
       "documentation": null,
       "signature_members": {
         "AttemptCommand": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -171,12 +190,14 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "OutText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -186,8 +207,9 @@
       "documentation": null,
       "signature_members": {
         "AI": {
-          "type": null,
-          "documentation": null
+          "type": "GameAIController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -197,12 +219,14 @@
       "documentation": null,
       "signature_members": {
         "AI": {
-          "type": null,
-          "documentation": null
+          "type": "GameAIController",
+          "documentation": null,
+          "flags": 128
         },
         "UserActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -224,8 +248,9 @@
       "documentation": null,
       "signature_members": {
         "AI": {
-          "type": null,
-          "documentation": null
+          "type": "GameAIController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -241,8 +266,9 @@
       "documentation": null,
       "signature_members": {
         "OldCommandName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -288,8 +314,9 @@
           "documentation": null,
           "signature_members": {
             "NextStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -299,8 +326,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -310,5 +338,7 @@
       "documentation": null
     }
   },
+  "classflags": 134217875,
+  "configname": "None",
   "documentation": null
 }

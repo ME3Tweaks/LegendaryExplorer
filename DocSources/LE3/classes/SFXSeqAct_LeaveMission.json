@@ -4,7 +4,8 @@
   "variables": {
     "LeaveMissionArray": {
       "type": "LeaveMissionData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     }
   },
   "functions": {
@@ -28,5 +29,7 @@
     }
   },
   "states": {},
+  "classflags": 2097174,
+  "configname": "Game",
   "documentation": null
 }

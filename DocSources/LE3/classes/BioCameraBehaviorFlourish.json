@@ -4,35 +4,43 @@
   "variables": {
     "CameraRotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "InterpTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "InterpSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DistanceOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "YawSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DistanceSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bInterpToStart": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -52,8 +60,9 @@
       "documentation": null,
       "signature_members": {
         "TimeDelta": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -61,5 +70,7 @@
     }
   },
   "states": {},
+  "classflags": 18,
+  "configname": "None",
   "documentation": null
 }

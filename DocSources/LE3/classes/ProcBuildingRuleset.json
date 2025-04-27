@@ -4,74 +4,93 @@
   "variables": {
     "Variations": {
       "type": "PBVariationInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "DefaultRoofMaterial": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DefaultFloorMaterial": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DefaultNonRectWallMaterial": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LODCubemap": {
       "type": "Texture",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "InteriorTexture": {
       "type": "Texture",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RootRule": {
       "type": "PBRuleNodeBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "RoofZOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "NotRoofZOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FloorZOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "NotFloorZOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RoofPolyInset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FloorPolyInset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BuildingLODSpecular": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RoofEdgeScopeRaise": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bEnableInteriorTexture": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bLODOnlyRoof": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

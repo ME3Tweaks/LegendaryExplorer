@@ -2,11 +2,13 @@
   "members": {
     "EffectsMaterial": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Priority": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioWorldInfo",

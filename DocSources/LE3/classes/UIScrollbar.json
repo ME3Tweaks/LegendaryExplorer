@@ -4,91 +4,113 @@
   "variables": {
     "IncrementStyle": {
       "type": "UIStyleReference",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DecrementStyle": {
       "type": "UIStyleReference",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MarkerStyle": {
       "type": "UIStyleReference",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "__OnScrollActivity__Delegate": {
       "type": "OnScrollActivity",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnClickedScrollZone__Delegate": {
       "type": "OnClickedScrollZone",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MousePosition": {
       "type": "UIScreenValue_Position",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "BackgroundImageComponent": {
       "type": "UIComp_DrawImage",
-      "documentation": null
+      "documentation": null,
+      "flags": 101187595
     },
     "IncrementButton": {
       "type": "UIScrollbarButton",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "DecrementButton": {
       "type": "UIScrollbarButton",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "MarkerButton": {
       "type": "UIScrollbarMarkerButton",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "BarWidth": {
       "type": "UIScreenValue_Extent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MinimumMarkerSize": {
       "type": "UIScreenValue_Extent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ButtonsExtent": {
       "type": "UIScreenValue_Extent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "NudgeValue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "NudgeMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "NudgePercent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "MarkerPosPercent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "MarkerSizePercent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "MousePositionDelta": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bAddCornerPadding": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bInitializeMarker": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ScrollbarOrientation": {
       "type": "EUIOrientation",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -96,12 +118,14 @@
       "documentation": null,
       "signature_members": {
         "Sender": {
-          "type": null,
-          "documentation": null
+          "type": "UIScrollbarMarkerButton",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -111,12 +135,14 @@
       "documentation": null,
       "signature_members": {
         "Sender": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -126,12 +152,14 @@
       "documentation": null,
       "signature_members": {
         "Sender": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -141,8 +169,9 @@
       "documentation": null,
       "signature_members": {
         "FlagValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -158,8 +187,9 @@
       "documentation": null,
       "signature_members": {
         "ScrollZoneStart": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 400
         }
       },
       "returntype": "float",
@@ -181,16 +211,19 @@
       "documentation": null,
       "signature_members": {
         "Sender": {
-          "type": null,
-          "documentation": null
+          "type": "UIScrollbar",
+          "documentation": null,
+          "flags": 128
         },
         "PositionPerc": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -200,16 +233,19 @@
       "documentation": null,
       "signature_members": {
         "Sender": {
-          "type": null,
-          "documentation": null
+          "type": "UIScrollbar",
+          "documentation": null,
+          "flags": 128
         },
         "PositionChange": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bPositionMaxed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -225,12 +261,14 @@
       "documentation": null,
       "signature_members": {
         "Sender": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -240,12 +278,14 @@
       "documentation": null,
       "signature_members": {
         "Sender": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -255,8 +295,9 @@
       "documentation": null,
       "signature_members": {
         "PositionPercentage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -266,8 +307,9 @@
       "documentation": null,
       "signature_members": {
         "SizePercentage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -277,8 +319,9 @@
       "documentation": null,
       "signature_members": {
         "NudgePercentage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -288,8 +331,9 @@
       "documentation": null,
       "signature_members": {
         "NudgePixels": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -321,5 +365,7 @@
     }
   },
   "states": {},
+  "classflags": 144704150,
+  "configname": "UI",
   "documentation": null
 }

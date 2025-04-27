@@ -4,15 +4,18 @@
   "variables": {
     "m_oSkeletalMesh": {
       "type": "SkeletalMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_iLodIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_iBoneIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -24,5 +27,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

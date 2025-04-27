@@ -2,19 +2,23 @@
   "members": {
     "Event": {
       "type": "SFXVocalizationEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Speaker": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Specific": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Role": {
       "type": "ESFXVocalizationRole",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXVocalizationManagerNativeBase",

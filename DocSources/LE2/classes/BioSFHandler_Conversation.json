@@ -4,103 +4,128 @@
   "variables": {
     "m_aReplyLocations": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_aInvestigateLocations": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nSlotsUsed": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "vInput": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_srTextInvestigate": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srTextReturn": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nReplyLocationMiddleLeft": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nReplyLocationTopLeft": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nReplyLocationBottomLeft": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nReplyLocationTopRight": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nReplyLocationBottomRight": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nReplyLocationMiddleRight": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nInvestigateLocationMiddleLeft": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nInvestigateLocationTopLeft": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nInvestigateLocationBottomLeft": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nInvestigateLocationTopRight": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nInvestigateLocationBottomRight": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nInvestigateLocationMiddleRight": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "fLastRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bDisplayInvestigateSubMenu": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bDisplayingWheel": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bDisplayingParagonInterrupt": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bDIsplayingRenegadeInterrupt": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bSFScreenInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bWasTriggered": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -114,8 +139,9 @@
       "documentation": null,
       "signature_members": {
         "bVal": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -125,8 +151,9 @@
       "documentation": null,
       "signature_members": {
         "oConversation": {
-          "type": null,
-          "documentation": null
+          "type": "BioConversation",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -136,8 +163,9 @@
       "documentation": null,
       "signature_members": {
         "nReplyCategory": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "BioConvWheelPositions",
@@ -147,8 +175,9 @@
       "documentation": null,
       "signature_members": {
         "nInvestigateSlot": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "BioConvWheelPositions",
@@ -158,8 +187,9 @@
       "documentation": null,
       "signature_members": {
         "nWheelLocation": {
-          "type": null,
-          "documentation": null
+          "type": "BioConvWheelPositions",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -169,8 +199,9 @@
       "documentation": null,
       "signature_members": {
         "eGUIStyle": {
-          "type": null,
-          "documentation": null
+          "type": "EConvGUIStyles",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -180,8 +211,9 @@
       "documentation": null,
       "signature_members": {
         "oConversation": {
-          "type": null,
-          "documentation": null
+          "type": "BioConversation",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -191,8 +223,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -202,12 +235,14 @@
       "documentation": null,
       "signature_members": {
         "stParam": {
-          "type": null,
-          "documentation": null
+          "type": "ASParams",
+          "documentation": null,
+          "flags": 4194688
         },
         "lstParams": {
-          "type": null,
-          "documentation": null
+          "type": "ASParams",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -217,8 +252,9 @@
       "documentation": null,
       "signature_members": {
         "oConversation": {
-          "type": null,
-          "documentation": null
+          "type": "BioConversation",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -228,12 +264,14 @@
       "documentation": null,
       "signature_members": {
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -243,12 +281,14 @@
       "documentation": null,
       "signature_members": {
         "nCommand": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "lstArguments": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -270,8 +310,9 @@
       "documentation": null,
       "signature_members": {
         "oConversation": {
-          "type": null,
-          "documentation": null
+          "type": "BioConversation",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -309,5 +350,7 @@
     }
   },
   "states": {},
+  "classflags": 136315038,
+  "configname": "UI",
   "documentation": null
 }

@@ -2,11 +2,13 @@
   "members": {
     "Key": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242881
     },
     "Value": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242881
     }
   },
   "classdef": "Info",

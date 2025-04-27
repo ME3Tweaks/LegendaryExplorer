@@ -2,35 +2,43 @@
   "members": {
     "HordeWaveType": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Trigger": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WaveNumber": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HordeWaveIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OperationWaveIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SupplyDropWaveIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WavesAreLoading": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WaveEvent": {
       "type": "EWaveCoordinator_HordeOpEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXWaveCoordinator",

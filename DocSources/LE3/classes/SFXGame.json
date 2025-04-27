@@ -4,287 +4,358 @@
   "variables": {
     "DecayedCoverMap": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "Teams": {
       "type": "SFXTeamInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MaleActorType": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "FemaleActorType": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "TreasureClassName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158273
     },
     "NewGamePlusPlayerVariables": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "TimeDilationCurves": {
       "type": "TimeDilationStruct",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MAdeptArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "MEngineerArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "MInfiltratorArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "MSentinelArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "MSoldierArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "MVanguardArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "MAdeptNCArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "MEngineerNCArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "MInfiltratorNCArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "MSentinelNCArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "MSoldierNCArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "MVanguardNCArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "MAdeptInjuredArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "MEngineerInjuredArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "MInfiltratorInjuredArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "MSentinelInjuredArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "MSoldierInjuredArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "MVanguardInjuredArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "MCharCreationArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "FAdeptArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "FEngineerArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "FInfiltratorArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "FSentinelArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "FSoldierArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "FVanguardArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "FAdeptNCArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "FEngineerNCArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "FInfiltratorNCArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "FSentinelNCArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "FSoldierNCArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "FVanguardNCArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "FAdeptInjuredArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "FEngineerInjuredArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "FInfiltratorInjuredArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "FSentinelInjuredArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "FSoldierInjuredArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "FVanguardInjuredArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "FCharCreationArchName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "DecayedCoverList": {
       "type": "DecayedCover",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "ReputationThresholds": {
       "type": "ReputationThreshold",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "JoinInProgressDelegates": {
       "type": "OnJoinInProgress",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnJoinInProgress__Delegate": {
       "type": "OnJoinInProgress",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PlayerSquad": {
       "type": "BioBaseSquad",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TREASURE": {
       "type": "SFXTreasureData",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StartSlowEvent": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StopSlowEvent": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PerceptionManager": {
       "type": "SFXAIPerceptionManager",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "srGameOverString": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fAutoUnlitDownsizeThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "TimeDilationOverride": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AdjacentDecayMult": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DecayRecoveryPerSecond": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DecayRecoveryIntervalRemaining": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentSmokeCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "MaxSmokeCount": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentSwarmerCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentCannibalCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LastEnemyGrenadeTimestamp": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bEnableLowDetailProxySilhouettes": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bAutoUnlitDownsizeInCombat": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bDilateSound": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bGenerateTutorialEvents": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bShowSquadScreenMessageBoxes": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bPerfProto": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -292,12 +363,14 @@
       "documentation": null,
       "signature_members": {
         "CoverMarker": {
-          "type": null,
-          "documentation": null
+          "type": "CoverSlotMarker",
+          "documentation": null,
+          "flags": 128
         },
         "Amount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -313,16 +386,19 @@
       "documentation": null,
       "signature_members": {
         "SaveTo": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGame",
+          "documentation": null,
+          "flags": 128
         },
         "SaveFrom": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGame",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerDataOverrides": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerInfoEx",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -332,16 +408,19 @@
       "documentation": null,
       "signature_members": {
         "SaveTo": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGame",
+          "documentation": null,
+          "flags": 128
         },
         "SaveFrom": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGame",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerDataOverrides": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerInfoEx",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -357,8 +436,9 @@
       "documentation": null,
       "signature_members": {
         "className": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
         }
       },
       "returntype": "Class",
@@ -386,16 +466,19 @@
       "documentation": null,
       "signature_members": {
         "ControllerId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         },
         "PlayerClass": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -405,12 +488,14 @@
       "documentation": null,
       "signature_members": {
         "StrRef": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "bParse": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "string",
@@ -420,8 +505,9 @@
       "documentation": null,
       "signature_members": {
         "PackageName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -473,8 +559,9 @@
       "documentation": null,
       "signature_members": {
         "fNewMipValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -484,20 +571,24 @@
       "documentation": null,
       "signature_members": {
         "List": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 4194688
         },
         "RefLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "RefRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         },
         "bPreferBioPawns": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -507,8 +598,9 @@
       "documentation": null,
       "signature_members": {
         "LocalPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -518,8 +610,9 @@
       "documentation": null,
       "signature_members": {
         "TimeDelta": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -529,12 +622,14 @@
       "documentation": null,
       "signature_members": {
         "fTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bProcessEverything": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -544,8 +639,9 @@
       "documentation": null,
       "signature_members": {
         "TimeDelta": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -555,8 +651,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -572,16 +669,19 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "N": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bNewTeam": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -591,20 +691,24 @@
       "documentation": null,
       "signature_members": {
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "KilledPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "KilledPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -614,16 +718,19 @@
       "documentation": null,
       "signature_members": {
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "Killed": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "KilledPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -639,20 +746,24 @@
       "documentation": null,
       "signature_members": {
         "KilledPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -662,8 +773,9 @@
       "documentation": null,
       "signature_members": {
         "NewPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -673,8 +785,9 @@
       "documentation": null,
       "signature_members": {
         "T": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -684,16 +797,19 @@
       "documentation": null,
       "signature_members": {
         "NewPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "StartSpot": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         },
         "bNoCollisionFail": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Pawn",
@@ -709,16 +825,19 @@
       "documentation": null,
       "signature_members": {
         "fAmount": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Level": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         },
         "bShowNotifications": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -728,16 +847,19 @@
       "documentation": null,
       "signature_members": {
         "Amount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Level": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         },
         "bShowNotification": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -747,12 +869,14 @@
       "documentation": null,
       "signature_members": {
         "ItemName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Level": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -762,16 +886,19 @@
       "documentation": null,
       "signature_members": {
         "Amount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Level": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         },
         "bShowNotifications": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -781,8 +908,9 @@
       "documentation": null,
       "signature_members": {
         "Identifier": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -816,8 +944,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "ECharacterClass",
@@ -845,8 +974,9 @@
       "documentation": null,
       "signature_members": {
         "ControllerId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXPawn_Player",
@@ -856,12 +986,14 @@
       "documentation": null,
       "signature_members": {
         "CharacterClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "bIsFemale": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Pawn",
@@ -871,12 +1003,14 @@
       "documentation": null,
       "signature_members": {
         "CharacterClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "bIsFemale": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Pawn",
@@ -886,12 +1020,14 @@
       "documentation": null,
       "signature_members": {
         "CharacterClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "bIsFemale": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Pawn",
@@ -901,36 +1037,44 @@
       "documentation": null,
       "signature_members": {
         "bCombatPawn": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bInjuredPawn": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerArchetype": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 384
         },
         "firstName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         },
         "Origin": {
-          "type": null,
-          "documentation": null
+          "type": "EOriginType",
+          "documentation": null,
+          "flags": 384
         },
         "Notoriety": {
-          "type": null,
-          "documentation": null
+          "type": "ENotorietyType",
+          "documentation": null,
+          "flags": 384
         },
         "faceCode": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         },
         "CharacterGUID": {
-          "type": null,
-          "documentation": null
+          "type": "Guid",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -952,12 +1096,14 @@
       "documentation": null,
       "signature_members": {
         "NewPawn": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn",
+          "documentation": null,
+          "flags": 128
         },
         "BonusTalent": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -985,8 +1131,9 @@
       "documentation": null,
       "signature_members": {
         "nEndID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1002,8 +1149,9 @@
       "documentation": null,
       "signature_members": {
         "NewTimeDilation": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1019,8 +1167,9 @@
       "documentation": null,
       "signature_members": {
         "KilledPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1030,8 +1179,9 @@
       "documentation": null,
       "signature_members": {
         "F": {
-          "type": null,
-          "documentation": null
+          "type": "ScaledFloat",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -1041,8 +1191,9 @@
       "documentation": null,
       "signature_members": {
         "NewDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnJoinInProgress",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1052,16 +1203,19 @@
       "documentation": null,
       "signature_members": {
         "Curve": {
-          "type": null,
-          "documentation": null
+          "type": "InterpCurveFloat",
+          "documentation": null,
+          "flags": 4194432
         },
         "TotalTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Identifier": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -1071,12 +1225,14 @@
       "documentation": null,
       "signature_members": {
         "NewWave": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "WaveType": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -1086,8 +1242,9 @@
       "documentation": null,
       "signature_members": {
         "nPoints": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1097,8 +1254,9 @@
       "documentation": null,
       "signature_members": {
         "nPoints": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1108,8 +1266,9 @@
       "documentation": null,
       "signature_members": {
         "GameOverString": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -1131,36 +1290,44 @@
       "documentation": null,
       "signature_members": {
         "bCombatPawn": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bInjuredPawn": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bUseCasualAppearance": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "ForcedCasualID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bCreateAndShowWeapons": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "SpawnLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "SpawnRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Pawn",
@@ -1176,8 +1343,9 @@
       "documentation": null,
       "signature_members": {
         "bCombatOverride": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1187,8 +1355,9 @@
       "documentation": null,
       "signature_members": {
         "DelegateToRemove": {
-          "type": null,
-          "documentation": null
+          "type": "OnJoinInProgress",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1198,12 +1367,14 @@
       "documentation": null,
       "signature_members": {
         "VarTable": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         },
         "Player": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn_Player",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1213,8 +1384,9 @@
       "documentation": null,
       "signature_members": {
         "Player": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn_Player",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1227,5 +1399,7 @@
       "documentation": null
     }
   },
+  "classflags": 144703670,
+  "configname": "Game",
   "documentation": null
 }

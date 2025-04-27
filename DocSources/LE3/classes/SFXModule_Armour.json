@@ -4,11 +4,13 @@
   "variables": {
     "ActiveArmour": {
       "type": "SFXArmourPiece",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481985
     },
     "ReplicatedArmourStates": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     }
   },
   "functions": {
@@ -28,8 +30,9 @@
       "documentation": null,
       "signature_members": {
         "VarName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -39,8 +42,9 @@
       "documentation": null,
       "signature_members": {
         "piece": {
-          "type": null,
-          "documentation": null
+          "type": "SFXArmourPiece",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -50,32 +54,39 @@
       "documentation": null,
       "signature_members": {
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 384
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "DamageCauser": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -85,16 +96,19 @@
       "documentation": null,
       "signature_members": {
         "ArmourIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -122,12 +136,14 @@
       "documentation": null,
       "signature_members": {
         "ArmourName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "piece": {
-          "type": null,
-          "documentation": null
+          "type": "SFXArmourPiece",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -137,8 +153,9 @@
       "documentation": null,
       "signature_members": {
         "ArmourPiece": {
-          "type": null,
-          "documentation": null
+          "type": "SFXArmourPiece",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -148,8 +165,9 @@
       "documentation": null,
       "signature_members": {
         "ArmourIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -159,8 +177,9 @@
       "documentation": null,
       "signature_members": {
         "ArmourName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -170,8 +189,9 @@
       "documentation": null,
       "signature_members": {
         "ArmourPiece": {
-          "type": null,
-          "documentation": null
+          "type": "SFXArmourPiece",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -181,8 +201,9 @@
       "documentation": null,
       "signature_members": {
         "ArmourName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXArmourPiece",
@@ -198,16 +219,19 @@
       "documentation": null,
       "signature_members": {
         "Weapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 384
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -217,8 +241,9 @@
       "documentation": null,
       "signature_members": {
         "ArmourIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -228,8 +253,9 @@
       "documentation": null,
       "signature_members": {
         "ArmourPiece": {
-          "type": null,
-          "documentation": null
+          "type": "SFXArmourPiece",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -243,5 +269,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

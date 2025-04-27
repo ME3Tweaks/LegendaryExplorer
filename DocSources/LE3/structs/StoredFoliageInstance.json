@@ -2,7 +2,8 @@
   "members": {
     "StaticLighting": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "FoliageComponent",

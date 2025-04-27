@@ -4,7 +4,8 @@
   "variables": {
     "EventIDFilter": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     }
   },
   "functions": {
@@ -54,8 +55,9 @@
       "documentation": null,
       "signature_members": {
         "EventId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -77,8 +79,9 @@
       "documentation": null,
       "signature_members": {
         "EventId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -94,8 +97,9 @@
       "documentation": null,
       "signature_members": {
         "Filename": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -105,8 +109,9 @@
       "documentation": null,
       "signature_members": {
         "EventId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -114,5 +119,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "Game",
   "documentation": null
 }

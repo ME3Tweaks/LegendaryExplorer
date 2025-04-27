@@ -2,31 +2,38 @@
   "members": {
     "Instigator": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PowerType": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CustomActionReactionType": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PowerComboTypeUniqueID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TriggerCounter": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PowerRank": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MiscFlags": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioPawn",

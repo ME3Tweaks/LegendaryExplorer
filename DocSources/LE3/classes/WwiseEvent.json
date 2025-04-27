@@ -4,62 +4,78 @@
   "variables": {
     "Relationships": {
       "type": "WwiseRelationships",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Notes": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4325379
     },
     "Id": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "DurationSeconds": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "PrepareState": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 139267
     },
     "m_fMaxAudible3DSoundDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nNumberOf3DSoundsPlaying": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nNumberOfSoundsUseAttenuation": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nNumberOfSoundsWithUserDefinedPositioning": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "IsLocalised": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "bIsSetup": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bUsesOrientationRTPC": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUsesDistanceRTPC": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bHasEnvironmentalSettings": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

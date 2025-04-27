@@ -4,27 +4,33 @@
   "variables": {
     "fClosePenalty": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fFarPenalty": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fIdealWeaponRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fLongWeaponRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fShortWeaponRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bHardConstraint": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -32,8 +38,9 @@
       "documentation": null,
       "signature_members": {
         "GoalEvaluator": {
-          "type": null,
-          "documentation": null
+          "type": "Goal_AtCover",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -41,5 +48,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

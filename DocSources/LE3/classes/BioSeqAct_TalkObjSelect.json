@@ -4,63 +4,78 @@
   "variables": {
     "oPlayer": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "f00_Vixen": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "f01_Leading": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "f02_Convict": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "f03_Geth": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "f04_Thief": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "f05_Garrus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "f06_Assassin": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "f07_Tali": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "f08_Professor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "f09_Grunt": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "f10_Mystic": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "f11_Veteran": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "nHench1": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "nHench2": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -74,8 +89,9 @@
       "documentation": null,
       "signature_members": {
         "Tag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -83,5 +99,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

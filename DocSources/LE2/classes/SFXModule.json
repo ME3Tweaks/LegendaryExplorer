@@ -4,11 +4,13 @@
   "variables": {
     "Owner": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bTickWhilePaused": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -22,8 +24,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -31,5 +34,7 @@
     }
   },
   "states": {},
+  "classflags": 134217875,
+  "configname": "None",
   "documentation": null
 }

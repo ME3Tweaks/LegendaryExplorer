@@ -4,31 +4,38 @@
   "variables": {
     "AssetLoadData": {
       "type": "SFXWaveAssetLoadData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "BioWorldInfo": {
       "type": "BioWorldInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 549755822080
     },
     "LocalPlayerController": {
       "type": "SFXPlayerController",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "WaveManager": {
       "type": "SFXWaveManager",
-      "documentation": null
+      "documentation": null,
+      "flags": 549755822080
     },
     "WaveCoordinator": {
       "type": "SFXWaveCoordinator",
-      "documentation": null
+      "documentation": null,
+      "flags": 549755822080
     },
     "IsLoading": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 274877915136
     },
     "IsActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 274877915136
     }
   },
   "functions": {
@@ -36,12 +43,14 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -75,8 +84,9 @@
       "documentation": null,
       "signature_members": {
         "NewWaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWaveManager",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -92,8 +102,9 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -103,8 +114,9 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -114,8 +126,9 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -125,8 +138,9 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -136,8 +150,9 @@
       "documentation": null,
       "signature_members": {
         "OwnerCoordinator": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWaveCoordinator",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -151,5 +166,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "Game",
   "documentation": null
 }

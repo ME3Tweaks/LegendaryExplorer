@@ -2,19 +2,23 @@
   "members": {
     "Group": {
       "type": "InterpGroup",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TrackIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "KeyIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "UnsnappedPosition": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "InterpGroup",

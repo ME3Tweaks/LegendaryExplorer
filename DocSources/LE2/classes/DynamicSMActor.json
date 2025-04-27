@@ -4,43 +4,53 @@
   "variables": {
     "ReplicatedMeshTranslation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     },
     "ReplicatedMeshRotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     },
     "ReplicatedMeshScale3D": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     },
     "StaticMeshComponent": {
       "type": "StaticMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67764235
     },
     "LightEnvironment": {
       "type": "DynamicLightEnvironmentComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67764235
     },
     "ReplicatedMesh": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294975520
     },
     "ReplicatedMaterial": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     },
     "bForceStaticDecals": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     },
     "bPawnCanBaseOn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSafeBaseIfAsleep": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -54,8 +64,9 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -65,8 +76,9 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -76,8 +88,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -87,20 +100,24 @@
       "documentation": null,
       "signature_members": {
         "NewMesh": {
-          "type": null,
-          "documentation": null
+          "type": "StaticMesh",
+          "documentation": null,
+          "flags": 128
         },
         "NewTranslation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "NewRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 144
         },
         "NewScale3D": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -110,8 +127,9 @@
       "documentation": null,
       "signature_members": {
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_SetMaterial",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -121,8 +139,9 @@
       "documentation": null,
       "signature_members": {
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_SetMesh",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -132,8 +151,9 @@
       "documentation": null,
       "signature_members": {
         "VarName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -147,5 +167,7 @@
     }
   },
   "states": {},
+  "classflags": 144703635,
+  "configname": "None",
   "documentation": null
 }

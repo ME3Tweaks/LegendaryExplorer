@@ -2,11 +2,13 @@
   "members": {
     "Descriptor": {
       "type": "SFXSaveDescriptor",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "Save": {
       "type": "SFXSaveGame",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     }
   },
   "classdef": "SFXEngine",

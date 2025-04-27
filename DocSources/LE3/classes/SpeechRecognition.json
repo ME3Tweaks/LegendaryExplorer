@@ -4,46 +4,58 @@
   "variables": {
     "InstanceData": {
       "type": "RecogUserData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Language": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Vocabularies": {
       "type": "RecogVocabulary",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "VoiceData": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "WorkingVoiceData": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "UserData": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "FnxVoiceData": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101250
     },
     "ConfidenceThreshhold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDirty": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2105344
     },
     "bInitialised": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2105344
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136323218,
+  "configname": "None",
   "documentation": null
 }

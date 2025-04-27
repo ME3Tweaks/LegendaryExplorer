@@ -4,23 +4,28 @@
   "variables": {
     "VfTable_IUIListElementProvider": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "ProfileProvider": {
       "type": "UIDataProvider_OnlineProfileSettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "GameResourceDataStore": {
       "type": "UIDataStore_GameResource",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ResourceProviderDefinitions": {
       "type": "DynamicResourceProviderDefinition",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "ResourceProviders": {
       "type": "MultiMap_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     }
   },
   "functions": {
@@ -28,8 +33,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerOwner": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -39,8 +45,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerOwner": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -50,8 +57,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -61,16 +69,19 @@
       "documentation": null,
       "signature_members": {
         "ProviderTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "SearchField": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ValueToSearchFor": {
-          "type": null,
-          "documentation": null
+          "type": "UIProviderScriptFieldValue",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "int",
@@ -80,20 +91,24 @@
       "documentation": null,
       "signature_members": {
         "ProviderTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "SearchField": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ProviderIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "out_FieldValue": {
-          "type": null,
-          "documentation": null
+          "type": "UIProviderScriptFieldValue",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -103,12 +118,14 @@
       "documentation": null,
       "signature_members": {
         "ProviderTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ProviderFieldTags": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -118,12 +135,14 @@
       "documentation": null,
       "signature_members": {
         "ProviderTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "out_Providers": {
-          "type": null,
-          "documentation": null
+          "type": "UIResourceCombinationProvider",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -133,8 +152,9 @@
       "documentation": null,
       "signature_members": {
         "ProviderTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -144,12 +164,14 @@
       "documentation": null,
       "signature_members": {
         "ProviderIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "InstanceIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -159,8 +181,9 @@
       "documentation": null,
       "signature_members": {
         "ProviderTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -168,5 +191,7 @@
     }
   },
   "states": {},
+  "classflags": 136315038,
+  "configname": "Game",
   "documentation": null
 }

@@ -4,19 +4,23 @@
   "variables": {
     "UtilizeCrust": {
       "type": "VisualEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "BS_ReactionAlternative1": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BS_ReactionAlternative2": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BS_ReactionExploreAlternative": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -40,5 +44,7 @@
     }
   },
   "states": {},
+  "classflags": 22,
+  "configname": "Game",
   "documentation": null
 }

@@ -4,15 +4,18 @@
   "variables": {
     "__OnAuthenticate__Delegate": {
       "type": "OnAuthenticate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnDisconnect__Delegate": {
       "type": "OnDisconnect",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__CanCollect__Delegate": {
       "type": "CanCollect",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -26,8 +29,9 @@
       "documentation": null,
       "signature_members": {
         "Channel": {
-          "type": null,
-          "documentation": null
+          "type": "ETelemetryChannel",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -43,12 +47,14 @@
       "documentation": null,
       "signature_members": {
         "Error": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "SessionId": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -58,16 +64,19 @@
       "documentation": null,
       "signature_members": {
         "CollectDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "CanCollect",
+          "documentation": null,
+          "flags": 4194432
         },
         "ConnectDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnAuthenticate",
+          "documentation": null,
+          "flags": 4194432
         },
         "DisconnectDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnDisconnect",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -75,5 +84,7 @@
     }
   },
   "states": {},
+  "classflags": 134234259,
+  "configname": "None",
   "documentation": null
 }

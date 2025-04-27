@@ -4,10 +4,13 @@
   "variables": {
     "Properties": {
       "type": "PropertyInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

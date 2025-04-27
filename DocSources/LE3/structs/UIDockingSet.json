@@ -2,35 +2,43 @@
   "members": {
     "TargetWidget": {
       "type": "UIObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     },
     "DockPadding": {
       "type": "UIScreenValue_DockPadding",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     },
     "OwnerWidget": {
       "type": "UIObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bLockWidthWhenDocked": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bLockHeightWhenDocked": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TargetFace": {
       "type": "EUIWidgetFace",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     },
     "bResolved": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bLinking": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "classdef": "UIRoot",

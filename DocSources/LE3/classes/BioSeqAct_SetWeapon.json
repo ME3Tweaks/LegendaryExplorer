@@ -4,15 +4,18 @@
   "variables": {
     "cWeapon": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "oPawn": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "nWeapon": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -30,5 +33,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

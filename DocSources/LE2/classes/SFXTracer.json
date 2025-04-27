@@ -4,19 +4,23 @@
   "variables": {
     "DesiredEndPoint": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ScaleTimeFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ScaleTimeCount": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ScaleMode": {
       "type": "ESFXTracerScaling",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -24,8 +28,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -65,12 +70,14 @@
       "documentation": null,
       "signature_members": {
         "Start": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "End": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -78,5 +85,7 @@
     }
   },
   "states": {},
+  "classflags": 10485778,
+  "configname": "None",
   "documentation": null
 }

@@ -4,43 +4,53 @@
   "variables": {
     "SyncPartners": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MarkerOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "InteractionStartTimeOut": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PartnerCustomAction": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxPartnerDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SyncCone": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RotationTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bMoveSyncPawn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bHideTargetWeapon": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAffectsFriendlies": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -60,8 +70,9 @@
       "documentation": null,
       "signature_members": {
         "SyncPartner": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -71,8 +82,9 @@
       "documentation": null,
       "signature_members": {
         "OtherPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -100,12 +112,14 @@
       "documentation": null,
       "signature_members": {
         "EventName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Sender": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -127,8 +141,9 @@
       "documentation": null,
       "signature_members": {
         "SyncPartner": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -138,8 +153,9 @@
       "documentation": null,
       "signature_members": {
         "SyncPartner": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -153,5 +169,7 @@
     }
   },
   "states": {},
+  "classflags": 10485783,
+  "configname": "Game",
   "documentation": null
 }

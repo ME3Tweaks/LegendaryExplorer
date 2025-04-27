@@ -2,19 +2,23 @@
   "members": {
     "ForcedLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PC": {
       "type": "PlayerController",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ReplicatedMoves": {
       "type": "SFXSavedMove",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bForceNewLocation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioPlayerController",

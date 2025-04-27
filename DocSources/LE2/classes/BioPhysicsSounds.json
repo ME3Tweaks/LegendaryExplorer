@@ -4,23 +4,28 @@
   "variables": {
     "m_fMaxMass": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fMaxSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fMinTimeBetweenSoundByActor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fMinSpeedToPlay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_bEnableLogging": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -28,12 +33,14 @@
       "documentation": null,
       "signature_members": {
         "oComp": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "fSpeedToUse": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -43,8 +50,9 @@
       "documentation": null,
       "signature_members": {
         "oComp": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "float",
@@ -54,12 +62,14 @@
       "documentation": null,
       "signature_members": {
         "oComp": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "OtherActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -69,8 +79,9 @@
       "documentation": null,
       "signature_members": {
         "oComp": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -80,8 +91,9 @@
       "documentation": null,
       "signature_members": {
         "oComp": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "bool",
@@ -91,12 +103,14 @@
       "documentation": null,
       "signature_members": {
         "oComp": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "OtherActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -106,8 +120,9 @@
       "documentation": null,
       "signature_members": {
         "oComp": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "bool",
@@ -117,16 +132,19 @@
       "documentation": null,
       "signature_members": {
         "oComp0": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "oComp1": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "RigidCollisionData": {
-          "type": null,
-          "documentation": null
+          "type": "CollisionImpactData",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "bool",
@@ -136,8 +154,9 @@
       "documentation": null,
       "signature_members": {
         "PhysMat": {
-          "type": null,
-          "documentation": null
+          "type": "PhysicalMaterial",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -147,8 +166,9 @@
       "documentation": null,
       "signature_members": {
         "PhysMat": {
-          "type": null,
-          "documentation": null
+          "type": "PhysicalMaterial",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "WwiseEvent",
@@ -158,28 +178,34 @@
       "documentation": null,
       "signature_members": {
         "Game": {
-          "type": null,
-          "documentation": null
+          "type": "GameInfo",
+          "documentation": null,
+          "flags": 128
         },
         "PhysMat": {
-          "type": null,
-          "documentation": null
+          "type": "PhysicalMaterial",
+          "documentation": null,
+          "flags": 128
         },
         "PhysMatSweetener": {
-          "type": null,
-          "documentation": null
+          "type": "PhysicalMaterial",
+          "documentation": null,
+          "flags": 128
         },
         "pos": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "RTPCNames": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "RTPCValues": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -187,5 +213,7 @@
     }
   },
   "states": {},
+  "classflags": 134217878,
+  "configname": "Game",
   "documentation": null
 }

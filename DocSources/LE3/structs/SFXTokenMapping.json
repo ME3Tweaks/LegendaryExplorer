@@ -2,11 +2,13 @@
   "members": {
     "TokenId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Data": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     }
   },
   "classdef": "Object",

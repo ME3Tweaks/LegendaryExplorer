@@ -2,11 +2,13 @@
   "members": {
     "VariationName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bMeshOnTopOfFacePoly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "ProcBuildingRuleset",

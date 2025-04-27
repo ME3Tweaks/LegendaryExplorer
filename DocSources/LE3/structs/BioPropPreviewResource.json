@@ -2,19 +2,23 @@
   "members": {
     "mapActions": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "nmProp": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "pPropCmp": {
       "type": "MeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "bEquipped": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioEvtSysTrackPropInst",

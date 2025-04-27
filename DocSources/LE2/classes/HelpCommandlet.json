@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "Params": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "int",
@@ -16,5 +17,7 @@
     }
   },
   "states": {},
+  "classflags": 136315066,
+  "configname": "None",
   "documentation": null
 }

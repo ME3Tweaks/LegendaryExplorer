@@ -2,7 +2,8 @@
   "members": {
     "KeyScopePairs": {
       "type": "LeaderboardStatScopeValuePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "classdef": "SFXOnlineDefine",

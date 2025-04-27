@@ -2,11 +2,13 @@
   "members": {
     "nID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fTimeUntilExpiry": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioPowerManager",

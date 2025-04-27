@@ -4,15 +4,18 @@
   "variables": {
     "ResourcePercent": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseAbsuluteAmount": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TreasureType": {
       "type": "ETreasureType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -32,8 +35,9 @@
       "documentation": null,
       "signature_members": {
         "User": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -43,12 +47,14 @@
       "documentation": null,
       "signature_members": {
         "bTargetable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bSetTargetSave": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -56,5 +62,7 @@
     }
   },
   "states": {},
+  "classflags": 8392722,
+  "configname": "None",
   "documentation": null
 }

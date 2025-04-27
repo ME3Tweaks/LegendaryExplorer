@@ -4,27 +4,33 @@
   "variables": {
     "DefaultDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "Duration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LastUpdateTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "RemainingTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bDelayActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bStartWillRestart": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -44,8 +50,9 @@
       "documentation": null,
       "signature_members": {
         "TargetObject": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -53,5 +60,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

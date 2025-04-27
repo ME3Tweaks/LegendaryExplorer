@@ -2,27 +2,33 @@
   "members": {
     "KeyIn": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "KeyOut": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TangentIn": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TangentOut": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TangentsValid": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "IntepMode": {
       "type": "EInterpCurveMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "CurveEdPresetCurve",

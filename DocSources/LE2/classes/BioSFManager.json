@@ -4,67 +4,83 @@
   "variables": {
     "m_UnrealKeyToGfxKeyMap": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "m_lstPanels": {
       "type": "BioSFPanel",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "lstEventCooldowns": {
       "type": "EventCooldownStruct",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "HandlerLibrary": {
       "type": "SFHandlerTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "SharedAssetLibrary": {
       "type": "SFSharedAssetMap",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_aWorldSoundGroups": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "nmActiveMusic": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nmActiveVoice": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_FocusPanel": {
       "type": "BioSFPanel",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "UDLRInitialCooldown": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "UDLRHeldCooldown": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "fNextFadeOut": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bControlEventFromThumbstick": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nLastUDLR": {
       "type": "BioGuiEvents",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nLStickX": {
       "type": "BioThumbstickDir",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nLStickY": {
       "type": "BioThumbstickDir",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -96,8 +112,9 @@
       "documentation": null,
       "signature_members": {
         "Tag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -131,12 +148,14 @@
       "documentation": null,
       "signature_members": {
         "pObject": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         },
         "bShow": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -152,8 +171,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -163,12 +183,14 @@
       "documentation": null,
       "signature_members": {
         "nEvent": {
-          "type": null,
-          "documentation": null
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
         },
         "fCooldown": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -184,8 +206,9 @@
       "documentation": null,
       "signature_members": {
         "nmSound": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -201,12 +224,14 @@
       "documentation": null,
       "signature_members": {
         "nmMusic": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bForceRestart": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -216,8 +241,9 @@
       "documentation": null,
       "signature_members": {
         "nmSound": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -227,8 +253,9 @@
       "documentation": null,
       "signature_members": {
         "nmSound": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -238,8 +265,9 @@
       "documentation": null,
       "signature_members": {
         "nmSound": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -249,8 +277,9 @@
       "documentation": null,
       "signature_members": {
         "nmSound": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -260,12 +289,14 @@
       "documentation": null,
       "signature_members": {
         "nmTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Platform": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Class",
@@ -275,20 +306,24 @@
       "documentation": null,
       "signature_members": {
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
         },
         "fCooldown": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "fDeadzoneValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -322,8 +357,9 @@
       "documentation": null,
       "signature_members": {
         "oPanel": {
-          "type": null,
-          "documentation": null
+          "type": "BioSFPanel",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -339,8 +375,9 @@
       "documentation": null,
       "signature_members": {
         "oPanel": {
-          "type": null,
-          "documentation": null
+          "type": "BioSFPanel",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -350,8 +387,9 @@
       "documentation": null,
       "signature_members": {
         "nmMovieTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "BioSFPanel",
@@ -361,12 +399,14 @@
       "documentation": null,
       "signature_members": {
         "oPanel": {
-          "type": null,
-          "documentation": null
+          "type": "BioSFPanel",
+          "documentation": null,
+          "flags": 128
         },
         "bReportUsage": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -376,12 +416,14 @@
       "documentation": null,
       "signature_members": {
         "nmMovieTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Platform": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -391,12 +433,14 @@
       "documentation": null,
       "signature_members": {
         "oPanel": {
-          "type": null,
-          "documentation": null
+          "type": "BioSFPanel",
+          "documentation": null,
+          "flags": 128
         },
         "bAddDefaultHandler": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -406,16 +450,19 @@
       "documentation": null,
       "signature_members": {
         "nmMovieTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bAddPanel": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "Platform": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "BioSFPanel",
@@ -423,5 +470,7 @@
     }
   },
   "states": {},
+  "classflags": 136315039,
+  "configname": "UI",
   "documentation": null
 }

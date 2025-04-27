@@ -4,19 +4,23 @@
   "variables": {
     "lstPages": {
       "type": "BWPageStruct",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "vInput": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_Helper": {
       "type": "SFXPowerLevelUpHelper",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "fLastRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -42,12 +46,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -81,8 +87,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -92,12 +99,14 @@
       "documentation": null,
       "signature_members": {
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -107,12 +116,14 @@
       "documentation": null,
       "signature_members": {
         "nCommand": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "lstArguments": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -122,12 +133,14 @@
       "documentation": null,
       "signature_members": {
         "nPanel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "oManager": {
-          "type": null,
-          "documentation": null
+          "type": "BioSFManager",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -135,5 +148,7 @@
     }
   },
   "states": {},
+  "classflags": 144703646,
+  "configname": "UI",
   "documentation": null
 }

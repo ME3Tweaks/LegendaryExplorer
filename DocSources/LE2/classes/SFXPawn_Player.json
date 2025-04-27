@@ -4,223 +4,278 @@
   "variables": {
     "CasualAppearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "FullBodyAppearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "TorsoAppearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "ShoulderAppearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "ArmAppearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "LegAppearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "HelmetAppearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "SpecAppearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "Tint1Appearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "Tint2Appearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "PatternAppearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "PatternColorAppearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "FemalePhysAsset": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "FemaleHeadMesh": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "FemaleHairMesh": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "FirstName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "PlayerClassName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Scars": {
       "type": "ScarInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "FaceCode": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_sWwiseAudioComponentLabel": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_sWwiseRTPCNameUseCasual": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "HitShake": {
       "type": "ScreenShakeStruct",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "IconicFemaleSkinToneColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlayerClass": {
       "type": "SFXCharacterClass",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_GUI_Icon": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_GUI_Icon_Dead": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CoverForceFeedback": {
       "type": "ForceFeedbackWaveform",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CoverEnterSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "IconicFemaleSkinToneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "N7ArmourName": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "N7ArmourDescription": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "CasualID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FullBodyID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TorsoID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ShoulderID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ArmID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LegID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SpecID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Tint1ID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Tint2ID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PatternID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PatternColorID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "HelmetID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OverrideHelmetID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "OutOfAmmoTimestamp": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "OutOfAmmoSwapThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "CosmeticSurgeryPlotID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TotalXP": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "bUseCasualAppearance": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bOverrideHideScars": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bHasBreather": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bInPersonalization": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CombatAppearance": {
       "type": "EPlayerAppearanceType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Origin": {
       "type": "EOriginType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Notoriety": {
       "type": "ENotorietyType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -234,8 +289,9 @@
       "documentation": null,
       "signature_members": {
         "ChkLoadout": {
-          "type": null,
-          "documentation": null
+          "type": "SFXLoadoutData",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -257,8 +313,9 @@
       "documentation": null,
       "signature_members": {
         "bDraw": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -268,8 +325,9 @@
       "documentation": null,
       "signature_members": {
         "WwiseComponent": {
-          "type": null,
-          "documentation": null
+          "type": "WwiseAudioComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -279,8 +337,9 @@
       "documentation": null,
       "signature_members": {
         "PreferredWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -290,8 +349,9 @@
       "documentation": null,
       "signature_members": {
         "CovInfo": {
-          "type": null,
-          "documentation": null
+          "type": "CovPosInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -301,8 +361,9 @@
       "documentation": null,
       "signature_members": {
         "bDeadIcon": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Texture2D",
@@ -312,12 +373,14 @@
       "documentation": null,
       "signature_members": {
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "HitLoc": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -327,28 +390,34 @@
       "documentation": null,
       "signature_members": {
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "InstigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -358,32 +427,39 @@
       "documentation": null,
       "signature_members": {
         "CustomAction": {
-          "type": null,
-          "documentation": null
+          "type": "EAICustomAction",
+          "documentation": null,
+          "flags": 128
         },
         "InstigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "bPlayImpact": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 400
         },
         "bDeathReaction": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -417,8 +493,9 @@
       "documentation": null,
       "signature_members": {
         "bUsingGamepad": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -428,8 +505,9 @@
       "documentation": null,
       "signature_members": {
         "nmPower": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXPower",
@@ -439,12 +517,14 @@
       "documentation": null,
       "signature_members": {
         "C": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "bVehicleTransition": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -472,8 +552,9 @@
       "documentation": null,
       "signature_members": {
         "SourcePawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -483,16 +564,19 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "out_ViewRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         },
         "out_DeltaRot": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -502,8 +586,9 @@
       "documentation": null,
       "signature_members": {
         "bHelmetVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -513,8 +598,9 @@
       "documentation": null,
       "signature_members": {
         "bShowHelmet": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -524,8 +610,9 @@
       "documentation": null,
       "signature_members": {
         "bHideHelmet": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -535,28 +622,34 @@
       "documentation": null,
       "signature_members": {
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "InstigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -572,12 +665,14 @@
       "documentation": null,
       "signature_members": {
         "WeaponClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "bEquipWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -599,12 +694,14 @@
       "documentation": null,
       "signature_members": {
         "ParagonPips": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "RenegadePips": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -614,16 +711,19 @@
       "documentation": null,
       "signature_members": {
         "InScars": {
-          "type": null,
-          "documentation": null
+          "type": "ScarInfo",
+          "documentation": null,
+          "flags": 4194434
         },
         "InNetAlignment": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -669,16 +769,19 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Meshes": {
-          "type": null,
-          "documentation": null
+          "type": "CustomizableElement",
+          "documentation": null,
+          "flags": 4194688
         },
         "Effects": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -694,12 +797,14 @@
       "documentation": null,
       "signature_members": {
         "MeshCmpt": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "MatIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "MaterialInstanceConstant",
@@ -709,20 +814,24 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Part": {
-          "type": null,
-          "documentation": null
+          "type": "EHelmetPart",
+          "documentation": null,
+          "flags": 128
         },
         "Meshes": {
-          "type": null,
-          "documentation": null
+          "type": "CustomizableElement",
+          "documentation": null,
+          "flags": 4194688
         },
         "Element": {
-          "type": null,
-          "documentation": null
+          "type": "CustomizableElement",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "SkeletalMesh",
@@ -732,16 +841,19 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Meshes": {
-          "type": null,
-          "documentation": null
+          "type": "CustomizableElement",
+          "documentation": null,
+          "flags": 4194688
         },
         "Element": {
-          "type": null,
-          "documentation": null
+          "type": "CustomizableElement",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "MaterialInstance",
@@ -751,16 +863,19 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Meshes": {
-          "type": null,
-          "documentation": null
+          "type": "CustomizableElement",
+          "documentation": null,
+          "flags": 4194688
         },
         "Element": {
-          "type": null,
-          "documentation": null
+          "type": "CustomizableElement",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "SkeletalMesh",
@@ -786,8 +901,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -808,8 +924,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -819,5 +936,7 @@
       "documentation": null
     }
   },
+  "classflags": 10486327,
+  "configname": "Game",
   "documentation": null
 }

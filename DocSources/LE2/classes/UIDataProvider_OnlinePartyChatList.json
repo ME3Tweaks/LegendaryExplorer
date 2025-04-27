@@ -4,43 +4,53 @@
   "variables": {
     "VfTable_IUIListElementCellProvider": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "PartyMembersList": {
       "type": "OnlinePartyMember",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "NatTypes": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "NickNameCol": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "NatTypeCol": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "IsLocalCol": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "IsInPartyVoiceCol": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "IsTalkingCol": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "IsInGameSessionCol": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "IsPlayingThisGameCol": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     }
   },
   "functions": {
@@ -54,8 +64,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -71,8 +82,9 @@
       "documentation": null,
       "signature_members": {
         "InPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -80,5 +92,7 @@
     }
   },
   "states": {},
+  "classflags": 136315066,
+  "configname": "None",
   "documentation": null
 }

@@ -4,11 +4,13 @@
   "variables": {
     "GameEffects": {
       "type": "SFXGameEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 1152921504611041281
     },
     "EffectListLocked": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -28,8 +30,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaSeconds": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -37,5 +40,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

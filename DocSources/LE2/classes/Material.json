@@ -4,322 +4,403 @@
   "variables": {
     "MaterialResources": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101250
     },
     "DefaultMaterialInstances": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101250
     },
     "Expressions": {
       "type": "MaterialExpression",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PhysicalMaterial": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Normal": {
       "type": "VectorMaterialInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AnisotropicDirection": {
       "type": "VectorMaterialInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WorldPositionOffset": {
       "type": "VectorMaterialInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WrapLightingCoefficients": {
       "type": "VectorMaterialInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Distortion": {
       "type": "Vector2MaterialInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DiffuseColor": {
       "type": "ColorMaterialInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DiffusePower": {
       "type": "ScalarMaterialInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SpecularColor": {
       "type": "ColorMaterialInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SpecularPower": {
       "type": "ScalarMaterialInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EmissiveColor": {
       "type": "ColorMaterialInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Opacity": {
       "type": "ScalarMaterialInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OpacityMask": {
       "type": "ScalarMaterialInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CustomLighting": {
       "type": "ColorMaterialInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CustomSkylightDiffuse": {
       "type": "ColorMaterialInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TwoSidedLightingMask": {
       "type": "ScalarMaterialInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TwoSidedLightingColor": {
       "type": "ColorMaterialInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PhysMaterial": {
       "type": "PhysicalMaterial",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PhysMaterialMask": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BlackPhysicalMaterial": {
       "type": "PhysicalMaterial",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "WhitePhysicalMaterial": {
       "type": "PhysicalMaterial",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FallbackMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 2097152
     },
     "PhysMaterialMaskUVChannel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OpacityMaskClipValue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ShadowDepthBias": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaterialDepthBias": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaterialDownsampleThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "EnableSeparateTranslucency": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TwoSided": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TwoSidedSeparatePass": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDisableDepthTest": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAllowFog": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAllowTranslucencyDoF": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseOneLayerDistortion": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseLitTranslucencyDepthPass": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseLitTranslucencyPostRenderDepthPass": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCastLitTranslucencyShadowAsMasked": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bHairPass": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUsedAsLightFunction": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUsedWithFogVolumes": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUsedAsSpecialEngineMaterial": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2097154
     },
     "bUsedWithSkeletalMesh": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUsedWithFracturedMeshes": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUsedWithParticleSystem": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bUsedWithParticleSprites": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUsedWithBeamTrails": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUsedWithParticleSubUV": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUsedWithFoliage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUsedWithSpeedTree": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUsedWithStaticLighting": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUsedWithLensFlare": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUsedWithGammaCorrection": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUsedWithInstancedMeshParticles": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUsedWithFluidSurfaces": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUsedWithDecals": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUsedWithMaterialEffect": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUsedWithMorphTargets": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUsedWithRadialBlur": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUsedWithInstancedMeshes": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUsedWithSplineMeshes": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUsedWithAPEXMeshes": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUsedWithLightEnvironments": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUsedWithScreenDoorFade": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "Wireframe": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPerPixelCameraVector": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsFallbackMaterial": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bForceFullPrecision": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUsesDistortion": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsMasked": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsPreviewMaterial": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2105344
     },
     "EditorRecompileAlways": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "AllowsEffectsMaterials": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "BlendMode": {
       "type": "EBlendMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LightingModel": {
       "type": "EMaterialLightingModel",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ReferencedTextureGuids": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 144115222439796736
     },
     "EditorComments": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 144115222439788544
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136323218,
+  "configname": "None",
   "documentation": null
 }

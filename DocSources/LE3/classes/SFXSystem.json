@@ -4,79 +4,98 @@
   "variables": {
     "Planets": {
       "type": "BioPlanet",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "aReapersTouchingPlayer": {
       "type": "SFXGalaxyMapObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "SunColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StarColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FlareTint": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ActiveWorld": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fReaperAlertLevel": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ReaperControlCondition": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fReaperGraceTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fGameOverFadeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nScannedPlanets": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bHasMassRelay": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bShowNebula": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bReapersChasePlayer": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bSystemReapersActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bReapersHaveBeenDetected": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ReaperControlConditionRegion": {
       "type": "EBioRegionAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ReaperControlConditionPlot": {
       "type": "EBioReaperControlConditionPlotAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ReaperControlConditionName": {
       "type": "EBioReaperControlConditionAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -84,8 +103,9 @@
       "documentation": null,
       "signature_members": {
         "oChild": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGalaxyMapObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -95,12 +115,14 @@
       "documentation": null,
       "signature_members": {
         "aPlotNames": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 4194688
         },
         "eMapLevel": {
-          "type": null,
-          "documentation": null
+          "type": "EBioGalaxyMapState",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -122,8 +144,9 @@
       "documentation": null,
       "signature_members": {
         "o": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGalaxyMapObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -133,8 +156,9 @@
       "documentation": null,
       "signature_members": {
         "o": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGalaxyMapObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -186,12 +210,14 @@
       "documentation": null,
       "signature_members": {
         "vCenter": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 130
         },
         "fSystemRadius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 130
         }
       },
       "returntype": "None",
@@ -201,8 +227,9 @@
       "documentation": null,
       "signature_members": {
         "Child": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGalaxyMapObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -224,8 +251,9 @@
       "documentation": null,
       "signature_members": {
         "fReaperValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -241,16 +269,19 @@
       "documentation": null,
       "signature_members": {
         "nObjectCount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "nExploredCount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "eMapLevel": {
-          "type": null,
-          "documentation": null
+          "type": "EBioGalaxyMapState",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -266,8 +297,9 @@
       "documentation": null,
       "signature_members": {
         "Cluster": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCluster",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -307,8 +339,9 @@
       "documentation": null,
       "signature_members": {
         "oReaper": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGalaxyMapObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -318,8 +351,9 @@
       "documentation": null,
       "signature_members": {
         "oReaper": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGalaxyMapObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -329,8 +363,9 @@
       "documentation": null,
       "signature_members": {
         "fLevel": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -346,8 +381,9 @@
       "documentation": null,
       "signature_members": {
         "oSrc": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSystemLevelObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -355,5 +391,7 @@
     }
   },
   "states": {},
+  "classflags": 142606486,
+  "configname": "Game",
   "documentation": null
 }

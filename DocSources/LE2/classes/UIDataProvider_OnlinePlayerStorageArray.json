@@ -4,34 +4,43 @@
   "variables": {
     "VfTable_IUIListElementProvider": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "VfTable_IUIListElementCellProvider": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "PlayerStorage": {
       "type": "OnlinePlayerStorage",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlayerStorageId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlayerStorageName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ColumnHeaderText": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "Values": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315034,
+  "configname": "None",
   "documentation": null
 }

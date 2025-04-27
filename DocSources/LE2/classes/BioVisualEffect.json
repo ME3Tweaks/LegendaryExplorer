@@ -4,147 +4,183 @@
   "variables": {
     "sStateNames": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_CachedInstanceParameters": {
       "type": "CachedInstanceParameter",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "m_SavedBaseData": {
       "type": "BioActorReBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 532480
     },
     "aDecalList": {
       "type": "BioDecalComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     },
     "fStateDurations": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fStateStartTimes": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fStateEndTimes": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "pTemplate": {
       "type": "BioVFXTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Matinee": {
       "type": "SeqAct_Interp",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "pLastDecal": {
       "type": "BioDecalComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     },
     "oSoundCue": {
       "type": "WwiseBaseSoundObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "oCurrentWwisePair": {
       "type": "WwiseEventPairObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_cameraShake": {
       "type": "BioCameraShake",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_cameraShakenActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pInstigator": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fLifeDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_accruedTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fTotalDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fCurrentTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nMaxDecals": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "nLastDecal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nAttachedToBoneCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDeleteSelf": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bPaused": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bLoopLife": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPauseOnDeath": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCancelSpawn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIsComponentOnly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bHideBaseOnComplete": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bBaseHasValidPose": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "eCurrentState": {
       "type": "EBioVFXState",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_mObjectFloatPropertyMap": {
       "type": "MultiMap_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "m_mTrackMaterialFloatMap": {
       "type": "MultiMap_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "m_mObjectVectorPropertyMap": {
       "type": "MultiMap_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "m_mTrackMaterialVectorMap": {
       "type": "MultiMap_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     }
   },
   "functions": {
@@ -158,8 +194,9 @@
       "documentation": null,
       "signature_members": {
         "nIndexInSoundArray": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -169,24 +206,29 @@
       "documentation": null,
       "signature_members": {
         "a_pTemplate": {
-          "type": null,
-          "documentation": null
+          "type": "BioVFXTemplate",
+          "documentation": null,
+          "flags": 128
         },
         "vPosition": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "rOrientation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         },
         "fLifeTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bUseVFXPool": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "BioVisualEffect",
@@ -196,28 +238,34 @@
       "documentation": null,
       "signature_members": {
         "a_pTemplate": {
-          "type": null,
-          "documentation": null
+          "type": "BioVFXTemplate",
+          "documentation": null,
+          "flags": 128
         },
         "Target": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "sBoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "fLifeTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "mTargetMesh": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67109008
         },
         "bUseVFXPool": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "BioVisualEffect",
@@ -227,20 +275,24 @@
       "documentation": null,
       "signature_members": {
         "a_pTemplate": {
-          "type": null,
-          "documentation": null
+          "type": "BioVFXTemplate",
+          "documentation": null,
+          "flags": 128
         },
         "Target": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "fLifeTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bUseVFXPool": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "BioVisualEffect",
@@ -250,8 +302,9 @@
       "documentation": null,
       "signature_members": {
         "fLife": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -261,12 +314,14 @@
       "documentation": null,
       "signature_members": {
         "sParameter": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "vValue": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -276,12 +331,14 @@
       "documentation": null,
       "signature_members": {
         "sParameter": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -291,8 +348,9 @@
       "documentation": null,
       "signature_members": {
         "eState": {
-          "type": null,
-          "documentation": null
+          "type": "EBioVFXState",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -320,8 +378,9 @@
       "documentation": null,
       "signature_members": {
         "pBase": {
-          "type": null,
-          "documentation": null
+          "type": "Prefab",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -331,20 +390,24 @@
       "documentation": null,
       "signature_members": {
         "eState": {
-          "type": null,
-          "documentation": null
+          "type": "EBioVFXState",
+          "documentation": null,
+          "flags": 128
         },
         "bForceSetState": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bPlayAudio": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bForceKill": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -354,12 +417,14 @@
       "documentation": null,
       "signature_members": {
         "bPause": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bForceRefresh": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -369,8 +434,9 @@
       "documentation": null,
       "signature_members": {
         "bPause": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -380,8 +446,9 @@
       "documentation": null,
       "signature_members": {
         "bLoop": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -389,5 +456,7 @@
     }
   },
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

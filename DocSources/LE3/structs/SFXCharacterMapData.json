@@ -2,31 +2,38 @@
   "members": {
     "PlotId": {
       "type": "PlotIdenfitier",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "srCharacter": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "srLocation": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nValue": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nConditional": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nConditionalParam": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Floor": {
       "type": "SFXAreaMapLayout",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXSFHandler_AreaMap",

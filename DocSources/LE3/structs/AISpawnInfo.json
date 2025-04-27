@@ -2,107 +2,133 @@
   "members": {
     "Types": {
       "type": "Pawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "WatchList": {
       "type": "AISpawnClusterTracker",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "SpawnPoints": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "VarLinkDescs": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "AutoDebugText": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "ObscuredSpawnProjectileClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ObscuredSpawnOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Squad": {
       "type": "BioBaseSquad",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ActorTag": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ClusterVisibilityDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CurrentCluster": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "SpawnTotal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaxAlive": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SpawnedCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SpawnPointIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxSpawnDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MinSpawnDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CurrentDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TeamIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAutoAcquireEnemy": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAutoNotifyEnemy": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDisableFriendlyNotifications": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDisableAI": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCanDropAmmo": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDisableShadowCasting": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ShadowMode": {
       "type": "ELightShadowMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXSeqAct_AIFactory2",

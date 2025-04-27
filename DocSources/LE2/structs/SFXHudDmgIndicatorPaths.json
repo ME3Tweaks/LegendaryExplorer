@@ -2,11 +2,13 @@
   "members": {
     "_alpha": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "_visible": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "classdef": "SFXSFHandler_HUD",

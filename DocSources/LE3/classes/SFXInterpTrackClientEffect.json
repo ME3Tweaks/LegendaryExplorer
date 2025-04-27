@@ -4,19 +4,23 @@
   "variables": {
     "m_vSpawnParameters": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_pEffect": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bAllowCooldown": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bStopAllMatchingEffects": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -28,5 +32,7 @@
     }
   },
   "states": {},
+  "classflags": 134226066,
+  "configname": "None",
   "documentation": null
 }

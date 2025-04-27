@@ -13,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "NavHandle": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationHandle",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -22,5 +23,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

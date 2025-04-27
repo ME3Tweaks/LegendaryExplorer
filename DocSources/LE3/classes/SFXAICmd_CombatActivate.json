@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "NewEnemy": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -33,5 +34,7 @@
       "documentation": null
     }
   },
+  "classflags": 33554450,
+  "configname": "None",
   "documentation": null
 }

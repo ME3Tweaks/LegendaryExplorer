@@ -4,199 +4,248 @@
   "variables": {
     "ChosenStoreItem": {
       "type": "StoreItemData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "StoreItems": {
       "type": "StoreItemData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "UnsortedMPItems_Weapons": {
       "type": "StoreItemData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "UnsortedMPItems_Mods": {
       "type": "StoreItemData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_sResourceCostColorHTML_CanAfford": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_sResourceCostColorHTML_CantAfford": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_DefaultStoreHeaderImageRef": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "ModStringsArray": {
       "type": "ModStrings",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "CompStats": {
       "type": "ComparisonStat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "GlobalStoreDiscounts": {
       "type": "GlobalStoreDiscount",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "WeaponUpgradeCosts": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "RespecCosts": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "Achievement_UniqueArmorPlotIDs": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnCloseCallback__Delegate": {
       "type": "OnCloseCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Customer": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StoreGUIData": {
       "type": "SFXGUIData_Store",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NestedStoreGUIData": {
       "type": "SFXGUIData_Store",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ConfirmationMessageBox": {
       "type": "BioSFHandler_MessageBox",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WeaponDataManager": {
       "type": "SFXWeaponUIDataManager",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "nPurchaseIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "srPurchaseConfirm": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srPurchaseCancel": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srPurchaseConfirmMessage": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srMoreInformation": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srBack": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srNewFlag": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srResourceTextCredits": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srResourceCostFormat": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srResourceAvailFormat": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nInfoScrollSpeed": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "DisplayCap_Mods": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "DisplayCap_Weapons": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ModPriorityModifier": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NewGamePlusID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxWeaponLevel_Normal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxWeaponLevel_NGP": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WeaponLevelIncrease_Normal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WeaponLevelIncrease_NGP": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ArmorEffectDescriptionFormatter": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAllItemsUnlocked": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bIsFinished": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIsAborted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bWasPaused": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIsFlashLoaded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bUIIsInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bStopScroll": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bMessageBoxActivated": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bResetTalents": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bInNestedStore": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -204,136 +253,169 @@
       "documentation": null,
       "signature_members": {
         "p_index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_ChoiceName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "p_ChoiceTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "p_ChoiceImageTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "p_ChoiceDescription": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "p_ChoiceOptionalPanelItemValue": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "p_ChoiceColor": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_ChoiceResource": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_ActionText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "p_ImagePath": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "p_DefaultSelection": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "p_Disabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "p_DisplayType": {
-          "type": null,
-          "documentation": null
+          "type": "EChoiceDisplayType",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat1Name": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "p_Stat1Base": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat1Bonus": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat1Comp": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat2Name": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "p_Stat2Base": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat2Bonus": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat2Comp": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat3Name": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "p_Stat3Base": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat3Bonus": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat3Comp": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat4Name": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "p_Stat4Base": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat4Bonus": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat4Comp": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat5Name": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "p_Stat5Base": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat5Bonus": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat5Comp": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -343,136 +425,169 @@
       "documentation": null,
       "signature_members": {
         "p_index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_ChoiceName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "p_ChoiceTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "p_ChoiceImageTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "p_ChoiceDescription": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "p_ChoiceOptionalPanelItemValue": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "p_ChoiceColor": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_ChoiceResource": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_ActionText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "p_ImagePath": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "p_DefaultSelection": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "p_Disabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "p_DisplayType": {
-          "type": null,
-          "documentation": null
+          "type": "EChoiceDisplayType",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat1Name": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "p_Stat1Base": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat1Bonus": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat1Comp": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat2Name": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "p_Stat2Base": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat2Bonus": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat2Comp": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat3Name": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "p_Stat3Base": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat3Bonus": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat3Comp": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat4Name": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "p_Stat4Base": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat4Bonus": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat4Comp": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat5Name": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "p_Stat5Base": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat5Bonus": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "p_Stat5Comp": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -482,8 +597,9 @@
       "documentation": null,
       "signature_members": {
         "p_numItems": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -493,8 +609,9 @@
       "documentation": null,
       "signature_members": {
         "iPlatformId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -504,8 +621,9 @@
       "documentation": null,
       "signature_members": {
         "p_index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -515,28 +633,34 @@
       "documentation": null,
       "signature_members": {
         "sTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sSubtitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sAText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sBText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sYText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "nCreditsAvailable": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -552,8 +676,9 @@
       "documentation": null,
       "signature_members": {
         "nResource": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -563,8 +688,9 @@
       "documentation": null,
       "signature_members": {
         "eResource": {
-          "type": null,
-          "documentation": null
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -574,12 +700,14 @@
       "documentation": null,
       "signature_members": {
         "WeaponClassPath": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "lstDisplayStats": {
-          "type": null,
-          "documentation": null
+          "type": "ComparisonStat",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -589,12 +717,14 @@
       "documentation": null,
       "signature_members": {
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -604,16 +734,19 @@
       "documentation": null,
       "signature_members": {
         "InitialStoreChoiceGUIData": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGUIData_Store",
+          "documentation": null,
+          "flags": 128
         },
         "StoreName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -635,8 +768,9 @@
       "documentation": null,
       "signature_members": {
         "bInitFromScratch": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -652,8 +786,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -669,8 +804,9 @@
       "documentation": null,
       "signature_members": {
         "PowerClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -686,8 +822,9 @@
       "documentation": null,
       "signature_members": {
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -703,12 +840,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -724,8 +863,9 @@
       "documentation": null,
       "signature_members": {
         "nListIndexSelected": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -747,8 +887,9 @@
       "documentation": null,
       "signature_members": {
         "PowerClassString": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "Class",
@@ -770,8 +911,9 @@
       "documentation": null,
       "signature_members": {
         "Number": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -781,8 +923,9 @@
       "documentation": null,
       "signature_members": {
         "BaseCost": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -792,8 +935,9 @@
       "documentation": null,
       "signature_members": {
         "ItemData": {
-          "type": null,
-          "documentation": null
+          "type": "StoreItemData",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "Name",
@@ -809,8 +953,9 @@
       "documentation": null,
       "signature_members": {
         "Path": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "Texture2D",
@@ -826,8 +971,9 @@
       "documentation": null,
       "signature_members": {
         "ItemData": {
-          "type": null,
-          "documentation": null
+          "type": "StoreItemData",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -867,8 +1013,9 @@
       "documentation": null,
       "signature_members": {
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -878,8 +1025,9 @@
       "documentation": null,
       "signature_members": {
         "fn_OnCloseDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnCloseCallback",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -889,8 +1037,9 @@
       "documentation": null,
       "signature_members": {
         "ItemData": {
-          "type": null,
-          "documentation": null
+          "type": "StoreItemData",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -912,8 +1061,9 @@
       "documentation": null,
       "signature_members": {
         "PawnName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -921,5 +1071,7 @@
     }
   },
   "states": {},
+  "classflags": 144703638,
+  "configname": "UI",
   "documentation": null
 }

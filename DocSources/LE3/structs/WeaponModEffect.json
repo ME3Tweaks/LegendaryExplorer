@@ -2,15 +2,18 @@
   "members": {
     "EffectClassName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Level": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EffectValue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXWeaponMod",

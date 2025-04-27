@@ -4,7 +4,8 @@
   "variables": {
     "BonusPowerUnlockDataArray": {
       "type": "BonusPowerUnlockData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     }
   },
   "functions": {
@@ -48,8 +49,9 @@
       "documentation": null,
       "signature_members": {
         "userBlob": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -101,8 +103,9 @@
       "documentation": null,
       "signature_members": {
         "PlotStateID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -112,8 +115,9 @@
       "documentation": null,
       "signature_members": {
         "mode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -123,8 +127,9 @@
       "documentation": null,
       "signature_members": {
         "userBlob": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -134,8 +139,9 @@
       "documentation": null,
       "signature_members": {
         "Language": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -145,8 +151,9 @@
       "documentation": null,
       "signature_members": {
         "Language": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -156,8 +163,9 @@
       "documentation": null,
       "signature_members": {
         "Language": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -167,8 +175,9 @@
       "documentation": null,
       "signature_members": {
         "n7Rating": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -178,8 +187,9 @@
       "documentation": null,
       "signature_members": {
         "lstProfileSettingsToReset": {
-          "type": null,
-          "documentation": null
+          "type": "EProfileSetting",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -201,8 +211,9 @@
       "documentation": null,
       "signature_members": {
         "AccomplishmentIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -242,8 +253,9 @@
       "documentation": null,
       "signature_members": {
         "OutBonusPowers": {
-          "type": null,
-          "documentation": null
+          "type": "BonusPowerUnlockData",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -301,8 +313,9 @@
       "documentation": null,
       "signature_members": {
         "userBlob": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -486,8 +499,9 @@
       "documentation": null,
       "signature_members": {
         "AccomplishmentIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -497,8 +511,9 @@
       "documentation": null,
       "signature_members": {
         "BonusPowerID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -514,16 +529,19 @@
       "documentation": null,
       "signature_members": {
         "AccomplishmentIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "bSaveProfile": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -533,16 +551,19 @@
       "documentation": null,
       "signature_members": {
         "AccomplishmentIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "bSaveProfile": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -552,8 +573,9 @@
       "documentation": null,
       "signature_members": {
         "bAutoSave": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -563,8 +585,9 @@
       "documentation": null,
       "signature_members": {
         "ChoseMorinth": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -574,8 +597,9 @@
       "documentation": null,
       "signature_members": {
         "CareerName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -585,12 +609,14 @@
       "documentation": null,
       "signature_members": {
         "DeviceID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -600,8 +626,9 @@
       "documentation": null,
       "signature_members": {
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -611,8 +638,9 @@
       "documentation": null,
       "signature_members": {
         "userBlob": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -622,8 +650,9 @@
       "documentation": null,
       "signature_members": {
         "bHasSeen": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -633,8 +662,9 @@
       "documentation": null,
       "signature_members": {
         "InValue": {
-          "type": null,
-          "documentation": null
+          "type": "EHenchHelmetOptions",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -644,8 +674,9 @@
       "documentation": null,
       "signature_members": {
         "bHideCinematicHelmet": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -655,8 +686,9 @@
       "documentation": null,
       "signature_members": {
         "NewValue": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -666,8 +698,9 @@
       "documentation": null,
       "signature_members": {
         "n7Rating": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -677,8 +710,9 @@
       "documentation": null,
       "signature_members": {
         "bEnabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -688,8 +722,9 @@
       "documentation": null,
       "signature_members": {
         "bShowIndicators": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -699,8 +734,9 @@
       "documentation": null,
       "signature_members": {
         "bEnabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -710,8 +746,9 @@
       "documentation": null,
       "signature_members": {
         "BonusPowerID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -731,5 +768,7 @@
     }
   },
   "states": {},
+  "classflags": 136315062,
+  "configname": "Game",
   "documentation": null
 }

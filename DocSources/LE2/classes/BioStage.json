@@ -4,103 +4,128 @@
   "variables": {
     "m_mapPlacement": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 143361
     },
     "m_CameraCustomList": {
       "type": "BioStageCameraCustom",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_vOldPositon": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "Mesh": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "Type": {
       "type": "BioStageType",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     },
     "m_sSpeakerTag": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_sListenerTag": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_sCurrentCamera": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "m_fHeightAdjust": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fStageZ": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fSpeakerFeetZ": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fSpeakerEyeHeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fCameraHeightDelta": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fCameraPitchDelta": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fCameraYawDelta": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fCameraFOVDelta": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fCameraNearPlaneDelta": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fCameraFocusInnerRadiusDelta": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fCameraFocusDistanceDelta": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Enabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bDoHeightAdjustment": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bLookAtActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bDOFActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bDisableProceduralCameraAdjust": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_bPositionLocked": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -108,8 +133,9 @@
       "documentation": null,
       "signature_members": {
         "HUD": {
-          "type": null,
-          "documentation": null
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -119,12 +145,14 @@
       "documentation": null,
       "signature_members": {
         "aInput": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "nmNodeName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -132,5 +160,7 @@
     }
   },
   "states": {},
+  "classflags": 144703638,
+  "configname": "Game",
   "documentation": null
 }

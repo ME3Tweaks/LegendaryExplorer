@@ -4,195 +4,243 @@
   "variables": {
     "m_aDoorMarker": {
       "type": "SFXDoorMarker",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_aIconSocket": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_ActiveIconEffects": {
       "type": "ClientEffectWithGUID",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "MyGuid": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "OmniGuid": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_TransitionOpen": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_TransitionClose": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CE_IconClosed": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CE_IconHackable": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CE_IconPlotLocked": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CE_IconDelayed": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CE_IconDelayedActive": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CE_IconPlotHacking": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_Wwise_Transition_Open": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_Wwise_Transition_Close": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_Wwise_GUI_Success_Opening": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_Wwise_GUI_Delayed_Opening": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_Wwise_GUI_Failure_PlotLocked": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_Wwise_GUI_Failure_HackLocked": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_Wwise_GUI_Kismet_Locked": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_Wwise_GUI_Kismet_UnLocked": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_Wwise_GUI_Kismet_Enabled": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_Wwise_GUI_Kismet_Disabled": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_Wwise_GUI_Kismet_Delayed": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OmniToolTemplate": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastUser": {
       "type": "SFXPawn_Player",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HackDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "HackStartTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HackRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HackUpdateTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HackAnimTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bOpenWhenInteractedWhileUnlocked": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bIsTransitioning": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bCollisionTemporarilyDisabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bSaveMe": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bRevertToDelayed": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_CurrentDoorState": {
       "type": "ESFXDoorState",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_PreviousDoorState": {
       "type": "ESFXDoorState",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_DoorType": {
       "type": "ESFXDoorType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Region": {
       "type": "EBioRegionAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Plot": {
       "type": "EBioPlotAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlotInt": {
       "type": "EBioAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_TargetTipTextClosed": {
       "type": "ETargetTipText",
-      "documentation": null
+      "documentation": null,
+      "flags": 9
     },
     "m_TargetTipTextHackLocked": {
       "type": "ETargetTipText",
-      "documentation": null
+      "documentation": null,
+      "flags": 9
     },
     "m_TargetTipTextPlotLocked": {
       "type": "ETargetTipText",
-      "documentation": null
+      "documentation": null,
+      "flags": 9
     },
     "m_TargetTipTextDelayed": {
       "type": "ETargetTipText",
-      "documentation": null
+      "documentation": null,
+      "flags": 9
     },
     "m_PendingDoorState": {
       "type": "ESFXDoorState",
-      "documentation": null
+      "documentation": null,
+      "flags": 8224
     }
   },
   "functions": {
@@ -206,12 +254,14 @@
       "documentation": null,
       "signature_members": {
         "InAnimSeqName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bSkipToEnd": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -221,8 +271,9 @@
       "documentation": null,
       "signature_members": {
         "oWwiseEvent": {
-          "type": null,
-          "documentation": null
+          "type": "WwiseEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -244,8 +295,9 @@
       "documentation": null,
       "signature_members": {
         "ClientEffect": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectInterface",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -255,16 +307,19 @@
       "documentation": null,
       "signature_members": {
         "ToState": {
-          "type": null,
-          "documentation": null
+          "type": "ESFXDoorState",
+          "documentation": null,
+          "flags": 128
         },
         "User": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
         },
         "bInstantTransition": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -280,8 +335,9 @@
       "documentation": null,
       "signature_members": {
         "bInstant": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -303,8 +359,9 @@
       "documentation": null,
       "signature_members": {
         "User": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -314,8 +371,9 @@
       "documentation": null,
       "signature_members": {
         "bInstant": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -343,8 +401,9 @@
       "documentation": null,
       "signature_members": {
         "bOpen": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -366,8 +425,9 @@
       "documentation": null,
       "signature_members": {
         "EventInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -377,8 +437,9 @@
       "documentation": null,
       "signature_members": {
         "EventInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -386,5 +447,7 @@
     }
   },
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

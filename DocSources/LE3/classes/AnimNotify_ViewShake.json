@@ -4,51 +4,63 @@
   "variables": {
     "RotAmplitude": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 131072
     },
     "RotFrequency": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 131072
     },
     "LocAmplitude": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 131072
     },
     "LocFrequency": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 131072
     },
     "BoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ShakeParams": {
       "type": "CameraShake",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "Duration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 131072
     },
     "FOVAmplitude": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 131072
     },
     "FOVFrequency": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 131072
     },
     "ShakeRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDoControllerVibration": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseBoneLocation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -56,12 +68,14 @@
       "documentation": null,
       "signature_members": {
         "Owner": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "AnimSeqInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -69,5 +83,7 @@
     }
   },
   "states": {},
+  "classflags": 144715922,
+  "configname": "None",
   "documentation": null
 }

@@ -2,11 +2,13 @@
   "members": {
     "Data": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "Platform": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     }
   },
   "classdef": "WwiseFile",

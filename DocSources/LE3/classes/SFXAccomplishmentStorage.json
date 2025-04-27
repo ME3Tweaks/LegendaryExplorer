@@ -4,51 +4,63 @@
   "variables": {
     "ServerCompletionString": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "ServerProgressString": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "ProgressValues": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "ServerRewardLevelString": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "RewardLevelValues": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "ServerCompletionTimesString": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "ServerCompletionTimes2String": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "ServerCompletionTimes3String": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "CachedOnlinePlayerStorage": {
       "type": "SFXOnlinePlayerStorage",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentChallengePoints": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ChallengeSystemVersionNumber": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "IsInvalid": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -56,12 +68,14 @@
       "documentation": null,
       "signature_members": {
         "MinProgressValuesLength": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "MinRewardValuesLength": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -71,8 +85,9 @@
       "documentation": null,
       "signature_members": {
         "Strings": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "int",
@@ -82,12 +97,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "WritePlayerStorageCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnlinePlayerInterface.OnWritePlayerStorageComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -97,12 +114,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "WritePlayerStorageCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnlinePlayerInterface.OnWritePlayerStorageComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -112,8 +131,9 @@
       "documentation": null,
       "signature_members": {
         "AccomplishmentIsComplete": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "string",
@@ -123,12 +143,14 @@
       "documentation": null,
       "signature_members": {
         "CompletionStrings": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         },
         "AccomplishmentCompletionTimes": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -138,12 +160,14 @@
       "documentation": null,
       "signature_members": {
         "nRewardID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "nRewardLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -159,8 +183,9 @@
       "documentation": null,
       "signature_members": {
         "RewardID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -182,12 +207,14 @@
       "documentation": null,
       "signature_members": {
         "AccomplishmentManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXAccomplishmentManager",
+          "documentation": null,
+          "flags": 128
         },
         "CurrentProfileSettings": {
-          "type": null,
-          "documentation": null
+          "type": "SFXProfileSettings",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -197,8 +224,9 @@
       "documentation": null,
       "signature_members": {
         "AccomplishmentManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXAccomplishmentManager",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -214,12 +242,14 @@
       "documentation": null,
       "signature_members": {
         "AccomplishmentData": {
-          "type": null,
-          "documentation": null
+          "type": "Accomplishment",
+          "documentation": null,
+          "flags": 4194688
         },
         "AccomplishmentIsComplete": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -229,8 +259,9 @@
       "documentation": null,
       "signature_members": {
         "AccomplishmentCompletionTimes": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -240,8 +271,9 @@
       "documentation": null,
       "signature_members": {
         "nRewardID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -251,8 +283,9 @@
       "documentation": null,
       "signature_members": {
         "AccomplishmentProgressData": {
-          "type": null,
-          "documentation": null
+          "type": "AccomplishmentProgress",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "bool",
@@ -268,8 +301,9 @@
       "documentation": null,
       "signature_members": {
         "RewardID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -279,20 +313,24 @@
       "documentation": null,
       "signature_members": {
         "bChallengeSystemEnabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "AccomplishmentIsComplete": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194690
         },
         "AccomplishmentProgressData": {
-          "type": null,
-          "documentation": null
+          "type": "AccomplishmentProgress",
+          "documentation": null,
+          "flags": 4194690
         },
         "AccomplishmentCompletionTimes": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -306,5 +344,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

@@ -4,371 +4,463 @@
   "variables": {
     "m_oInitialPlayerID": {
       "type": "UniqueNetId",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_oProfilePlayerID": {
       "type": "UniqueNetId",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LoadMapTimeStamp": {
       "type": "Double",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LoadMapFrameCounter": {
       "type": "QWord",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "DefaultPlayer": {
       "type": "PlayerInfoEx",
-      "documentation": null
+      "documentation": null,
+      "flags": 4218880
     },
     "ProgressPlayer": {
       "type": "PlayerInfoEx",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "NewPlayer": {
       "type": "PlayerInfoEx",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "SavedGalaxyMapRecord": {
       "type": "GalaxyMapSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "DeadPawnList": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "UseModuleList": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "SavedTreasure": {
       "type": "LevelTreasureSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "SavedKismetList": {
       "type": "KismetBoolSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "HenchmanRecords": {
       "type": "HenchmanSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "SavedDoorList": {
       "type": "DoorSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "SavedPlaceableList": {
       "type": "PlaceableSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "CorruptedCareers": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "CareerCache": {
       "type": "SFXCareerCacheEntry",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "ResumeGameCompleteDelegate": {
       "type": "OnResumeGameComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "MultiDisc1": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "MultiDisc2": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "PlayerLoadoutGroups": {
       "type": "ELoadoutWeapons",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PlayerWeaponMods": {
       "type": "WeaponModSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DynamicLoadMapping": {
       "type": "DynamicLoadInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210690
     },
     "SeekfreeCommonPackageMap": {
       "type": "SeekfreeCommonPackageInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210690
     },
     "DynamicLoadPackageRemapping": {
       "type": "PackageRemapInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202498
     },
     "AsyncLoadingMapping": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "sLastNetworkError": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "LoadMapFrom": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "SFXUniqueIDs": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210690
     },
     "PostShipObjectFixes": {
       "type": "PostShipObjectFix",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "__SFXSaveCommandCallback__Delegate": {
       "type": "SFXSaveCommandCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnResumeGameComplete__Delegate": {
       "type": "OnResumeGameComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PlayerVariables": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "PlayerLoadoutWeapons": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentSaveGame": {
       "type": "SFXSaveGame",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LegacyImportSaveGame": {
       "type": "SFXSaveGame",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlusImportSaveGame": {
       "type": "SFXSaveGame",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OnlinePlayerStorage": {
       "type": "SFXOnlinePlayerStorage",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "MPSaveManager": {
       "type": "SFXSaveManagerMP",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "AccomplishmentManager": {
       "type": "SFXAccomplishmentManager",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "Telemetry": {
       "type": "SFXTelemetry",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "HostMigration": {
       "type": "SFXHostMigration",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_DesiredStartPoint": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "AsyncAssetLoader": {
       "type": "SFXAsyncAssetLoader",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LoadMovieManager": {
       "type": "SFXLoadMovieManager",
-      "documentation": null
+      "documentation": null,
+      "flags": 71311369
     },
     "GUIMultiDisplayMaxWidth": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "GUIMultiDisplayBezelTolerance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "LastSaveTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LastSecondsPlayed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CurrentDeviceID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CurrentLoadingTip": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AutoSaveInsufficientSpaceText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "QuickSaveInsufficientSpaceText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "InsufficentSpaceAcknowledgedText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "CorruptCareerWarningText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "ConfirmDeleteCorruptText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "CancelDeleteCorruptText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "LastCantContinueTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "srCantContinueErrorMessage": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LoadingScreenTimeout": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "DebugLoadingScreenTimeout": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "DesiredLoadingScreenTimeout": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ActualLoadingScreenTimeout": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Player1ControllerID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CopySaveToSkynet": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "GenerateQASaveLibrary": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bEnableAccomplishmentManager": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bEnableFastResume": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bCanWriteSaveToStorage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bQuickSaveInProgress": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPendingRemountDLC": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bPendingSaveProfile": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bPendingDisableAutoSave": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bFlushInputRequested": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bPlayerNeedsLoad": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPlayerLoadPosition": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bMPTransitionToEntryMenu": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bRenderingSuspended": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bProfileInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bHasProfileCantContinueError": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bDisableProfileReconnection": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bNewPlayer": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bInitPlayer": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "bGameInProgress": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bUsedSetMission": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bSimulatedNetworkError": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LoadMapWithFastResume": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "DebugTraceBlockingSeekFreeLoad": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "DebugUseIconicShepard": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bUploadFaceCodesToBlaze": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "PendingModeToRemove": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "eNetworkErrorStatus": {
       "type": "ESFXNetworkErrorStatus",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -376,8 +468,9 @@
       "documentation": null,
       "signature_members": {
         "sMessage": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -387,8 +480,9 @@
       "documentation": null,
       "signature_members": {
         "Profile": {
-          "type": null,
-          "documentation": null
+          "type": "SFXProfileSettings",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -398,12 +492,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Context": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -437,8 +533,9 @@
       "documentation": null,
       "signature_members": {
         "bDelayStopUntilGameHasRendered": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -448,24 +545,29 @@
       "documentation": null,
       "signature_members": {
         "firstName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "srClass": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "Origin": {
-          "type": null,
-          "documentation": null
+          "type": "EOriginType",
+          "documentation": null,
+          "flags": 128
         },
         "Notoriety": {
-          "type": null,
-          "documentation": null
+          "type": "ENotorietyType",
+          "documentation": null,
+          "flags": 128
         },
         "Callback": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveCommandCallback",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -475,40 +577,49 @@
       "documentation": null,
       "signature_members": {
         "firstName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "className": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Origin": {
-          "type": null,
-          "documentation": null
+          "type": "EOriginType",
+          "documentation": null,
+          "flags": 128
         },
         "Notoriety": {
-          "type": null,
-          "documentation": null
+          "type": "ENotorietyType",
+          "documentation": null,
+          "flags": 128
         },
         "Year": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Month": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Day": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "MSSinceMidnight": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Callback": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveCommandCallback",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -536,8 +647,9 @@
       "documentation": null,
       "signature_members": {
         "PackageName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -547,8 +659,9 @@
       "documentation": null,
       "signature_members": {
         "bEnable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -558,8 +671,9 @@
       "documentation": null,
       "signature_members": {
         "Callback": {
-          "type": null,
-          "documentation": null
+          "type": "OnResumeGameComplete",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -587,44 +701,54 @@
       "documentation": null,
       "signature_members": {
         "firstName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "className": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Origin": {
-          "type": null,
-          "documentation": null
+          "type": "EOriginType",
+          "documentation": null,
+          "flags": 128
         },
         "Notoriety": {
-          "type": null,
-          "documentation": null
+          "type": "ENotorietyType",
+          "documentation": null,
+          "flags": 128
         },
         "Year": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Month": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Day": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "MSSinceMidnight": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "OutCareer": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         },
         "OutDisplayName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -658,8 +782,9 @@
       "documentation": null,
       "signature_members": {
         "ObjectName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "DynamicLoadInfo",
@@ -669,8 +794,9 @@
       "documentation": null,
       "signature_members": {
         "ObjectNetID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "DynamicLoadInfo",
@@ -692,20 +818,24 @@
       "documentation": null,
       "signature_members": {
         "NumConnection": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "AvrOutBytesPerSecond": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "PeekOutBytesPerSecond": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "AvrPing": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -715,8 +845,9 @@
       "documentation": null,
       "signature_members": {
         "VariableName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -744,8 +875,9 @@
       "documentation": null,
       "signature_members": {
         "Str": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "int",
@@ -755,8 +887,9 @@
       "documentation": null,
       "signature_members": {
         "UniqueId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -784,8 +917,9 @@
       "documentation": null,
       "signature_members": {
         "Option": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -795,8 +929,9 @@
       "documentation": null,
       "signature_members": {
         "ModuleID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -806,8 +941,9 @@
       "documentation": null,
       "signature_members": {
         "SaveGame": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGame",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -817,8 +953,9 @@
       "documentation": null,
       "signature_members": {
         "SaveGame": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGame",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -876,8 +1013,9 @@
       "documentation": null,
       "signature_members": {
         "eAction": {
-          "type": null,
-          "documentation": null
+          "type": "ESFXSaveGameAction",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -899,8 +1037,9 @@
       "documentation": null,
       "signature_members": {
         "ObjectName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -934,8 +1073,9 @@
       "documentation": null,
       "signature_members": {
         "WaitMessage": {
-          "type": null,
-          "documentation": null
+          "type": "EWaitMessage",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -957,8 +1097,9 @@
       "documentation": null,
       "signature_members": {
         "SaveGame": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGame",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -968,16 +1109,19 @@
       "documentation": null,
       "signature_members": {
         "ObjectName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "ObjectClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Status": {
-          "type": null,
-          "documentation": null
+          "type": "EAsyncLoadStatus",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "Object",
@@ -987,16 +1131,19 @@
       "documentation": null,
       "signature_members": {
         "ObjectNetID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ObjectClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Status": {
-          "type": null,
-          "documentation": null
+          "type": "EAsyncLoadStatus",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "Object",
@@ -1006,12 +1153,14 @@
       "documentation": null,
       "signature_members": {
         "ObjectName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "ObjectClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Object",
@@ -1033,8 +1182,9 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1044,40 +1194,49 @@
       "documentation": null,
       "signature_members": {
         "Career": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "firstName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         },
         "className": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         },
         "Origin": {
-          "type": null,
-          "documentation": null
+          "type": "EOriginType",
+          "documentation": null,
+          "flags": 384
         },
         "Notoriety": {
-          "type": null,
-          "documentation": null
+          "type": "ENotorietyType",
+          "documentation": null,
+          "flags": 384
         },
         "Year": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "Month": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "Day": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "MSSinceMidnight": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 400
         }
       },
       "returntype": "bool",
@@ -1087,12 +1246,14 @@
       "documentation": null,
       "signature_members": {
         "VariableNames": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         },
         "SearchText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -1102,16 +1263,19 @@
       "documentation": null,
       "signature_members": {
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "ESFXSaveGameAction",
+          "documentation": null,
+          "flags": 128
         },
         "SaveDescriptor": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveDescriptor",
+          "documentation": null,
+          "flags": 4194450
         },
         "Callback": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveCommandCallback",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -1121,12 +1285,14 @@
       "documentation": null,
       "signature_members": {
         "SaveDescriptor": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveDescriptor",
+          "documentation": null,
+          "flags": 4194432
         },
         "Callback": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveCommandCallback",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1136,8 +1302,9 @@
       "documentation": null,
       "signature_members": {
         "ReadPlayerStorageCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnlinePlayerInterface.OnReadPlayerStorageComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -1159,8 +1326,9 @@
       "documentation": null,
       "signature_members": {
         "ObjectName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1170,8 +1338,9 @@
       "documentation": null,
       "signature_members": {
         "ObjectNetID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1181,8 +1350,9 @@
       "documentation": null,
       "signature_members": {
         "ObjectIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1192,8 +1362,9 @@
       "documentation": null,
       "signature_members": {
         "ObjectIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1215,8 +1386,9 @@
       "documentation": null,
       "signature_members": {
         "Args": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGameCommandEventArgs",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1232,8 +1404,9 @@
       "documentation": null,
       "signature_members": {
         "Args": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGameCommandEventArgs",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1243,24 +1416,29 @@
       "documentation": null,
       "signature_members": {
         "TriggerName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "StateName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "TierName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "InChunkName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bIsFloor": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1276,12 +1454,14 @@
       "documentation": null,
       "signature_members": {
         "Language": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "UpdateProfile": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -1291,12 +1471,14 @@
       "documentation": null,
       "signature_members": {
         "Language": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "UpdateProfile": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -1306,12 +1488,14 @@
       "documentation": null,
       "signature_members": {
         "Language": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "UpdateProfile": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -1321,8 +1505,9 @@
       "documentation": null,
       "signature_members": {
         "inTimeout": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1332,12 +1517,14 @@
       "documentation": null,
       "signature_members": {
         "VariableName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "VariableValue": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1353,8 +1540,9 @@
       "documentation": null,
       "signature_members": {
         "InTable": {
-          "type": null,
-          "documentation": null
+          "type": "BioGlobalVariableTable",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1370,8 +1558,9 @@
       "documentation": null,
       "signature_members": {
         "Args": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGameCommandEventArgs",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1381,8 +1570,9 @@
       "documentation": null,
       "signature_members": {
         "LevelName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -1392,8 +1582,9 @@
       "documentation": null,
       "signature_members": {
         "suspend": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1409,12 +1600,14 @@
       "documentation": null,
       "signature_members": {
         "Career": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "OutEntry": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCareerCacheEntry",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -1424,12 +1617,14 @@
       "documentation": null,
       "signature_members": {
         "SaveDescriptor": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveDescriptor",
+          "documentation": null,
+          "flags": 4194432
         },
         "SaveGame": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGame",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1439,8 +1634,9 @@
       "documentation": null,
       "signature_members": {
         "DeviceID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1456,12 +1652,14 @@
       "documentation": null,
       "signature_members": {
         "Sin": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bFilterAccentedChars": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -1477,12 +1675,14 @@
       "documentation": null,
       "signature_members": {
         "ObjectName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "ObjectClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Object",
@@ -1492,12 +1692,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "ReadPlayerStorageCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnlinePlayerInterface.OnReadPlayerStorageComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1507,8 +1709,9 @@
       "documentation": null,
       "signature_members": {
         "WeaponClassName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1530,8 +1733,9 @@
       "documentation": null,
       "signature_members": {
         "Args": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGameCommandEventArgs",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1541,12 +1745,14 @@
       "documentation": null,
       "signature_members": {
         "ObjectName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ObjectClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Object",
@@ -1568,12 +1774,14 @@
       "documentation": null,
       "signature_members": {
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "ESFXSaveGameType",
+          "documentation": null,
+          "flags": 128
         },
         "AdditionalFreeBytesNeeded": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1583,12 +1791,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Context": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1598,8 +1808,9 @@
       "documentation": null,
       "signature_members": {
         "ModuleIDs": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "bool",
@@ -1609,8 +1820,9 @@
       "documentation": null,
       "signature_members": {
         "InstanceClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXHostMigration",
@@ -1626,8 +1838,9 @@
       "documentation": null,
       "signature_members": {
         "nFeatureSet": {
-          "type": null,
-          "documentation": null
+          "type": "ESFXPostShipFeatureSet",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1637,8 +1850,9 @@
       "documentation": null,
       "signature_members": {
         "Args": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGameCommandEventArgs",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1648,8 +1862,9 @@
       "documentation": null,
       "signature_members": {
         "Args": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGameCommandEventArgs",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1659,20 +1874,24 @@
       "documentation": null,
       "signature_members": {
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "ESFXSaveGameAction",
+          "documentation": null,
+          "flags": 128
         },
         "SaveDescriptor": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveDescriptor",
+          "documentation": null,
+          "flags": 4194450
         },
         "location": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "Callback": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveCommandCallback",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -1682,12 +1901,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1697,8 +1918,9 @@
       "documentation": null,
       "signature_members": {
         "Career": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -1714,8 +1936,9 @@
       "documentation": null,
       "signature_members": {
         "Callback": {
-          "type": null,
-          "documentation": null
+          "type": "OnResumeGameComplete",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -1725,12 +1948,14 @@
       "documentation": null,
       "signature_members": {
         "SaveDescriptor": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveDescriptor",
+          "documentation": null,
+          "flags": 4194432
         },
         "Callback": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveCommandCallback",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -1740,8 +1965,9 @@
       "documentation": null,
       "signature_members": {
         "Descriptor": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveDescriptor",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1751,8 +1977,9 @@
       "documentation": null,
       "signature_members": {
         "Args": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGameCommandEventArgs",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1762,8 +1989,9 @@
       "documentation": null,
       "signature_members": {
         "SaveDescriptor": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveDescriptor",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1773,12 +2001,14 @@
       "documentation": null,
       "signature_members": {
         "firstName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "faceCode": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1786,5 +2016,7 @@
     }
   },
   "states": {},
+  "classflags": 144703646,
+  "configname": "Engine",
   "documentation": null
 }

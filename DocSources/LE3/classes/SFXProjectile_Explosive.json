@@ -4,287 +4,358 @@
   "variables": {
     "HeadLightChangeOverLifeKeys": {
       "type": "ChangeOverLifeKey",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "ImpactLightChangeOverLifeKeys": {
       "type": "ChangeOverLifeKey",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "ExplodeRumbleClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ReplicatedStickInfo": {
       "type": "ReplicatedStick",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294975520
     },
     "LC_EffectLight": {
       "type": "PointLightComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "ExplosionSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "AdditionalExplosionSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "StickPawnImpactSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "NPStickPawnImpactSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "StickShieldImpactSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "NPStickShieldImpactSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "StickEnvironmentImpactSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "NPStickEnvironmentImpactSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "WwiseDuckEvent": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "ProjExplosionTemplate": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "CE_ExplosionTemplate": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ExplosionDecal": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "DecalDissolveParamName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "StuckTo": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1152921504606855168
     },
     "LightKeyIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LightCurrentTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LightDeltaBrightness": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LightDeltaR": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LightDeltaG": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LightDeltaB": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LightStepSize": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "HeadLightBrightness": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "HeadLightColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "HeadLightFalloffExponent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "HeadLightMinShadowFalloffRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "HeadLightRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "HeadLightShadowFalloffExponent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "HeadLightShadowRadiusMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "ImpactLightLifetime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "ImpactLightBrightness": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "ImpactLightColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "ImpactLightFalloffExponent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "ImpactLightMinShadowFalloffRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "ImpactLightRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "ImpactLightShadowFalloffExponent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "ImpactLightShadowRadiusMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "ImpactLightOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "DuckDistanceThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "ExplosionLoudness": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fFuseLength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StickExplodeDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DecalWidth": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "DecalHeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "DurationOfDecal": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "MaxEffectDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "AccelRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "TossZ": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "TerminalVelocity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "CustomGravityScaling": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "ExplosionParticleLifetime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "ExplosionEffectRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "MinExplodeRumbleDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxExplodeRumbleDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bInFlight": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDuckAudio": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bUseHurtRadius": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bRandomizeFuse": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bAdvanceExplosionEffect": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bSuppressExplosionFX": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bArmed": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bStickPawns": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bStickWalls": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bStuck": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bProximityCheck": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bPlayExplodeForceFeedback": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastReplicatedStickInfoTriggerCounter": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -292,12 +363,14 @@
       "documentation": null,
       "signature_members": {
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -307,16 +380,19 @@
       "documentation": null,
       "signature_members": {
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Wall": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "WallComp": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -326,8 +402,9 @@
       "documentation": null,
       "signature_members": {
         "Direction": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -337,12 +414,14 @@
       "documentation": null,
       "signature_members": {
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "FloorActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -352,12 +431,14 @@
       "documentation": null,
       "signature_members": {
         "ObjectPool": {
-          "type": null,
-          "documentation": null
+          "type": "SFXObjectPool",
+          "documentation": null,
+          "flags": 128
         },
         "ClientEffects": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectManager",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -373,8 +454,9 @@
       "documentation": null,
       "signature_members": {
         "VarName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -396,20 +478,24 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "OtherComp": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -425,16 +511,19 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "SpawnLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "CullDistance": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -444,16 +533,19 @@
       "documentation": null,
       "signature_members": {
         "SpawnLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "bForceDedicated": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "CullDistance": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -463,16 +555,19 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -482,24 +577,29 @@
       "documentation": null,
       "signature_members": {
         "InDamageAmount": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "InDamageRadius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "HurtOrigin": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -515,24 +615,29 @@
       "documentation": null,
       "signature_members": {
         "StartBrightness": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "EndBrightness": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "StartColor": {
-          "type": null,
-          "documentation": null
+          "type": "Color",
+          "documentation": null,
+          "flags": 128
         },
         "EndColor": {
-          "type": null,
-          "documentation": null
+          "type": "Color",
+          "documentation": null,
+          "flags": 128
         },
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -554,36 +659,44 @@
       "documentation": null,
       "signature_members": {
         "InImpactedActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "InInstigatorController": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "BaseDamage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "InDamageRadius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "HurtOrigin": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "bFullDamage": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -593,32 +706,39 @@
       "documentation": null,
       "signature_members": {
         "InImpactedActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "InInstigatorController": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "BaseDamage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "InDamageRadius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "HurtOrigin": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "bFullDamage": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -628,20 +748,24 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -663,16 +787,19 @@
       "documentation": null,
       "signature_members": {
         "Distance": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "OuterRadius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "InnerRadius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "float",
@@ -682,20 +809,24 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "BoneIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -705,8 +836,9 @@
       "documentation": null,
       "signature_members": {
         "ProjExplosion": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystemComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -716,12 +848,14 @@
       "documentation": null,
       "signature_members": {
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -731,12 +865,14 @@
       "documentation": null,
       "signature_members": {
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -752,24 +888,29 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "BoneIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Reaction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -779,16 +920,19 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "OtherComp": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -798,8 +942,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -813,8 +958,9 @@
           "documentation": null,
           "signature_members": {
             "DeltaTime": {
-              "type": null,
-              "documentation": null
+              "type": "float",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -824,5 +970,7 @@
       "documentation": null
     }
   },
+  "classflags": 144703638,
+  "configname": "Weapon",
   "documentation": null
 }

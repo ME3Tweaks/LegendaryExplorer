@@ -2,11 +2,13 @@
   "members": {
     "RBCallback": {
       "type": "RBCollisionCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "nPriority": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioPawn",

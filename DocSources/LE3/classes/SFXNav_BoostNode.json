@@ -4,22 +4,28 @@
   "variables": {
     "BoostDest": {
       "type": "NavigationPoint",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BoostDistX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BoostDistZ": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bTopNode": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

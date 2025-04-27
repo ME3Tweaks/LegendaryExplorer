@@ -4,47 +4,58 @@
   "variables": {
     "URL": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194337
     },
     "TargetVelocity": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 33
     },
     "ProductRequired": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LastFired": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bChangesVelocity": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 33
     },
     "bChangesYaw": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 33
     },
     "bReversesX": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 33
     },
     "bReversesY": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 33
     },
     "bReversesZ": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 33
     },
     "bEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 33
     },
     "bCanTeleportVehicles": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -52,12 +63,14 @@
       "documentation": null,
       "signature_members": {
         "Incoming": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "Source": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -67,8 +80,9 @@
       "documentation": null,
       "signature_members": {
         "A": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -84,8 +98,9 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -95,8 +110,9 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Actor",
@@ -106,20 +122,24 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "OtherComp": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -127,5 +147,7 @@
     }
   },
   "states": {},
+  "classflags": 144703635,
+  "configname": "None",
   "documentation": null
 }

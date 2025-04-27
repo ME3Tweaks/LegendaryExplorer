@@ -2,27 +2,33 @@
   "members": {
     "sName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Value": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "UnlockedAt": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AchievementId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TalenTreeID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "IsAchievementUnlocked": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXSaveGame",

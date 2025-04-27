@@ -4,11 +4,13 @@
   "variables": {
     "GoalPoint": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GoalActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -22,12 +24,14 @@
       "documentation": null,
       "signature_members": {
         "NavHandle": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationHandle",
+          "documentation": null,
+          "flags": 128
         },
         "Point": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -37,12 +41,14 @@
       "documentation": null,
       "signature_members": {
         "NavHandle": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationHandle",
+          "documentation": null,
+          "flags": 128
         },
         "Goal": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -50,5 +56,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

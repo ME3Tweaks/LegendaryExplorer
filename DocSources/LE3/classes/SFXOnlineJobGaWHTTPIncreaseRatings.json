@@ -4,19 +4,23 @@
   "variables": {
     "securityRatingIncrease": {
       "type": "MapEntry",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "warAssetIncrease": {
       "type": "MapEntry",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnIncreaseRatingsComplete__Delegate": {
       "type": "OnIncreaseRatingsComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "defaultRatingIncrease": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -24,20 +28,24 @@
       "documentation": null,
       "signature_members": {
         "inDefaultRatingIncrease": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "inSecurityRatingIncrease": {
-          "type": null,
-          "documentation": null
+          "type": "MapEntry",
+          "documentation": null,
+          "flags": 4194432
         },
         "inWarAssetIncrease": {
-          "type": null,
-          "documentation": null
+          "type": "MapEntry",
+          "documentation": null,
+          "flags": 4194432
         },
         "RequestCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnIncreaseRatingsComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "SFXOnlineJobGaWHTTPIncreaseRatings",
@@ -53,8 +61,9 @@
       "documentation": null,
       "signature_members": {
         "errorCode": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineJobErrorCode",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -64,20 +73,24 @@
       "documentation": null,
       "signature_members": {
         "updatedSecurityRatings": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194432
         },
         "updatedWarAssets": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194432
         },
         "Level": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "errorCode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -97,5 +110,7 @@
     }
   },
   "states": {},
+  "classflags": 134217878,
+  "configname": "Game",
   "documentation": null
 }

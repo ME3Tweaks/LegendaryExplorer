@@ -2,31 +2,38 @@
   "members": {
     "aTransData": {
       "type": "BioAmbPerfPoseTransData",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "nmStartTrans": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nPoseChangeChance": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nPlayGestureChance": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fChoiceTimeDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bStartHere": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bEnterTransDoneEvent": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioGestureRulesData",

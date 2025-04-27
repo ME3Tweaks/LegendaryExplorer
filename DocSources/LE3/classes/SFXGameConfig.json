@@ -4,107 +4,133 @@
   "variables": {
     "LevelRewards": {
       "type": "LevelReward",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "MPPlayerVariableMappings": {
       "type": "PurchasableItem",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "AmmoDropChance": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxPlayerExperience": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "PawnInRagdollDamageMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "DroppedWeaponLifespan": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "EmptyDroppedWeaponLifespan": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "CreditsGlobal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "IridiumGlobal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "PlatinumGlobal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "PalladiumGlobal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "EezoGlobal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "IdGlobal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "CreditsLocal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "EezoLocal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "IridiumLocal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "PalladiumLocal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "PlatinumLocal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "IdLocal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bShieldsBlockPowers": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bAimAssistEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bUseConsoleControls": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "DropHeavyWeaponOnHolster": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bCoverProtectedCone": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ScoreEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bBudgetEnforced": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -112,8 +138,9 @@
       "documentation": null,
       "signature_members": {
         "className": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "int",
@@ -141,8 +168,9 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -152,16 +180,19 @@
       "documentation": null,
       "signature_members": {
         "eType": {
-          "type": null,
-          "documentation": null
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
         },
         "Award": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "LevelId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -175,5 +206,7 @@
     }
   },
   "states": {},
+  "classflags": 2097174,
+  "configname": "Game",
   "documentation": null
 }

@@ -4,75 +4,93 @@
   "variables": {
     "VfTable_FTickableObject": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "bEnableTelemetry": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAreDelegatesRegistered": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bBootStarted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bLoggedIn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOptOut": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ConfigHooks": {
       "type": "TelemetryHookConfig",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "Hooks": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "MilestonePlotPoints": {
       "type": "TelemetryPlotPoint_Milestone",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "GameDataPlotsInt": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "GameDataPlotsFloat": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "GameDataPlotsBool": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "BlacklistPlotsInt": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "BlacklistPlotsFloat": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "BlacklistPlotsBool": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "pProtoHttp": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "GameSession": {
       "type": "SFXTelemetryGameSession",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -80,8 +98,9 @@
       "documentation": null,
       "signature_members": {
         "GameDataType": {
-          "type": null,
-          "documentation": null
+          "type": "ETelemetryGameDataType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -97,16 +116,19 @@
       "documentation": null,
       "signature_members": {
         "TargetName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "sSelection": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "TargetType": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -116,16 +138,19 @@
       "documentation": null,
       "signature_members": {
         "TargetName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "nSelection": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "TargetType": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -135,8 +160,9 @@
       "documentation": null,
       "signature_members": {
         "Amount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -146,8 +172,9 @@
       "documentation": null,
       "signature_members": {
         "Amount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -157,8 +184,9 @@
       "documentation": null,
       "signature_members": {
         "Amount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -168,8 +196,9 @@
       "documentation": null,
       "signature_members": {
         "Amount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -179,8 +208,9 @@
       "documentation": null,
       "signature_members": {
         "Amount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -190,8 +220,9 @@
       "documentation": null,
       "signature_members": {
         "Amount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -201,8 +232,9 @@
       "documentation": null,
       "signature_members": {
         "Amount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -212,8 +244,9 @@
       "documentation": null,
       "signature_members": {
         "ChunkName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -229,8 +262,9 @@
       "documentation": null,
       "signature_members": {
         "Level": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -240,8 +274,9 @@
       "documentation": null,
       "signature_members": {
         "MapName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -251,12 +286,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -266,8 +303,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -283,8 +321,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -300,12 +339,14 @@
       "documentation": null,
       "signature_members": {
         "Login": {
-          "type": null,
-          "documentation": null
+          "type": "ISFXOnlineComponentLogin",
+          "documentation": null,
+          "flags": 384
         },
         "PlayerInterface": {
-          "type": null,
-          "documentation": null
+          "type": "OnlinePlayerInterface",
+          "documentation": null,
+          "flags": 400
         }
       },
       "returntype": "None",
@@ -321,12 +362,14 @@
       "documentation": null,
       "signature_members": {
         "Error": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "SessionId": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -342,16 +385,19 @@
       "documentation": null,
       "signature_members": {
         "Attributes": {
-          "type": null,
-          "documentation": null
+          "type": "TelemetryAttribute",
+          "documentation": null,
+          "flags": 4194688
         },
         "AttrName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "cnData": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -361,16 +407,19 @@
       "documentation": null,
       "signature_members": {
         "Attributes": {
-          "type": null,
-          "documentation": null
+          "type": "TelemetryAttribute",
+          "documentation": null,
+          "flags": 4194688
         },
         "AttrName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bData": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -380,16 +429,19 @@
       "documentation": null,
       "signature_members": {
         "Attributes": {
-          "type": null,
-          "documentation": null
+          "type": "TelemetryAttribute",
+          "documentation": null,
+          "flags": 4194688
         },
         "AttrName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "fData": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -399,16 +451,19 @@
       "documentation": null,
       "signature_members": {
         "Attributes": {
-          "type": null,
-          "documentation": null
+          "type": "TelemetryAttribute",
+          "documentation": null,
+          "flags": 4194688
         },
         "AttrName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "nData": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -418,16 +473,19 @@
       "documentation": null,
       "signature_members": {
         "Attributes": {
-          "type": null,
-          "documentation": null
+          "type": "TelemetryAttribute",
+          "documentation": null,
+          "flags": 4194688
         },
         "AttrName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sData": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -437,8 +495,9 @@
       "documentation": null,
       "signature_members": {
         "Object": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -448,8 +507,9 @@
       "documentation": null,
       "signature_members": {
         "FullFriendlyName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -459,8 +519,9 @@
       "documentation": null,
       "signature_members": {
         "FullFriendlyName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "string",
@@ -470,8 +531,9 @@
       "documentation": null,
       "signature_members": {
         "V": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -481,16 +543,19 @@
       "documentation": null,
       "signature_members": {
         "HookName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Attributes": {
-          "type": null,
-          "documentation": null
+          "type": "TelemetryAttribute",
+          "documentation": null,
+          "flags": 4194690
         },
         "bNeedFlush": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -500,20 +565,24 @@
       "documentation": null,
       "signature_members": {
         "HookName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "AttrName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 130
         },
         "bNeedFlush": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -523,20 +592,24 @@
       "documentation": null,
       "signature_members": {
         "HookName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "AttrName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 130
         },
         "bNeedFlush": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -546,20 +619,24 @@
       "documentation": null,
       "signature_members": {
         "HookName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "AttrName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "nValue": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 130
         },
         "bNeedFlush": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -569,20 +646,24 @@
       "documentation": null,
       "signature_members": {
         "HookName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "AttrName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sValue": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "bNeedFlush": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -592,20 +673,24 @@
       "documentation": null,
       "signature_members": {
         "HookName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "AttrName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "nmValue": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bNeedFlush": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -615,12 +700,14 @@
       "documentation": null,
       "signature_members": {
         "HookName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bNeedFlush": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -634,5 +721,7 @@
     }
   },
   "states": {},
+  "classflags": 136315038,
+  "configname": "Game",
   "documentation": null
 }

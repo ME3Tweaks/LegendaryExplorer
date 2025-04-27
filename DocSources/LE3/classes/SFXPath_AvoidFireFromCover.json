@@ -4,11 +4,13 @@
   "variables": {
     "EnemyList": {
       "type": "EnemyCoverInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "AI": {
       "type": "SFXAI_Core",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -22,12 +24,14 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "bCheckPlayerOnly": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -35,5 +39,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

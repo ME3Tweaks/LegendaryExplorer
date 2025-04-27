@@ -4,31 +4,38 @@
   "variables": {
     "EyeBoneDeltas": {
       "type": "BoneAtom",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "EyeBoneIndices": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "EyeBoneNames": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4325377
     },
     "DebugDeltas": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "EyeRotationThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     },
     "bEnableEyeFixup": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 147456
     },
     "bPoseCached": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -36,16 +43,19 @@
       "documentation": null,
       "signature_members": {
         "bLoop": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "InRate": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "StartTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -55,8 +65,9 @@
       "documentation": null,
       "signature_members": {
         "Sequence": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -66,12 +77,14 @@
       "documentation": null,
       "signature_members": {
         "NewTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bFireNotifies": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -85,5 +98,7 @@
     }
   },
   "states": {},
+  "classflags": 142606486,
+  "configname": "Game",
   "documentation": null
 }

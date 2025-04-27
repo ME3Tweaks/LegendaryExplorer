@@ -4,34 +4,43 @@
   "variables": {
     "BlendOut": {
       "type": "BioAnimCheckBlendOut",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "Default2LeanBlendDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "Lean2DefaultBlendDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "Default2PopupBlendDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "Popup2DefaultBlendDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "Default2PeekBlendDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "Peek2DefaultBlendDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

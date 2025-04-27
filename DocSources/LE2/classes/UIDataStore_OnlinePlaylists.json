@@ -4,23 +4,28 @@
   "variables": {
     "VfTable_IUIListElementProvider": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "ProviderClassName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "ProviderClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RankedDataProviders": {
       "type": "UIResourceDataProvider",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "UnRankedDataProviders": {
       "type": "UIResourceDataProvider",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     }
   },
   "functions": {
@@ -28,16 +33,19 @@
       "documentation": null,
       "signature_members": {
         "ProviderTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PlaylistId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ProviderIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 400
         }
       },
       "returntype": "OnlinePlaylistProvider",
@@ -47,16 +55,19 @@
       "documentation": null,
       "signature_members": {
         "ProviderTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ProviderIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "out_Provider": {
-          "type": null,
-          "documentation": null
+          "type": "UIResourceDataProvider",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -66,16 +77,19 @@
       "documentation": null,
       "signature_members": {
         "ProviderTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "SearchField": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ValueToSearchFor": {
-          "type": null,
-          "documentation": null
+          "type": "UIProviderScriptFieldValue",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "int",
@@ -85,20 +99,24 @@
       "documentation": null,
       "signature_members": {
         "ProviderTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "SearchField": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ProviderIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "out_FieldValue": {
-          "type": null,
-          "documentation": null
+          "type": "UIProviderScriptFieldValue",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -108,12 +126,14 @@
       "documentation": null,
       "signature_members": {
         "ProviderTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ProviderFieldTags": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -123,12 +143,14 @@
       "documentation": null,
       "signature_members": {
         "ProviderTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "out_Providers": {
-          "type": null,
-          "documentation": null
+          "type": "UIResourceDataProvider",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -138,8 +160,9 @@
       "documentation": null,
       "signature_members": {
         "ProviderTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -147,5 +170,7 @@
     }
   },
   "states": {},
+  "classflags": 136315038,
+  "configname": "Game",
   "documentation": null
 }

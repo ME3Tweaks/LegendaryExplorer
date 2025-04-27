@@ -2,11 +2,13 @@
   "members": {
     "aEffects": {
       "type": "ParticleSystemComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827464
     },
     "pPropCmp": {
       "type": "MeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     }
   },
   "classdef": "BioConversation",

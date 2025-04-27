@@ -4,35 +4,43 @@
   "variables": {
     "PlayerData": {
       "type": "PlayerScoreData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SquadMedalIDs": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ExtractedPlayerIDs": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "CurrentMatchData": {
       "type": "MatchData",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlayerRewards": {
       "type": "PlayerRewardData",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TotalSquadCredits": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TotalSquadXP": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BonusSquadXP": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -40,12 +48,14 @@
       "documentation": null,
       "signature_members": {
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "MedalID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -55,8 +65,9 @@
       "documentation": null,
       "signature_members": {
         "MedalID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -66,8 +77,9 @@
       "documentation": null,
       "signature_members": {
         "ActiveIDs": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -83,8 +95,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -100,8 +113,9 @@
       "documentation": null,
       "signature_members": {
         "nBonusXP": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -111,8 +125,9 @@
       "documentation": null,
       "signature_members": {
         "bResult": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -122,28 +137,34 @@
       "documentation": null,
       "signature_members": {
         "MapId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ZoneID": {
-          "type": null,
-          "documentation": null
+          "type": "EGAWZone",
+          "documentation": null,
+          "flags": 128
         },
         "GAWZoneIncrease": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "GAWOverallIncrease": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "EnemyID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "DifficultyID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -153,8 +174,9 @@
       "documentation": null,
       "signature_members": {
         "nTotalMatchTime": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -164,8 +186,9 @@
       "documentation": null,
       "signature_members": {
         "nWaves": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -175,12 +198,14 @@
       "documentation": null,
       "signature_members": {
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "KitName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -190,12 +215,14 @@
       "documentation": null,
       "signature_members": {
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -205,8 +232,9 @@
       "documentation": null,
       "signature_members": {
         "fXP": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -216,8 +244,9 @@
       "documentation": null,
       "signature_members": {
         "fXP": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -227,12 +256,14 @@
       "documentation": null,
       "signature_members": {
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "UniqueId": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -242,8 +273,9 @@
       "documentation": null,
       "signature_members": {
         "nCredits": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -253,8 +285,9 @@
       "documentation": null,
       "signature_members": {
         "nTotalXP": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -264,16 +297,19 @@
       "documentation": null,
       "signature_members": {
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "fScore": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -281,5 +317,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

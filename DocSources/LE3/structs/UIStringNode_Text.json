@@ -2,11 +2,13 @@
   "members": {
     "RenderedText": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242881
     },
     "NodeStyleParameters": {
       "type": "UICombinedStyleData",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     }
   },
   "classdef": "UIRoot",

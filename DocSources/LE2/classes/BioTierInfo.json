@@ -4,31 +4,38 @@
   "variables": {
     "Triggers": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "CurrentTrigger": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Priority": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Enabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "IsFloor": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "IsGlobal": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ValidCurrentTrigger": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -36,8 +43,9 @@
       "documentation": null,
       "signature_members": {
         "bForce": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -47,8 +55,9 @@
       "documentation": null,
       "signature_members": {
         "pos": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "BioTriggerStream",
@@ -58,8 +67,9 @@
       "documentation": null,
       "signature_members": {
         "OnlyIfValid": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "BioTriggerStream",
@@ -69,12 +79,14 @@
       "documentation": null,
       "signature_members": {
         "TriggerIn": {
-          "type": null,
-          "documentation": null
+          "type": "BioTriggerStream",
+          "documentation": null,
+          "flags": 128
         },
         "Valid": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -84,8 +96,9 @@
       "documentation": null,
       "signature_members": {
         "TriggerIn": {
-          "type": null,
-          "documentation": null
+          "type": "BioTriggerStream",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -95,8 +108,9 @@
       "documentation": null,
       "signature_members": {
         "TriggerIn": {
-          "type": null,
-          "documentation": null
+          "type": "BioTriggerStream",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -104,5 +118,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

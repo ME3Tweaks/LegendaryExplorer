@@ -4,14 +4,18 @@
   "variables": {
     "m_sParameterName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_atTexture": {
       "type": "Texture",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

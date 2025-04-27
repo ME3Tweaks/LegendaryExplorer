@@ -2,11 +2,13 @@
   "members": {
     "WeaponModClassNames": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "WeaponClassName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXMPCharacterRecord",

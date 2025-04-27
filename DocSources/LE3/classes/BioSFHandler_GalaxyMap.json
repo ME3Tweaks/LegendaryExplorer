@@ -4,267 +4,333 @@
   "variables": {
     "aUIActionCallbacks": {
       "type": "OnCallbackEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sDisplayedFuel": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_sDisplayedCash": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "__OnCallbackEvent__Delegate": {
       "type": "OnCallbackEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "aActions": {
       "type": "SFXUIControlState",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BackControlState": {
       "type": "SFXUIControlState",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ActionControlState": {
       "type": "SFXUIControlState",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "AltActionControlState": {
       "type": "SFXUIControlState",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "AltAction2ControlState": {
       "type": "SFXUIControlState",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "oGalaxyCam": {
       "type": "BioCameraBehaviorGalaxy",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fScrollValue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fLeftStickX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fLeftStickY": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "AButtonText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "BButtonText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "XButtonText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "YButtonText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "TitleText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nDiscoveredPercent": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LTriggerText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RTriggerText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "TextTravelMessage": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "TextTravelConfirm": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "TextTravelCancel": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "TextPlanetEventConfirm": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "TextGalaxyTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "TextUnknownObj": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "TextRefueling": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "TextTravel": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "TextLand": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "TextBack": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "TextExit": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "TextScan": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "TextScanStart": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "TextScanClose": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "TextMassRelayJump": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "TextMassRelay": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "TextOrbit": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "TextFuelDepot": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "TextFuel": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "TextProbes": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "TextEmergencyFuel": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "TextLaunchProbe": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "TextCancel": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "TextExploredPercent": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "DescriptionTabText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "MissionTabText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "FuelDisplayTextTemplate": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "FuelAwardDisplayTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_fRemainingFuelAwardTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fFuelAwardStartValue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fFuelAwardEndValue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bClosingPlanet": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bClosingScan": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bWaitingForMsgBox": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "AButtonEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "BButtonEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "XButtonEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "YButtonEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bLTriggerOn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bRTriggerOn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bIsMultiLand": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bForceControlUpdate": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bDisplayingFuelAwardAnim": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bFullCleanupOnClose": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -272,8 +338,9 @@
       "documentation": null,
       "signature_members": {
         "bDisplay": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -283,8 +350,9 @@
       "documentation": null,
       "signature_members": {
         "sCallback": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -306,8 +374,9 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -323,8 +392,9 @@
       "documentation": null,
       "signature_members": {
         "sCallback": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -334,16 +404,19 @@
       "documentation": null,
       "signature_members": {
         "sTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "sCallbackFn": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "bEnabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -353,16 +426,19 @@
       "documentation": null,
       "signature_members": {
         "sTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "sCallbackFn": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "bEnabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -372,16 +448,19 @@
       "documentation": null,
       "signature_members": {
         "sTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "sCallbackFn": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "bEnabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -391,16 +470,19 @@
       "documentation": null,
       "signature_members": {
         "sTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "sCallbackFn": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "bEnabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -410,8 +492,9 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -421,8 +504,9 @@
       "documentation": null,
       "signature_members": {
         "fAlertLevel": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -432,8 +516,9 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -443,8 +528,9 @@
       "documentation": null,
       "signature_members": {
         "sText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -460,12 +546,14 @@
       "documentation": null,
       "signature_members": {
         "sFuel": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "sCash": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -475,12 +563,14 @@
       "documentation": null,
       "signature_members": {
         "nStartIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "aLocations": {
-          "type": null,
-          "documentation": null
+          "type": "Vector2D",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -496,12 +586,14 @@
       "documentation": null,
       "signature_members": {
         "oPlanet": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlanet",
+          "documentation": null,
+          "flags": 128
         },
         "bStartOnMission": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -511,12 +603,14 @@
       "documentation": null,
       "signature_members": {
         "nEvent": {
-          "type": null,
-          "documentation": null
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -538,8 +632,9 @@
       "documentation": null,
       "signature_members": {
         "nNumTags": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -567,32 +662,39 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nType": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nDisplay": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nPctVisited": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "srName": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "sText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -602,12 +704,14 @@
       "documentation": null,
       "signature_members": {
         "srTitle": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "nPercentDiscovered": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -623,8 +727,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -634,20 +739,24 @@
       "documentation": null,
       "signature_members": {
         "fCurrentFuel": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "fMaxFuel": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "nCredits": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bDisplayCredits": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -669,20 +778,24 @@
       "documentation": null,
       "signature_members": {
         "sDisplayName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "sDescription": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "sImageResource": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "sInfoHeader": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -692,8 +805,9 @@
       "documentation": null,
       "signature_members": {
         "nNumTags": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -703,12 +817,14 @@
       "documentation": null,
       "signature_members": {
         "bVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "sText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -718,12 +834,14 @@
       "documentation": null,
       "signature_members": {
         "bVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "sText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -733,32 +851,39 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nPlanetType": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nPlanetDisplay": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nPctVisited": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "sText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -768,12 +893,14 @@
       "documentation": null,
       "signature_members": {
         "sTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "sDisplayName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -795,8 +922,9 @@
       "documentation": null,
       "signature_members": {
         "bForcedExit": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -812,12 +940,14 @@
       "documentation": null,
       "signature_members": {
         "fInitialFuel": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "fFuel": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -845,8 +975,9 @@
       "documentation": null,
       "signature_members": {
         "vLoc": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -856,8 +987,9 @@
       "documentation": null,
       "signature_members": {
         "eState": {
-          "type": null,
-          "documentation": null
+          "type": "EBioGalaxyMapState",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -873,12 +1005,14 @@
       "documentation": null,
       "signature_members": {
         "sFuel": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "sCash": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -888,12 +1022,14 @@
       "documentation": null,
       "signature_members": {
         "bShow": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "srText": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -903,12 +1039,14 @@
       "documentation": null,
       "signature_members": {
         "bShow": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "srText": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -918,12 +1056,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -933,8 +1073,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -942,5 +1083,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "UI",
   "documentation": null
 }

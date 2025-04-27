@@ -2,59 +2,73 @@
   "members": {
     "sChoiceName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "sChoiceTitle": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "sChoiceImageTitle": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "sChoiceDescription": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "sActionText": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_mapTokenIDToActual": {
       "type": "SFXTokenMapping",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "oChoiceImage": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "nOptionalPaneItemValue": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "nChoiceID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDefaultSelection": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDisabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bNested": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ChoiceColor": {
       "type": "SFXChoiceColors",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "eResource": {
       "type": "EInventoryResourceTypes",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXGameChoiceGUIData_PRCShop",

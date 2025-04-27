@@ -4,135 +4,168 @@
   "variables": {
     "AnimSeqName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "AnimSeq": {
       "type": "AnimSequence",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "SynchGroupName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "CameraAnim": {
       "type": "CameraAnim",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ActiveCameraAnimInstance": {
       "type": "CameraAnimInst",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "Rate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CurrentTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "PreviousTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "AnimLinkupIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "NotifyWeightThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SynchPosOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CameraAnimScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CameraAnimPlayRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPlaying": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bLooping": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCauseActorAnimEnd": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCauseActorAnimPlay": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bZeroRootRotation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bZeroRootTranslation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDisableWarningWhenAnimNotFound": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bHasWeightIgnoreNotifies": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bNoNotifies": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bForceRefposeWhenNotPlaying": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsIssuingNotifies": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bForceAlwaysSlave": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSynchronize": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bReverseSync": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bShowTimeLineSlider": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bLoopCameraAnim": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bRandomizeCameraAnimLoopStartTime": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bEditorOnlyAddRefPoseToAdditiveAnimation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "RootBoneOption": {
       "type": "ERootBoneAxis",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RootRotationOption": {
       "type": "ERootRotationOption",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -140,8 +173,9 @@
       "documentation": null,
       "signature_members": {
         "GroupRelativePosition": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -151,8 +185,9 @@
       "documentation": null,
       "signature_members": {
         "GroupRelativePosition": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -192,16 +227,19 @@
       "documentation": null,
       "signature_members": {
         "bLoop": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "InRate": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "StartTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -217,8 +255,9 @@
       "documentation": null,
       "signature_members": {
         "Sequence": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -228,12 +267,14 @@
       "documentation": null,
       "signature_members": {
         "NewTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bFireNotifies": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -247,5 +288,7 @@
     }
   },
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

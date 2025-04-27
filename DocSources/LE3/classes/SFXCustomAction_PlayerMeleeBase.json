@@ -4,75 +4,93 @@
   "variables": {
     "DamageType": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ScreenShake": {
       "type": "ScreenShakeStruct",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MeleeImpactParameters": {
       "type": "AreaEffectParameters",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Power": {
       "type": "SFXPowerCustomAction_MeleePassivePower",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ForceFeedback": {
       "type": "ForceFeedbackWaveform",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ImpactActorEffect1": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ImpactActorEffect2": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ImpactSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ImpactSoundPlayer": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RBC_BlurInstance": {
       "type": "RadialBlurComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "BlurScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BlurFalloffExponent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BlurOpacity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BlurDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SyncMoveSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NonSyncMoveSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bPlayMeleedVoc": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ApplyBlurEffect": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -80,24 +98,29 @@
       "documentation": null,
       "signature_members": {
         "Resistance": {
-          "type": null,
-          "documentation": null
+          "type": "EPowerResistance",
+          "documentation": null,
+          "flags": 128
         },
         "oImpacted": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "nPreviouslyImpacted": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -107,12 +130,14 @@
       "documentation": null,
       "signature_members": {
         "ObjectPool": {
-          "type": null,
-          "documentation": null
+          "type": "SFXObjectPool",
+          "documentation": null,
+          "flags": 128
         },
         "ClientEffects": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectManager",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -140,28 +165,34 @@
       "documentation": null,
       "signature_members": {
         "oActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "ImpactCount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bFirstTarget": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "CustomActionReactionType": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -171,8 +202,9 @@
       "documentation": null,
       "signature_members": {
         "ImpactParams": {
-          "type": null,
-          "documentation": null
+          "type": "AreaEffectParameters",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -194,8 +226,9 @@
       "documentation": null,
       "signature_members": {
         "Target": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -209,5 +242,7 @@
     }
   },
   "states": {},
+  "classflags": 10485783,
+  "configname": "Game",
   "documentation": null
 }

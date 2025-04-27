@@ -4,26 +4,33 @@
   "variables": {
     "Meshes": {
       "type": "CoverMeshes",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "LocationOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AutoAdjustOn": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AutoAdjustOff": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Disabled": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 2290094226,
+  "configname": "None",
   "documentation": null
 }

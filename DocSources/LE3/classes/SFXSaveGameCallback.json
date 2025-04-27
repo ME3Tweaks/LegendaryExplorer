@@ -4,7 +4,8 @@
   "variables": {
     "SaveCommandCompleteDelegates": {
       "type": "SFXEngine.SFXSaveCommandCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "SaveCommandCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "SFXEngine.SFXSaveCommandCallback",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -23,8 +25,9 @@
       "documentation": null,
       "signature_members": {
         "SaveCommandCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "SFXEngine.SFXSaveCommandCallback",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -34,8 +37,9 @@
       "documentation": null,
       "signature_members": {
         "Args": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGameCommandEventArgs",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -43,5 +47,7 @@
     }
   },
   "states": {},
+  "classflags": 136315034,
+  "configname": "None",
   "documentation": null
 }

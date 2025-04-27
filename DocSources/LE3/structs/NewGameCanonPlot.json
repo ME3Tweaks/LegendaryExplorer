@@ -2,19 +2,23 @@
   "members": {
     "Id": {
       "type": "PlotIdenfitier",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nValue": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nConditional": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nConditionalParameter": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioGlobalVariableTable",

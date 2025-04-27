@@ -4,7 +4,8 @@
   "variables": {
     "FailMessage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     }
   },
   "functions": {
@@ -12,24 +13,29 @@
       "documentation": null,
       "signature_members": {
         "Switch": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "bPRI1HUD": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "RelatedPRI_1": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 144
         },
         "RelatedPRI_2": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 144
         },
         "OptionalObject": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "string",
@@ -39,8 +45,9 @@
       "documentation": null,
       "signature_members": {
         "FailString": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "int",
@@ -48,5 +55,7 @@
     }
   },
   "states": {},
+  "classflags": 51,
+  "configname": "None",
   "documentation": null
 }

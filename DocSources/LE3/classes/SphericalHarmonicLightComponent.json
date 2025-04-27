@@ -4,14 +4,18 @@
   "variables": {
     "WorldSpaceIncidentLighting": {
       "type": "SHVectorRGB",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bRenderBeforeModShadows": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144707730,
+  "configname": "None",
   "documentation": null
 }

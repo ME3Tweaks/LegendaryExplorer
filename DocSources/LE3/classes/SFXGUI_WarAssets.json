@@ -4,23 +4,28 @@
   "variables": {
     "__OnFinished__Delegate": {
       "type": "OnFinished",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnSwitchScreens__Delegate": {
       "type": "OnSwitchScreens",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "GAWAssetsHandler": {
       "type": "SFXGAWAssetsHandler",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "srReadinessPercent": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srWarAssetsTutorialMessage": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -34,12 +39,14 @@
       "documentation": null,
       "signature_members": {
         "nPrimaryID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nSecondaryID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -49,8 +56,9 @@
       "documentation": null,
       "signature_members": {
         "usingGamepad": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -60,12 +68,14 @@
       "documentation": null,
       "signature_members": {
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -99,8 +109,9 @@
       "documentation": null,
       "signature_members": {
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -110,8 +121,9 @@
       "documentation": null,
       "signature_members": {
         "categoryId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -127,8 +139,9 @@
       "documentation": null,
       "signature_members": {
         "AssetID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -138,8 +151,9 @@
       "documentation": null,
       "signature_members": {
         "AssetID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -155,8 +169,9 @@
       "documentation": null,
       "signature_members": {
         "categoryId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -166,8 +181,9 @@
       "documentation": null,
       "signature_members": {
         "categoryId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -177,8 +193,9 @@
       "documentation": null,
       "signature_members": {
         "categoryId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -194,8 +211,9 @@
       "documentation": null,
       "signature_members": {
         "nReadiness": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -229,8 +247,9 @@
       "documentation": null,
       "signature_members": {
         "categoryId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "WarAssetGUIData",
@@ -256,5 +275,7 @@
     }
   },
   "states": {},
+  "classflags": 2097174,
+  "configname": "UI",
   "documentation": null
 }

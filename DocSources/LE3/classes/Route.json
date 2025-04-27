@@ -4,19 +4,23 @@
   "variables": {
     "VfTable_IEditorLinkSelectionInterface": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "RouteList": {
       "type": "ActorReference",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "FudgeFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RouteType": {
       "type": "ERouteType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -24,16 +28,19 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "RouteDirection": {
-          "type": null,
-          "documentation": null
+          "type": "ERouteDirection",
+          "documentation": null,
+          "flags": 144
         },
         "DistFudgeFactor": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -43,20 +50,24 @@
       "documentation": null,
       "signature_members": {
         "idx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "RouteDirection": {
-          "type": null,
-          "documentation": null
+          "type": "ERouteDirection",
+          "documentation": null,
+          "flags": 128
         },
         "out_bComplete": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 384
         },
         "out_bReverse": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "int",
@@ -64,5 +75,7 @@
     }
   },
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

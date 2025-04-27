@@ -4,11 +4,13 @@
   "variables": {
     "__OnJobComplete__Delegate": {
       "type": "OnJobComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "mRequest": {
       "type": "SFXOnlineHTTPRequest",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -22,8 +24,9 @@
       "documentation": null,
       "signature_members": {
         "request": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineHTTPRequest",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -43,5 +46,7 @@
     }
   },
   "states": {},
+  "classflags": 134217878,
+  "configname": "Game",
   "documentation": null
 }

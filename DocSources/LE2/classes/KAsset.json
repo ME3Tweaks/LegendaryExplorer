@@ -4,27 +4,33 @@
   "variables": {
     "SkeletalMeshComponent": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67764235
     },
     "ReplicatedMesh": {
       "type": "SkeletalMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294975520
     },
     "ReplicatedPhysAsset": {
       "type": "PhysicsAsset",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294975520
     },
     "bDamageAppliesImpulse": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bWakeOnLevelStart": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bBlockPawns": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -32,12 +38,14 @@
       "documentation": null,
       "signature_members": {
         "Attachment": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_AttachToActor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -47,8 +55,9 @@
       "documentation": null,
       "signature_members": {
         "inAction": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_Teleport",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -58,8 +67,9 @@
       "documentation": null,
       "signature_members": {
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -69,40 +79,49 @@
       "documentation": null,
       "signature_members": {
         "InstigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "BaseDamage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "DamageRadius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "HurtOrigin": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "bFullDamage": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "DamageCauser": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "DamageFalloffExponent": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -112,32 +131,39 @@
       "documentation": null,
       "signature_members": {
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "EventInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 144
         },
         "DamageCauser": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -147,8 +173,9 @@
       "documentation": null,
       "signature_members": {
         "VarName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -158,12 +185,14 @@
       "documentation": null,
       "signature_members": {
         "NewMesh": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMesh",
+          "documentation": null,
+          "flags": 128
         },
         "NewPhysAsset": {
-          "type": null,
-          "documentation": null
+          "type": "PhysicsAsset",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -177,5 +206,7 @@
     }
   },
   "states": {},
+  "classflags": 144706194,
+  "configname": "None",
   "documentation": null
 }

@@ -2,19 +2,23 @@
   "members": {
     "RequiredWeaponClasses": {
       "type": "ELoadoutWeapons",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "StartingWeaponClasses": {
       "type": "ELoadoutWeapons",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "className": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NumOptionalSlots": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXPlayerSquadLoadoutData",

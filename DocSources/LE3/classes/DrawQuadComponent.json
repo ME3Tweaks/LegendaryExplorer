@@ -4,18 +4,23 @@
   "variables": {
     "Texture": {
       "type": "Texture",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Width": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Height": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 2155884946,
+  "configname": "None",
   "documentation": null
 }

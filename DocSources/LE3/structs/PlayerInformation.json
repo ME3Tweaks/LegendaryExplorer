@@ -2,23 +2,28 @@
   "members": {
     "UniqueId": {
       "type": "UniqueNetId",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ControllerName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PlayerName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "LastPlayerEventIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsBot": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "OnlineGameplayEvents",

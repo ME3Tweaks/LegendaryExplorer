@@ -4,347 +4,433 @@
   "variables": {
     "m_oShepardInfo": {
       "type": "SFXHUDSquadMemberInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_oHench1Info": {
       "type": "SFXHUDSquadMemberInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_oHench2Info": {
       "type": "SFXHUDSquadMemberInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sStatusText": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aDamageIndicatorPaths": {
       "type": "SFXHudDmgIndicatorPaths",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aDamageIndicatorAlphas": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_nCurrentWeaponResource": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sTeamStatusStartFrame": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sWeaponIconPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sWeaponAmmoPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sWeaponClipAmmoPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sTargetNamePath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sTargetStatusPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sButtonAPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sTargetBackgroundPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sHealthBarPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sArmourBarPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sBioticBarPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sShieldBarPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sResistBarOutlinePath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_smcNotificationPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sCenterStatusPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sOverheatIndicatorPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sOverheatIndicatorTextPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sOverheatIndicatorTextFieldPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sPlayerPowerPath1": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sPlayerPowerPath2": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sShields": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sArmour": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sBarrier": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sHealth": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sOverheat": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnNotificationCompleted__Delegate": {
       "type": "OnNotificationCompleted",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_CurrentResistances": {
       "type": "SFXHUDResistances",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_ResistanceBarDisplayValues": {
       "type": "SFXHUDResistances",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pCurrentTarget": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pPlayerController": {
       "type": "BioPlayerController",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pPlayerSquad": {
       "type": "BioPlayerSquad",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pCurrentDisplayTarget": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nCurrentBarCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fCurrentBarBackgroundX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fEffectivelyZero": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nCurrentWeaponIcon": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nCurrentWeaponSpareAmmo": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nCurrentClipAmmo": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fTimeSinceLastWeaponUpdate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fSFWidth": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fCurrentOverheatValue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fHealthBarCenterY": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fArmourBarCenterY": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fBioticBarCenterY": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fShieldBarCenterY": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fStatusInitialY": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fStatusTextHeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fButtonAInitialY": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fButtonAHeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fSuperRegenThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fHealthShieldUpdateDelta": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fDamageIndicatorAlphaUpdateDelta": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fLowHealthWarning": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fWeaponUpdateInterval": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fBarAnimRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fFullStatFadeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srStatusBarrierText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srStatusBleedoutText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srStatusHardenedShieldsText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srStatusHeavyArmourText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srStatusMinimalDamageText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srStatusSuperRegenText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srShields": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srArmour": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srBarrier": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srHealth": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srOverheat": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srAmmoFull": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fNotificationDisplayTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fNotificationElapsedTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nNotificationFlourishId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bInteractive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bInRange": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bTargetStatusVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bInSquadCommandMode": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bWeaponVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bWeaponOverheatBarVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bHealthDisplayVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bNotificationVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -358,8 +444,9 @@
       "documentation": null,
       "signature_members": {
         "sMessage": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -387,12 +474,14 @@
       "documentation": null,
       "signature_members": {
         "bVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "pWeap": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -402,8 +491,9 @@
       "documentation": null,
       "signature_members": {
         "oResistValues": {
-          "type": null,
-          "documentation": null
+          "type": "SFXHUDResistances",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -413,8 +503,9 @@
       "documentation": null,
       "signature_members": {
         "oTargetInfo": {
-          "type": null,
-          "documentation": null
+          "type": "SFXHUDTargetInfo",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -424,12 +515,14 @@
       "documentation": null,
       "signature_members": {
         "fResistPercent": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "sBarClipPath": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -439,8 +532,9 @@
       "documentation": null,
       "signature_members": {
         "oTargetInfo": {
-          "type": null,
-          "documentation": null
+          "type": "SFXHUDTargetInfo",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -450,16 +544,19 @@
       "documentation": null,
       "signature_members": {
         "sStatus": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bInteractive": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bInRange": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -469,12 +566,14 @@
       "documentation": null,
       "signature_members": {
         "sTargetName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bHostile": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -484,12 +583,14 @@
       "documentation": null,
       "signature_members": {
         "fOverheatPct": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bForce": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -499,8 +600,9 @@
       "documentation": null,
       "signature_members": {
         "sText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -510,12 +612,14 @@
       "documentation": null,
       "signature_members": {
         "pTarget": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "nStatusFlags": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -525,8 +629,9 @@
       "documentation": null,
       "signature_members": {
         "pTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -536,16 +641,19 @@
       "documentation": null,
       "signature_members": {
         "pTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "fHealthPct": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "fShieldsPct": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -555,12 +663,14 @@
       "documentation": null,
       "signature_members": {
         "pTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "oResistances": {
-          "type": null,
-          "documentation": null
+          "type": "SFXHUDResistances",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -618,40 +728,49 @@
       "documentation": null,
       "signature_members": {
         "nDisplayTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "nNumRemainingNotifications": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nPriority": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sSubtitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sBody": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "oImage": {
-          "type": null,
-          "documentation": null
+          "type": "Texture",
+          "documentation": null,
+          "flags": 128
         },
         "nmAdditonalSound": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nFlourishID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -665,5 +784,7 @@
     }
   },
   "states": {},
+  "classflags": 136315038,
+  "configname": "UI",
   "documentation": null
 }

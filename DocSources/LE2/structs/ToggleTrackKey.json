@@ -2,11 +2,13 @@
   "members": {
     "Time": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ToggleAction": {
       "type": "ETrackToggleAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "InterpTrackToggle",

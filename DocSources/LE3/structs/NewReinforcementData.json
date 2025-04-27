@@ -2,11 +2,13 @@
   "members": {
     "VariableName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Category": {
       "type": "EReinforcementGUICategory",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXSaveManagerMP",

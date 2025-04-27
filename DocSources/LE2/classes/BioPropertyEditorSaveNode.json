@@ -4,7 +4,8 @@
   "variables": {
     "Filename": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -28,5 +29,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

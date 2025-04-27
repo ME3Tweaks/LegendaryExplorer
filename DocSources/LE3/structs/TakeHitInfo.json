@@ -2,35 +2,43 @@
   "members": {
     "DamageType": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HitLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Momentum": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RadialDamageOrigin": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "instigatedBy": {
       "type": "Pawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PhysicalMaterial": {
       "type": "PhysicalMaterial",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Damage": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HitBoneIndex": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "GameTypes",

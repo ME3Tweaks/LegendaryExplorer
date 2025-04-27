@@ -4,11 +4,13 @@
   "variables": {
     "ResourcePercent": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TreasureType": {
       "type": "ETreasureType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -22,16 +24,19 @@
       "documentation": null,
       "signature_members": {
         "ttype": {
-          "type": null,
-          "documentation": null
+          "type": "ETreasureType",
+          "documentation": null,
+          "flags": 128
         },
         "oWorldInfo": {
-          "type": null,
-          "documentation": null
+          "type": "BioWorldInfo",
+          "documentation": null,
+          "flags": 128
         },
         "ResourceAmount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -41,8 +46,9 @@
       "documentation": null,
       "signature_members": {
         "HWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXHeavyWeapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -52,32 +58,39 @@
       "documentation": null,
       "signature_members": {
         "InvType": {
-          "type": null,
-          "documentation": null
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
         },
         "Amount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "oWorldInfo": {
-          "type": null,
-          "documentation": null
+          "type": "BioWorldInfo",
+          "documentation": null,
+          "flags": 128
         },
         "bIsSalvage": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bIgnoreBudget": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bExtraIfLow": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bSuppressNotifications": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -87,20 +100,24 @@
       "documentation": null,
       "signature_members": {
         "ttype": {
-          "type": null,
-          "documentation": null
+          "type": "ETreasureType",
+          "documentation": null,
+          "flags": 128
         },
         "oWorldInfo": {
-          "type": null,
-          "documentation": null
+          "type": "BioWorldInfo",
+          "documentation": null,
+          "flags": 128
         },
         "ResourceAmount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bAbsoluteAmount": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -110,24 +127,29 @@
       "documentation": null,
       "signature_members": {
         "ttype": {
-          "type": null,
-          "documentation": null
+          "type": "ETreasureType",
+          "documentation": null,
+          "flags": 128
         },
         "oWorldInfo": {
-          "type": null,
-          "documentation": null
+          "type": "BioWorldInfo",
+          "documentation": null,
+          "flags": 128
         },
         "nBudgetPercent": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bAbsoluteAmount": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bIsSalvage": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -137,24 +159,29 @@
       "documentation": null,
       "signature_members": {
         "ttype": {
-          "type": null,
-          "documentation": null
+          "type": "ETreasureType",
+          "documentation": null,
+          "flags": 128
         },
         "oWorldInfo": {
-          "type": null,
-          "documentation": null
+          "type": "BioWorldInfo",
+          "documentation": null,
+          "flags": 128
         },
         "nBudgetPercent": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bAbsoluteAmount": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bIsSalvage": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -164,8 +191,9 @@
       "documentation": null,
       "signature_members": {
         "bTargetable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -181,8 +209,9 @@
       "documentation": null,
       "signature_members": {
         "User": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -190,5 +219,7 @@
     }
   },
   "states": {},
+  "classflags": 8392722,
+  "configname": "None",
   "documentation": null
 }

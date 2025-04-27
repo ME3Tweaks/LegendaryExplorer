@@ -4,39 +4,48 @@
   "variables": {
     "ServerBaseString": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ServerNewReinforcementsString": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ServerClassStrings": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ServerCharacterStrings": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ServerFaceCodesString": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "CachedOnlinePlayerStorage": {
       "type": "SFXOnlinePlayerStorage",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "DevelopmentVersionNumber": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bDebugSaving": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bUseOldSavingSystem": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -50,8 +59,9 @@
       "documentation": null,
       "signature_members": {
         "className": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "int",
@@ -61,8 +71,9 @@
       "documentation": null,
       "signature_members": {
         "hexToDecode": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "int",
@@ -72,8 +83,9 @@
       "documentation": null,
       "signature_members": {
         "numToEncode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -89,8 +101,9 @@
       "documentation": null,
       "signature_members": {
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "EMPSerializationResult",
@@ -100,12 +113,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "WritePlayerStorageCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnlinePlayerInterface.OnWritePlayerStorageComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -115,12 +130,14 @@
       "documentation": null,
       "signature_members": {
         "CharacterIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "EMPSerializationResult",
@@ -130,12 +147,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "WritePlayerStorageCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnlinePlayerInterface.OnWritePlayerStorageComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -145,8 +164,9 @@
       "documentation": null,
       "signature_members": {
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -156,12 +176,14 @@
       "documentation": null,
       "signature_members": {
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 128
         },
         "BaseString": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -171,8 +193,9 @@
       "documentation": null,
       "signature_members": {
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "string",
@@ -182,20 +205,24 @@
       "documentation": null,
       "signature_members": {
         "CharacterRecord": {
-          "type": null,
-          "documentation": null
+          "type": "SFXMPCharacterRecord",
+          "documentation": null,
+          "flags": 128
         },
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 128
         },
         "CharacterString": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -205,16 +232,19 @@
       "documentation": null,
       "signature_members": {
         "CharacterRecord": {
-          "type": null,
-          "documentation": null
+          "type": "SFXMPCharacterRecord",
+          "documentation": null,
+          "flags": 386
         },
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 386
         },
         "nCharacterIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -224,12 +254,14 @@
       "documentation": null,
       "signature_members": {
         "ClassRecord": {
-          "type": null,
-          "documentation": null
+          "type": "SFXMPClassRecord",
+          "documentation": null,
+          "flags": 128
         },
         "ClassString": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -239,8 +271,9 @@
       "documentation": null,
       "signature_members": {
         "ClassRecord": {
-          "type": null,
-          "documentation": null
+          "type": "SFXMPClassRecord",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "string",
@@ -250,8 +283,9 @@
       "documentation": null,
       "signature_members": {
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "string",
@@ -261,8 +295,9 @@
       "documentation": null,
       "signature_members": {
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "string",
@@ -272,12 +307,14 @@
       "documentation": null,
       "signature_members": {
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 128
         },
         "OutVars": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -287,8 +324,9 @@
       "documentation": null,
       "signature_members": {
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "string",
@@ -298,8 +336,9 @@
       "documentation": null,
       "signature_members": {
         "Powers": {
-          "type": null,
-          "documentation": null
+          "type": "PowerRecord",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "string",
@@ -309,8 +348,9 @@
       "documentation": null,
       "signature_members": {
         "Power": {
-          "type": null,
-          "documentation": null
+          "type": "PowerRecord",
+          "documentation": null,
+          "flags": 130
         }
       },
       "returntype": "string",
@@ -320,8 +360,9 @@
       "documentation": null,
       "signature_members": {
         "WeaponMods": {
-          "type": null,
-          "documentation": null
+          "type": "WeaponModRecord",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "string",
@@ -331,8 +372,9 @@
       "documentation": null,
       "signature_members": {
         "WeaponRecords": {
-          "type": null,
-          "documentation": null
+          "type": "WeaponRecord",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "string",
@@ -348,8 +390,9 @@
       "documentation": null,
       "signature_members": {
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -365,12 +408,14 @@
       "documentation": null,
       "signature_members": {
         "ClassIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "EMPSerializationResult",
@@ -380,8 +425,9 @@
       "documentation": null,
       "signature_members": {
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "EMPSerializationResult",
@@ -391,8 +437,9 @@
       "documentation": null,
       "signature_members": {
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "EMPSerializationResult",
@@ -402,12 +449,14 @@
       "documentation": null,
       "signature_members": {
         "PlayerVariableString": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -417,12 +466,14 @@
       "documentation": null,
       "signature_members": {
         "PlayerVariableString": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -432,16 +483,19 @@
       "documentation": null,
       "signature_members": {
         "PowerString": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "Powers": {
-          "type": null,
-          "documentation": null
+          "type": "PowerRecord",
+          "documentation": null,
+          "flags": 4194688
         },
         "Version": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -451,12 +505,14 @@
       "documentation": null,
       "signature_members": {
         "WeaponModString": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "WeaponMods": {
-          "type": null,
-          "documentation": null
+          "type": "WeaponModRecord",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -466,12 +522,14 @@
       "documentation": null,
       "signature_members": {
         "WeaponString": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "Weapons": {
-          "type": null,
-          "documentation": null
+          "type": "WeaponRecord",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -487,12 +545,14 @@
       "documentation": null,
       "signature_members": {
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 128
         },
         "bForceResaveBase": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -502,12 +562,14 @@
       "documentation": null,
       "signature_members": {
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 386
         },
         "ForceResaveBase": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -517,8 +579,9 @@
       "documentation": null,
       "signature_members": {
         "nCharacterIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -528,8 +591,9 @@
       "documentation": null,
       "signature_members": {
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -539,8 +603,9 @@
       "documentation": null,
       "signature_members": {
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -550,8 +615,9 @@
       "documentation": null,
       "signature_members": {
         "nClassIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -561,8 +627,9 @@
       "documentation": null,
       "signature_members": {
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -572,8 +639,9 @@
       "documentation": null,
       "signature_members": {
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -589,8 +657,9 @@
       "documentation": null,
       "signature_members": {
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -600,12 +669,14 @@
       "documentation": null,
       "signature_members": {
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 386
         },
         "ForceResaveBase": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -621,8 +692,9 @@
       "documentation": null,
       "signature_members": {
         "MPSaveManager": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveManagerMP",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -636,5 +708,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "Game",
   "documentation": null
 }

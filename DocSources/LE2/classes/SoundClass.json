@@ -4,22 +4,28 @@
   "variables": {
     "ChildClassNames": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "EditorData": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "Properties": {
       "type": "SoundClassProperties",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsChild": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

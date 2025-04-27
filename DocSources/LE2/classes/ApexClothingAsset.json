@@ -4,54 +4,68 @@
   "variables": {
     "MApexAsset": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "UVChannelForTangentUpdate": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108867
     },
     "MaxDistanceBlendTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108867
     },
     "ContinuousRotationThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108867
     },
     "ContinuousDistanceThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108867
     },
     "LodWeightsMaxDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108867
     },
     "LodWeightsDistanceWeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108867
     },
     "LodWeightsBias": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108867
     },
     "LodWeightsBenefitsBias": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108867
     },
     "bUseHardwareCloth": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108867
     },
     "bFallbackSkinning": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108867
     },
     "bSlowStart": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108867
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

@@ -4,22 +4,28 @@
   "variables": {
     "m_aBlendTimeNode": {
       "type": "BlendTimeFrom",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bHesitateAvailable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bFallingAvailable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_eCurrentAnimNode": {
       "type": "EBioActionAnimNode",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

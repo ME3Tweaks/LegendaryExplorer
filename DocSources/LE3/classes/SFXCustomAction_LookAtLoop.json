@@ -4,55 +4,68 @@
   "variables": {
     "BS_StartAnim": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "BS_LoopAnim": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "BS_EndAnim": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "BS_ToPlay": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "BS_LoopToPlay": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "BS_EndToPlay": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "PlayRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BlendInTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BlendOutTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StartTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LoopDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LoopState": {
       "type": "ECustomActionLoopState",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RootMotionMode": {
       "type": "ERootMotionMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -60,8 +73,9 @@
       "documentation": null,
       "signature_members": {
         "UsedAnims": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -77,16 +91,19 @@
       "documentation": null,
       "signature_members": {
         "SeqNode": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
         },
         "PlayedTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "ExcessTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -118,5 +135,7 @@
     }
   },
   "states": {},
+  "classflags": 10485783,
+  "configname": "Game",
   "documentation": null
 }

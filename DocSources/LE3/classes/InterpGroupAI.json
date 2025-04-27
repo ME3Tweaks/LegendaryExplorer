@@ -4,18 +4,23 @@
   "variables": {
     "StageMarkGroup": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StageMarkActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AllowDeferredActorAttach": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134226066,
+  "configname": "None",
   "documentation": null
 }

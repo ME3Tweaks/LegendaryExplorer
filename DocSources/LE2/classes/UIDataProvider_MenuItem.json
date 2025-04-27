@@ -4,91 +4,113 @@
   "variables": {
     "OptionSet": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "DataStoreMarkup": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "DescriptionMarkup": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "FriendlyName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4243458
     },
     "CustomFriendlyName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Description": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4243458
     },
     "SchemaCellFields": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "IniName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "RangeData": {
       "type": "UIRangeData",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "RequiredGameMode": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "EditBoxMaxLength": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bEditableCombo": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bNumericCombo": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bKeyboardOrMouseOption": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bOnlineOnly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bOfflineOnly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bSearchAllInis": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bRemoveOn360": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bRemoveOnPC": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bRemoveOnPS3": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "OptionType": {
       "type": "EMenuOptionType",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "EditboxAllowedChars": {
       "type": "EEditBoxCharacterSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -100,5 +122,7 @@
     }
   },
   "states": {},
+  "classflags": 136316094,
+  "configname": "UI",
   "documentation": null
 }

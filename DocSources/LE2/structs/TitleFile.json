@@ -2,15 +2,18 @@
   "members": {
     "Filename": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Data": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "AsyncState": {
       "type": "EOnlineEnumerationReadState",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "OnlineSubsystem",

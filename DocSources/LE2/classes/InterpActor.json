@@ -4,75 +4,93 @@
   "variables": {
     "MyMarker": {
       "type": "NavigationPoint",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OpenSound": {
       "type": "SoundCue",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OpeningAmbientSound": {
       "type": "SoundCue",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OpenedSound": {
       "type": "SoundCue",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CloseSound": {
       "type": "SoundCue",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ClosingAmbientSound": {
       "type": "SoundCue",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ClosedSound": {
       "type": "SoundCue",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AmbientSoundComponent": {
       "type": "AudioComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "MaxZVelocity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StayOpenTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bShouldSaveForCheckpoint": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bMonitorMover": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bMonitorZVelocity": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDestroyProjectilesOnEncroach": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bContinueOnEncroachPhysicsObject": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bStopOnEncroach": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bShouldShadowParentAllAttachedActors": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsLift": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -80,8 +98,9 @@
       "documentation": null,
       "signature_members": {
         "Record": {
-          "type": null,
-          "documentation": null
+          "type": "CheckpointRecord",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -91,8 +110,9 @@
       "documentation": null,
       "signature_members": {
         "Record": {
-          "type": null,
-          "documentation": null
+          "type": "CheckpointRecord",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -114,8 +134,9 @@
       "documentation": null,
       "signature_members": {
         "InterpAction": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_Interp",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -125,8 +146,9 @@
       "documentation": null,
       "signature_members": {
         "InterpAction": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_Interp",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -136,12 +158,14 @@
       "documentation": null,
       "signature_members": {
         "InterpAction": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_Interp",
+          "documentation": null,
+          "flags": 128
         },
         "GroupInst": {
-          "type": null,
-          "documentation": null
+          "type": "InterpGroupInst",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -151,8 +175,9 @@
       "documentation": null,
       "signature_members": {
         "bClosing": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -174,8 +199,9 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -185,8 +211,9 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -196,8 +223,9 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -207,8 +235,9 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -228,5 +257,7 @@
     }
   },
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

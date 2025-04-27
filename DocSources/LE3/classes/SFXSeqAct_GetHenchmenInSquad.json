@@ -4,43 +4,53 @@
   "variables": {
     "Hench1": {
       "type": "Pawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Hench2": {
       "type": "Pawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "hench_liara": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "hench_kaidan": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "hench_ashley": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "hench_garrus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "hench_edi": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "hench_prothean": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "hench_marine": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "hench_tali": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -54,8 +64,9 @@
       "documentation": null,
       "signature_members": {
         "Henchman": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -63,5 +74,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

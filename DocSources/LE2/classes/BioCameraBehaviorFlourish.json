@@ -4,27 +4,33 @@
   "variables": {
     "ZOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SpeedYaw": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DesiredPitch": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SpeedPitch": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DesiredDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SpeedDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -32,8 +38,9 @@
       "documentation": null,
       "signature_members": {
         "TimeDelta": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -41,5 +48,7 @@
     }
   },
   "states": {},
+  "classflags": 18,
+  "configname": "None",
   "documentation": null
 }

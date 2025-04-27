@@ -2,11 +2,13 @@
   "members": {
     "m_a": {
       "type": "BioPawnLabelledHeadGearBool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bOverride": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioInterface_Appearance_Pawn",

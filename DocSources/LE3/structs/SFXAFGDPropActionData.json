@@ -2,19 +2,23 @@
   "members": {
     "nmActionName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "pPartSys": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "pClientEffect": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fTimeDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXAmbPerfGameData",

@@ -2,19 +2,23 @@
   "members": {
     "OuterSnapAngle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "InnerSnapAngle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "SnapOffsetMag": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "AimNode": {
       "type": "EAimNodes",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     }
   },
   "classdef": "SFXWeapon",

@@ -4,43 +4,53 @@
   "variables": {
     "Systems": {
       "type": "SFXSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "RelayConnections": {
       "type": "SFXCluster",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "StarColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StarColor2": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ClusterTexture": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "NebularDensity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CloudTile": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SphereIntensity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SphereSize": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ExploredCluster": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -48,8 +58,9 @@
       "documentation": null,
       "signature_members": {
         "oChild": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGalaxyMapObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -65,8 +76,9 @@
       "documentation": null,
       "signature_members": {
         "Child": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGalaxyMapObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -76,16 +88,19 @@
       "documentation": null,
       "signature_members": {
         "nObjectCount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "nExploredCount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "eMapLevel": {
-          "type": null,
-          "documentation": null
+          "type": "EBioGalaxyMapState",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -105,5 +120,7 @@
     }
   },
   "states": {},
+  "classflags": 142606486,
+  "configname": "Game",
   "documentation": null
 }

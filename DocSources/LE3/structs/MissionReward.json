@@ -2,15 +2,18 @@
   "members": {
     "MissionName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ObjectiveXP": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "CombatXP": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "classdef": "BioSeqAct_GiveMissionXP_NativeBase",

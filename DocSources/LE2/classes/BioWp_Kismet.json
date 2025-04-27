@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "PathFindingCreature": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -16,5 +17,7 @@
     }
   },
   "states": {},
+  "classflags": 10486290,
+  "configname": "None",
   "documentation": null
 }

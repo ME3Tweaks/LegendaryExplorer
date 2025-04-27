@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "pComponent": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -16,5 +17,7 @@
     }
   },
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

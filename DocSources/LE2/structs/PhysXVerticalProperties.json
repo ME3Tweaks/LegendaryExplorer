@@ -2,7 +2,8 @@
   "members": {
     "Emitters": {
       "type": "PhysXEmitterVerticalProperties",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     }
   },
   "classdef": "WorldInfo",

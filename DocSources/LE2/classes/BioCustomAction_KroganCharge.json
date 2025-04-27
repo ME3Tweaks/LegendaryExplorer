@@ -4,35 +4,43 @@
   "variables": {
     "m_oHitTargets": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "BS_Start": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BS_Miss": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BS_Hit": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oChargeTarget": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bHitTarget": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_ChargeAction": {
       "type": "EKroganChargeActions",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_NextAction": {
       "type": "EKroganChargeActions",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -40,16 +48,19 @@
       "documentation": null,
       "signature_members": {
         "SeqNode": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
         },
         "PlayedTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "ExcessTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -71,8 +82,9 @@
       "documentation": null,
       "signature_members": {
         "oHitTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -82,8 +94,9 @@
       "documentation": null,
       "signature_members": {
         "eAction": {
-          "type": null,
-          "documentation": null
+          "type": "EKroganChargeActions",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "BodyStance",
@@ -91,5 +104,7 @@
     }
   },
   "states": {},
+  "classflags": 134217878,
+  "configname": "Game",
   "documentation": null
 }

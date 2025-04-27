@@ -4,38 +4,48 @@
   "variables": {
     "RawIntensityVsDistanceDistribution": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "ProgrammaticShake": {
       "type": "ScreenShakeStruct",
-      "documentation": null
+      "documentation": null,
+      "flags": 9
     },
     "FrameBufferEffect": {
       "type": "PostProcessChain",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaxRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Duration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPlayerImpact": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseIntensityCurve": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPlayProgrammaticShake": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142618770,
+  "configname": "None",
   "documentation": null
 }

@@ -4,82 +4,103 @@
   "variables": {
     "ModifierData": {
       "type": "Slider",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "AdditionalParams": {
       "type": "AdditionalData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MorphCategories": {
       "type": "Category",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Textures": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aDefaultSettings": {
       "type": "BaseHeads",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aBaseHeads": {
       "type": "BaseHeads",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_s2DAPackage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_sMorph2DA": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_sMorphBaseMale": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_sMorphBaseFemale": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_sMorphAnimTree": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_sMorphTargetSetMale": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_sMorphTargetSetFemale": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "NameHeadIndexMap": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "MorphFace": {
       "type": "BioMorphFace",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MorphAnimTree": {
       "type": "AnimTree",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MorphTargetSet": {
       "type": "MorphTargetSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bDebugStrings": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "PlayerIsMale": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136319126,
+  "configname": "UI",
   "documentation": null
 }

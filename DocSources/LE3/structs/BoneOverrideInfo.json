@@ -2,19 +2,23 @@
   "members": {
     "BoneIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Position": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Orientation": {
       "type": "Quat",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BasesInvMatrix": {
       "type": "Matrix",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SkeletalMeshComponent",

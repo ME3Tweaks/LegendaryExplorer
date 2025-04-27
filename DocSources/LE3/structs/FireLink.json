@@ -2,19 +2,23 @@
   "members": {
     "Interactions": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PackedProperties_CoverPairRefAndDynamicInfo": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bFallbackLink": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDynamicIndexInited": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "CoverLink",

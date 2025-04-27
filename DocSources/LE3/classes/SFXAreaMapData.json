@@ -4,51 +4,63 @@
   "variables": {
     "MapAssetData": {
       "type": "SFXMapAssetData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "CharacterMapData": {
       "type": "SFXCharacterMapData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "MapLocationData": {
       "type": "SFXMapLocationData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "__SortLocationMapData__Delegate": {
       "type": "SortLocationMapData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "RefPoint1_Image_Px": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RefPoint1_Unreal_UU": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RefPoint2_Image_Px": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RefPoint2_Unreal_UU": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "UUCoorAtPxOrigin": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OverrideGroupID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PxPerUU": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Floor": {
       "type": "SFXAreaMapLayout",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -56,8 +68,9 @@
       "documentation": null,
       "signature_members": {
         "TargetFloor": {
-          "type": null,
-          "documentation": null
+          "type": "SFXAreaMapLayout",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXMapAssetData",
@@ -67,8 +80,9 @@
       "documentation": null,
       "signature_members": {
         "TargetFloor": {
-          "type": null,
-          "documentation": null
+          "type": "SFXAreaMapLayout",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXCharacterMapData",
@@ -78,8 +92,9 @@
       "documentation": null,
       "signature_members": {
         "TargetFloor": {
-          "type": null,
-          "documentation": null
+          "type": "SFXAreaMapLayout",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXMapLocationData",
@@ -89,20 +104,24 @@
       "documentation": null,
       "signature_members": {
         "UU_X": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "UU_Y": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Px": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "Py": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -118,12 +137,14 @@
       "documentation": null,
       "signature_members": {
         "UU_X": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "UU_Y": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -139,12 +160,14 @@
       "documentation": null,
       "signature_members": {
         "A": {
-          "type": null,
-          "documentation": null
+          "type": "SFXMapLocationData",
+          "documentation": null,
+          "flags": 128
         },
         "B": {
-          "type": null,
-          "documentation": null
+          "type": "SFXMapLocationData",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -152,5 +175,7 @@
     }
   },
   "states": {},
+  "classflags": 2097174,
+  "configname": "UI",
   "documentation": null
 }

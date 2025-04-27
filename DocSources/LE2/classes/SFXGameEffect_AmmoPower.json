@@ -4,35 +4,43 @@
   "variables": {
     "HologramTemplate": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "IconTemplate": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OwnerWeapon": {
       "type": "SFXWeapon",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OwnerPawn": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NormalImpactSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WeaponFireSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BulletsPerSecond": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bWeaponUnequipped": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -52,8 +60,9 @@
       "documentation": null,
       "signature_members": {
         "Weapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -63,8 +72,9 @@
       "documentation": null,
       "signature_members": {
         "Weapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -74,8 +84,9 @@
       "documentation": null,
       "signature_members": {
         "Weapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -91,12 +102,14 @@
       "documentation": null,
       "signature_members": {
         "Weapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         },
         "Impact": {
-          "type": null,
-          "documentation": null
+          "type": "ImpactInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -116,5 +129,7 @@
     }
   },
   "states": {},
+  "classflags": 18,
+  "configname": "None",
   "documentation": null
 }

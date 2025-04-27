@@ -4,23 +4,28 @@
   "variables": {
     "SizeX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "SizeY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "NumMips": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "bIsResolveTarget": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "Format": {
       "type": "EPixelFormat",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     }
   },
   "functions": {
@@ -28,20 +33,24 @@
       "documentation": null,
       "signature_members": {
         "InSizeX": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "InSizeY": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "InFormat": {
-          "type": null,
-          "documentation": null
+          "type": "EPixelFormat",
+          "documentation": null,
+          "flags": 144
         },
         "InIsResolveTarget": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Texture2DDynamic",
@@ -51,20 +60,24 @@
       "documentation": null,
       "signature_members": {
         "InSizeX": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "InSizeY": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "InFormat": {
-          "type": null,
-          "documentation": null
+          "type": "EPixelFormat",
+          "documentation": null,
+          "flags": 144
         },
         "InIsResolveTarget": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -72,5 +85,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

@@ -4,10 +4,13 @@
   "variables": {
     "LastCoverAction": {
       "type": "ECoverAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

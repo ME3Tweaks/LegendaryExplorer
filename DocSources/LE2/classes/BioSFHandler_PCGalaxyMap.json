@@ -4,11 +4,13 @@
   "variables": {
     "bMoveToMouse": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bMouseMovementEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -16,8 +18,9 @@
       "documentation": null,
       "signature_members": {
         "usingGamepad": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -33,12 +36,14 @@
       "documentation": null,
       "signature_members": {
         "nEvent": {
-          "type": null,
-          "documentation": null
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -52,5 +57,7 @@
     }
   },
   "states": {},
+  "classflags": 136315034,
+  "configname": "UI",
   "documentation": null
 }

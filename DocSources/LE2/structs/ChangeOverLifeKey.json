@@ -2,15 +2,18 @@
   "members": {
     "Time": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "Brightness": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "Color": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     }
   },
   "classdef": "SFXWeapon",

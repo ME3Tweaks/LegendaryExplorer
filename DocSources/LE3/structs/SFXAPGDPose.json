@@ -2,35 +2,43 @@
   "members": {
     "aTrans": {
       "type": "SFXAPGDTransition",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "aGests": {
       "type": "SFXAPGDGesture",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "nPoseChangeChance": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nPlayGestureChance": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fChoiceTimeDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bEnterEvent": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bExitEvent": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bEnterTransDoneEvent": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXAmbPerfGameData",

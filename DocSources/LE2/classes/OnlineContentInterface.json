@@ -4,15 +4,18 @@
   "variables": {
     "__OnReadContentComplete__Delegate": {
       "type": "OnReadContentComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnQueryAvailableDownloadsComplete__Delegate": {
       "type": "OnQueryAvailableDownloadsComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnContentChange__Delegate": {
       "type": "OnContentChange",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -20,16 +23,19 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "NewDownloads": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "TotalDownloads": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -39,12 +45,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "QueryDownloadsDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnQueryAvailableDownloadsComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -54,12 +62,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "QueryDownloadsDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnQueryAvailableDownloadsComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -69,8 +79,9 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -80,12 +91,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "CategoryMask": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -95,12 +108,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "ContentList": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineContent",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "EOnlineEnumerationReadState",
@@ -110,8 +125,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -121,12 +137,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "ReadContentCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadContentComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -136,12 +154,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "ReadContentCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadContentComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -151,8 +171,9 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -162,12 +183,14 @@
       "documentation": null,
       "signature_members": {
         "ContentDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnContentChange",
+          "documentation": null,
+          "flags": 4194432
         },
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -177,12 +200,14 @@
       "documentation": null,
       "signature_members": {
         "ContentDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnContentChange",
+          "documentation": null,
+          "flags": 4194432
         },
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -196,5 +221,7 @@
     }
   },
   "states": {},
+  "classflags": 16403,
+  "configname": "None",
   "documentation": null
 }

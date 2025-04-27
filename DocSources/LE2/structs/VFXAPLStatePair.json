@@ -2,11 +2,13 @@
   "members": {
     "m_nmAPLState": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_VFXState": {
       "type": "EBioVFXState",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioBaseAppearancePlaceable",

@@ -4,23 +4,28 @@
   "variables": {
     "m_Door": {
       "type": "SFXDoor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ActivatedStartTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxWaitTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bInstantTransition": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bForceFireSuccess": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -40,12 +45,14 @@
       "documentation": null,
       "signature_members": {
         "ToState": {
-          "type": null,
-          "documentation": null
+          "type": "ESFXDoorState",
+          "documentation": null,
+          "flags": 128
         },
         "bEnableDoor": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -55,8 +62,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -64,5 +72,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

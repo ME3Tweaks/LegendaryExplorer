@@ -4,18 +4,23 @@
   "variables": {
     "sScriptName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Conv": {
       "type": "BioConversation",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "eScriptType": {
       "type": "EConversationScriptType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

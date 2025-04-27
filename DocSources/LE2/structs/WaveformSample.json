@@ -2,23 +2,28 @@
   "members": {
     "Duration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LeftAmplitude": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RightAmplitude": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LeftFunction": {
       "type": "EWaveformFunction",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RightFunction": {
       "type": "EWaveformFunction",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "ForceFeedbackWaveform",

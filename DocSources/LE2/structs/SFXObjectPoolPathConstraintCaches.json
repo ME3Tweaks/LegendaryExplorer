@@ -2,11 +2,13 @@
   "members": {
     "List": {
       "type": "PathConstraint",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ListIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXObjectPool",

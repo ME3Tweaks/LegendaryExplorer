@@ -4,38 +4,48 @@
   "variables": {
     "VectorParameters": {
       "type": "SMAVectorParameter",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "ScalarParameters": {
       "type": "SMAScalarParameter",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "TextureParameters": {
       "type": "SMATextureParameter",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "HeadMesh": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "HairMesh": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "MorphHead": {
       "type": "BioMorphFace",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "UpdateSkelWhenNotRendered": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bHasWrinkles": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

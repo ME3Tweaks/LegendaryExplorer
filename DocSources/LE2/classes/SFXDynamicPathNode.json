@@ -4,10 +4,13 @@
   "variables": {
     "m_aContainingActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

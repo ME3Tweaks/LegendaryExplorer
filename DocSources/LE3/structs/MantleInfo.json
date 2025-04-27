@@ -2,83 +2,103 @@
   "members": {
     "CurrentSlot": {
       "type": "CoverSlot",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "LeftSlot": {
       "type": "CoverSlot",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "RightSlot": {
       "type": "CoverSlot",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MantleStartLoc": {
       "type": "BasedPosition",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MantleEndLoc": {
       "type": "BasedPosition",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EstimatedLandingLoc": {
       "type": "BasedPosition",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DestLink": {
       "type": "CoverLink",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LeftLink": {
       "type": "CoverLink",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RightLink": {
       "type": "CoverLink",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentLink": {
       "type": "CoverLink",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MantleDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentSlotIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LeftSlotIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RightSlotIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentSlotPct": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FallForwardVelocity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RootMotionScaleFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DefaultMantleDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bForced": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsOnASlot": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioPawn",

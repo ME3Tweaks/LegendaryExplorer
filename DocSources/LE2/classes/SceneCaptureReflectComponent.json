@@ -4,14 +4,18 @@
   "variables": {
     "TextureTarget": {
       "type": "TextureRenderTarget2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ScaleFOV": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

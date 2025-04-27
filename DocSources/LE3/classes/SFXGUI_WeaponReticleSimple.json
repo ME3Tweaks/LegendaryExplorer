@@ -4,15 +4,18 @@
   "variables": {
     "m_oActualReticle": {
       "type": "GFxValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_oPipRight": {
       "type": "GFxValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_oPipLeft": {
       "type": "GFxValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -20,8 +23,9 @@
       "documentation": null,
       "signature_members": {
         "bInstant": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -31,8 +35,9 @@
       "documentation": null,
       "signature_members": {
         "bInstant": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -42,8 +47,9 @@
       "documentation": null,
       "signature_members": {
         "bUnsubscribe": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -53,8 +59,9 @@
       "documentation": null,
       "signature_members": {
         "bInSights": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -68,5 +75,7 @@
     }
   },
   "states": {},
+  "classflags": 22,
+  "configname": "UI",
   "documentation": null
 }

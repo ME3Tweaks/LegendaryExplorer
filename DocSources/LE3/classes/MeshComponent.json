@@ -4,19 +4,23 @@
   "variables": {
     "Materials": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194307
     },
     "m_aEffectsMaterialMICs": {
       "type": "MaterialInstanceConstant",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "CachedTextures": {
       "type": "Texture",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202498
     },
     "CachedTexturesTimer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -30,8 +34,9 @@
       "documentation": null,
       "signature_members": {
         "ElementIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "MaterialInterface",
@@ -53,8 +58,9 @@
       "documentation": null,
       "signature_members": {
         "ElementIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "MaterialInterface",
@@ -70,8 +76,9 @@
       "documentation": null,
       "signature_members": {
         "UnscaledBounds": {
-          "type": null,
-          "documentation": null
+          "type": "BoxSphereBounds",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -81,16 +88,19 @@
       "documentation": null,
       "signature_members": {
         "Seconds": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bPrioritizeCharacterTextures": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "CinematicTextureGroups": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -100,8 +110,9 @@
       "documentation": null,
       "signature_members": {
         "nmEffect": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -111,8 +122,9 @@
       "documentation": null,
       "signature_members": {
         "fFraction": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -122,12 +134,14 @@
       "documentation": null,
       "signature_members": {
         "ElementIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Material": {
-          "type": null,
-          "documentation": null
+          "type": "MaterialInterface",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -137,8 +151,9 @@
       "documentation": null,
       "signature_members": {
         "ElementIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "MaterialInstanceConstant",
@@ -148,8 +163,9 @@
       "documentation": null,
       "signature_members": {
         "ElementIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "MaterialInstanceTimeVarying",
@@ -157,5 +173,7 @@
     }
   },
   "states": {},
+  "classflags": 2155872659,
+  "configname": "None",
   "documentation": null
 }

@@ -4,27 +4,33 @@
   "variables": {
     "CachedEngine": {
       "type": "SFXEngine",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LevelNameDisplayOverride": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ElapsedTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bFiredOutPin": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bForceAutoSave": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "FinishState": {
       "type": "EEndGameState",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -38,8 +44,9 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -61,8 +68,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -72,8 +80,9 @@
       "documentation": null,
       "signature_members": {
         "Descriptor": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveDescriptor",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -87,5 +96,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

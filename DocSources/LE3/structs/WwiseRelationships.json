@@ -2,11 +2,13 @@
   "members": {
     "Streams": {
       "type": "WwiseStream",
-      "documentation": null
+      "documentation": null,
+      "flags": 135171
     },
     "Bank": {
       "type": "WwiseBank",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "WwiseEvent",

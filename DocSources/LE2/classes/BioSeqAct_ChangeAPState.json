@@ -4,26 +4,33 @@
   "variables": {
     "oPlaceable": {
       "type": "BioArtPlaceable",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "nmNewState": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "nmNamedTransiton": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bChangeImmediately": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bFail": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

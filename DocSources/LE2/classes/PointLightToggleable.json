@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "Record": {
-          "type": null,
-          "documentation": null
+          "type": "CheckpointRecord",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -18,8 +19,9 @@
       "documentation": null,
       "signature_members": {
         "Record": {
-          "type": null,
-          "documentation": null
+          "type": "CheckpointRecord",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -33,5 +35,7 @@
     }
   },
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

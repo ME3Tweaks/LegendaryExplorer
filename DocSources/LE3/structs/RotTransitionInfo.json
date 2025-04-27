@@ -2,11 +2,13 @@
   "members": {
     "RotationOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ChildIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioAnimNodeBlend_TurnInPlace",

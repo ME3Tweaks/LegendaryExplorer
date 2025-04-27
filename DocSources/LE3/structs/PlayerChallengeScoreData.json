@@ -2,27 +2,33 @@
   "members": {
     "TotalDamage": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DamageScoreBudget": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TotalAssist": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AssistBudget": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EnvironmentalDamage": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastDamageSource": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXPawn",

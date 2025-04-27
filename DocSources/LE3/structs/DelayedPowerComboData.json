@@ -2,19 +2,23 @@
   "members": {
     "HitLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HitNormal": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ComboEffect": {
       "type": "SFXGameEffect_PowerCombo",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TargetPawn": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXPowerCustomAction",

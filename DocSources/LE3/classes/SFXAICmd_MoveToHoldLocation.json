@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "AI": {
-          "type": null,
-          "documentation": null
+          "type": "SFXAI_Henchman",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -30,8 +31,9 @@
       "documentation": null,
       "signature_members": {
         "OldCommandName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -44,5 +46,7 @@
       "documentation": null
     }
   },
+  "classflags": 18,
+  "configname": "None",
   "documentation": null
 }

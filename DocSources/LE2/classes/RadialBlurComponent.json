@@ -4,43 +4,53 @@
   "variables": {
     "LocalToWorld": {
       "type": "Matrix",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "Material": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "BlurScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934595
     },
     "BlurFalloffExponent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934595
     },
     "BlurOpacity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934595
     },
     "MaxCullDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "DistanceFalloffExponent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bRenderAsVelocity": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "DepthPriorityGroup": {
       "type": "ESceneDepthPriorityGroup",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     }
   },
   "functions": {
@@ -66,8 +76,9 @@
       "documentation": null,
       "signature_members": {
         "bInEnabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -77,8 +88,9 @@
       "documentation": null,
       "signature_members": {
         "InBlurOpacity": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -88,8 +100,9 @@
       "documentation": null,
       "signature_members": {
         "InBlurFalloffExponent": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -99,8 +112,9 @@
       "documentation": null,
       "signature_members": {
         "InBlurScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -110,8 +124,9 @@
       "documentation": null,
       "signature_members": {
         "InMaterial": {
-          "type": null,
-          "documentation": null
+          "type": "MaterialInterface",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -119,5 +134,7 @@
     }
   },
   "states": {},
+  "classflags": 134230162,
+  "configname": "None",
   "documentation": null
 }

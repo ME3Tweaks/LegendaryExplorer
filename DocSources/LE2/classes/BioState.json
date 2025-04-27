@@ -4,19 +4,23 @@
   "variables": {
     "StateTransitions": {
       "type": "BioTransition",
-      "documentation": null
+      "documentation": null,
+      "flags": 71434241
     },
     "StateName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     },
     "AnimationName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     },
     "bFinishAnimationBeforeTransition": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -24,12 +28,14 @@
       "documentation": null,
       "signature_members": {
         "ToState": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "NamedTransition": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "BioTransition",
@@ -39,12 +45,14 @@
       "documentation": null,
       "signature_members": {
         "ToState": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "NamedTransition": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -52,5 +60,7 @@
     }
   },
   "states": {},
+  "classflags": 142610578,
+  "configname": "None",
   "documentation": null
 }

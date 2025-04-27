@@ -2,11 +2,13 @@
   "members": {
     "Location": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TimeStamp": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SeqAct_Interp",

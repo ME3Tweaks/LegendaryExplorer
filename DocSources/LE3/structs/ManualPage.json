@@ -2,35 +2,43 @@
   "members": {
     "Image": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "Id": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Chapter": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PageNum": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Title": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Body": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ConsoleBody": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ChapterIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "classdef": "SFXGUI_Manual",

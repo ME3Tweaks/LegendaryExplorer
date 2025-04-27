@@ -4,47 +4,58 @@
   "variables": {
     "barkName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_nextBark": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fBarkDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AIBarkI": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AIBarkJ": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AIBarkK": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AIBarkVar": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDoneCombatBarks": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDoneExploreBarks": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDoneStealthBarks": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDoneCombatVarBarks": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -58,8 +69,9 @@
       "documentation": null,
       "signature_members": {
         "TimeDelta": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -75,8 +87,9 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "WwiseEvent",
@@ -86,8 +99,9 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "WwiseEvent",
@@ -97,8 +111,9 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "WwiseEvent",
@@ -108,8 +123,9 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "WwiseEvent",
@@ -117,5 +133,7 @@
     }
   },
   "states": {},
+  "classflags": 18,
+  "configname": "None",
   "documentation": null
 }

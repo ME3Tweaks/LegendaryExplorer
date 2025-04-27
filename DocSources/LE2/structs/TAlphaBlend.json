@@ -2,27 +2,33 @@
   "members": {
     "AlphaIn": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "AlphaOut": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "AlphaTarget": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BlendTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BlendTimeToGo": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "BlendType": {
       "type": "AlphaBlendType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "Object",

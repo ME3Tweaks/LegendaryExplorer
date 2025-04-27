@@ -2,27 +2,33 @@
   "members": {
     "Header": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Description": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Func": {
       "type": "ProfileHandler",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Utility": {
       "type": "ProfileUtility",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Keyword": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bNoTarget": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioCheatManager",

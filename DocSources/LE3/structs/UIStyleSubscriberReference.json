@@ -2,11 +2,13 @@
   "members": {
     "Subscriber": {
       "type": "UIStyleResolver",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "SubscriberId": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     }
   },
   "classdef": "UIRoot",

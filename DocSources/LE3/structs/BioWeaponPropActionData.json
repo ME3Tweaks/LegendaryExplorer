@@ -2,11 +2,13 @@
   "members": {
     "pfnExecute": {
       "type": "function",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "pfnGetTiming": {
       "type": "function",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioEvtSysTrackProp",

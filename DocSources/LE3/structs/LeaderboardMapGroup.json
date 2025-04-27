@@ -2,11 +2,13 @@
   "members": {
     "MapName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "Entries": {
       "type": "LeaderboardDefinition",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     }
   },
   "classdef": "ISFXOnlineComponentLeaderboard",

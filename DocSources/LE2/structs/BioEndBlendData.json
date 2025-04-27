@@ -2,11 +2,13 @@
   "members": {
     "fEndBlendStartTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fEndBlendDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioAnimNodeBlendPoseAndGestures",

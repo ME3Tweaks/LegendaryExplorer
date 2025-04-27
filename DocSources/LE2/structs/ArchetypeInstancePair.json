@@ -2,19 +2,23 @@
   "members": {
     "ArchetypeBounds": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1056768
     },
     "InstanceBounds": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1056768
     },
     "WidgetArchetype": {
       "type": "UIObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 1056768
     },
     "WidgetInstance": {
       "type": "UIObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 1056768
     }
   },
   "classdef": "UIPrefab",

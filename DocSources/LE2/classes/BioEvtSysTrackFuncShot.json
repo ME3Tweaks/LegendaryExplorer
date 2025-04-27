@@ -4,11 +4,13 @@
   "variables": {
     "m_aShotData": {
       "type": "BioFuncShotData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_nmOldShotType": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -44,5 +46,7 @@
     }
   },
   "states": {},
+  "classflags": 136323218,
+  "configname": "None",
   "documentation": null
 }

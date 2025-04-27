@@ -4,19 +4,23 @@
   "variables": {
     "WeaponSelectionMovieInfo": {
       "type": "GFxMovieInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxWeapons": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ShowAllWeapons": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsFinished": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -30,8 +34,9 @@
       "documentation": null,
       "signature_members": {
         "i_ScreenToClose": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGUIMovie",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -41,8 +46,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -50,5 +56,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

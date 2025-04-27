@@ -4,67 +4,83 @@
   "variables": {
     "BS_Start_Mid": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "BS_Loop_Mid": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "BS_End_Mid": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "BS_ShortStart": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "SwatTurnTarget": {
       "type": "CoverReference",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LoopStartLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "HighSwatTurnCamera": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LowSwatTurnCamera": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fEndBlendInTimeHigh": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fEndBlendOutTimeHigh": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fShortSwatThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fHighAnimDist": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fLowAnimDist": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bStartStanding": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bEndStanding": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bRightSwatTurn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "functions": {
@@ -72,8 +88,9 @@
       "documentation": null,
       "signature_members": {
         "UsedAnims": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -89,12 +106,14 @@
       "documentation": null,
       "signature_members": {
         "oPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "Target": {
-          "type": null,
-          "documentation": null
+          "type": "CoverReference",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -104,8 +123,9 @@
       "documentation": null,
       "signature_members": {
         "bForced": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -127,16 +147,19 @@
       "documentation": null,
       "signature_members": {
         "oNewCameraMode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 384
         },
         "fTransitionIn": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "fTransitionOut": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -146,8 +169,9 @@
       "documentation": null,
       "signature_members": {
         "Stance": {
-          "type": null,
-          "documentation": null
+          "type": "BodyStance",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -157,8 +181,9 @@
       "documentation": null,
       "signature_members": {
         "Stance": {
-          "type": null,
-          "documentation": null
+          "type": "BodyStance",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -168,8 +193,9 @@
       "documentation": null,
       "signature_members": {
         "Stance": {
-          "type": null,
-          "documentation": null
+          "type": "BodyStance",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -179,12 +205,14 @@
       "documentation": null,
       "signature_members": {
         "SyncPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "bForced": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -200,8 +228,9 @@
       "documentation": null,
       "signature_members": {
         "NextStage": {
-          "type": null,
-          "documentation": null
+          "type": "EMoveStage",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -215,5 +244,7 @@
     }
   },
   "states": {},
+  "classflags": 10485782,
+  "configname": "Game",
   "documentation": null
 }

@@ -4,79 +4,98 @@
   "variables": {
     "NavOctreeObject": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 143362
     },
     "End": {
       "type": "ActorReference",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "Direction": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Start": {
       "type": "NavigationPoint",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "BlockedBy": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Distance": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CollisionRadius": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "CollisionHeight": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "reachFlags": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxLandingVelocity": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nBlockedCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAddToNavigationOctree": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 131074
     },
     "bCanCutCorners": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bCheckForObstructions": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bSkipPrune": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bIsMantle": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bDisabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     },
     "bPruned": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PathColorIndex": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -84,8 +103,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -113,8 +133,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -122,5 +143,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

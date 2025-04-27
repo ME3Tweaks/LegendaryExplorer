@@ -4,10 +4,13 @@
   "variables": {
     "VfTable_IInterface_NavMeshPathObject": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144704178,
+  "configname": "None",
   "documentation": null
 }

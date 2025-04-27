@@ -2,23 +2,28 @@
   "members": {
     "BodyPart": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ReactionChance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIgnoreShields": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Reaction": {
       "type": "EReactionTypes",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaxRange": {
       "type": "EHitReactRange",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXDamageType",

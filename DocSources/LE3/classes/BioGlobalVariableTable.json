@@ -4,347 +4,433 @@
   "variables": {
     "IntVariables": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "FloatVariables": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "BoolVariables": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ME1CanonPlotVariables": {
       "type": "NewGameCanonPlot",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "ME2CanonPlotVariables": {
       "type": "NewGameCanonPlot",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "ME1ToME3PlotCopy": {
       "type": "CopyPlot",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "ME2ToME3PlotCopy": {
       "type": "CopyPlot",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "NewGamePlusPlotsToPersist": {
       "type": "PlotIdenfitier",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "TimedPlotUnlocks": {
       "type": "TimedPlotUnlock_t",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "oNameLookupTable": {
       "type": "Bio2DA",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ME1PlotTable_IndexOffset": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME1PlotTable_Bool_CutoffIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME1PlotTable_Int_CutoffIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME1PlotTable_Float_CutoffIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3_Plots_Utility_Player_Info_Paragon": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3_Plots_Utility_Player_Info_Renegade": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3_Plots_Utility_Player_Info_ReputationPoints": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3_Plots_Utility_Player_Info_ME2Paragon": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3_Plots_Utility_Player_Info_ME2Renegade": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3_Plots_Utility_Player_Info_Childhood": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3_Plots_Utility_Player_Info_Reputation": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3_Plots_Utility_Player_Info_PersuadeMultiplier": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3_Plots_Utility_Player_Info_Character_Class": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3_Plots_Utility_Player_Info_Female_Player": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3_Plots_Bool_Is_ME2_Import": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3_Plots_Bool_Is_ME1_Import": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3_Plots_Int_ME3_NewGamePlus_Count": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "PS3DarkHorseME1PlayedPlotCheck_Bool": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME2__ME1_Plots_for_ME2__Background_and_Relationships__Kaidan_romance_True": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME2__ME1_Plots_for_ME2__Background_and_Relationships__Ashley_romance_True": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME2__ME1_Plots_for_ME2__Background_and_Relationships__Liara_romance_True": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME2__ME1_Plots_for_ME2__Background_and_Relationships__NoRomance_True": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME2__ME1_Plots_for_ME2__CH2_Virmire__Ash_died": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME2__ME1_Plots_for_ME2__CH2_Virmire__Kaidan_died": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME2__ME1_Plots_for_ME2__CH2_Noveria__Rachni_Alive": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME2__ME1_Plots_for_ME2__CH2_Virmire_Wrex_Died": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME2__ME1_Plots_for_ME2__CH2_Virmire_Ash_Killed_Wrex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME2__ME1_Plots_for_ME2__CH4_Star_Citadel__Council_Dead": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME2__ME1_Plots_for_ME2__CH4_Star_Citadel__Council_Alive": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME2__ME1_Plots_for_ME2__CH4_Star_Citadel__Udina_Chosen": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME2__ME1_Plots_for_ME2__CH4_Star_Citadel__Anderson_chosen": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME1_Plots_for_ME3__Global_Plots__Henchman_Kaidan__Romance_Buddy_dialog_count": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME1_Plots_for_ME3__Global_Plots__Henchman_Kaidan__Romance_active": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME1_Plots_for_ME3__Global_Plots__Henchman_Ash__Romance_Buddy_dialog_count": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME1_Plots_for_ME3__Global_Plots__Henchman_Ash__romance_active": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME1_Plots_for_ME3__Global_Plots__Henchman_Liara__Romance_Buddy_dialog_count": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME1_Plots_for_ME3__Global_Plots__Henchman_Liara__Romance_active": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME1_Plots_for_ME3__CH2_Virmire__The_Choice__Rescued_Kaidan": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME1_Plots_for_ME3__CH2_Virmire__The_Choice__Rescued_Ash": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME1_Plots_for_ME3__CH2_Noveria__Rachni_Queen__Queen_Dealt_With__Queen_Released": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME1_Plots_for_ME3__CH2_Noveria__Rachni_Queen__Queen_Dealt_With__Queen_eliminated": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME1_Plots_for_ME3__CH2_Virmire__Krogan_conundrum__Failure__Failure_KilledBy_Player": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME1_Plots_for_ME3__Utility__Henchman__InParty__Krogan": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME1_Plots_for_ME3__Utility__Henchman__InParty__HumanMale": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME1_Plots_for_ME3__Utility__Henchman__InParty__HumanFemale": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME1_Plots_for_ME3__CH4_Star_Citadel__Final_Choice__Choice_Is_Made__Save_the_Council": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME1_Plots_for_ME3__CH4_Star_Citadel__Final_Choice__Choice_Is_Made__Destroy_the_Council": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME1_Plots_for_ME3__CH4_Star_Citadel__Final_Choice__Chose_ambassador": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME1_Plots_for_ME3__CH4_Star_Citadel__Final_Choice__Chose_Anderson": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME1_Plots_for_ME3__CH2_Virmire__Krogan_conundrum__Failure__Failure_KilledBy_Ashley": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME1_Plots_for_ME3__CH2_Virmire__Krogan_conundrum__Failure__Failure_AshKilledWithoutPermission": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Loyalty_Missions__Professor_Loyalty__Mission_Complete__Saved_Data": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Loyalty_Missions__Professor_Loyalty__Mission_Complete__Destroyed_Data": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Loyalty_Missions__Geth_Loyalty__Heretic_Resolution__Blow_Them_Up": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Loyalty_Missions__Geth_Loyalty__Heretic_Resolution__Rewrite_Them": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Act_3__Final_Decision__Work_with_Cerberus": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Act_3__Final_Decision__Destroy_Base": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Utility__Henchmen__In_Party__Vixen": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Utility__Henchmen__In_Party__Leading": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Utility__Henchmen__In_Party__Grunt": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Utility__Henchmen__In_Party__Assassin": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Utility__Henchmen__In_Party__Veteran": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Utility__Henchmen__In_Party__Thief": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Utility__Henchmen__In_Party__Mystic": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Utility__Henchmen__In_Party__Professor": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Utility__Henchmen__In_Party__Geth": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Utility__Henchmen__In_Party__Tali": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Utility__Henchmen__In_Party__Convict": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Utility__Henchmen__In_Party__Garrus": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Global__Henchmen__Vixen__Relationship": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Global__Henchmen__Garrus__Relationship": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Global__Henchmen__Leading__Relationship": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Global__Henchmen__Assassin__Relationship": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Global__Henchmen__Convict__Relationship": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Global__Henchmen__Tali__Relationship": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ME3__ME2_Plots_for_ME3__Global__Achievements__ChangedDifficulty": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -352,8 +438,9 @@
       "documentation": null,
       "signature_members": {
         "aCanonPlotVariables": {
-          "type": null,
-          "documentation": null
+          "type": "NewGameCanonPlot",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -363,8 +450,9 @@
       "documentation": null,
       "signature_members": {
         "bPersistME1ME2plots": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -374,8 +462,9 @@
       "documentation": null,
       "signature_members": {
         "LegacyImportSaveGame": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGame",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -385,8 +474,9 @@
       "documentation": null,
       "signature_members": {
         "toCopy": {
-          "type": null,
-          "documentation": null
+          "type": "CopyPlot",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -402,8 +492,9 @@
       "documentation": null,
       "signature_members": {
         "LegacyImportSaveGame": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGame",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -413,8 +504,9 @@
       "documentation": null,
       "signature_members": {
         "NewGamePlusSave": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGame",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -424,8 +516,9 @@
       "documentation": null,
       "signature_members": {
         "Vars": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -441,8 +534,9 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -452,8 +546,9 @@
       "documentation": null,
       "signature_members": {
         "nmLabel": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -463,8 +558,9 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -474,8 +570,9 @@
       "documentation": null,
       "signature_members": {
         "nmLabel": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -485,8 +582,9 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -496,8 +594,9 @@
       "documentation": null,
       "signature_members": {
         "nmLabel": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -507,8 +606,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerData": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerInfoEx",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -518,8 +618,9 @@
       "documentation": null,
       "signature_members": {
         "me1Plots": {
-          "type": null,
-          "documentation": null
+          "type": "ME1PlotTableRecord",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -529,16 +630,19 @@
       "documentation": null,
       "signature_members": {
         "messageId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "messageIds": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194432
         },
         "errorCode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -548,20 +652,24 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bEvaluateAchievement": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bSkipAllAdditionalProcessing": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -571,12 +679,14 @@
       "documentation": null,
       "signature_members": {
         "nmLabel": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -586,16 +696,19 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bSkipAllAdditionalProcessing": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -605,12 +718,14 @@
       "documentation": null,
       "signature_members": {
         "nmLabel": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -620,16 +735,19 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nValue": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bSkipAllAdditionalProcessing": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -639,12 +757,14 @@
       "documentation": null,
       "signature_members": {
         "nmLabel": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nValue": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -654,20 +774,24 @@
       "documentation": null,
       "signature_members": {
         "LegacyImportSaveGame": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGame",
+          "documentation": null,
+          "flags": 128
         },
         "PlusImportSaveGame": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGame",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerData": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerInfoEx",
+          "documentation": null,
+          "flags": 4194690
         },
         "bIncludePlayerVariables": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -677,8 +801,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerData": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerInfoEx",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -688,12 +813,14 @@
       "documentation": null,
       "signature_members": {
         "Elements": {
-          "type": null,
-          "documentation": null
+          "type": "CustomizableElement",
+          "documentation": null,
+          "flags": 4194688
         },
         "Vars": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -703,8 +830,9 @@
       "documentation": null,
       "signature_members": {
         "nmLabel": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "stringref",
@@ -778,5 +906,7 @@
     }
   },
   "states": {},
+  "classflags": 134217886,
+  "configname": "Game",
   "documentation": null
 }

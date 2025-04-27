@@ -4,54 +4,68 @@
   "variables": {
     "m_aPropActions": {
       "type": "SFXAFGDPropActionData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aPoses": {
       "type": "SFXAPGDPose",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aAnimsets": {
       "type": "AnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sWepPropClass": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_nmPropName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pPropResource": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nStartPoseIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nPropActionIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bEnterEvent": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bExitEvent": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bUseDynamicAnimsets": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bSuppressDamage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

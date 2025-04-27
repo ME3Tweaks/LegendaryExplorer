@@ -4,54 +4,68 @@
   "variables": {
     "m_mapARPUCurves": {
       "type": "MultiMap_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "m_mapPoses": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "m_mapTransitions": {
       "type": "MultiMap_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "m_mapGestures": {
       "type": "MultiMap_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "m_aARPUItems": {
       "type": "BioARPUBodyConfig",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aPosesTemp": {
       "type": "BioGestPose",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aTransTemp": {
       "type": "BioGestTransition",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aGestTemp": {
       "type": "BioGestGesture",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aGestureGroups": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aPoseGroups": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_nmDefaultGestGroup": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nmDefaultPoseGroup": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

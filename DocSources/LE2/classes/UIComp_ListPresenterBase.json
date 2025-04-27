@@ -4,7 +4,8 @@
   "variables": {
     "bReapplyFormatting": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -18,8 +19,9 @@
       "documentation": null,
       "signature_members": {
         "NewMaxVisibleElements": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -29,12 +31,14 @@
       "documentation": null,
       "signature_members": {
         "ElementIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "CellIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "string",
@@ -44,8 +48,9 @@
       "documentation": null,
       "signature_members": {
         "bShouldRenderColHeaders": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -61,8 +66,9 @@
       "documentation": null,
       "signature_members": {
         "Orientation": {
-          "type": null,
-          "documentation": null
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -72,20 +78,24 @@
       "documentation": null,
       "signature_members": {
         "ColIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "out_ColWidth": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "out_StylePadding": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "bReturnUnformattedValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -95,20 +105,24 @@
       "documentation": null,
       "signature_members": {
         "RowIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "out_RowHeight": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "out_StylePadding": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "bReturnUnformattedValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -118,8 +132,9 @@
       "documentation": null,
       "signature_members": {
         "SchemaCellIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -129,16 +144,19 @@
       "documentation": null,
       "signature_members": {
         "SchemaCellIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "NewCellSize": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "EvalType": {
-          "type": null,
-          "documentation": null
+          "type": "EUIExtentEvalType",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -148,12 +166,14 @@
       "documentation": null,
       "signature_members": {
         "SchemaCellIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "EvalType": {
-          "type": null,
-          "documentation": null
+          "type": "EUIExtentEvalType",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "float",
@@ -173,5 +193,7 @@
     }
   },
   "states": {},
+  "classflags": 134221971,
+  "configname": "None",
   "documentation": null
 }

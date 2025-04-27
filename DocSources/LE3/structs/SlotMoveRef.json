@@ -2,15 +2,18 @@
   "members": {
     "Dest": {
       "type": "BasedPosition",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Poly": {
       "type": "PolyReference",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Direction": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "CoverLink",

@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "AI": {
-          "type": null,
-          "documentation": null
+          "type": "AIController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -16,5 +17,7 @@
     }
   },
   "states": {},
+  "classflags": 134234259,
+  "configname": "None",
   "documentation": null
 }

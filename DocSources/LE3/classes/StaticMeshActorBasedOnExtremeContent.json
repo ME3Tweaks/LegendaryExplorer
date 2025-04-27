@@ -4,15 +4,18 @@
   "variables": {
     "ExtremeContent": {
       "type": "SMMaterialSetterDatum",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "NonExtremeContent": {
       "type": "SMMaterialSetterDatum",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "StaticMeshComponent": {
       "type": "StaticMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67764235
     }
   },
   "functions": {
@@ -30,5 +33,7 @@
     }
   },
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

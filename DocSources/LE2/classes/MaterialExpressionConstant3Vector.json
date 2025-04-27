@@ -4,18 +4,23 @@
   "variables": {
     "R": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "G": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "B": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134226066,
+  "configname": "None",
   "documentation": null
 }

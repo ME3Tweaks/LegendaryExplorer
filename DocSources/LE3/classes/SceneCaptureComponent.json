@@ -4,79 +4,98 @@
   "variables": {
     "PostProcessProxies": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 18886658
     },
     "CaptureInfo": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "ViewState": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "UmbraCamera": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "PostProcess": {
       "type": "PostProcessChain",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ClearColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SceneLOD": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FrameRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "MaxUpdateDist": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaxViewDistanceOverride": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaxStreamingUpdateDist": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bEnablePostProcess": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bEnableFog": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseMainScenePostProcessSettings": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSkipUpdateIfTextureUsersOccluded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSkipUpdateIfOwnerOccluded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSkipRenderingDepthPrepass": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ViewMode": {
       "type": "ESceneCaptureViewMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -84,8 +103,9 @@
       "documentation": null,
       "signature_members": {
         "bEnable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -95,8 +115,9 @@
       "documentation": null,
       "signature_members": {
         "NewFrameRate": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -104,5 +125,7 @@
     }
   },
   "states": {},
+  "classflags": 134217875,
+  "configname": "None",
   "documentation": null
 }

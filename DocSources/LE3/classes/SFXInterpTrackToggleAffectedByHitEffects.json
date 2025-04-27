@@ -25,16 +25,19 @@
       "documentation": null,
       "signature_members": {
         "pTrackInst": {
-          "type": null,
-          "documentation": null
+          "type": "BioInterpTrackInst",
+          "documentation": null,
+          "flags": 128
         },
         "bToggle": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bEnable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -42,5 +45,7 @@
     }
   },
   "states": {},
+  "classflags": 142614674,
+  "configname": "None",
   "documentation": null
 }

@@ -4,66 +4,83 @@
   "variables": {
     "m_LocationAdjust": {
       "type": "RawDistributionVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "m_RotationAdjust": {
       "type": "RawDistributionVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "m_oLocationParam": {
       "type": "RvrClientEffectParameter",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_oNormalParam": {
       "type": "RvrClientEffectParameter",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_sAttachment": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_HitLocationPullback": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bSetEffectLocation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bContinuous": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bSendLocation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bSendNormal": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bAttach": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_eTarget": {
       "type": "EEffectLocationTarget",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_eReference": {
       "type": "EEffectLocationReference",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_eRotationTarget": {
       "type": "EEffectRotationTarget",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_eBoneAxis": {
       "type": "EEffectBoneAxis",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144707730,
+  "configname": "None",
   "documentation": null
 }

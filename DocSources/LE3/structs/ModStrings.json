@@ -2,23 +2,28 @@
   "members": {
     "className": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Custom0Tokens": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Custom1Tokens": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "srModName": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "srModDescription": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXGUI_Store",

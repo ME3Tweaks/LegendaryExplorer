@@ -4,18 +4,23 @@
   "variables": {
     "A": {
       "type": "ExpressionInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "B": {
       "type": "ExpressionInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Alpha": {
       "type": "ExpressionInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

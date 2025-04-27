@@ -4,51 +4,63 @@
   "variables": {
     "VfTable_FTickableObject": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "Message": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Title": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnMessageDataLoaded__Delegate": {
       "type": "OnMessageDataLoaded",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MovieClip": {
       "type": "GFxValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Id": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ServerID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DLC_ID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bGFxClassLoaded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bTelemetryFired": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Status": {
       "type": "MMM_Status",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MessageType": {
       "type": "SFXOnlineConnection_MessageType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -68,8 +80,9 @@
       "documentation": null,
       "signature_members": {
         "aFunction": {
-          "type": null,
-          "documentation": null
+          "type": "OnMessageDataLoaded",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -97,8 +110,9 @@
       "documentation": null,
       "signature_members": {
         "aMessageThatFinishedLoading": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGUI_MainMenu_Message",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -108,8 +122,9 @@
       "documentation": null,
       "signature_members": {
         "nStatus": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -123,5 +138,7 @@
     }
   },
   "states": {},
+  "classflags": 134217883,
+  "configname": "UI",
   "documentation": null
 }

@@ -2,19 +2,23 @@
   "members": {
     "ModifierStack": {
       "type": "ModifierData",
-      "documentation": null
+      "documentation": null,
+      "flags": 5251074
     },
     "CustomStyleData": {
       "type": "UICombinedStyleData",
-      "documentation": null
+      "documentation": null,
+      "flags": 1056770
     },
     "BaseStyleData": {
       "type": "UICombinedStyleData",
-      "documentation": null
+      "documentation": null,
+      "flags": 1056770
     },
     "CurrentMenuState": {
       "type": "UIState",
-      "documentation": null
+      "documentation": null,
+      "flags": 1056770
     }
   },
   "classdef": "UIRoot",

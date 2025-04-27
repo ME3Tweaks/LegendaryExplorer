@@ -2,11 +2,13 @@
   "members": {
     "Template": {
       "type": "BioVFXTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Effect": {
       "type": "BioVisualEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioDefine",

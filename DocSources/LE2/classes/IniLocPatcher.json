@@ -4,15 +4,18 @@
   "variables": {
     "Files": {
       "type": "IniLocFileEntry",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "__OnReadTitleFileComplete__Delegate": {
       "type": "OnReadTitleFileComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SystemInterface": {
       "type": "OnlineSystemInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -26,8 +29,9 @@
       "documentation": null,
       "signature_members": {
         "ReadTitleFileCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadTitleFileComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -37,8 +41,9 @@
       "documentation": null,
       "signature_members": {
         "ReadTitleFileCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadTitleFileComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -48,8 +53,9 @@
       "documentation": null,
       "signature_members": {
         "Filename": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -59,12 +65,14 @@
       "documentation": null,
       "signature_members": {
         "Filename": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "FileData": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -74,12 +82,14 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Filename": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -101,12 +111,14 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Filename": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -114,5 +126,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "Engine",
   "documentation": null
 }

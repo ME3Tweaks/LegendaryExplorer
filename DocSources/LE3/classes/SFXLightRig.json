@@ -4,31 +4,38 @@
   "variables": {
     "LightEnvironment": {
       "type": "SHVectorRGB",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "NonShadowedLightEnvironment": {
       "type": "SHVectorRGB",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "KeyLightModifier": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FillLightModifier": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AmbientLightModifier": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TotalShadowIntensity": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ShadowDirection": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -36,8 +43,9 @@
       "documentation": null,
       "signature_members": {
         "InSourceEnv": {
-          "type": null,
-          "documentation": null
+          "type": "BioDynamicLightEnvironmentComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -45,5 +53,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

@@ -4,47 +4,58 @@
   "variables": {
     "VfTable_IISFXOnlineComponentAPI": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "BlazeServiceName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210690
     },
     "BlazeClientName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210690
     },
     "CurrentBlazeHub": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "BlazeNetworkAdapter": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "DirtySockTimeOutMs": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "DirtySockSessionTimeOutMs": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "DirtySockConnectionTimeOutMs": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "m_bLock": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ForceDisableSecureMode": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "BlazeEnv": {
       "type": "SFXOnlineComponentBlazeHubEnvironment",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     }
   },
   "functions": {
@@ -76,8 +87,9 @@
       "documentation": null,
       "signature_members": {
         "oOnlineSubsystem": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineSubsystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -93,8 +105,9 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -108,5 +121,7 @@
     }
   },
   "states": {},
+  "classflags": 134217878,
+  "configname": "Engine",
   "documentation": null
 }

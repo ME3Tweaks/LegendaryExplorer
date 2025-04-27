@@ -4,30 +4,38 @@
   "variables": {
     "MoveToIdleBlends": {
       "type": "MoveToIdleTransitionBlend",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "MoveSyncGroup": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "IdleSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "IdleTimer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ActiveMoveToIdleTrans": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIdle": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

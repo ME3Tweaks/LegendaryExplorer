@@ -4,27 +4,33 @@
   "variables": {
     "m_nStartingResource": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nPhase2Resource": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nPhase2Time": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bCompleted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bRewardOnTimeFail": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_CompletionState": {
       "type": "ESkillGameComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -44,8 +50,9 @@
       "documentation": null,
       "signature_members": {
         "nRemainingResources": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -53,5 +60,7 @@
     }
   },
   "states": {},
+  "classflags": 136315027,
+  "configname": "None",
   "documentation": null
 }

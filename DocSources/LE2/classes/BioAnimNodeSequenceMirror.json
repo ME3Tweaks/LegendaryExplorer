@@ -4,30 +4,38 @@
   "variables": {
     "MirroredAnimSeqName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "MirroredAnimSeq": {
       "type": "AnimSequence",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "DefaultAnimSeq": {
       "type": "AnimSequence",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "MirroredAnimLinkupIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "DefaultAnimLinkupIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bUseMirrored": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

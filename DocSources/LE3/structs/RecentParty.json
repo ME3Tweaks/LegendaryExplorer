@@ -2,11 +2,13 @@
   "members": {
     "PartyLeader": {
       "type": "UniqueNetId",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PartyMembers": {
       "type": "UniqueNetId",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "classdef": "OnlineRecentPlayersList",

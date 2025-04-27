@@ -4,11 +4,13 @@
   "variables": {
     "AnimName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "eStance": {
       "type": "EBodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -16,8 +18,9 @@
       "documentation": null,
       "signature_members": {
         "oPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -25,5 +28,7 @@
     }
   },
   "states": {},
+  "classflags": 10486290,
+  "configname": "None",
   "documentation": null
 }

@@ -4,79 +4,98 @@
   "variables": {
     "ActorGameName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_clsActor": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "VocalizationBank": {
       "type": "SFXVocalizationBank",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ActorGameNameStrRef": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fPhysicsDamageRelativeVelocityThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fPhysicsDamageScalar": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fPhysicsDamageImpulseScalar": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fPhysicsDamageMinThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fPhysicsDamageMaxAllowedPerHit": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nPhysicsLevel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fUseRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nRequiredScanLevel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nTargetTipText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bMin1Health": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bTargetable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bCombatTargetable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bDefaultActionPossibleOverridden": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bPlotProtected": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bSuppressDisintegration": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -94,5 +113,7 @@
     }
   },
   "states": {},
+  "classflags": 134217875,
+  "configname": "None",
   "documentation": null
 }

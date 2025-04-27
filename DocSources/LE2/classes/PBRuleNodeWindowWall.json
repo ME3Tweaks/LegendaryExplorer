@@ -4,42 +4,53 @@
   "variables": {
     "Material": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CellMaxSizeX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CellMaxSizeZ": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "WindowSizeX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "WindowSizeZ": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "WindowPosX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "WindowPosZ": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "YOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bScaleWindowWithCell": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136327314,
+  "configname": "None",
   "documentation": null
 }

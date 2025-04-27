@@ -4,27 +4,33 @@
   "variables": {
     "FFWaveform": {
       "type": "ForceFeedbackWaveform",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentSample": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ElapsedTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ScaleAllWaveformsBy": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAllowsForceFeedback": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsPaused": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -32,8 +38,9 @@
       "documentation": null,
       "signature_members": {
         "bPause": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -43,8 +50,9 @@
       "documentation": null,
       "signature_members": {
         "WaveForm": {
-          "type": null,
-          "documentation": null
+          "type": "ForceFeedbackWaveform",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -54,8 +62,9 @@
       "documentation": null,
       "signature_members": {
         "WaveForm": {
-          "type": null,
-          "documentation": null
+          "type": "ForceFeedbackWaveform",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -63,5 +72,7 @@
     }
   },
   "states": {},
+  "classflags": 134217883,
+  "configname": "None",
   "documentation": null
 }

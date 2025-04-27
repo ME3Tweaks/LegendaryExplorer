@@ -2,11 +2,13 @@
   "members": {
     "Key": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Value": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "classdef": "SFXOnlineBlazeJobUtilities",

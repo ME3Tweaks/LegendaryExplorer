@@ -4,127 +4,158 @@
   "variables": {
     "Slots": {
       "type": "CoverSlot",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     },
     "DynamicLinkInfos": {
       "type": "DynamicLinkInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Claims": {
       "type": "Pawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "CircularOrigin": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "StandingLeanOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "CrouchLeanOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "PopupOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "NextCoverLink": {
       "type": "CoverLink",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "InvalidateDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaxFireLinkDist": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CircularRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "AlignDist": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "AutoCoverSlotInterval": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "StandHeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "MidHeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "SlipDist": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "TurnDist": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "DangerScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "GLOBAL_bUseSlotMarkers": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bDisabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bClaimAllSlots": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAutoSort": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAutoAdjust": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCircular": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bLooped": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPlayerOnly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDynamicCover": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDebug_FireLinks": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDebug_ExposedLinks": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDebug_DangerLinks": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LocationDescription": {
       "type": "ECoverLocationDescription",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     }
   },
   "functions": {
@@ -132,20 +163,24 @@
       "documentation": null,
       "signature_members": {
         "SlotLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "SlotRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         },
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "bForceSlotUpdate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -155,12 +190,14 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bOnlyCheckLeans": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -170,12 +207,14 @@
       "documentation": null,
       "signature_members": {
         "NewClaim": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -185,20 +224,24 @@
       "documentation": null,
       "signature_members": {
         "CheckLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "MaxDistance": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "LeftSlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "RightSlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -208,16 +251,19 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Direction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "out_Info": {
-          "type": null,
-          "documentation": null
+          "type": "CoverInfo",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -233,8 +279,9 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -244,20 +291,24 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "FireLinkIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "out_Info": {
-          "type": null,
-          "documentation": null
+          "type": "CoverInfo",
+          "documentation": null,
+          "flags": 384
         },
         "ArrayID": {
-          "type": null,
-          "documentation": null
+          "type": "EFireLinkID",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -267,28 +318,34 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ChkCover": {
-          "type": null,
-          "documentation": null
+          "type": "CoverInfo",
+          "documentation": null,
+          "flags": 128
         },
         "ChkAction": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverAction",
+          "documentation": null,
+          "flags": 128
         },
         "ChkType": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverType",
+          "documentation": null,
+          "flags": 128
         },
         "out_FireLinkIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "out_Items": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -298,8 +355,9 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "ECoverLocationDescription",
@@ -309,12 +367,14 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Actions": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverAction",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -324,12 +384,14 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Cnt": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -339,12 +401,14 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Cnt": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -354,12 +418,14 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bForceUseOffset": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Vector",
@@ -369,8 +435,9 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "CoverSlotMarker",
@@ -380,12 +447,14 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bForceUseOffset": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Rotator",
@@ -395,16 +464,19 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverType",
+          "documentation": null,
+          "flags": 144
         },
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverAction",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Vector",
@@ -414,16 +486,19 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Direction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "out_Info": {
-          "type": null,
-          "documentation": null
+          "type": "CoverInfo",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -433,16 +508,19 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ChkCover": {
-          "type": null,
-          "documentation": null
+          "type": "CoverInfo",
+          "documentation": null,
+          "flags": 128
         },
         "bAllowFallbackLinks": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -452,12 +530,14 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bIgnoreLeans": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -473,16 +553,19 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ChkSlot": {
-          "type": null,
-          "documentation": null
+          "type": "CoverInfo",
+          "documentation": null,
+          "flags": 128
         },
         "out_ExposedScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -492,12 +575,14 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bIgnoreLeans": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -507,12 +592,14 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bIgnoreLeans": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -522,20 +609,24 @@
       "documentation": null,
       "signature_members": {
         "ChkClaim": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bSkipTeamCheck": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bSkipOverlapCheck": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -545,8 +636,9 @@
       "documentation": null,
       "signature_members": {
         "inAction": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -556,20 +648,24 @@
       "documentation": null,
       "signature_members": {
         "SrcType": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverType",
+          "documentation": null,
+          "flags": 128
         },
         "SrcAction": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverAction",
+          "documentation": null,
+          "flags": 128
         },
         "DestType": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverType",
+          "documentation": null,
+          "flags": 128
         },
         "DestAction": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverAction",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "byte",
@@ -585,8 +681,9 @@
       "documentation": null,
       "signature_members": {
         "bNewDisabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -596,12 +693,14 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "TimeToBecomeValid": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -611,12 +710,14 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bEnable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -632,8 +733,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -643,16 +745,19 @@
       "documentation": null,
       "signature_members": {
         "OldClaim": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bUnclaimAll": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -662,24 +767,29 @@
       "documentation": null,
       "signature_members": {
         "PackedByte": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 130
         },
         "SrcType": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverType",
+          "documentation": null,
+          "flags": 384
         },
         "SrcAction": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverAction",
+          "documentation": null,
+          "flags": 384
         },
         "DestType": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverType",
+          "documentation": null,
+          "flags": 384
         },
         "DestAction": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverAction",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -689,8 +799,9 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -700,8 +811,9 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -711,8 +823,9 @@
       "documentation": null,
       "signature_members": {
         "Record": {
-          "type": null,
-          "documentation": null
+          "type": "CheckpointRecord",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -722,8 +835,9 @@
       "documentation": null,
       "signature_members": {
         "Record": {
-          "type": null,
-          "documentation": null
+          "type": "CheckpointRecord",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -733,8 +847,9 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -744,8 +859,9 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -755,8 +871,9 @@
       "documentation": null,
       "signature_members": {
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_ModifyCover",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -764,5 +881,7 @@
     }
   },
   "states": {},
+  "classflags": 144704150,
+  "configname": "Game",
   "documentation": null
 }

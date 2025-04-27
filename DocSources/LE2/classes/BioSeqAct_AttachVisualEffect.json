@@ -4,19 +4,23 @@
   "variables": {
     "m_oAttachTo": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_vOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nmSocketOrBone": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oEffect": {
       "type": "BioVFXTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -34,5 +38,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

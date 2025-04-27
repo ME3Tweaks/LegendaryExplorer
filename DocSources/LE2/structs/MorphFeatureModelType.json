@@ -2,15 +2,18 @@
   "members": {
     "sFeatureName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MinModel": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "MaxModel": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     }
   },
   "classdef": "BioBaseAppearance",

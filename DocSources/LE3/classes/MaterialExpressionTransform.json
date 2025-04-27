@@ -4,18 +4,23 @@
   "variables": {
     "Input": {
       "type": "ExpressionInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TransformSourceType": {
       "type": "EMaterialVectorCoordTransformSource",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "TransformType": {
       "type": "EMaterialVectorCoordTransform",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134226066,
+  "configname": "None",
   "documentation": null
 }

@@ -2,15 +2,18 @@
   "members": {
     "DeviceSelectionMulticast": {
       "type": "OnDeviceSelectionComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DeviceSelectionDelegates": {
       "type": "OnDeviceSelectionComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DeviceID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXOnlineComponentUnrealPlayerEx",

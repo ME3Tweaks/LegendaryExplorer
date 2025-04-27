@@ -2,23 +2,28 @@
   "members": {
     "Children": {
       "type": "BioAnimScalarNodeChildDef",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Description": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "BlendPctPerSecond": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DefaultScalar": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BlendInstant": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioAnimNodeBlendScalarBehavior",

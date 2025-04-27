@@ -4,11 +4,13 @@
   "variables": {
     "m_aWoundSpecs": {
       "type": "BioWoundSpec",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_aWounds": {
       "type": "BioWoundSpec",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     }
   },
   "functions": {
@@ -22,20 +24,24 @@
       "documentation": null,
       "signature_members": {
         "HitPart": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -45,8 +51,9 @@
       "documentation": null,
       "signature_members": {
         "WoundIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -56,8 +63,9 @@
       "documentation": null,
       "signature_members": {
         "WoundIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "BoxSphereBounds",
@@ -65,5 +73,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "Game",
   "documentation": null
 }

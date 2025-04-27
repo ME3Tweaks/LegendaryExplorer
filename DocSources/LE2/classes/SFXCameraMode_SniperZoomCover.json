@@ -4,19 +4,23 @@
   "variables": {
     "PosOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PosHookOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PosHookName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastPosition": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -30,8 +34,9 @@
       "documentation": null,
       "signature_members": {
         "pos": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverCameraPosition",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -39,5 +44,7 @@
     }
   },
   "states": {},
+  "classflags": 18,
+  "configname": "None",
   "documentation": null
 }

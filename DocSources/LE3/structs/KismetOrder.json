@@ -2,35 +2,43 @@
   "members": {
     "FireCallback": {
       "type": "FireWeaponDelegate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MoveCallback": {
       "type": "MoveToDelegate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "oTargetActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fDistOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fAttackDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bWalk": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bForceShoot": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "eOrderType": {
       "type": "KismetOrderType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXAI_Core",

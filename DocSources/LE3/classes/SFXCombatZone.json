@@ -4,10 +4,13 @@
   "variables": {
     "CombatZoneGuid": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 2228227
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144704178,
+  "configname": "None",
   "documentation": null
 }

@@ -4,14 +4,18 @@
   "variables": {
     "ApexDestructibleActor": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "ApexDestructiblePreview": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 2290094226,
+  "configname": "None",
   "documentation": null
 }

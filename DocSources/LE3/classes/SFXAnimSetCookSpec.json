@@ -4,10 +4,13 @@
   "variables": {
     "AnimSet": {
       "type": "AnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

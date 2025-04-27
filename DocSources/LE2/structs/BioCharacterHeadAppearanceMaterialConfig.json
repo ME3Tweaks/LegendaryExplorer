@@ -2,7 +2,8 @@
   "members": {
     "m_aMaterials": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194313
     }
   },
   "classdef": "Bio_Appr_Character_Head",

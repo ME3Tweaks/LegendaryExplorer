@@ -4,275 +4,343 @@
   "variables": {
     "VfTable_IISFXOnlineComponentGame": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "VfTable_Blaze::BlazeStateEventHandler": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "VfTable_Blaze::GameManager::GameManagerAPIListener": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "VfTable_Blaze::GameManager::GameListener": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "m_InviterId": {
       "type": "UniqueNetId",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_HostMigrationStartTime": {
       "type": "Double",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "InviteCache": {
       "type": "InviteData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ValidHostingNatTypes": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_DLC_Protocol": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "EndOnlineGameCompleteDelegates": {
       "type": "OnEndOnlineGameComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "FindOnlineGamesCompleteDelegates": {
       "type": "OnFindOnlineGamesComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "CreateOnlineGameCompleteDelegates": {
       "type": "OnCreateOnlineGameComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "QuickMatchCompleteDelegates": {
       "type": "OnQuickMatchComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "JoinOnlineGameCompleteDelegates": {
       "type": "OnJoinOnlineGameComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "UpdateOnlineGameCompleteDelegates": {
       "type": "OnUpdateOnlineGameComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DestroyOnlineGameCompleteDelegates": {
       "type": "OnDestroyOnlineGameComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_MPDLCInfo": {
       "type": "MPDLCInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_MissingDLCsInvitee": {
       "type": "MPDLCInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_MissingDLCsInviter": {
       "type": "MPDLCInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnQuickMatchComplete__Delegate": {
       "type": "OnQuickMatchComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnCreateOnlineGameComplete__Delegate": {
       "type": "OnCreateOnlineGameComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnUpdateOnlineGameComplete__Delegate": {
       "type": "OnUpdateOnlineGameComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnFindOnlineGamesComplete__Delegate": {
       "type": "OnFindOnlineGamesComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnCancelFindOnlineGamesComplete__Delegate": {
       "type": "OnCancelFindOnlineGamesComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnDestroyOnlineGameComplete__Delegate": {
       "type": "OnDestroyOnlineGameComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnJoinOnlineGameComplete__Delegate": {
       "type": "OnJoinOnlineGameComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnRegisterPlayerComplete__Delegate": {
       "type": "OnRegisterPlayerComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnUnregisterPlayerComplete__Delegate": {
       "type": "OnUnregisterPlayerComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnStartOnlineGameComplete__Delegate": {
       "type": "OnStartOnlineGameComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnEndOnlineGameComplete__Delegate": {
       "type": "OnEndOnlineGameComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnArbitrationRegistrationComplete__Delegate": {
       "type": "OnArbitrationRegistrationComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnGameInviteAccepted__Delegate": {
       "type": "OnGameInviteAccepted",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_pNetAdapter": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "m_MatchMakingJobId": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "m_AcceptingInviteJobId": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "GameSettings": {
       "type": "SFXOnlineGameSettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GameSearch": {
       "type": "SFXOnlineGameSearch",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_PendingGameSettings": {
       "type": "OnlineGameSettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_UpdatedGameSettings": {
       "type": "OnlineGameSettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_HostMigrationMsgBoxName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_DelayedInvite": {
       "type": "SFXOnlineEvent_Invite",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_HostMigrationTimeout": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "m_HostMigrationMessageMinTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "m_MatchMakingSessionDurationMs": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "m_MinPlayerCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "m_DesiredPlayerCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "srHostMigrationInGame": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srHostMigrationInLobby": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srInviteLocalPlayerError": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srPopupOk": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_MultiplayerTargetVersion": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_MultiplayerProtocolVersion": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "m_ServerMatchMakingRulesVersion": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_RunningUpdateRequestCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_IgnoreBlazeServerDisconnect": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "m_AssertOnMatchMakingErrors": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "m_HostMigrationEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "m_KickedPlayerAlsoBanned": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "m_HostViabilityEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bAllowMatchmaking": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_ResolveHostAddressInProgress": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_HostMigrationInProgress": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_HostMigrationCompleted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_HostMigrationFailed": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_HostMigrationHostAddressResolved": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_HostMigrationEndedFromBlaze": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_LocalPlayerWasKicked": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_LeaveGamePending": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -280,12 +348,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -295,12 +365,14 @@
       "documentation": null,
       "signature_members": {
         "bAllow": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bUpdateServer": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -340,8 +412,9 @@
       "documentation": null,
       "signature_members": {
         "NewGameSettings": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineGameSettings",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -351,12 +424,14 @@
       "documentation": null,
       "signature_members": {
         "bLocalPlayerIsHost": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bIsInLobby": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -372,16 +447,19 @@
       "documentation": null,
       "signature_members": {
         "HostingPlayerNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "NewGameSettings": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineGameSettings",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -391,8 +469,9 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -402,8 +481,9 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -413,8 +493,9 @@
       "documentation": null,
       "signature_members": {
         "Reason": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -424,12 +505,14 @@
       "documentation": null,
       "signature_members": {
         "SearchingPlayerNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "SearchSettings": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineGameSearch",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -457,12 +540,14 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ConnectInfo": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -478,8 +563,9 @@
       "documentation": null,
       "signature_members": {
         "disconnectEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -495,12 +581,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Context": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -522,8 +610,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -533,8 +622,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -562,16 +652,19 @@
       "documentation": null,
       "signature_members": {
         "PlayerNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "DesiredGame": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineGameSearchResult",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "bool",
@@ -581,8 +674,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -598,12 +692,14 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -613,8 +709,9 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -630,12 +727,14 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -645,12 +744,14 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -660,12 +761,14 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -675,8 +778,9 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -686,8 +790,9 @@
       "documentation": null,
       "signature_members": {
         "InviteResult": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineGameSearchResult",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -703,8 +808,9 @@
       "documentation": null,
       "signature_members": {
         "oOnlineSubsystem": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineSubsystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -714,8 +820,9 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -725,12 +832,14 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -740,8 +849,9 @@
       "documentation": null,
       "signature_members": {
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -751,8 +861,9 @@
       "documentation": null,
       "signature_members": {
         "Result": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -762,16 +873,19 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -787,12 +901,14 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -802,8 +918,9 @@
       "documentation": null,
       "signature_members": {
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -813,16 +930,19 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -832,12 +952,14 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -853,8 +975,9 @@
       "documentation": null,
       "signature_members": {
         "quickMatchSettings": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineGameSettings",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -864,16 +987,19 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "bWasInvited": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -883,8 +1009,9 @@
       "documentation": null,
       "signature_members": {
         "bEnable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -894,8 +1021,9 @@
       "documentation": null,
       "signature_members": {
         "Enabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -905,8 +1033,9 @@
       "documentation": null,
       "signature_members": {
         "allAvailableDLCs": {
-          "type": null,
-          "documentation": null
+          "type": "MPDLCInfo",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -916,8 +1045,9 @@
       "documentation": null,
       "signature_members": {
         "protocolVersion": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -927,8 +1057,9 @@
       "documentation": null,
       "signature_members": {
         "presencePrivate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -938,8 +1069,9 @@
       "documentation": null,
       "signature_members": {
         "serverRulesVersion": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -949,8 +1081,9 @@
       "documentation": null,
       "signature_members": {
         "bIsInLobby": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -960,20 +1093,24 @@
       "documentation": null,
       "signature_members": {
         "bodyStr": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "bShowOkBtn": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bModal": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bPauseGameplay": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -983,8 +1120,9 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -994,8 +1132,9 @@
       "documentation": null,
       "signature_members": {
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1005,12 +1144,14 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1026,16 +1167,19 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "UpdatedGameSettings": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineGameSettings",
+          "documentation": null,
+          "flags": 128
         },
         "bShouldRefreshOnlineData": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -1051,16 +1195,19 @@
       "documentation": null,
       "signature_members": {
         "SearchingPlayerNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "SearchSettings": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineGameSearch",
+          "documentation": null,
+          "flags": 128
         },
         "PlatformSpecificInfo": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1070,8 +1217,9 @@
       "documentation": null,
       "signature_members": {
         "Search": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineGameSearch",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -1081,12 +1229,14 @@
       "documentation": null,
       "signature_members": {
         "DesiredGame": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineGameSearchResult",
+          "documentation": null,
+          "flags": 386
         },
         "PlatformSpecificInfo": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -1096,8 +1246,9 @@
       "documentation": null,
       "signature_members": {
         "ArbitrationRegistrationCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnArbitrationRegistrationComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1107,8 +1258,9 @@
       "documentation": null,
       "signature_members": {
         "CancelFindOnlineGamesCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnCancelFindOnlineGamesComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1118,8 +1270,9 @@
       "documentation": null,
       "signature_members": {
         "CreateOnlineGameCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnCreateOnlineGameComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1129,8 +1282,9 @@
       "documentation": null,
       "signature_members": {
         "DestroyOnlineGameCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnDestroyOnlineGameComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1140,8 +1294,9 @@
       "documentation": null,
       "signature_members": {
         "EndOnlineGameCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnEndOnlineGameComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1151,8 +1306,9 @@
       "documentation": null,
       "signature_members": {
         "FindOnlineGamesCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnFindOnlineGamesComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1162,12 +1318,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "GameInviteAcceptedDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnGameInviteAccepted",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1177,8 +1335,9 @@
       "documentation": null,
       "signature_members": {
         "JoinOnlineGameCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnJoinOnlineGameComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1188,8 +1347,9 @@
       "documentation": null,
       "signature_members": {
         "QuickMatchCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnQuickMatchComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1199,8 +1359,9 @@
       "documentation": null,
       "signature_members": {
         "RegisterPlayerCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnRegisterPlayerComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1210,8 +1371,9 @@
       "documentation": null,
       "signature_members": {
         "StartOnlineGameCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnStartOnlineGameComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1221,8 +1383,9 @@
       "documentation": null,
       "signature_members": {
         "UnregisterPlayerCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnUnregisterPlayerComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1232,8 +1395,9 @@
       "documentation": null,
       "signature_members": {
         "UpdateOnlineGameCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnUpdateOnlineGameComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1243,8 +1407,9 @@
       "documentation": null,
       "signature_members": {
         "ArbitrationRegistrationCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnArbitrationRegistrationComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1254,8 +1419,9 @@
       "documentation": null,
       "signature_members": {
         "CancelFindOnlineGamesCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnCancelFindOnlineGamesComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1265,8 +1431,9 @@
       "documentation": null,
       "signature_members": {
         "CreateOnlineGameCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnCreateOnlineGameComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1276,8 +1443,9 @@
       "documentation": null,
       "signature_members": {
         "DestroyOnlineGameCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnDestroyOnlineGameComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1287,8 +1455,9 @@
       "documentation": null,
       "signature_members": {
         "EndOnlineGameCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnEndOnlineGameComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1298,8 +1467,9 @@
       "documentation": null,
       "signature_members": {
         "FindOnlineGamesCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnFindOnlineGamesComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1309,12 +1479,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "GameInviteAcceptedDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnGameInviteAccepted",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1324,8 +1496,9 @@
       "documentation": null,
       "signature_members": {
         "JoinOnlineGameCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnJoinOnlineGameComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1335,8 +1508,9 @@
       "documentation": null,
       "signature_members": {
         "QuickMatchCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnQuickMatchComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1346,8 +1520,9 @@
       "documentation": null,
       "signature_members": {
         "RegisterPlayerCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnRegisterPlayerComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1357,8 +1532,9 @@
       "documentation": null,
       "signature_members": {
         "StartOnlineGameCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnStartOnlineGameComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1368,8 +1544,9 @@
       "documentation": null,
       "signature_members": {
         "UnregisterPlayerCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnUnregisterPlayerComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1379,8 +1556,9 @@
       "documentation": null,
       "signature_members": {
         "UpdateOnlineGameCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnUpdateOnlineGameComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1390,8 +1568,9 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "OnlineArbitrationRegistrant",
@@ -1407,8 +1586,9 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "OnlineGameSettings",
@@ -1418,12 +1598,14 @@
       "documentation": null,
       "signature_members": {
         "StartAt": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "NumberToQuery": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1433,12 +1615,14 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PlatformSpecificInfo": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -1448,12 +1632,14 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Players": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "bool",
@@ -1463,8 +1649,9 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1474,12 +1661,14 @@
       "documentation": null,
       "signature_members": {
         "missingDLCs": {
-          "type": null,
-          "documentation": null
+          "type": "MPDLCInfo",
+          "documentation": null,
+          "flags": 4194688
         },
         "bInvitee": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1495,8 +1684,9 @@
       "documentation": null,
       "signature_members": {
         "wasKicked": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1512,8 +1702,9 @@
       "documentation": null,
       "signature_members": {
         "InviteResult": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineGameSearchResult",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -1521,5 +1712,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "Engine",
   "documentation": null
 }

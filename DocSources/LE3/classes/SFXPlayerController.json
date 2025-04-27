@@ -4,119 +4,148 @@
   "variables": {
     "CachedInviteResult": {
       "type": "OnlineGameSearchResult",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_aPOIKismet": {
       "type": "SFXSeqAct_LookAtPOI",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "NavList": {
       "type": "NavigationPoint",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "SPMapNames": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "SPN7MapNames": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "OnDestroyDelegates": {
       "type": "OnDestroyCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnDestroyCallback__Delegate": {
       "type": "OnDestroyCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_pActivePOI": {
       "type": "SFXSeqAct_LookAtPOI",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MyCamera": {
       "type": "SFXPlayerCamera",
-      "documentation": null
+      "documentation": null,
+      "flags": 139265
     },
     "CurrentNavGoal": {
       "type": "NavigationPoint",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OldPawn": {
       "type": "Pawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "FoundLadder": {
       "type": "SFXLadderReachSpec",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentNavIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "srConnectionLost": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "srHostLeft": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "srInviteFailure": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "srInviteGameFull": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "srInviterLeft": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "srInviteProtocolMismatch": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "srInviteMissingDLCInvitee": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "srInviteMissingDLCInviter": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "srMultiplayerUpdate": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "srPlayerKicked": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "nInviteWaitDelay": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nMaxInviteWaitDelay": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ObjectiveTimerPositionY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "QuickMantleDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bLeanDisabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bHidPlayerForAtlasHack": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -154,8 +183,9 @@
       "documentation": null,
       "signature_members": {
         "WaitMessage": {
-          "type": null,
-          "documentation": null
+          "type": "EWaitMessage",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -165,12 +195,14 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -180,12 +212,14 @@
       "documentation": null,
       "signature_members": {
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Wall": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -195,8 +229,9 @@
       "documentation": null,
       "signature_members": {
         "InviteResult": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineGameSearchResult",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -206,12 +241,14 @@
       "documentation": null,
       "signature_members": {
         "aPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "bVehicleTransition": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -227,8 +264,9 @@
       "documentation": null,
       "signature_members": {
         "bEnabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -250,24 +288,29 @@
       "documentation": null,
       "signature_members": {
         "Shooter": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "W": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         },
         "WeapLoc": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "LineDir": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -289,8 +332,9 @@
       "documentation": null,
       "signature_members": {
         "OnDestroyDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnDestroyCallback",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -306,12 +350,14 @@
       "documentation": null,
       "signature_members": {
         "CountdownTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "CountdownWarningTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -321,8 +367,9 @@
       "documentation": null,
       "signature_members": {
         "bInvitee": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -332,12 +379,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Context": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -347,12 +396,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Context": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -380,8 +431,9 @@
       "documentation": null,
       "signature_members": {
         "Cooldown": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -391,8 +443,9 @@
       "documentation": null,
       "signature_members": {
         "Credits": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -402,16 +455,19 @@
       "documentation": null,
       "signature_members": {
         "KilledPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "ChallengeScoreData": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerChallengeScoreData",
+          "documentation": null,
+          "flags": 128
         },
         "records": {
-          "type": null,
-          "documentation": null
+          "type": "ScoreEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -421,8 +477,9 @@
       "documentation": null,
       "signature_members": {
         "Mag": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -432,20 +489,24 @@
       "documentation": null,
       "signature_members": {
         "mapPackageName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "fromGalaxyMap": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "Difficulty": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineGameDifficulty",
+          "documentation": null,
+          "flags": 144
         },
         "objectiveMode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -455,8 +516,9 @@
       "documentation": null,
       "signature_members": {
         "InviteResult": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineGameSearchResult",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -472,8 +534,9 @@
       "documentation": null,
       "signature_members": {
         "Text": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
         }
       },
       "returntype": "None",
@@ -483,8 +546,9 @@
       "documentation": null,
       "signature_members": {
         "bModal": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -494,8 +558,9 @@
       "documentation": null,
       "signature_members": {
         "nElement": {
-          "type": null,
-          "documentation": null
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -505,12 +570,14 @@
       "documentation": null,
       "signature_members": {
         "bModalBar": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bLeftToRight": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -520,12 +587,14 @@
       "documentation": null,
       "signature_members": {
         "bModalBar": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nPercent": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -535,16 +604,19 @@
       "documentation": null,
       "signature_members": {
         "bModalBar": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nMarker1": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nMarker2": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -554,12 +626,14 @@
       "documentation": null,
       "signature_members": {
         "bModalCounter": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nValue": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -569,12 +643,14 @@
       "documentation": null,
       "signature_members": {
         "nElement": {
-          "type": null,
-          "documentation": null
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
         },
         "fAlpha": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -584,12 +660,14 @@
       "documentation": null,
       "signature_members": {
         "nElement": {
-          "type": null,
-          "documentation": null
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
         },
         "stColor": {
-          "type": null,
-          "documentation": null
+          "type": "Color",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -599,12 +677,14 @@
       "documentation": null,
       "signature_members": {
         "nElement": {
-          "type": null,
-          "documentation": null
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
         },
         "sText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -614,16 +694,19 @@
       "documentation": null,
       "signature_members": {
         "nElement": {
-          "type": null,
-          "documentation": null
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
         },
         "bVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "fFadeTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -633,8 +716,9 @@
       "documentation": null,
       "signature_members": {
         "bShow": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -644,12 +728,14 @@
       "documentation": null,
       "signature_members": {
         "nElement": {
-          "type": null,
-          "documentation": null
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
         },
         "srText": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -659,24 +745,29 @@
       "documentation": null,
       "signature_members": {
         "bModalTimer": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "fStartTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "fEndTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "fInterval": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -686,16 +777,19 @@
       "documentation": null,
       "signature_members": {
         "nElement": {
-          "type": null,
-          "documentation": null
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
         },
         "fMinAlpha": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "fCycleTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -711,8 +805,9 @@
       "documentation": null,
       "signature_members": {
         "Time": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -734,8 +829,9 @@
       "documentation": null,
       "signature_members": {
         "Seq": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSeqAct_BeginIllusiveManConflict",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -757,12 +853,14 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -778,20 +876,24 @@
       "documentation": null,
       "signature_members": {
         "ImpactLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "CameraShake": {
-          "type": null,
-          "documentation": null
+          "type": "ScreenShakeStruct",
+          "documentation": null,
+          "flags": 128
         },
         "MinShakeDistance": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "MinShakeMultiplier": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -801,20 +903,24 @@
       "documentation": null,
       "signature_members": {
         "ImpactLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "ForceFeedback": {
-          "type": null,
-          "documentation": null
+          "type": "ForceFeedbackWaveform",
+          "documentation": null,
+          "flags": 128
         },
         "MinShakeDistance": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "MinShakeMultiplier": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -824,12 +930,14 @@
       "documentation": null,
       "signature_members": {
         "CameraShake": {
-          "type": null,
-          "documentation": null
+          "type": "ScreenShakeStruct",
+          "documentation": null,
+          "flags": 128
         },
         "ScaleFactor": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -845,8 +953,9 @@
       "documentation": null,
       "signature_members": {
         "bTransitionToMainMenu": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -856,8 +965,9 @@
       "documentation": null,
       "signature_members": {
         "OnDestroyDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnDestroyCallback",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -879,8 +989,9 @@
       "documentation": null,
       "signature_members": {
         "nNumComplete": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -890,20 +1001,24 @@
       "documentation": null,
       "signature_members": {
         "s1": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "s2": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "s3": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "s4": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -913,12 +1028,14 @@
       "documentation": null,
       "signature_members": {
         "Progress": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bBoostAnim": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -928,8 +1045,9 @@
       "documentation": null,
       "signature_members": {
         "ObjectiveText": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -985,8 +1103,9 @@
           "documentation": null,
           "signature_members": {
             "DeltaTime": {
-              "type": null,
-              "documentation": null
+              "type": "float",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -996,16 +1115,19 @@
           "documentation": null,
           "signature_members": {
             "PawnAsBioPawn": {
-              "type": null,
-              "documentation": null
+              "type": "BioPawn",
+              "documentation": null,
+              "flags": 128
             },
             "DeltaTime": {
-              "type": null,
-              "documentation": null
+              "type": "float",
+              "documentation": null,
+              "flags": 128
             },
             "MoveMag": {
-              "type": null,
-              "documentation": null
+              "type": "float",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -1015,5 +1137,7 @@
       "documentation": null
     }
   },
+  "classflags": 10485814,
+  "configname": "Game",
   "documentation": null
 }

@@ -4,11 +4,13 @@
   "variables": {
     "VfTable_IISFXOnlineComponentPlatform": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "CachedFriendListPC": {
       "type": "OnlineFriend",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -16,12 +18,14 @@
       "documentation": null,
       "signature_members": {
         "oPlayerId": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "sDescription": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -31,8 +35,9 @@
       "documentation": null,
       "signature_members": {
         "eLocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "EFeaturePrivilegeLevel",
@@ -42,8 +47,9 @@
       "documentation": null,
       "signature_members": {
         "eLocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "EFeaturePrivilegeLevel",
@@ -53,8 +59,9 @@
       "documentation": null,
       "signature_members": {
         "eLocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "EFeaturePrivilegeLevel",
@@ -64,8 +71,9 @@
       "documentation": null,
       "signature_members": {
         "eLocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "EFeaturePrivilegeLevel",
@@ -75,8 +83,9 @@
       "documentation": null,
       "signature_members": {
         "eLocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "EFeaturePrivilegeLevel",
@@ -86,8 +95,9 @@
       "documentation": null,
       "signature_members": {
         "eLocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "EFeaturePrivilegeLevel",
@@ -103,20 +113,24 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "Friends": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineFriend",
+          "documentation": null,
+          "flags": 4194688
         },
         "Count": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "StartingAt": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "EOnlineEnumerationReadState",
@@ -126,8 +140,9 @@
       "documentation": null,
       "signature_members": {
         "eLocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "ELoginStatus",
@@ -143,12 +158,14 @@
       "documentation": null,
       "signature_members": {
         "nUserIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "oPlayerXuid": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -158,12 +175,14 @@
       "documentation": null,
       "signature_members": {
         "nUserIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "oPlayerXuid": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -173,8 +192,9 @@
       "documentation": null,
       "signature_members": {
         "oOnlineSubsystem": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineSubsystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -190,16 +210,19 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "Count": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "StartingAt": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -209,20 +232,24 @@
       "documentation": null,
       "signature_members": {
         "eLocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "nPresenceMode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "aLocalizedStringSettings": {
-          "type": null,
-          "documentation": null
+          "type": "LocalizedStringSetting",
+          "documentation": null,
+          "flags": 4194690
         },
         "aProperties": {
-          "type": null,
-          "documentation": null
+          "type": "SettingsProperty",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -232,8 +259,9 @@
       "documentation": null,
       "signature_members": {
         "byLocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -243,12 +271,14 @@
       "documentation": null,
       "signature_members": {
         "eLocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "oPlayerId": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -258,12 +288,14 @@
       "documentation": null,
       "signature_members": {
         "eLocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "oPlayerXuid": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -273,8 +305,9 @@
       "documentation": null,
       "signature_members": {
         "eLocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -284,12 +317,14 @@
       "documentation": null,
       "signature_members": {
         "eLocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "oPlayerId": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -305,12 +340,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "InviteText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -320,36 +357,44 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "sTitleText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sDescriptionText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "nKeyboardType": {
-          "type": null,
-          "documentation": null
+          "type": "EKeyboardType",
+          "documentation": null,
+          "flags": 144
         },
         "bShouldValidate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bRouteThroughConsole": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "sDefaultText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         },
         "nMaxResultLength": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -359,8 +404,9 @@
       "documentation": null,
       "signature_members": {
         "bShowOnlineOnly": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -380,5 +426,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

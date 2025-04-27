@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "bSignedIn": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -18,8 +19,9 @@
       "documentation": null,
       "signature_members": {
         "bCheckForSignIn": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -27,5 +29,7 @@
     }
   },
   "states": {},
+  "classflags": 10485782,
+  "configname": "UI",
   "documentation": null
 }

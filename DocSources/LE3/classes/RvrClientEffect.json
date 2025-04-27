@@ -4,7 +4,8 @@
   "variables": {
     "m_lstModules": {
       "type": "RvrClientEffectModule",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     }
   },
   "functions": {
@@ -12,16 +13,19 @@
       "documentation": null,
       "signature_members": {
         "pComponent": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "pInstance": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectModuleInstance",
+          "documentation": null,
+          "flags": 128
         },
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -31,8 +35,9 @@
       "documentation": null,
       "signature_members": {
         "pComponent": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "RvrClientEffectModule",
@@ -40,5 +45,7 @@
     }
   },
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

@@ -4,22 +4,28 @@
   "variables": {
     "bUseCoverAnimState": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bOnlyDuringWeaponSwitch": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bOnlyDuringNoOffensiveAction": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CombatBehavior": {
       "type": "EBioAnimNodeBlendStateCombatBehavior",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136319122,
+  "configname": "None",
   "documentation": null
 }

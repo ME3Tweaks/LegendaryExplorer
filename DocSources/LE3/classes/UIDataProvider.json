@@ -4,15 +4,18 @@
   "variables": {
     "ProviderChangedNotifies": {
       "type": "OnDataProviderPropertyChange",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "__OnDataProviderPropertyChange__Delegate": {
       "type": "OnDataProviderPropertyChange",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "WriteAccessType": {
       "type": "EProviderAccessType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -20,12 +23,14 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "ArrayIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -35,8 +40,9 @@
       "documentation": null,
       "signature_members": {
         "DataTag": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "string",
@@ -46,8 +52,9 @@
       "documentation": null,
       "signature_members": {
         "DataTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -57,16 +64,19 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "FieldValue": {
-          "type": null,
-          "documentation": null
+          "type": "UIProviderScriptFieldValue",
+          "documentation": null,
+          "flags": 4194688
         },
         "ArrayIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -76,12 +86,14 @@
       "documentation": null,
       "signature_members": {
         "DataTag": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
         },
         "out_ProviderFieldType": {
-          "type": null,
-          "documentation": null
+          "type": "EUIDataProviderFieldType",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -91,8 +103,9 @@
       "documentation": null,
       "signature_members": {
         "out_Fields": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataProviderField",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -102,8 +115,9 @@
       "documentation": null,
       "signature_members": {
         "FieldType": {
-          "type": null,
-          "documentation": null
+          "type": "EUIDataProviderFieldType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -119,8 +133,9 @@
       "documentation": null,
       "signature_members": {
         "PropTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -130,12 +145,14 @@
       "documentation": null,
       "signature_members": {
         "SourceProvider": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 128
         },
         "PropTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -145,8 +162,9 @@
       "documentation": null,
       "signature_members": {
         "DataTag": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "int",
@@ -156,16 +174,19 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "FieldValue": {
-          "type": null,
-          "documentation": null
+          "type": "UIProviderScriptFieldValue",
+          "documentation": null,
+          "flags": 4194690
         },
         "ArrayIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -175,12 +196,14 @@
       "documentation": null,
       "signature_members": {
         "InDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnDataProviderPropertyChange",
+          "documentation": null,
+          "flags": 4194432
         },
         "bAllowDuplicates": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -190,8 +213,9 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "int",
@@ -201,8 +225,9 @@
       "documentation": null,
       "signature_members": {
         "InDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnDataProviderPropertyChange",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -210,5 +235,7 @@
     }
   },
   "states": {},
+  "classflags": 136315035,
+  "configname": "None",
   "documentation": null
 }

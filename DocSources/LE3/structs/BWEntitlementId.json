@@ -2,7 +2,8 @@
   "members": {
     "nID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     }
   },
   "classdef": "ISFXOnlineComponentCommerce",

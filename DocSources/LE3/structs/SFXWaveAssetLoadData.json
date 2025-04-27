@@ -2,15 +2,18 @@
   "members": {
     "AssetToLoad": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "LoadedAsset": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AssetLoadStatus": {
       "type": "EAsyncLoadStatus",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXWave",

@@ -4,23 +4,28 @@
   "variables": {
     "PendingFire": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "InventoryChain": {
       "type": "Inventory",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "PendingWeapon": {
       "type": "Weapon",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastAttemptedSwitchToWeapon": {
       "type": "Weapon",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bMustHoldWeapon": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -28,12 +33,14 @@
       "documentation": null,
       "signature_members": {
         "NewInventoryItemClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "bDoNotActivate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Inventory",
@@ -55,12 +62,14 @@
       "documentation": null,
       "signature_members": {
         "DesiredClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "bAllowSubclass": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Inventory",
@@ -70,12 +79,14 @@
       "documentation": null,
       "signature_members": {
         "BaseClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Inv": {
-          "type": null,
-          "documentation": null
+          "type": "Inventory",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -91,12 +102,14 @@
       "documentation": null,
       "signature_members": {
         "NewItem": {
-          "type": null,
-          "documentation": null
+          "type": "Inventory",
+          "documentation": null,
+          "flags": 128
         },
         "bDoNotActivate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -118,8 +131,9 @@
       "documentation": null,
       "signature_members": {
         "InWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -129,12 +143,14 @@
       "documentation": null,
       "signature_members": {
         "InWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         },
         "InFiringMode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -144,8 +160,9 @@
       "documentation": null,
       "signature_members": {
         "NewWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -155,16 +172,19 @@
       "documentation": null,
       "signature_members": {
         "NewWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         },
         "bOptionalSet": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bDoNotActivate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -174,8 +194,9 @@
       "documentation": null,
       "signature_members": {
         "H": {
-          "type": null,
-          "documentation": null
+          "type": "HUD",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -185,8 +206,9 @@
       "documentation": null,
       "signature_members": {
         "bForceADifferentWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Weapon",
@@ -196,8 +218,9 @@
       "documentation": null,
       "signature_members": {
         "InWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -207,8 +230,9 @@
       "documentation": null,
       "signature_members": {
         "W": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -218,12 +242,14 @@
       "documentation": null,
       "signature_members": {
         "ItemClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Pickup": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -233,8 +259,9 @@
       "documentation": null,
       "signature_members": {
         "DesiredWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -244,8 +271,9 @@
       "documentation": null,
       "signature_members": {
         "ThisWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -255,12 +283,14 @@
       "documentation": null,
       "signature_members": {
         "InWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         },
         "InFiringMode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -270,24 +300,29 @@
       "documentation": null,
       "signature_members": {
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -309,8 +344,9 @@
       "documentation": null,
       "signature_members": {
         "EventName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -326,12 +362,14 @@
       "documentation": null,
       "signature_members": {
         "DesiredClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "bAllowSubclass": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -341,8 +379,9 @@
       "documentation": null,
       "signature_members": {
         "ItemToRemove": {
-          "type": null,
-          "documentation": null
+          "type": "Inventory",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -352,8 +391,9 @@
       "documentation": null,
       "signature_members": {
         "DesiredWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -363,8 +403,9 @@
       "documentation": null,
       "signature_members": {
         "DesiredWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -374,12 +415,14 @@
       "documentation": null,
       "signature_members": {
         "InWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         },
         "InFiringMode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -389,8 +432,9 @@
       "documentation": null,
       "signature_members": {
         "DesiredWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -400,8 +444,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -411,8 +456,9 @@
       "documentation": null,
       "signature_members": {
         "FireModeNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -422,8 +468,9 @@
       "documentation": null,
       "signature_members": {
         "FireModeNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -433,8 +480,9 @@
       "documentation": null,
       "signature_members": {
         "bForceADifferentWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -448,5 +496,7 @@
     }
   },
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

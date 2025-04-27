@@ -4,50 +4,63 @@
   "variables": {
     "TextureName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "CompressedData": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SizeX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SizeY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Platform": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MipSize": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Format": {
       "type": "EPixelFormat",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Filter": {
       "type": "TextureFilter",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LODGroup": {
       "type": "TextureGroup",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AddressX": {
       "type": "TextureAddress",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AddressY": {
       "type": "TextureAddress",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

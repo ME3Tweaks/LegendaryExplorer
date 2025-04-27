@@ -2,11 +2,13 @@
   "members": {
     "fCooldown": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EventId": {
       "type": "BioGuiEvents",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXGUIInputHandler",

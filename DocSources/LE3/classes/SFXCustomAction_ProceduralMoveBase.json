@@ -4,151 +4,188 @@
   "variables": {
     "BS_Start": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "BS_Loop": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "BS_End": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Destination": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fEndAnimDist": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fStartBlendInTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fStartBlendOutTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fLoopBlendInTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fLoopBlendOutTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fEndBlendInTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fEndBlendOutTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fStartAnimPlayRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fEndAnimPlayRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fLoopTimeout": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAlignPawnBeforeMove": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bPlayedEndAnim": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDelayReplication": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MoveStage": {
       "type": "EMoveStage",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StartBlendType": {
       "type": "AlphaBlendType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LoopBlendType": {
       "type": "AlphaBlendType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EndBlendType": {
       "type": "AlphaBlendType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StartRootBoneX": {
       "type": "ERootBoneAxis",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StartRootBoneY": {
       "type": "ERootBoneAxis",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StartRootBoneZ": {
       "type": "ERootBoneAxis",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EndRootBoneX": {
       "type": "ERootBoneAxis",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EndRootBoneY": {
       "type": "ERootBoneAxis",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EndRootBoneZ": {
       "type": "ERootBoneAxis",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StartRMM": {
       "type": "ERootMotionMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EndRMM": {
       "type": "ERootMotionMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StartRootRotationPitch": {
       "type": "ERootRotationOption",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StartRootRotationYaw": {
       "type": "ERootRotationOption",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StartRootRotationRoll": {
       "type": "ERootRotationOption",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EndRootRotationPitch": {
       "type": "ERootRotationOption",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EndRootRotationYaw": {
       "type": "ERootRotationOption",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EndRootRotationRoll": {
       "type": "ERootRotationOption",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StartRMRM": {
       "type": "ERootMotionRotationMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EndRMRM": {
       "type": "ERootMotionRotationMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -156,8 +193,9 @@
       "documentation": null,
       "signature_members": {
         "UsedAnims": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -185,16 +223,19 @@
       "documentation": null,
       "signature_members": {
         "SeqNode": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
         },
         "PlayedTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "ExcessTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -228,8 +269,9 @@
       "documentation": null,
       "signature_members": {
         "Stance": {
-          "type": null,
-          "documentation": null
+          "type": "BodyStance",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -239,8 +281,9 @@
       "documentation": null,
       "signature_members": {
         "Stance": {
-          "type": null,
-          "documentation": null
+          "type": "BodyStance",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -250,8 +293,9 @@
       "documentation": null,
       "signature_members": {
         "Stance": {
-          "type": null,
-          "documentation": null
+          "type": "BodyStance",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -273,8 +317,9 @@
       "documentation": null,
       "signature_members": {
         "NextStage": {
-          "type": null,
-          "documentation": null
+          "type": "EMoveStage",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -294,5 +339,7 @@
     }
   },
   "states": {},
+  "classflags": 144703638,
+  "configname": "Game",
   "documentation": null
 }

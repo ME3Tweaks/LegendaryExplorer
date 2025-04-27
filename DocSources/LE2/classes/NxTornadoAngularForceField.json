@@ -4,54 +4,68 @@
   "variables": {
     "Kernel": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "RadialStrength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "RotationalStrength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "LiftStrength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "ForceRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "ForceTopRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "LiftFalloffHeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "EscapeVelocity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "ForceHeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "HeightOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "SelfRotationStrength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "BSpecialRadialForceMode": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703635,
+  "configname": "None",
   "documentation": null
 }

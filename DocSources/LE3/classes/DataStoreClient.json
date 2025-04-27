@@ -4,23 +4,28 @@
   "variables": {
     "GlobalDataStoreClasses": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "GlobalDataStores": {
       "type": "UIDataStore",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "PlayerDataStoreClassNames": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "PlayerDataStoreClasses": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "PlayerDataStores": {
       "type": "PlayerDataStoreGroup",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     }
   },
   "functions": {
@@ -28,8 +33,9 @@
       "documentation": null,
       "signature_members": {
         "DataStoreClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "UIDataStore",
@@ -39,12 +45,14 @@
       "documentation": null,
       "signature_members": {
         "DataStoreTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerOwner": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "UIDataStore",
@@ -54,8 +62,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerOwner": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -65,12 +74,14 @@
       "documentation": null,
       "signature_members": {
         "CurrentScene": {
-          "type": null,
-          "documentation": null
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 128
         },
         "out_DataStores": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataStore",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -86,12 +97,14 @@
       "documentation": null,
       "signature_members": {
         "DataStore": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataStore",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerOwner": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -101,8 +114,9 @@
       "documentation": null,
       "signature_members": {
         "DataStore": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataStore",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -112,8 +126,9 @@
       "documentation": null,
       "signature_members": {
         "bVerbose": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -123,8 +138,9 @@
       "documentation": null,
       "signature_members": {
         "RequiredMetaClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Class",
@@ -134,8 +150,9 @@
       "documentation": null,
       "signature_members": {
         "out_DataStoreClasses": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -143,5 +160,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "Engine",
   "documentation": null
 }

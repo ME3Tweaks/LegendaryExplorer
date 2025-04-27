@@ -4,19 +4,23 @@
   "variables": {
     "InventoryClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     },
     "Inventory": {
       "type": "Inventory",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PickupCache": {
       "type": "NavigationPoint",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bFadeOut": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     }
   },
   "functions": {
@@ -36,12 +40,14 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "PathWeight": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -51,8 +57,9 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -62,12 +69,14 @@
       "documentation": null,
       "signature_members": {
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "FloorActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -83,8 +92,9 @@
       "documentation": null,
       "signature_members": {
         "VarName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -100,8 +110,9 @@
       "documentation": null,
       "signature_members": {
         "PickupMesh": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -111,8 +122,9 @@
       "documentation": null,
       "signature_members": {
         "PickupParticles": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystemComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -122,8 +134,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -133,8 +146,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -154,8 +168,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -170,8 +185,9 @@
           "documentation": null,
           "signature_members": {
             "NextStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -181,8 +197,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -204,20 +221,24 @@
           "documentation": null,
           "signature_members": {
             "Other": {
-              "type": null,
-              "documentation": null
+              "type": "Actor",
+              "documentation": null,
+              "flags": 128
             },
             "OtherComp": {
-              "type": null,
-              "documentation": null
+              "type": "PrimitiveComponent",
+              "documentation": null,
+              "flags": 67108992
             },
             "HitLocation": {
-              "type": null,
-              "documentation": null
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
             },
             "HitNormal": {
-              "type": null,
-              "documentation": null
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -233,8 +254,9 @@
           "documentation": null,
           "signature_members": {
             "Other": {
-              "type": null,
-              "documentation": null
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -244,5 +266,7 @@
       "documentation": null
     }
   },
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

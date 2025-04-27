@@ -4,11 +4,13 @@
   "variables": {
     "LadderAnimSet": {
       "type": "AnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "fClimbDownSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -28,8 +30,9 @@
       "documentation": null,
       "signature_members": {
         "NextStage": {
-          "type": null,
-          "documentation": null
+          "type": "EMoveStage",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -43,5 +46,7 @@
     }
   },
   "states": {},
+  "classflags": 144703639,
+  "configname": "Game",
   "documentation": null
 }

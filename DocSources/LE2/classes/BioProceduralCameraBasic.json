@@ -7,16 +7,19 @@
       "documentation": null,
       "signature_members": {
         "stActorInfo": {
-          "type": null,
-          "documentation": null
+          "type": "ActorInfo",
+          "documentation": null,
+          "flags": 128
         },
         "stCameraInfo": {
-          "type": null,
-          "documentation": null
+          "type": "CameraInfo",
+          "documentation": null,
+          "flags": 384
         },
         "bInvert": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -24,5 +27,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

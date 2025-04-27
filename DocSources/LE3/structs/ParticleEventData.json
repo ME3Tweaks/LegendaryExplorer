@@ -2,27 +2,33 @@
   "members": {
     "location": {
       "type": "RwVector3",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Direction": {
       "type": "RwVector3",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Velocity": {
       "type": "RwVector3",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EventName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Type": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EmitterTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "ParticleSystemComponent",

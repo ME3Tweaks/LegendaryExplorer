@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "loginState": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineUIState",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -24,20 +25,24 @@
       "documentation": null,
       "signature_members": {
         "mapPackageName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "fromGalaxyMap": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "Difficulty": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineGameDifficulty",
+          "documentation": null,
+          "flags": 144
         },
         "objectiveMode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -47,8 +52,9 @@
       "documentation": null,
       "signature_members": {
         "InviteResult": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineGameSearchResult",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -82,8 +88,9 @@
       "documentation": null,
       "signature_members": {
         "invitedId": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "bool",
@@ -99,8 +106,9 @@
       "documentation": null,
       "signature_members": {
         "Success": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -110,8 +118,9 @@
       "documentation": null,
       "signature_members": {
         "Success": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -119,5 +128,7 @@
     }
   },
   "states": {},
+  "classflags": 134234259,
+  "configname": "None",
   "documentation": null
 }

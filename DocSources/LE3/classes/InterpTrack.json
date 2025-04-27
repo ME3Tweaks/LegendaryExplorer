@@ -4,43 +4,53 @@
   "variables": {
     "VfTable_FInterpEdInputInterface": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "CurveEdVTable": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392704
     },
     "TrackInstClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ActiveCondition": {
       "type": "ETrackActiveCondition",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TrackTitle": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "bOnePerGroup": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDirGroupOnly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDisableTrack": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsAnimControlTrack": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bImportedTrack": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -52,5 +62,7 @@
     }
   },
   "states": {},
+  "classflags": 8595,
+  "configname": "None",
   "documentation": null
 }

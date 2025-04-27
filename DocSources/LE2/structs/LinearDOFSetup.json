@@ -2,11 +2,13 @@
   "members": {
     "LimitSize": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bLimited": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "RB_ConstraintSetup",

@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "writeToFile": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -138,8 +139,9 @@
       "documentation": null,
       "signature_members": {
         "bSuccess": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -161,8 +163,9 @@
       "documentation": null,
       "signature_members": {
         "bInLobby": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -172,8 +175,9 @@
       "documentation": null,
       "signature_members": {
         "bLocalPlayerIsHost": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -189,8 +193,9 @@
       "documentation": null,
       "signature_members": {
         "invitedInactiveUser": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -246,5 +251,7 @@
     }
   },
   "states": {},
+  "classflags": 134234259,
+  "configname": "None",
   "documentation": null
 }

@@ -4,227 +4,283 @@
   "variables": {
     "VState": {
       "type": "VehicleState",
-      "documentation": null
+      "documentation": null,
+      "flags": 4130
     },
     "Wheels": {
       "type": "SVehicleWheel",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "COMOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "InertiaTensorMultiplier": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BaseOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SimObj": {
       "type": "SVehicleSimBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 101187595
     },
     "EngineSound": {
       "type": "AudioComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "SquealSound": {
       "type": "AudioComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "CollisionSound": {
       "type": "SoundCue",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "EnterVehicleSound": {
       "type": "SoundCue",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ExitVehicleSound": {
       "type": "SoundCue",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StayUprightConstraintSetup": {
       "type": "RB_StayUprightSetup",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "StayUprightConstraintInstance": {
       "type": "RB_ConstraintInstance",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "StayUprightRollResistAngle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StayUprightPitchResistAngle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StayUprightStiffness": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StayUprightDamping": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "HeavySuspensionShiftPercent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 33
     },
     "MaxAngularVelocity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TimeOffGround": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "UprightLiftStrength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "UprightTorqueStrength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "UprightTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "UprightStartTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CollisionIntervalSecs": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SquealThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "SquealLatThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "LatAngleVolumeMult": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "EngineStartOffsetSecs": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "EngineStopOffsetSecs": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "LastCollisionSoundTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OutputBrake": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OutputGas": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OutputSteering": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OutputRise": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ForwardVel": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NumPoweredWheels": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CamDist": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DriverViewPitch": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DriverViewYaw": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AngErrorAccumulator": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "RadialImpulseScaling": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bStayUpright": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseSuspensionAxis": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bUpdateWheelShapes": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bVehicleOnGround": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bVehicleOnWater": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bIsInverted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bChassisTouchingGround": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bWasChassisTouchingGroundLastTick": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bCanFlip": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bFlipRight": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsUprighting": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOutputHandbrake": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bHoldingDownHandbrake": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -232,8 +288,9 @@
       "documentation": null,
       "signature_members": {
         "NewSystem": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -243,8 +300,9 @@
       "documentation": null,
       "signature_members": {
         "DebugInfo": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -254,8 +312,9 @@
       "documentation": null,
       "signature_members": {
         "Slip": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -265,12 +324,14 @@
       "documentation": null,
       "signature_members": {
         "HUD": {
-          "type": null,
-          "documentation": null
+          "type": "HUD",
+          "documentation": null,
+          "flags": 128
         },
         "YL": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -280,16 +341,19 @@
       "documentation": null,
       "signature_members": {
         "HUD": {
-          "type": null,
-          "documentation": null
+          "type": "HUD",
+          "documentation": null,
+          "flags": 128
         },
         "out_YL": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "out_YPos": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -299,8 +363,9 @@
       "documentation": null,
       "signature_members": {
         "OutTeleporter": {
-          "type": null,
-          "documentation": null
+          "type": "Teleporter",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -310,8 +375,9 @@
       "documentation": null,
       "signature_members": {
         "Delta": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -321,20 +387,24 @@
       "documentation": null,
       "signature_members": {
         "HitComponent": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "OtherComponent": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "RigidCollisionData": {
-          "type": null,
-          "documentation": null
+          "type": "CollisionImpactData",
+          "documentation": null,
+          "flags": 4194690
         },
         "ContactIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -392,8 +462,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -403,8 +474,9 @@
       "documentation": null,
       "signature_members": {
         "RequestedBy": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -414,20 +486,24 @@
       "documentation": null,
       "signature_members": {
         "fDeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "out_CamLoc": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "out_CamRot": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         },
         "out_FOV": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -437,16 +513,19 @@
       "documentation": null,
       "signature_members": {
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -456,20 +535,24 @@
       "documentation": null,
       "signature_members": {
         "NewVelocity": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -479,20 +562,24 @@
       "documentation": null,
       "signature_members": {
         "RagdollMesh": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMesh",
+          "documentation": null,
+          "flags": 128
         },
         "RagdollPhysAsset": {
-          "type": null,
-          "documentation": null
+          "type": "PhysicsAsset",
+          "documentation": null,
+          "flags": 128
         },
         "ActorMove": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "bClearAnimTree": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -502,40 +589,49 @@
       "documentation": null,
       "signature_members": {
         "InstigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "BaseDamage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "DamageRadius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "HurtOrigin": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "bFullDamage": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "DamageCauser": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "DamageFalloffExponent": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -563,8 +659,9 @@
       "documentation": null,
       "signature_members": {
         "SkelComp": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -580,12 +677,14 @@
       "documentation": null,
       "signature_members": {
         "WheelNum": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bCollision": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -601,8 +700,9 @@
       "documentation": null,
       "signature_members": {
         "Torque": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -612,8 +712,9 @@
       "documentation": null,
       "signature_members": {
         "Impulse": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -623,8 +724,9 @@
       "documentation": null,
       "signature_members": {
         "Force": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -632,5 +734,7 @@
     }
   },
   "states": {},
+  "classflags": 144706231,
+  "configname": "Game",
   "documentation": null
 }

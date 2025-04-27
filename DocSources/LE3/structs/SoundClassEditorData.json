@@ -2,11 +2,13 @@
   "members": {
     "NodePosX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "NodePosY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     }
   },
   "classdef": "SoundClass",

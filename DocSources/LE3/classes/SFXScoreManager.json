@@ -4,115 +4,143 @@
   "variables": {
     "DifficultyScoreMultipliers": {
       "type": "DifficultyScoreMultiplier",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "CreditBudgets": {
       "type": "CreditBudget",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "FactionBonuses": {
       "type": "XPBonus",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "MapBonuses": {
       "type": "XPBonus",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "PlayerMedalRecords": {
       "type": "PlayerMedalRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "SquadMedalRecords": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "PlayerMedalDefinitions": {
       "type": "MedalDefinition",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "SquadMedalDefinitions": {
       "type": "MedalDefinition",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "ExtractedPlayerIDs": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "KillTimeStamps": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "BioWorldInfo": {
       "type": "BioWorldInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 549755822080
     },
     "ScoreMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "EnemyScoreBudget": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 549755822080
     },
     "TotalEnemyScoreRewarded": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 549755822080
     },
     "ObjectiveCreditBudget": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 549755822080
     },
     "ObjectiveScoreBudget": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 549755822080
     },
     "ObjectiveScoreRewarded": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 549755822080
     },
     "srKillScoreTag": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srAssistScoreTag": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srObjectiveScoreTag": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ScorePerExtractedPlayer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "KillstreakMedalWindow": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srCreditsEarned": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srBonusCreditsEarned": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srExtractionCreditsEarned": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "LastCreditsEarned": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LastBonusCreditsEarned": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bPlayerDownedInWave": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -120,16 +148,19 @@
       "documentation": null,
       "signature_members": {
         "Player": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn_Player",
+          "documentation": null,
+          "flags": 128
         },
         "Amount": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "ScoreTagType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -145,16 +176,19 @@
       "documentation": null,
       "signature_members": {
         "PlayerPawn": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn_Player",
+          "documentation": null,
+          "flags": 128
         },
         "Amount": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "RoundToMultipleOf25": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "float",
@@ -164,16 +198,19 @@
       "documentation": null,
       "signature_members": {
         "PlayerPawn": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn_Player",
+          "documentation": null,
+          "flags": 128
         },
         "Amount": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "ScoreType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -183,8 +220,9 @@
       "documentation": null,
       "signature_members": {
         "MedalType": {
-          "type": null,
-          "documentation": null
+          "type": "MPMedalType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -200,16 +238,19 @@
       "documentation": null,
       "signature_members": {
         "Bonuses": {
-          "type": null,
-          "documentation": null
+          "type": "XPBonus",
+          "documentation": null,
+          "flags": 4194434
         },
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "GetXP": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -219,12 +260,14 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "GetXP": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -246,12 +289,14 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "GetXP": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -261,16 +306,19 @@
       "documentation": null,
       "signature_members": {
         "PlayerPawn": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn_Player",
+          "documentation": null,
+          "flags": 128
         },
         "MedalType": {
-          "type": null,
-          "documentation": null
+          "type": "MPMedalType",
+          "documentation": null,
+          "flags": 128
         },
         "Inc": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -292,8 +340,9 @@
       "documentation": null,
       "signature_members": {
         "ExtractedPlayers": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn_Player",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -303,28 +352,34 @@
       "documentation": null,
       "signature_members": {
         "Killed": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "DamageCauser": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "HeadShot": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -346,12 +401,14 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "Credits": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -361,8 +418,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerPawn": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn_Player",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -376,5 +434,7 @@
     }
   },
   "states": {},
+  "classflags": 2097174,
+  "configname": "Game",
   "documentation": null
 }

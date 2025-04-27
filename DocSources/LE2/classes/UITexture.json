@@ -4,11 +4,13 @@
   "variables": {
     "ImageStyleData": {
       "type": "UICombinedStyleData",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ImageTexture": {
       "type": "Surface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -28,8 +30,9 @@
       "documentation": null,
       "signature_members": {
         "NewImageStyle": {
-          "type": null,
-          "documentation": null
+          "type": "UIStyle_Image",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -39,8 +42,9 @@
       "documentation": null,
       "signature_members": {
         "OwnerComponent": {
-          "type": null,
-          "documentation": null
+          "type": "UIComponent",
+          "documentation": null,
+          "flags": 67109264
         }
       },
       "returntype": "UIScreenObject",
@@ -48,5 +52,7 @@
     }
   },
   "states": {},
+  "classflags": 134221970,
+  "configname": "None",
   "documentation": null
 }

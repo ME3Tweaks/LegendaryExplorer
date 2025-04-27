@@ -2,11 +2,13 @@
   "members": {
     "TheMaterial": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaterialIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SkeletalMeshActorBasedOnExtremeContent",

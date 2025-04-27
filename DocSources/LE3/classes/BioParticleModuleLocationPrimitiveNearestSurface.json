@@ -4,38 +4,48 @@
   "variables": {
     "m_aSearchDirections": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "fRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 33554441
     },
     "bInitialLocationOnly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 33554441
     },
     "bMovingLocationOnly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 33554441
     },
     "bDirectionRelativeToEmitter": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 33554441
     },
     "bTestActors": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 33554441
     },
     "eIfNoCollision": {
       "type": "ELocationNearestSurface",
-      "documentation": null
+      "documentation": null,
+      "flags": 33554441
     },
     "eOnCollision": {
       "type": "EBioParticleCollisionComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 33554441
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142618770,
+  "configname": "None",
   "documentation": null
 }

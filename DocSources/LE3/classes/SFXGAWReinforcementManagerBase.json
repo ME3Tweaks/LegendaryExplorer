@@ -7,12 +7,14 @@
       "documentation": null,
       "signature_members": {
         "OldCredits": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "NewCredits": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -20,5 +22,7 @@
     }
   },
   "states": {},
+  "classflags": 18,
+  "configname": "Game",
   "documentation": null
 }

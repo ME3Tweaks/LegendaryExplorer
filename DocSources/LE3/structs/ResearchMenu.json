@@ -2,31 +2,38 @@
   "members": {
     "sImagePath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158272
     },
     "m_ResearchChoices": {
       "type": "TechData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "Index": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "srTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "srSubTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "srAboutLabel": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "srAboutText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXSeqAct_ResearchChoiceGUI",

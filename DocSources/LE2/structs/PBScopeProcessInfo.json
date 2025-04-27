@@ -2,23 +2,28 @@
   "members": {
     "OwningBuilding": {
       "type": "ProcBuilding",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Ruleset": {
       "type": "ProcBuildingRuleset",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RulesetVariation": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bGenerateLODPoly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bPartOfNonRect": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "ProcBuilding",

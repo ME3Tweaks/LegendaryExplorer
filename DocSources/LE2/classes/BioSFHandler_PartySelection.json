@@ -4,67 +4,83 @@
   "variables": {
     "lstMemberInfo": {
       "type": "PartySelectMemberInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "lstAppearances": {
       "type": "AdditionalAppearanceInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "lstDynamicInfo": {
       "type": "PartySelectDynamicInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__ExternalCallback_OnComplete__Delegate": {
       "type": "ExternalCallback_OnComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "nmFireTeamLeaderLabel": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "nmSpecialistLabel": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nmMorinthPlotState": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "nmForcedHenchman": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "srPartyConfirm": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srPartyCancel": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srPartyQuestion": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nStrMorinthName": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nPartyMember1": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nPartyMember2": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bNoSelectMode": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bSFScreenInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -78,12 +94,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -105,8 +123,9 @@
       "documentation": null,
       "signature_members": {
         "nChar": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -116,12 +135,14 @@
       "documentation": null,
       "signature_members": {
         "nmTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "oLoadout": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPlayerSquadLoadoutData",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -131,12 +152,14 @@
       "documentation": null,
       "signature_members": {
         "nChar1": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nChar2": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -146,12 +169,14 @@
       "documentation": null,
       "signature_members": {
         "nChar": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nAppearance": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -161,12 +186,14 @@
       "documentation": null,
       "signature_members": {
         "nCommand": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "lstArguments": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -194,8 +221,9 @@
       "documentation": null,
       "signature_members": {
         "pDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "ExternalCallback_OnComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -209,5 +237,7 @@
     }
   },
   "states": {},
+  "classflags": 2097182,
+  "configname": "UI",
   "documentation": null
 }

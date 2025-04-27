@@ -4,35 +4,43 @@
   "variables": {
     "MarkerType": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194337
     },
     "GUIMarkerClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MarkerOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 33
     },
     "PawnWithExclusiveVisibility": {
       "type": "Pawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     },
     "PawnWithExclusiveInvisibility": {
       "type": "Pawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     },
     "BoneToAttachTo": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MarkerLabel": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 33
     },
     "bActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 279172874272
     }
   },
   "functions": {
@@ -46,8 +54,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -69,8 +78,9 @@
       "documentation": null,
       "signature_members": {
         "VarName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -96,5 +106,7 @@
     }
   },
   "states": {},
+  "classflags": 134221971,
+  "configname": "None",
   "documentation": null
 }

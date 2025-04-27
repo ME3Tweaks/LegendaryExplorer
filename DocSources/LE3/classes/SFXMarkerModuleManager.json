@@ -4,35 +4,43 @@
   "variables": {
     "AllMarkerActors": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ActiveMarkerActors": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MarkerActivatedDelegates": {
       "type": "OnActivated",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MarkerDeactivatedDelegates": {
       "type": "OnDeactivated",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ManagerDestroyedDelegates": {
       "type": "OnDestroyed",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnActivated__Delegate": {
       "type": "OnActivated",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnDeactivated__Delegate": {
       "type": "OnDeactivated",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnDestroyed__Delegate": {
       "type": "OnDestroyed",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -52,8 +60,9 @@
       "documentation": null,
       "signature_members": {
         "ManagerDestroyedDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnDestroyed",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -63,8 +72,9 @@
       "documentation": null,
       "signature_members": {
         "MarkerActivatedDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnActivated",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -74,8 +84,9 @@
       "documentation": null,
       "signature_members": {
         "NewMarkerActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -85,8 +96,9 @@
       "documentation": null,
       "signature_members": {
         "MarkerDeactivatedDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnDeactivated",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -96,8 +108,9 @@
       "documentation": null,
       "signature_members": {
         "ManagerDestroyedDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnDestroyed",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -107,8 +120,9 @@
       "documentation": null,
       "signature_members": {
         "MarkerActivatedDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnActivated",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -118,8 +132,9 @@
       "documentation": null,
       "signature_members": {
         "MarkerDeactivatedDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnDeactivated",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -129,8 +144,9 @@
       "documentation": null,
       "signature_members": {
         "ActorToSearchFor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Actor",
@@ -140,8 +156,9 @@
       "documentation": null,
       "signature_members": {
         "ActorToSearchFor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Actor",
@@ -151,8 +168,9 @@
       "documentation": null,
       "signature_members": {
         "MarkerType": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "Actor",
@@ -162,8 +180,9 @@
       "documentation": null,
       "signature_members": {
         "MarkerType": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "Actor",
@@ -173,8 +192,9 @@
       "documentation": null,
       "signature_members": {
         "ActivatedTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -184,8 +204,9 @@
       "documentation": null,
       "signature_members": {
         "DeactivatedTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -201,8 +222,9 @@
       "documentation": null,
       "signature_members": {
         "MarkerActorToRemove": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -212,8 +234,9 @@
       "documentation": null,
       "signature_members": {
         "NewActiveMarkerActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -223,8 +246,9 @@
       "documentation": null,
       "signature_members": {
         "NewInactiveMarkerActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -232,5 +256,7 @@
     }
   },
   "states": {},
+  "classflags": 2097178,
+  "configname": "None",
   "documentation": null
 }

@@ -2,23 +2,28 @@
   "members": {
     "Player": {
       "type": "SFXPawn_Player",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TotalDamage": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TotalPowerAssistValue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastScoreTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastScoreSourceName": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXPawn",

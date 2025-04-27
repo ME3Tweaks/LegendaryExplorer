@@ -2,27 +2,33 @@
   "members": {
     "EffectorLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "JointTargetLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "EffectorSpaceBoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "JointTargetSpaceBoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "EffectorLocationSpace": {
       "type": "EBoneControlSpace",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "JointTargetLocationSpace": {
       "type": "EBoneControlSpace",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXSkelControlLimb",

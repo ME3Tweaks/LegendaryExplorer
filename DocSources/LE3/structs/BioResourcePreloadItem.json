@@ -2,23 +2,28 @@
   "members": {
     "BinkPreloader": {
       "type": "BioBinkAsyncPreloader",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "pObject": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nKeyIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bPreloadFired": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "classdef": "InterpData",

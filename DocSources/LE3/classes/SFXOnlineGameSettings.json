@@ -4,79 +4,98 @@
   "variables": {
     "invitedUserId": {
       "type": "UniqueNetId",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MasterMapList": {
       "type": "MPMapInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "AvailableMaps": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "PrivacyTypes": {
       "type": "MPPrivacyInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "EnemyTypes": {
       "type": "MPEnemyInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "ChallengeTypes": {
       "type": "MPChallengeInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "AnyMapImage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "AnyEnemyImage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "AnyChallengeImage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "mME3MapName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 1077936128
     },
     "srAnyMap": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srAnyEnemy": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srAnyChallenge": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "EnemyType": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "mMapIsRequired": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "mCreateNewMatch": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "mFromGalaxyMap": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Difficulty": {
       "type": "SFXOnlineGameDifficulty",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "mPrivacySetting": {
       "type": "EMatchPrivacySetting",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -90,8 +109,9 @@
       "documentation": null,
       "signature_members": {
         "serverMapID": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "MPMapInfo",
@@ -101,8 +121,9 @@
       "documentation": null,
       "signature_members": {
         "PackageName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "int",
@@ -118,8 +139,9 @@
       "documentation": null,
       "signature_members": {
         "privacy": {
-          "type": null,
-          "documentation": null
+          "type": "EMatchPrivacySetting",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -129,8 +151,9 @@
       "documentation": null,
       "signature_members": {
         "MapName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -140,24 +163,29 @@
       "documentation": null,
       "signature_members": {
         "eType": {
-          "type": null,
-          "documentation": null
+          "type": "EPersonalMatchSettingsType",
+          "documentation": null,
+          "flags": 128
         },
         "PrivacySetting": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "MapSetting": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "EnemySetting": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "ChallengeSetting": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -167,8 +195,9 @@
       "documentation": null,
       "signature_members": {
         "MapId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "MPMapInfo",
@@ -178,8 +207,9 @@
       "documentation": null,
       "signature_members": {
         "PackageName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "MPMapInfo",
@@ -193,5 +223,7 @@
     }
   },
   "states": {},
+  "classflags": 136315062,
+  "configname": "Game",
   "documentation": null
 }

@@ -4,131 +4,163 @@
   "variables": {
     "m_aCrosshairPaths": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aTargets": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aReticles": {
       "type": "SFXSF_ReticleBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aCrosshairRawBuffer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pCameraManager": {
       "type": "SFXCameraNativeBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pPlayerController": {
       "type": "BioPlayerController",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pPlayerInput": {
       "type": "BioPlayerInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pPlayerBehavior": {
       "type": "BioEpicPawnBehavior",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108864
     },
     "m_pPlayerSquad": {
       "type": "BioPlayerSquad",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fTimeSinceLastUpdate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fCacheCrosshairRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nCrosshairBufferIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nCacheWeaponAmmo": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nCacheSniperZoom": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nCacheSniperDistance": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fSFWidth": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fSFHeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fScrn2SF_YOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fScrn2SF_YScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fScrn2SF_XScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nMaxReticleDistance": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fUpdateInterval": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fSelectionBoxScalingFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fScreenChangeDelta": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srDistanceUnit": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fCrosshairAccuracyModifier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_bSelectionInvalidated": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fCacheTargetInSights": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bReticleVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bShowHeavyDetails": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bShowSniperDetails": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_eCurrentCrosshair": {
       "type": "SFXReticleCrosshair",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -142,8 +174,9 @@
       "documentation": null,
       "signature_members": {
         "sPath": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -153,8 +186,9 @@
       "documentation": null,
       "signature_members": {
         "sPath": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -164,8 +198,9 @@
       "documentation": null,
       "signature_members": {
         "bClipOnly": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -175,8 +210,9 @@
       "documentation": null,
       "signature_members": {
         "bClipOnly": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "string",
@@ -198,8 +234,9 @@
       "documentation": null,
       "signature_members": {
         "bIsHeadshot": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -231,5 +268,7 @@
     }
   },
   "states": {},
+  "classflags": 144703646,
+  "configname": "UI",
   "documentation": null
 }

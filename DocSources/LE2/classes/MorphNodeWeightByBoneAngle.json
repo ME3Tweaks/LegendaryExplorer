@@ -4,58 +4,73 @@
   "variables": {
     "WeightArray": {
       "type": "BoneAngleMorph",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "BaseBoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AngleBoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ScalarParameterName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaterialInstanceConstant": {
       "type": "MaterialInstanceConstant",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "Angle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "NodeWeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "MaterialSlotId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bInvertBaseBoneAxis": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bInvertAngleBoneAxis": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bControlMaterialParameter": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BaseBoneAxis": {
       "type": "EAxis",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AngleBoneAxis": {
       "type": "EAxis",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

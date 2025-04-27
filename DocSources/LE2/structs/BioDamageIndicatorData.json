@@ -2,7 +2,8 @@
   "members": {
     "fCoolDownTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioPlayerController",

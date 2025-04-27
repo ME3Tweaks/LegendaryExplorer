@@ -2,15 +2,18 @@
   "members": {
     "Template": {
       "type": "BioVFXTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaxPoolSize": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MinPoolSize": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioWorldInfo",

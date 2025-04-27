@@ -4,19 +4,23 @@
   "variables": {
     "VfTable_IUIListElementProvider": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "VfTable_IUIListElementCellProvider": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "StaticDataProvider": {
       "type": "UIResourceDataProvider",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ProfileProvider": {
       "type": "UIDataProvider_OnlineProfileSettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -24,16 +28,19 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "CellTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "FieldType": {
-          "type": null,
-          "documentation": null
+          "type": "EUIDataProviderFieldType",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -43,24 +50,29 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "CellTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ListIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "out_FieldValue": {
-          "type": null,
-          "documentation": null
+          "type": "UIProviderFieldValue",
+          "documentation": null,
+          "flags": 4194688
         },
         "ArrayIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -70,12 +82,14 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "out_SchemaProvider": {
-          "type": null,
-          "documentation": null
+          "type": "UIListElementCellProvider",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -85,16 +99,19 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "CellFieldTags": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         },
         "ColumnHeaderDisplayText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194704
         }
       },
       "returntype": "None",
@@ -104,16 +121,19 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ListIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "out_ValueProvider": {
-          "type": null,
-          "documentation": null
+          "type": "UIListElementCellProvider",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -123,8 +143,9 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -140,12 +161,14 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "out_Elements": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -155,16 +178,19 @@
       "documentation": null,
       "signature_members": {
         "bIsEditor": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "InStaticResourceProvider": {
-          "type": null,
-          "documentation": null
+          "type": "UIResourceDataProvider",
+          "documentation": null,
+          "flags": 128
         },
         "InProfileProvider": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataProvider_OnlineProfileSettings",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -174,12 +200,14 @@
       "documentation": null,
       "signature_members": {
         "FieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "CollectionIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -195,16 +223,19 @@
       "documentation": null,
       "signature_members": {
         "out_Fields": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataProviderField",
+          "documentation": null,
+          "flags": 4194688
         },
         "TargetFieldTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ReplacementProviders": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "bool",
@@ -214,16 +245,19 @@
       "documentation": null,
       "signature_members": {
         "out_Fields": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataProviderField",
+          "documentation": null,
+          "flags": 4194688
         },
         "TargetFieldTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ReplacementProvider": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -231,5 +265,7 @@
     }
   },
   "states": {},
+  "classflags": 136316059,
+  "configname": "Game",
   "documentation": null
 }

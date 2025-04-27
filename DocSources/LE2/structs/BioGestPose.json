@@ -2,27 +2,33 @@
   "members": {
     "nmPose": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nmAnimSet": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nmAnimSeq": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "tPosition": {
       "type": "IntPoint",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nmGroup": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nmFemaleNodeName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioGestureRulesData",

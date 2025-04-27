@@ -4,43 +4,53 @@
   "variables": {
     "IntX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "IntY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "IntZ": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FloatX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FloatY": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FloatZ": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "XIsFloat": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "YIsFloat": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ZIsFloat": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Operation": {
       "type": "EScalarMathOps",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -52,5 +62,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

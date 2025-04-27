@@ -2,11 +2,13 @@
   "members": {
     "FracMeshComp": {
       "type": "FracturedStaticMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "TopLevelScopeIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "ProcBuilding",

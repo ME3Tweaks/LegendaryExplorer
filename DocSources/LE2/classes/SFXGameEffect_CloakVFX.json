@@ -4,67 +4,83 @@
   "variables": {
     "MaterialMap": {
       "type": "MaterialMapStruct",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "EyeInvisibleMaterial": {
       "type": "MaterialInstance",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "InvisibleMaterial": {
       "type": "MaterialInstance",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StartCrustVFX": {
       "type": "BioVFXTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "EndCrustVFX": {
       "type": "BioVFXTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StartCrust": {
       "type": "BioVisualEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CloakActivatedSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CloakDeactivatedSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TransitionPosition": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ParameterTransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CrustEffectTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EndTransitionDeltaTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaleEyesMaterialID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FemaleEyesMaterialID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bMaterialsSwapped": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bScaleDownParameter": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -78,8 +94,9 @@
       "documentation": null,
       "signature_members": {
         "Mesh": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -107,8 +124,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaSeconds": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -124,8 +142,9 @@
       "documentation": null,
       "signature_members": {
         "oSkeletalMesh": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -141,8 +160,9 @@
       "documentation": null,
       "signature_members": {
         "oSkeletalMesh": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -162,5 +182,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

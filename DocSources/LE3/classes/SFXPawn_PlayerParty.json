@@ -4,75 +4,93 @@
   "variables": {
     "PowerUnlockRequirements": {
       "type": "PowerUnlockRequirement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SquadScreenPowerOrder": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "StartingPowerRanks": {
       "type": "PowerStartingRank",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "AutoLevelUpInfo": {
       "type": "PowerAutoLevelUp",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "UIWorldArchetype": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481985
     },
     "Reviver": {
       "type": "SFXPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CharacterLevel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "fTimeToRevive": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "fPostResInvulnerability": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "fReviveRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bHelmetHidesHead": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bHelmetHidesHair": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bHelmetAffectsVO": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bHelmetIsFull": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bBeingRevived": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bRecentlyResurrected": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDamagedHarvester": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ForcedHelmetState": {
       "type": "EHelmetState",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -86,12 +104,14 @@
       "documentation": null,
       "signature_members": {
         "PercentOfHealthRegained": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bIsInstantaneous": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -101,8 +121,9 @@
       "documentation": null,
       "signature_members": {
         "WwiseComponent": {
-          "type": null,
-          "documentation": null
+          "type": "WwiseAudioComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -112,32 +133,39 @@
       "documentation": null,
       "signature_members": {
         "Caster": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "Force": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "TargetOverride": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "EPowerResistance",
@@ -153,36 +181,44 @@
       "documentation": null,
       "signature_members": {
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageCalc": {
-          "type": null,
-          "documentation": null
+          "type": "DamageCalculationAlgorithm",
+          "documentation": null,
+          "flags": 384
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 386
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "DamageCauser": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -192,8 +228,9 @@
       "documentation": null,
       "signature_members": {
         "PreviousWeaponNames": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -203,12 +240,14 @@
       "documentation": null,
       "signature_members": {
         "bAttachHelmet": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bUpdateComponents": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -218,8 +257,9 @@
       "documentation": null,
       "signature_members": {
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -235,8 +275,9 @@
       "documentation": null,
       "signature_members": {
         "enable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -264,12 +305,14 @@
       "documentation": null,
       "signature_members": {
         "InController": {
-          "type": null,
-          "documentation": null
+          "type": "EHelmetStateController",
+          "documentation": null,
+          "flags": 128
         },
         "InState": {
-          "type": null,
-          "documentation": null
+          "type": "EHelmetState",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -285,8 +328,9 @@
       "documentation": null,
       "signature_members": {
         "BioPC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXGUI_PlayerCountdown",
@@ -308,12 +352,14 @@
       "documentation": null,
       "signature_members": {
         "ObjectPool": {
-          "type": null,
-          "documentation": null
+          "type": "SFXObjectPool",
+          "documentation": null,
+          "flags": 128
         },
         "ClientEffects": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectManager",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -323,8 +369,9 @@
       "documentation": null,
       "signature_members": {
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -340,8 +387,9 @@
       "documentation": null,
       "signature_members": {
         "bForceUpdate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -357,8 +405,9 @@
       "documentation": null,
       "signature_members": {
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -374,16 +423,19 @@
       "documentation": null,
       "signature_members": {
         "NewWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         },
         "OldWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         },
         "bDrawOnly": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -411,8 +463,9 @@
       "documentation": null,
       "signature_members": {
         "TargetPawn": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPawn_PlayerParty",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -434,12 +487,14 @@
       "documentation": null,
       "signature_members": {
         "PreviousWeaponNames": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194432
         },
         "NewWeaponClass": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -449,12 +504,14 @@
       "documentation": null,
       "signature_members": {
         "bSuccess": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bReviverPawn": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -464,8 +521,9 @@
       "documentation": null,
       "signature_members": {
         "User": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -490,8 +548,9 @@
           "documentation": null,
           "signature_members": {
             "NextStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -501,8 +560,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -512,5 +572,7 @@
       "documentation": null
     }
   },
+  "classflags": 10486327,
+  "configname": "Game",
   "documentation": null
 }

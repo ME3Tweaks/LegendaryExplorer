@@ -4,15 +4,18 @@
   "variables": {
     "SessionSettingsProviderClassNames": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210690
     },
     "SessionSettingsProviderClasses": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202498
     },
     "SessionSettings": {
       "type": "SessionSettingsProvider",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     }
   },
   "functions": {
@@ -30,5 +33,7 @@
     }
   },
   "states": {},
+  "classflags": 136315038,
+  "configname": "Game",
   "documentation": null
 }

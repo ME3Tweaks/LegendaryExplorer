@@ -4,35 +4,43 @@
   "variables": {
     "WeaponClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PickupMesh": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "LightEnvironment": {
       "type": "LightEnvironmentComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "PickupSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PickupTimer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlayerPickupTimer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bTargetable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     },
     "EquipWeaponToolTip": {
       "type": "ETargetTipText",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "functions": {
@@ -40,12 +48,14 @@
       "documentation": null,
       "signature_members": {
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "FloorActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -61,8 +71,9 @@
       "documentation": null,
       "signature_members": {
         "VarName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -72,8 +83,9 @@
       "documentation": null,
       "signature_members": {
         "NewPickupMesh": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -83,8 +95,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -94,8 +107,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -117,8 +131,9 @@
       "documentation": null,
       "signature_members": {
         "User": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -131,5 +146,7 @@
       "documentation": null
     }
   },
+  "classflags": 10485778,
+  "configname": "None",
   "documentation": null
 }

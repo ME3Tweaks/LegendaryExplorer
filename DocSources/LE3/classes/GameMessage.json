@@ -4,95 +4,118 @@
   "variables": {
     "SwitchLevelMessage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "LeftMessage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "FailedTeamMessage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "FailedPlaceMessage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "FailedSpawnMessage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "EnteredMessage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "MaxedOutMessage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "ArbitrationMessage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "OvertimeMessage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "GlobalNameChange": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "NewTeamMessage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "NewTeamMessageTrailer": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "NoNameChange": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "VoteStarted": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "VotePassed": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "MustHaveStats": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "CantBeSpectator": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "CantBePlayer": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "BecameSpectator": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "NewPlayerMessage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "KickWarning": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "NewSpecMessage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "SpecEnteredMessage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     }
   },
   "functions": {
@@ -100,24 +123,29 @@
       "documentation": null,
       "signature_members": {
         "Switch": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "bPRI1HUD": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "RelatedPRI_1": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 144
         },
         "RelatedPRI_2": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 144
         },
         "OptionalObject": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "string",
@@ -125,5 +153,7 @@
     }
   },
   "states": {},
+  "classflags": 50,
+  "configname": "None",
   "documentation": null
 }

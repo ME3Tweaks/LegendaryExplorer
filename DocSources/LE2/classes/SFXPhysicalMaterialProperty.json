@@ -4,26 +4,33 @@
   "variables": {
     "PhysicalMaterialDecals": {
       "type": "SFXPhysicalMaterialDecals",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     },
     "PhysicalMaterialImpactEffects": {
       "type": "SFXPhysicalMaterialImpactEffects",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     },
     "PhysicalMaterialImpactSounds": {
       "type": "SFXPhysicalMaterialImpactSounds",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     },
     "PhysicalMaterialFootSteps": {
       "type": "SFXPhysicalMaterialFootSteps",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     },
     "PhysicalMaterialPhysics": {
       "type": "SFXPhysicalMaterialPhysics",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 8400914,
+  "configname": "None",
   "documentation": null
 }

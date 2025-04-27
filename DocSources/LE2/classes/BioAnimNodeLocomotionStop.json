@@ -4,26 +4,33 @@
   "variables": {
     "LeftFootNormalizedRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "BlendOut": {
       "type": "BioAnimCheckBlendOut",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "MovementSync": {
       "type": "BioAnimMovementSync",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "BlendOutTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bOverrideRootMotion": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

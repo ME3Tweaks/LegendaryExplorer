@@ -2,23 +2,28 @@
   "members": {
     "Location": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Up": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Right": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Front": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PortalVolume": {
       "type": "PortalVolume",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "classdef": "AudioDevice",

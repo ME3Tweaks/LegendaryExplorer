@@ -2,163 +2,203 @@
   "members": {
     "Appearance": {
       "type": "AppearanceSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "firstName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Powers": {
       "type": "PowerSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Weapons": {
       "type": "WeaponSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "GAWAssets": {
       "type": "GAWAssetSaveInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "WeaponMods": {
       "type": "WeaponModSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "LoadoutWeaponGroups": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "HotKeys": {
       "type": "HotKeySaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "faceCode": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "PlayerClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "LoadoutWeapons": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ME1ImportBonuses": {
       "type": "ME1ImportBonusSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CharacterGUID": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlayerClassName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MappedPower1": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MappedPower2": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MappedPower3": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PrimaryWeapon": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SecondaryWeapon": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "srClassFriendlyName": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Level": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CurrentXP": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LastName": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TalentPoints": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CurrentHealth": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Credits": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Medigel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Grenades": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Eezo": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Iridium": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Palladium": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Platinum": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Probes": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CurrentFuel": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsFemale": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCombatPawn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bInjuredPawn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseCasualAppearance": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Origin": {
       "type": "EOriginType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Notoriety": {
       "type": "ENotorietyType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXSaveGame",

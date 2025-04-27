@@ -2,19 +2,23 @@
   "members": {
     "WeaponTypes": {
       "type": "WeaponAnimType",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Offset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Direction": {
       "type": "ECoverDirection",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Type": {
       "type": "ECoverType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXWeapon",

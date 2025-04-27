@@ -2,11 +2,13 @@
   "members": {
     "Filename": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ReadState": {
       "type": "EOnlineEnumerationReadState",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "IniLocPatcher",

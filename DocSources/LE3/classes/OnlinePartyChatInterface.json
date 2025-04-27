@@ -4,7 +4,8 @@
   "variables": {
     "__OnSendPartyGameInvitesComplete__Delegate": {
       "type": "OnSendPartyGameInvitesComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "PartyMembers": {
-          "type": null,
-          "documentation": null
+          "type": "OnlinePartyMember",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -23,8 +25,9 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -34,8 +37,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -45,16 +49,19 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "Data1": {
-          "type": null,
-          "documentation": null
+          "type": "QWord",
+          "documentation": null,
+          "flags": 128
         },
         "Data2": {
-          "type": null,
-          "documentation": null
+          "type": "QWord",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -64,8 +71,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -75,8 +83,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -86,8 +95,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -97,12 +107,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "SendPartyGameInvitesCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnSendPartyGameInvitesComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -112,12 +124,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "SendPartyGameInvitesCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnSendPartyGameInvitesComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -131,5 +145,7 @@
     }
   },
   "states": {},
+  "classflags": 16403,
+  "configname": "None",
   "documentation": null
 }

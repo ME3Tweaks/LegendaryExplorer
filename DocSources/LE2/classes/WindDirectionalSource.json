@@ -4,10 +4,13 @@
   "variables": {
     "Component": {
       "type": "WindDirectionalSourceComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67764235
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 10486290,
+  "configname": "None",
   "documentation": null
 }

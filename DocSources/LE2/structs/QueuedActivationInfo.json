@@ -2,23 +2,28 @@
   "members": {
     "ActivateIndices": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ActivatedEvent": {
       "type": "SequenceEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "InOriginator": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "InInstigator": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bPushTop": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "Sequence",

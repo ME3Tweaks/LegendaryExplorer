@@ -4,39 +4,48 @@
   "variables": {
     "AmmoMesh": {
       "type": "StaticMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "AmmoPickupSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Clip_MM": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "Clip_MM_Disabled": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "PlayerNameCache": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "AmmoDropPct": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "bIsDisabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bDecays": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bPooled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -44,8 +53,9 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -67,8 +77,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -78,8 +89,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -89,8 +101,9 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -106,12 +119,14 @@
       "documentation": null,
       "signature_members": {
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "FloorActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -121,12 +136,14 @@
       "documentation": null,
       "signature_members": {
         "CollisionRadius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "CollisionHeight": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -136,8 +153,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -147,12 +165,14 @@
       "documentation": null,
       "signature_members": {
         "InvManager": {
-          "type": null,
-          "documentation": null
+          "type": "InventoryManager",
+          "documentation": null,
+          "flags": 128
         },
         "fBonusAmmo": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -162,12 +182,14 @@
       "documentation": null,
       "signature_members": {
         "Weapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -177,12 +199,14 @@
       "documentation": null,
       "signature_members": {
         "InvManager": {
-          "type": null,
-          "documentation": null
+          "type": "InventoryManager",
+          "documentation": null,
+          "flags": 128
         },
         "bCountAmmoInMagazine": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -192,8 +216,9 @@
       "documentation": null,
       "signature_members": {
         "InvManager": {
-          "type": null,
-          "documentation": null
+          "type": "InventoryManager",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -203,8 +228,9 @@
       "documentation": null,
       "signature_members": {
         "InvManager": {
-          "type": null,
-          "documentation": null
+          "type": "InventoryManager",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -230,8 +256,9 @@
           "documentation": null,
           "signature_members": {
             "Other": {
-              "type": null,
-              "documentation": null
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -247,8 +274,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -258,5 +286,7 @@
       "documentation": null
     }
   },
+  "classflags": 10485782,
+  "configname": "Weapon",
   "documentation": null
 }

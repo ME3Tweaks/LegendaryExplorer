@@ -4,111 +4,138 @@
   "variables": {
     "Meshes": {
       "type": "MeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "GameEffectClasses": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "GameEffects": {
       "type": "WeaponModEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "Reticules": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "AimModes": {
       "type": "SFXWeaponAimMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "ModLevelTokens": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "NotificationImage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023174656
     },
     "LargeNotificationImage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023174656
     },
     "RTPCName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "WeaponModConversions": {
       "type": "WeaponModStatConversion",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "SocketName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Camera": {
       "type": "SFXCameraSetup",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MyWeapon": {
       "type": "SFXWeapon",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Level": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DisplayName": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FormattedName_ModName": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FormattedName_ModCategory": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Description": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "NotificationTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "NotificationDescription": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "MAX_RANK": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "bMaterialEmissiveChange": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bMaterialGripColorChange": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bMaterialBodyColorChange": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsScoped": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WeaponModCategory": {
       "type": "EWeaponModCategory",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ToolTipText": {
       "type": "ETargetTipText",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     }
   },
   "functions": {
@@ -116,8 +143,9 @@
       "documentation": null,
       "signature_members": {
         "GameEffectIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -127,12 +155,14 @@
       "documentation": null,
       "signature_members": {
         "nLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bShortForm": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "string",
@@ -148,8 +178,9 @@
       "documentation": null,
       "signature_members": {
         "EffectClassName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Class",
@@ -165,8 +196,9 @@
       "documentation": null,
       "signature_members": {
         "nLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -176,8 +208,9 @@
       "documentation": null,
       "signature_members": {
         "nUnlockLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -187,8 +220,9 @@
       "documentation": null,
       "signature_members": {
         "ModClassName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "Class",
@@ -198,8 +232,9 @@
       "documentation": null,
       "signature_members": {
         "bHidden": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -215,12 +250,14 @@
       "documentation": null,
       "signature_members": {
         "Instigator": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 144
         },
         "bNoNotification": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -228,5 +265,7 @@
     }
   },
   "states": {},
+  "classflags": 8388631,
+  "configname": "Weapon",
   "documentation": null
 }

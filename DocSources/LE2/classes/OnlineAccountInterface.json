@@ -4,7 +4,8 @@
   "variables": {
     "__OnCreateOnlineAccountCompleted__Delegate": {
       "type": "OnCreateOnlineAccountCompleted",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "Accounts": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -23,12 +25,14 @@
       "documentation": null,
       "signature_members": {
         "UserName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Password": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -38,16 +42,19 @@
       "documentation": null,
       "signature_members": {
         "NewUserName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "OldUserName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Password": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -57,12 +64,14 @@
       "documentation": null,
       "signature_members": {
         "UserName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Password": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -72,8 +81,9 @@
       "documentation": null,
       "signature_members": {
         "AccountCreateDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnCreateOnlineAccountCompleted",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -83,8 +93,9 @@
       "documentation": null,
       "signature_members": {
         "AccountCreateDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnCreateOnlineAccountCompleted",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -94,8 +105,9 @@
       "documentation": null,
       "signature_members": {
         "ErrorStatus": {
-          "type": null,
-          "documentation": null
+          "type": "EOnlineAccountCreateStatus",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -105,20 +117,24 @@
       "documentation": null,
       "signature_members": {
         "UserName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Password": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "EmailAddress": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "ProductKey": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -126,5 +142,7 @@
     }
   },
   "states": {},
+  "classflags": 16403,
+  "configname": "None",
   "documentation": null
 }

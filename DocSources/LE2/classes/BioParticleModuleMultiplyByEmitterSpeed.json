@@ -4,26 +4,33 @@
   "variables": {
     "MinUsedSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 33554443
     },
     "MaxUsedSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 33554443
     },
     "MultiplierAtMin": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 33554443
     },
     "MultiplierAtMax": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 33554443
     },
     "MultipliedProperty": {
       "type": "MultiplyByEmitterSpeedProperty",
-      "documentation": null
+      "documentation": null,
+      "flags": 33554443
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134230162,
+  "configname": "None",
   "documentation": null
 }

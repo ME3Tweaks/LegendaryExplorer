@@ -2,15 +2,18 @@
   "members": {
     "PlotStateID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BrainThreshold": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HeartThreshold": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXGAWAssetsHandler",

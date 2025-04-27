@@ -4,975 +4,1218 @@
   "variables": {
     "TinyFontName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "SmallFontName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "MediumFontName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "LargeFontName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "SubtitleFontName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "AdditionalFonts": {
       "type": "Font",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "AdditionalFontNames": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "ConsoleClassName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "GameViewportClientClassName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "DataStoreClientClassName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "LocalPlayerClassName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "DefaultMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "DefaultDecalMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "DefaultTextureName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "WireframeMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "EmissiveTexturedMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "GeomMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "DefaultFogVolumeMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "TickMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "CrossMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "VisColorationMaterialInChunkName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "VisColorationMaterialLoadChunkName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "VisColorationMaterialVisibleChunkName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "VisColorationMaterialMasterMapName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "VisColorationMaterialUnloadedName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "BioColorChunkMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "BioTranslucentVolumeMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "LevelColorationLitMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "LevelColorationUnlitMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "LightingTexelDensityName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "ShadedLevelColorationLitMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "ShadedLevelColorationUnlitMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "RemoveSurfaceMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "VertexColorMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "VertexColorViewModeMaterialName_ColorOnly": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "VertexColorViewModeMaterialName_AlphaAsColor": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "VertexColorViewModeMaterialName_RedOnly": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "VertexColorViewModeMaterialName_GreenOnly": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "VertexColorViewModeMaterialName_BlueOnly": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "HeatmapMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "BoneWeightMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "TangentColorMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "ProcBuildingSimpleMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "BuildingQuadStaticMeshName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "LightComplexityColors": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "ShaderComplexityColors": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "StatColorMappings": {
       "type": "StatColorMapping",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "EditorBrushMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "DefaultPhysMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "TerrainErrorMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "DefaultOnlineSubsystemName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "DefaultPostProcessName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "ThumbnailSkeletalMeshPostProcessName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "ThumbnailParticleSystemPostProcessName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "ThumbnailMaterialPostProcessName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "DefaultUIScenePostProcessName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "DefaultUICaretMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "SceneCaptureReflectActorMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "SceneCaptureCubeActorMaterialName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "ScreenDoorNoiseTextureName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "RandomAngleTextureName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "RandomNormalTextureName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "RandomNormalTextureName2": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "WeightMapPlaceholderTextureName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "LightMapDensityTextureName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "LightMapDensityNormalName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "DefaultSoundName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "GamePlayers": {
       "type": "LocalPlayer",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "DeferredCommands": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "NextFrameDeferredCommands": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "ScoutClassName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210690
     },
     "m_BioLayerDetails": {
       "type": "BioLayerDetails",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "TransitionDescription": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "TransitionGameType": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PendingDroppedNotes": {
       "type": "DropNoteInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "DynamicCoverMeshComponentName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "IgnoreSimulatedFuncWarnings": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "ConsoleClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GameViewportClientClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DataStoreClientClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LocalPlayerClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OnlineSubsystemClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RemoteControlExec": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "MobileMaterialEmulator": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "LightingOnlyBrightness": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "LightMapDensityVertexMappedColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "LightMapDensitySelectedColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "DefaultSelectedMaterialColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "SelectedMaterialColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "UnselectedMaterialColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "TinyFont": {
       "type": "Font",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SmallFont": {
       "type": "Font",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MediumFont": {
       "type": "Font",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LargeFont": {
       "type": "Font",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SubtitleFont": {
       "type": "Font",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DefaultMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DefaultDecalMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DefaultTexture": {
       "type": "Texture",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WireframeMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EmissiveTexturedMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GeomMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DefaultFogVolumeMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TickMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CrossMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "VisColorationMaterialInChunk": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "VisColorationMaterialLoadChunk": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "VisColorationMaterialVisibleChunk": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "VisColorationMaterialMasterMap": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "VisColorationMaterialUnloaded": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BioColorChunkMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BioTranslucentVolumeMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LevelColorationLitMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LevelColorationUnlitMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LightingTexelDensityMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ShadedLevelColorationLitMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ShadedLevelColorationUnlitMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RemoveSurfaceMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "VertexColorMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "VertexColorViewModeMaterial_ColorOnly": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "VertexColorViewModeMaterial_AlphaAsColor": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "VertexColorViewModeMaterial_RedOnly": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "VertexColorViewModeMaterial_GreenOnly": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "VertexColorViewModeMaterial_BlueOnly": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HeatmapMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BoneWeightMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TangentColorMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ProcBuildingSimpleMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BuildingQuadStaticMesh": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EditorBrushMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DefaultPhysMaterial": {
       "type": "PhysicalMaterial",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TerrainErrorMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DefaultPostProcess": {
       "type": "PostProcessChain",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ThumbnailSkeletalMeshPostProcess": {
       "type": "PostProcessChain",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ThumbnailParticleSystemPostProcess": {
       "type": "PostProcessChain",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ThumbnailMaterialPostProcess": {
       "type": "PostProcessChain",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DefaultUIScenePostProcess": {
       "type": "PostProcessChain",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DefaultUICaretMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SceneCaptureReflectActorMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SceneCaptureCubeActorMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ScreenDoorNoiseTexture": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RandomAngleTexture": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RandomNormalTexture": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RandomNormalTexture2": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WeightMapPlaceholderTexture": {
       "type": "Texture",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LightMapDensityTexture": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LightMapDensityNormal": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DefaultSound": {
       "type": "SoundNodeWave",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Client": {
       "type": "Client",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "GameViewport": {
       "type": "GameViewportClient",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "DebugManager": {
       "type": "DebugManager",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_pUnitTestFramework": {
       "type": "BioTestFramework",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PostDepthOnHair": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ProcBuildingLODColorTexelsPerWorldUnit": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "ProcBuildingLODLightingTexelsPerWorldUnit": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "MaxProcBuildingLODColorTextureSize": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "MaxProcBuildingLODLightingTextureSize": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "MaxRMSDForCombiningMappings": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "MaxPixelShaderAdditiveComplexityCount": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "MinTextureDensity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "IdealTextureDensity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "MaxTextureDensity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "TexelDensityViewFlags": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "MinLightMapDensity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "IdealLightMapDensity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "MaxLightMapDensity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "RenderLightMapDensityGrayscaleScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "RenderLightMapDensityColorScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "TerrainMaterialMaxTextureCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "TerrainTessellationCheckCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "TerrainTessellationCheckDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "TimeBetweenPurgingPendingKillObjects": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "TickCycles": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GameCycles": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ClientCycles": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxVarianceShadowAttenuation": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "MaxSmoothedFrameRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MinSmoothedFrameRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "C_WorldBox": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "C_BrushWire": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "C_AddWire": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "C_SubtractWire": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "C_SemiSolidWire": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "C_NonSolidWire": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "C_WireBackground": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "C_ScaleBoxHi": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "C_VolumeCollision": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "C_BSPCollision": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "C_OrthoBackground": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "C_Volume": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "C_BrushShape": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StreamingDistanceFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MeshLODRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "CameraRotationThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "CameraTranslationThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "PrimitiveProbablyVisibleTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "PercentUnoccludedRequeries": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxOcclusionPixelsFraction": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxFluidNumVerts": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "FluidSimulationTimeLimit": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxParticleResize": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxParticleResizeWarn": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxParticleVertexMemory": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxParticleSpriteCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "MaxParticleSubUVCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "BeginUPTryCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "NetClientTicksPerSecond": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "MaxTrackedOcclusionIncrement": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "TrackedOcclusionStepSize": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bEnableTranslucentHairPass": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "UseProcBuildingLODTextureCropping": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "ForcePowerOfTwoProcBuildingLODTextures": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bCombineSimilarMappings": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bRenderLightMapDensityGrayscale": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bUseSound": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bUseTextureStreaming": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "bUseBackgroundLevelStreaming": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "bSubtitlesEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "bSubtitlesForcedOff": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "bSmoothFrameRate": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "HACK_UseTickFrequency": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bShouldGenerateSimpleLightmaps": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bForceStaticTerrain": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "DisplayLazyLoadErrors": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_bSaveInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bForceCPUSkinning": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bUsePostProcessEffects": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bOnScreenKismetWarnings": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bEnableKismetLogging": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bAllowMatureLanguage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bRenderTerrainCollisionAsOverlay": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bDisablePhysXHardwareSupport": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bPauseOnLossOfFocus": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bCheckParticleRenderSize": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bEnableColorClear": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278530
     },
     "bAreConstraintsDirty": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bHasPendingGlobalReattach": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bUseMobileEmulation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bEnableOnScreenDebugMessages": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bEnableOnScreenDebugMessagesDisplay": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bSuppressMapWarnings": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bCookSeparateSharedMPGameContent": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "BioUnTexCompressSetting": {
       "type": "EBioUnTexCompressSetting",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "TransitionType": {
       "type": "ETransitionType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -980,8 +1223,9 @@
       "documentation": null,
       "signature_members": {
         "sMessage": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -991,32 +1235,39 @@
       "documentation": null,
       "signature_members": {
         "Font": {
-          "type": null,
-          "documentation": null
+          "type": "Font",
+          "documentation": null,
+          "flags": 128
         },
         "Text": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "X": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Y": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "ScaleX": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "ScaleY": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "WrapWidth": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1026,32 +1277,39 @@
       "documentation": null,
       "signature_members": {
         "Font": {
-          "type": null,
-          "documentation": null
+          "type": "Font",
+          "documentation": null,
+          "flags": 128
         },
         "Text": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "X": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Y": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "ScaleX": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "ScaleY": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bIsCentered": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1067,8 +1325,9 @@
       "documentation": null,
       "signature_members": {
         "bDelayStopUntilGameHasRendered": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1102,8 +1361,9 @@
       "documentation": null,
       "signature_members": {
         "AdditionalFontIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Font",
@@ -1171,5 +1431,7 @@
     }
   },
   "states": {},
+  "classflags": 136315039,
+  "configname": "Engine",
   "documentation": null
 }

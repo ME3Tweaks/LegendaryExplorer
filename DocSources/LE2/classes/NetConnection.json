@@ -4,10 +4,13 @@
   "variables": {
     "Children": {
       "type": "ChildConnection",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 268435469,
+  "configname": "Engine",
   "documentation": null
 }

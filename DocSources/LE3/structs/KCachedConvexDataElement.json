@@ -2,7 +2,8 @@
   "members": {
     "ConvexElementData": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     }
   },
   "classdef": "RB_BodySetup",

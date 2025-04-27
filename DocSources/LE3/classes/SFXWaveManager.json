@@ -4,15 +4,18 @@
   "variables": {
     "PotentialWaves": {
       "type": "SFXWave",
-      "documentation": null
+      "documentation": null,
+      "flags": 549760016384
     },
     "PotentialWavesType": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 549755813888
     },
     "BioWorldInfo": {
       "type": "BioWorldInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -26,8 +29,9 @@
       "documentation": null,
       "signature_members": {
         "SpecifiedWaveType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -37,12 +41,14 @@
       "documentation": null,
       "signature_members": {
         "WaveIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "WaveType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXWave",
@@ -52,12 +58,14 @@
       "documentation": null,
       "signature_members": {
         "DesiredWaveIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "WaveString": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "int",
@@ -65,5 +73,7 @@
     }
   },
   "states": {},
+  "classflags": 10485787,
+  "configname": "Game",
   "documentation": null
 }

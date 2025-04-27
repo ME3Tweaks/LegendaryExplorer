@@ -4,11 +4,13 @@
   "variables": {
     "ComplexPropertyTypes": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "__CanSupportComplexPropertyType__Delegate": {
       "type": "CanSupportComplexPropertyType",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -16,12 +18,14 @@
       "documentation": null,
       "signature_members": {
         "PropertyValue": {
-          "type": null,
-          "documentation": null
+          "type": "UIProviderScriptFieldValue",
+          "documentation": null,
+          "flags": 4194688
         },
         "ArrayIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -31,8 +35,9 @@
       "documentation": null,
       "signature_members": {
         "UnsupportedProperty": {
-          "type": null,
-          "documentation": null
+          "type": "Property",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -40,5 +45,7 @@
     }
   },
   "states": {},
+  "classflags": 136315035,
+  "configname": "None",
   "documentation": null
 }

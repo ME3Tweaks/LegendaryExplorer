@@ -4,7 +4,8 @@
   "variables": {
     "m_aTarget": {
       "type": "BioSeqVar_ObjectFindByTag",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     }
   },
   "functions": {
@@ -36,8 +37,9 @@
       "documentation": null,
       "signature_members": {
         "pTrackInst": {
-          "type": null,
-          "documentation": null
+          "type": "BioInterpTrackInst",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -45,5 +47,7 @@
     }
   },
   "states": {},
+  "classflags": 142614674,
+  "configname": "None",
   "documentation": null
 }

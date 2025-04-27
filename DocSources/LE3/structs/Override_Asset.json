@@ -2,15 +2,18 @@
   "members": {
     "fxAsset": {
       "type": "FaceFXAsset",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "eAnimGroup": {
       "type": "EBioAutoSetFXAnimGroupTrack",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "eAnimSeq": {
       "type": "EBioAutoSetFXAnimSeqTrack",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "InterpTrackFaceFX",

@@ -4,83 +4,103 @@
   "variables": {
     "GAWGUICategories": {
       "type": "GAWGUICategory",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "AllAssets": {
       "type": "GAWAsset",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "UnlockedGAWAssets": {
       "type": "GAWAssetSaveInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "EndGameOptionSets": {
       "type": "EndGameOptionSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ShepardLivesStates": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "EndGameOptions": {
       "type": "EndGameOption",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "CutscenePlotStates": {
       "type": "CutscenePlotState",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "AllEndingPlotStates": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "GAWTheatreData": {
       "type": "GAWZoneData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "OverallWarAssetSummaries": {
       "type": "WarAssetSummaryWithThreshold",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "AchievementThreshold": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MinimumStrengthForGUI": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxStrengthForGUI": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ShepardLivesThreshold": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SaveAndersonPlotBool": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FinalGAWRatingID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OverallReadinessRating": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GUIDescription_Formatter": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GUIDescription_UpdatedTag": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bBrainUsed": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -88,8 +108,9 @@
       "documentation": null,
       "signature_members": {
         "AssetName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "string",
@@ -105,8 +126,9 @@
       "documentation": null,
       "signature_members": {
         "categoryId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -122,8 +144,9 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -133,8 +156,9 @@
       "documentation": null,
       "signature_members": {
         "AssetName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -144,8 +168,9 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -161,8 +186,9 @@
       "documentation": null,
       "signature_members": {
         "EndingGame": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -172,20 +198,24 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "GUIName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         },
         "bGetDescription": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "GUIDescription": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194704
         }
       },
       "returntype": "bool",
@@ -195,20 +225,24 @@
       "documentation": null,
       "signature_members": {
         "AssetName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "GUIName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         },
         "bGetDescription": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "GUIDescription": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194704
         }
       },
       "returntype": "bool",
@@ -218,8 +252,9 @@
       "documentation": null,
       "signature_members": {
         "AssetName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "int",
@@ -229,12 +264,14 @@
       "documentation": null,
       "signature_members": {
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "EGAWAssetType",
+          "documentation": null,
+          "flags": 128
         },
         "UnlockedAssets": {
-          "type": null,
-          "documentation": null
+          "type": "GAWAsset",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -250,16 +287,19 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "EGAWAssetType",
+          "documentation": null,
+          "flags": 128
         },
         "GUIDescription": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -269,8 +309,9 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -292,8 +333,9 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -309,12 +351,14 @@
       "documentation": null,
       "signature_members": {
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "EGAWAssetType",
+          "documentation": null,
+          "flags": 128
         },
         "AssetCount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 400
         }
       },
       "returntype": "int",
@@ -330,8 +374,9 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -341,8 +386,9 @@
       "documentation": null,
       "signature_members": {
         "AssetName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -352,8 +398,9 @@
       "documentation": null,
       "signature_members": {
         "AssetID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -363,16 +410,19 @@
       "documentation": null,
       "signature_members": {
         "nAssetIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nCategoryID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nCurrentStrength": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 400
         }
       },
       "returntype": "bool",
@@ -382,12 +432,14 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "CurrentStrength": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 400
         }
       },
       "returntype": "bool",
@@ -397,12 +449,14 @@
       "documentation": null,
       "signature_members": {
         "AssetName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "CurrentStrength": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 400
         }
       },
       "returntype": "bool",
@@ -412,8 +466,9 @@
       "documentation": null,
       "signature_members": {
         "AssetID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -423,8 +478,9 @@
       "documentation": null,
       "signature_members": {
         "AssetID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -434,8 +490,9 @@
       "documentation": null,
       "signature_members": {
         "Options": {
-          "type": null,
-          "documentation": null
+          "type": "EEndGameOption",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -451,8 +508,9 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -462,8 +520,9 @@
       "documentation": null,
       "signature_members": {
         "AssetName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -473,12 +532,14 @@
       "documentation": null,
       "signature_members": {
         "bBrain": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bEvaluateAchievements": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -494,8 +555,9 @@
       "documentation": null,
       "signature_members": {
         "srAssetName": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 400
         }
       },
       "returntype": "bool",
@@ -505,8 +567,9 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -516,8 +579,9 @@
       "documentation": null,
       "signature_members": {
         "AssetName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -527,8 +591,9 @@
       "documentation": null,
       "signature_members": {
         "AssetType": {
-          "type": null,
-          "documentation": null
+          "type": "EGAWAssetType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -538,12 +603,14 @@
       "documentation": null,
       "signature_members": {
         "bUsedBrain": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bEvaluateAchievements": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -553,16 +620,19 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "NewStrength": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bAddToTotal": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -572,12 +642,14 @@
       "documentation": null,
       "signature_members": {
         "AssetName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "NewStrength": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -585,5 +657,7 @@
     }
   },
   "states": {},
+  "classflags": 2097174,
+  "configname": "UI",
   "documentation": null
 }

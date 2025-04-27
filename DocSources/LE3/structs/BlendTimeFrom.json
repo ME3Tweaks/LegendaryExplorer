@@ -2,11 +2,13 @@
   "members": {
     "m_aBlendTimeTo": {
       "type": "BlendTimeTo",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_eAnimNode": {
       "type": "EBioActionAnimNode",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     }
   },
   "classdef": "BioAnimNodeBlendByAction",

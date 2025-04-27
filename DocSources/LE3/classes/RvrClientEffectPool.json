@@ -4,35 +4,43 @@
   "variables": {
     "m_mModuleCount": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "m_mModuleMax": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "m_mHighestPriorityHiddenModules": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "m_mLowestPriorityActiveModules": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "m_mEffects": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "m_nTotalEffectCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nMaxTotalEffects": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -40,12 +48,14 @@
       "documentation": null,
       "signature_members": {
         "pModule": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectModuleInstance",
+          "documentation": null,
+          "flags": 128
         },
         "bInc": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -55,8 +65,9 @@
       "documentation": null,
       "signature_members": {
         "bPreserveRunningEffects": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -66,16 +77,19 @@
       "documentation": null,
       "signature_members": {
         "pTemplate": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectInterface",
+          "documentation": null,
+          "flags": 128
         },
         "nMin": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nMax": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -85,8 +99,9 @@
       "documentation": null,
       "signature_members": {
         "pClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -96,8 +111,9 @@
       "documentation": null,
       "signature_members": {
         "bSpawnableOnly": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -107,8 +123,9 @@
       "documentation": null,
       "signature_members": {
         "pModule": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectModuleInstance",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -118,12 +135,14 @@
       "documentation": null,
       "signature_members": {
         "pModule": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectModuleInstance",
+          "documentation": null,
+          "flags": 128
         },
         "bActivate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -131,5 +150,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

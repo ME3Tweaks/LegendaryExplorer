@@ -2,23 +2,28 @@
   "members": {
     "VfTable": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8400898
     },
     "FunctionPackage": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "FunctionClass": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "FunctionName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "nParameter": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioDefine",

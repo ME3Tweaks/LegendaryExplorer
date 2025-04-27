@@ -2,15 +2,18 @@
   "members": {
     "ProtectedRegion": {
       "type": "UIScreenValue_Extent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AdjustmentType": {
       "type": "EMaterialAdjustmentType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Alignment": {
       "type": "EUIAlignment",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "UIRoot",

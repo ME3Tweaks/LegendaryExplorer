@@ -4,23 +4,28 @@
   "variables": {
     "m_sMovieName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_SoundEvent": {
       "type": "WwiseBaseSoundObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fAutoResizeBuffer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bIgnoreShrinking": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bIgnoreGrowing": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -44,5 +49,7 @@
     }
   },
   "states": {},
+  "classflags": 134226066,
+  "configname": "None",
   "documentation": null
 }

@@ -4,171 +4,213 @@
   "variables": {
     "CurrentTick": {
       "type": "QWord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "SoundModeStartTime": {
       "type": "Double",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "SoundModeFadeInStartTime": {
       "type": "Double",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "SoundModeFadeInEndTime": {
       "type": "Double",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "SoundModeEndTime": {
       "type": "Double",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "InteriorStartTime": {
       "type": "Double",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "InteriorEndTime": {
       "type": "Double",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "ExteriorEndTime": {
       "type": "Double",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "InteriorLPFEndTime": {
       "type": "Double",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "ExteriorLPFEndTime": {
       "type": "Double",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "Sources": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "FreeSources": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "Listeners": {
       "type": "Listener",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "AudioComponents": {
       "type": "AudioComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71835658
     },
     "CommonAudioPool": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "Effects": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "TextToSpeech": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "WaveInstanceSourceMap": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "SoundModes": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "SoundClasses": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "SourceSoundClasses": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "CurrentSoundClasses": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DestinationSoundClasses": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ListenerInteriorSettings": {
       "type": "InteriorSettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "BaseSoundModeName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "CurrentMode": {
       "type": "SoundMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "TestAudioComponent": {
       "type": "AudioComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633162
     },
     "MaxChannels": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "CommonAudioPoolSize": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "LowPassFilterResonance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "MinCompressedDurationEditor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "MinCompressedDurationGame": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "CommonAudioPoolFreeBytes": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "ListenerVolumeIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "InteriorVolumeInterp": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "InteriorLPFInterp": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "ExteriorVolumeInterp": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "ExteriorLPFInterp": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "TransientMasterVolume": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LastUpdateTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bGameWasTicking": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "DebugState": {
       "type": "EDebugState",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     }
   },
   "functions": {
@@ -176,8 +218,9 @@
       "documentation": null,
       "signature_members": {
         "NewMode": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -185,5 +228,7 @@
     }
   },
   "states": {},
+  "classflags": 144703646,
+  "configname": "Engine",
   "documentation": null
 }

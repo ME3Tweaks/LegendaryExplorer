@@ -2,87 +2,108 @@
   "members": {
     "TargetBoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "KeyLight_Scale_Red": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "KeyLight_Scale_Green": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "KeyLight_Scale_Blue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FillLight_Scale_Red": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FillLight_Scale_Green": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FillLight_Scale_Blue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RimLightColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RimLightScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RimLightYaw": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RimLightPitch": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BouncedLightingIntensity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BouncedKeyLightingFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BouncedKeyLightingDesaturation": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "WrapLightingDirectMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "WrapLightingIndirectMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bLockEnvironment": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bTriggerFullUpdate": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseForNextCamera": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RimLightControl": {
       "type": "ERimLightControlType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LightingType": {
       "type": "EConvLightingType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioConversation",

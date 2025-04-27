@@ -2,11 +2,13 @@
   "members": {
     "SpecificType": {
       "type": "ESFXVocalizationVariationType",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "SpecificValue": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     }
   },
   "classdef": "SFXVocalizationBank",

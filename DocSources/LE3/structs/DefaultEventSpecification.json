@@ -2,11 +2,13 @@
   "members": {
     "EventState": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EventTemplate": {
       "type": "UIEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "UIRoot",

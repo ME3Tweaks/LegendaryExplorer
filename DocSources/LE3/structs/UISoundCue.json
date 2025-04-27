@@ -2,11 +2,13 @@
   "members": {
     "SoundName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SoundToPlay": {
       "type": "SoundCue",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "UISkin",

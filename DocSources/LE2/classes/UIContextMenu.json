@@ -4,15 +4,18 @@
   "variables": {
     "MenuItems": {
       "type": "ContextMenuItem",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202498
     },
     "InvokingWidget": {
       "type": "UIObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bResolvePosition": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     }
   },
   "functions": {
@@ -20,12 +23,14 @@
       "documentation": null,
       "signature_members": {
         "Widget": {
-          "type": null,
-          "documentation": null
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
         },
         "ItemToFind": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "int",
@@ -35,16 +40,19 @@
       "documentation": null,
       "signature_members": {
         "Widget": {
-          "type": null,
-          "documentation": null
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
         },
         "IndexToGet": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "out_MenuItem": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -54,12 +62,14 @@
       "documentation": null,
       "signature_members": {
         "Widget": {
-          "type": null,
-          "documentation": null
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
         },
         "out_MenuItems": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -69,12 +79,14 @@
       "documentation": null,
       "signature_members": {
         "Widget": {
-          "type": null,
-          "documentation": null
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
         },
         "IndexToRemove": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -84,12 +96,14 @@
       "documentation": null,
       "signature_members": {
         "Widget": {
-          "type": null,
-          "documentation": null
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
         },
         "ItemToRemove": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -99,8 +113,9 @@
       "documentation": null,
       "signature_members": {
         "Widget": {
-          "type": null,
-          "documentation": null
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -110,20 +125,24 @@
       "documentation": null,
       "signature_members": {
         "Widget": {
-          "type": null,
-          "documentation": null
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
         },
         "Item": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "InsertIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "bAllowDuplicates": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -133,20 +152,24 @@
       "documentation": null,
       "signature_members": {
         "Widget": {
-          "type": null,
-          "documentation": null
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
         },
         "NewMenuItems": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bClearExisting": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "InsertIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -156,8 +179,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -167,8 +191,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -182,5 +207,7 @@
     }
   },
   "states": {},
+  "classflags": 144704150,
+  "configname": "UI",
   "documentation": null
 }

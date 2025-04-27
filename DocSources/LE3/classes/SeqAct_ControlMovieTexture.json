@@ -4,7 +4,8 @@
   "variables": {
     "MovieTexture": {
       "type": "TextureMovie",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -16,5 +17,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

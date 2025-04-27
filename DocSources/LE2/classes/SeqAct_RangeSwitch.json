@@ -4,10 +4,13 @@
   "variables": {
     "Ranges": {
       "type": "SwitchRange",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 178258066,
+  "configname": "None",
   "documentation": null
 }

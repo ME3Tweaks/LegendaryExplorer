@@ -4,50 +4,63 @@
   "variables": {
     "TargetRw": {
       "type": "BioRawDistributionRwVector3",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "TargetTangentRw": {
       "type": "BioRawDistributionRwVector3",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "TargetStrength": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "TargetName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LockRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bTargetAbsolute": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bLockTarget": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bLockTargetTangent": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bLockTargetStength": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TargetMethod": {
       "type": "Beam2SourceTargetMethod",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TargetTangentMethod": {
       "type": "Beam2SourceTargetTangentMethod",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142610578,
+  "configname": "None",
   "documentation": null
 }

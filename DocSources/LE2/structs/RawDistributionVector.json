@@ -2,7 +2,8 @@
   "members": {
     "Distribution": {
       "type": "DistributionVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 101187593
     }
   },
   "classdef": "DistributionVector",

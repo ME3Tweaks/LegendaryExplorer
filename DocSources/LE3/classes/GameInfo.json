@@ -4,387 +4,483 @@
   "variables": {
     "CauseEventCommand": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "BugLocString": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "BugRotString": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PendingArbitrationPCs": {
       "type": "PlayerController",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ArbitrationPCs": {
       "type": "PlayerController",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DefaultPlayerName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "GameName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "InactivePRIArray": {
       "type": "PlayerReplicationInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Pausers": {
       "type": "CanUnpause",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ServerOptions": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "GameInfoClassAliases": {
       "type": "GameClassShortName",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210691
     },
     "DefaultGameType": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "DefaultMapPrefixes": {
       "type": "GameTypePrefix",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "CustomMapPrefixes": {
       "type": "GameTypePrefix",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "__CanUnpause__Delegate": {
       "type": "CanUnpause",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DefaultPawnClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ScoreBoardType": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HUDType": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DeathMessageClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GameMessageClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AccessControlClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BroadcastHandlerClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AutoTestManagerClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlayerControllerClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlayerReplicationInfoClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GameReplicationInfoClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OnlineStatsWriteClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OnlineGameSettingsClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "GameInterface": {
       "type": "OnlineGameInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BaseMutator": {
       "type": "Mutator",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AccessControl": {
       "type": "AccessControl",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BroadcastHandler": {
       "type": "BroadcastHandler",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MyAutoTestManager": {
       "type": "AutoTestManager",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GameReplicationInfo": {
       "type": "GameReplicationInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OnlineSub": {
       "type": "OnlineSubsystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CoverReplicatorBase": {
       "type": "CoverReplicator",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ArbitrationHandshakeTimeout": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "GameDifficulty": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "GoreLevel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "GameSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxSpectators": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "MaxSpectatorsAllowed": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NumSpectators": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxPlayers": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "MaxPlayersAllowed": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NumPlayers": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NumBots": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NumTravellingPlayers": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FearCostFallOff": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GoalScore": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxLives": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "TimeLimit": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxIdleTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "MaxTimeMargin": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "TimeMarginSlack": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "MinTimeMargin": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "LeaderboardId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "ArbitratedLeaderboardId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "AdjustedNetSpeed": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastNetSpeedUpdateTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TotalNetBandwidth": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "MinDynamicBandwidth": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "MaxDynamicBandwidth": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "StandbyRxCheatTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "StandbyTxCheatTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "BadPingThreshold": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "PercentMissingForRxStandby": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "PercentMissingForTxStandby": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "PercentForBadPing": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bRestartLevel": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bPauseable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bTeamGame": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bGameEnded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverTime": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDelayedStart": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bWaitingToStartMatch": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bChangeLevels": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bAlreadyChanged": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAdminCanPause": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bGameRestarted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bLevelChange": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bKickLiveIdlers": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bUsingArbitration": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bHasArbitratedHandshakeBegun": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bNeedsEndGameHandshake": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsEndGameHandshakeComplete": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bHasEndGameHandshakeBegun": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bFixedPlayerStart": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDoFearCostFallOff": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ShowSplashScreen": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bUseSeamlessTravel": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bHasNetworkError": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bRequiresPushToTalk": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bIsStandbyCheckingEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bHasStandbyCheatTriggered": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -392,8 +488,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -403,8 +500,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -414,16 +512,19 @@
       "documentation": null,
       "signature_members": {
         "Sender": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "Msg": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
         },
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -433,28 +534,34 @@
       "documentation": null,
       "signature_members": {
         "Sender": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "Message": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Switch": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "RelatedPRI_1": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 144
         },
         "RelatedPRI_2": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 144
         },
         "OptionalObject": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -464,32 +571,39 @@
       "documentation": null,
       "signature_members": {
         "TeamIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Sender": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "Message": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Switch": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "RelatedPRI_1": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 144
         },
         "RelatedPRI_2": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 144
         },
         "OptionalObject": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -511,12 +625,14 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -532,8 +648,9 @@
       "documentation": null,
       "signature_members": {
         "bIsEnabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -543,8 +660,9 @@
       "documentation": null,
       "signature_members": {
         "Reason": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -560,8 +678,9 @@
       "documentation": null,
       "signature_members": {
         "PauseActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -571,12 +690,14 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "KickReason": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -592,16 +713,19 @@
       "documentation": null,
       "signature_members": {
         "MapName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Options": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Portal": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "string",
@@ -611,12 +735,14 @@
       "documentation": null,
       "signature_members": {
         "InFilename": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "OutCommonPackageName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -638,12 +764,14 @@
       "documentation": null,
       "signature_members": {
         "bToEntry": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "ActorList": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -653,16 +781,19 @@
       "documentation": null,
       "signature_members": {
         "InFilename": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "OutGameType": {
-          "type": null,
-          "documentation": null
+          "type": "GameTypePrefix",
+          "documentation": null,
+          "flags": 4194688
         },
         "bCheckExt": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -672,8 +803,9 @@
       "documentation": null,
       "signature_members": {
         "C": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -683,12 +815,14 @@
       "documentation": null,
       "signature_members": {
         "Options": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "ErrorMessage": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -698,8 +832,9 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -709,20 +844,24 @@
       "documentation": null,
       "signature_members": {
         "Portal": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Options": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "UniqueId": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 130
         },
         "ErrorMessage": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "PlayerController",
@@ -732,8 +871,9 @@
       "documentation": null,
       "signature_members": {
         "Exiting": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -755,8 +895,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -766,12 +907,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "errorCode": {
-          "type": null,
-          "documentation": null
+          "type": "EOnlineServerConnectionStatus",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -781,12 +924,14 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -808,8 +953,9 @@
       "documentation": null,
       "signature_members": {
         "NewPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -831,12 +977,14 @@
       "documentation": null,
       "signature_members": {
         "PreviousMapName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "NextMapName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -852,16 +1000,19 @@
       "documentation": null,
       "signature_members": {
         "Options": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Address": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "ErrorMessage": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -883,16 +1034,19 @@
       "documentation": null,
       "signature_members": {
         "MapName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Options": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Portal": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "Class",
@@ -902,8 +1056,9 @@
       "documentation": null,
       "signature_members": {
         "StandbyType": {
-          "type": null,
-          "documentation": null
+          "type": "EStandbyType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -919,12 +1074,14 @@
       "documentation": null,
       "signature_members": {
         "OldPC": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "NewPC": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -940,8 +1097,9 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -957,16 +1115,19 @@
       "documentation": null,
       "signature_members": {
         "HUD": {
-          "type": null,
-          "documentation": null
+          "type": "HUD",
+          "documentation": null,
+          "flags": 128
         },
         "out_YL": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "out_YPos": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -976,12 +1137,14 @@
       "documentation": null,
       "signature_members": {
         "PRI": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -991,12 +1154,14 @@
       "documentation": null,
       "signature_members": {
         "mutname": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bUserAdded": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -1006,12 +1171,14 @@
       "documentation": null,
       "signature_members": {
         "Scorer": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
         },
         "Score": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1021,8 +1188,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1032,8 +1200,9 @@
       "documentation": null,
       "signature_members": {
         "MutatorClassName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -1043,8 +1212,9 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -1054,12 +1224,14 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1069,8 +1241,9 @@
       "documentation": null,
       "signature_members": {
         "bSpectator": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1080,8 +1253,9 @@
       "documentation": null,
       "signature_members": {
         "TagDesc": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4196496
         }
       },
       "returntype": "None",
@@ -1091,16 +1265,19 @@
       "documentation": null,
       "signature_members": {
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1110,16 +1287,19 @@
       "documentation": null,
       "signature_members": {
         "Sender": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "Msg": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
         },
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -1135,12 +1315,14 @@
       "documentation": null,
       "signature_members": {
         "V": {
-          "type": null,
-          "documentation": null
+          "type": "Vehicle",
+          "documentation": null,
+          "flags": 128
         },
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1150,12 +1332,14 @@
       "documentation": null,
       "signature_members": {
         "Viewer": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "ViewTarget": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1165,16 +1349,19 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "S": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
         },
         "bNameChange": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1184,16 +1371,19 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "N": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bNewTeam": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1203,12 +1393,14 @@
       "documentation": null,
       "signature_members": {
         "Winner": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
         },
         "Reason": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -1224,12 +1416,14 @@
       "documentation": null,
       "signature_members": {
         "Winner": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
         },
         "Reason": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -1239,8 +1433,9 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1250,8 +1445,9 @@
       "documentation": null,
       "signature_members": {
         "Scorer": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1261,12 +1457,14 @@
       "documentation": null,
       "signature_members": {
         "Player": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "InTeam": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "PlayerStart",
@@ -1294,12 +1492,14 @@
       "documentation": null,
       "signature_members": {
         "V": {
-          "type": null,
-          "documentation": null
+          "type": "Vehicle",
+          "documentation": null,
+          "flags": 128
         },
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1309,12 +1509,14 @@
       "documentation": null,
       "signature_members": {
         "V": {
-          "type": null,
-          "documentation": null
+          "type": "Vehicle",
+          "documentation": null,
+          "flags": 128
         },
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1324,12 +1526,14 @@
       "documentation": null,
       "signature_members": {
         "Winner": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
         },
         "Reason": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1339,8 +1543,9 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1350,8 +1555,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -1361,16 +1567,19 @@
       "documentation": null,
       "signature_members": {
         "Player": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "InTeam": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 144
         },
         "IncomingName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "NavigationPoint",
@@ -1380,8 +1589,9 @@
       "documentation": null,
       "signature_members": {
         "C": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1397,8 +1607,9 @@
       "documentation": null,
       "signature_members": {
         "C": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Class",
@@ -1408,16 +1619,19 @@
       "documentation": null,
       "signature_members": {
         "Options": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "ParseString": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "CurrentValue": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -1427,16 +1641,19 @@
       "documentation": null,
       "signature_members": {
         "Pair": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Key": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -1470,12 +1687,14 @@
       "documentation": null,
       "signature_members": {
         "Options": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         },
         "Result": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -1485,12 +1704,14 @@
       "documentation": null,
       "signature_members": {
         "Options": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "InKey": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -1530,8 +1751,9 @@
       "documentation": null,
       "signature_members": {
         "S": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1541,8 +1763,9 @@
       "documentation": null,
       "signature_members": {
         "S": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1558,20 +1781,24 @@
       "documentation": null,
       "signature_members": {
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "KilledPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "KilledPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1587,12 +1814,14 @@
       "documentation": null,
       "signature_members": {
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1602,12 +1831,14 @@
       "documentation": null,
       "signature_members": {
         "MutateString": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Sender": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1623,16 +1854,19 @@
       "documentation": null,
       "signature_members": {
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "Killed": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "KilledPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1642,8 +1876,9 @@
       "documentation": null,
       "signature_members": {
         "N": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1653,12 +1888,14 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1668,12 +1905,14 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "OldPRI": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1683,16 +1922,19 @@
       "documentation": null,
       "signature_members": {
         "KillerName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "VictimName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "DeathMessage": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "string",
@@ -1702,12 +1944,14 @@
       "documentation": null,
       "signature_members": {
         "Options": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "InKey": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "string",
@@ -1723,12 +1967,14 @@
       "documentation": null,
       "signature_members": {
         "Current": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "C": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "byte",
@@ -1738,16 +1984,19 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "ItemClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Pickup": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1757,8 +2006,9 @@
       "documentation": null,
       "signature_members": {
         "aPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1768,8 +2018,9 @@
       "documentation": null,
       "signature_members": {
         "aPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1779,20 +2030,24 @@
       "documentation": null,
       "signature_members": {
         "KilledPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1802,12 +2057,14 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1817,20 +2074,24 @@
       "documentation": null,
       "signature_members": {
         "URL": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         },
         "NextMapGuid": {
-          "type": null,
-          "documentation": null
+          "type": "Guid",
+          "documentation": null,
+          "flags": 128
         },
         "bSeamless": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bAbsolute": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "PlayerController",
@@ -1846,12 +2107,14 @@
       "documentation": null,
       "signature_members": {
         "URL": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bAbsolute": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -1861,16 +2124,19 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerStart",
+          "documentation": null,
+          "flags": 128
         },
         "Team": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "Player": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -1886,32 +2152,39 @@
       "documentation": null,
       "signature_members": {
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "injured": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "DamageCauser": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1933,8 +2206,9 @@
       "documentation": null,
       "signature_members": {
         "MutatorToRemove": {
-          "type": null,
-          "documentation": null
+          "type": "Mutator",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1944,8 +2218,9 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1967,8 +2242,9 @@
       "documentation": null,
       "signature_members": {
         "NewPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1978,12 +2254,14 @@
       "documentation": null,
       "signature_members": {
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1993,12 +2271,14 @@
       "documentation": null,
       "signature_members": {
         "Scorer": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
         },
         "Score": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2008,12 +2288,14 @@
       "documentation": null,
       "signature_members": {
         "aPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "URL": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -2023,8 +2305,9 @@
       "documentation": null,
       "signature_members": {
         "T": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2034,12 +2317,14 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "CanUnpauseDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "CanUnpause",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -2049,8 +2334,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2060,8 +2346,9 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2077,8 +2364,9 @@
       "documentation": null,
       "signature_members": {
         "ActorToReset": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -2088,8 +2376,9 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "PickupFactory",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -2099,8 +2388,9 @@
       "documentation": null,
       "signature_members": {
         "Player": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -2110,16 +2400,19 @@
       "documentation": null,
       "signature_members": {
         "NewPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "StartSpot": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         },
         "bNoCollisionFail": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Pawn",
@@ -2129,12 +2422,14 @@
       "documentation": null,
       "signature_members": {
         "SpawnLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "SpawnRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "PlayerController",
@@ -2180,16 +2475,19 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "SearchClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "PlatformSpecificInfo": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2199,8 +2497,9 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2228,8 +2527,9 @@
       "documentation": null,
       "signature_members": {
         "WI": {
-          "type": null,
-          "documentation": null
+          "type": "WorldInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -2253,8 +2553,9 @@
           "documentation": null,
           "signature_members": {
             "NextStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -2264,12 +2565,14 @@
           "documentation": null,
           "signature_members": {
             "PC": {
-              "type": null,
-              "documentation": null
+              "type": "PlayerController",
+              "documentation": null,
+              "flags": 128
             },
             "bWasSuccessful": {
-              "type": null,
-              "documentation": null
+              "type": "bool",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -2291,12 +2594,14 @@
           "documentation": null,
           "signature_members": {
             "SessionName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             },
             "bWasSuccessful": {
-              "type": null,
-              "documentation": null
+              "type": "bool",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -2330,5 +2635,7 @@
       "documentation": null
     }
   },
+  "classflags": 144703670,
+  "configname": "Game",
   "documentation": null
 }

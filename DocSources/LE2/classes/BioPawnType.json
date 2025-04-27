@@ -4,142 +4,178 @@
   "variables": {
     "PawnClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AIController": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CharacterBloodColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nmDefaultAIBehaviour": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Loadout": {
       "type": "SFXLoadoutData",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "EliteCrust": {
       "type": "BioVFXTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DeathCrust": {
       "type": "BioVFXTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oAppearance": {
       "type": "Bio_Appr_Character",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     },
     "m_oAppearanceSettings": {
       "type": "Bio_Appr_Character_Settings",
-      "documentation": null
+      "documentation": null,
+      "flags": 67764233
     },
     "m_oMorphFace": {
       "type": "BioMorphFace",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_pSndSetFaceFXPkg": {
       "type": "FaceFXAnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oRollingIdle": {
       "type": "WwiseBaseSoundObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oRollingStartMoving": {
       "type": "WwiseBaseSoundObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oMaterialOverrides": {
       "type": "BioMaterialOverride",
-      "documentation": null
+      "documentation": null,
+      "flags": 71434249
     },
     "m_fPowerUsePercent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nMinAutoLODLevel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fPhysicsRecoverSpeedThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fPhysicsSettleDownTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fDeathAnimationMagnitudeThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fPhysicsThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fPhysicsThresholdRegenerationRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsFemale": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bIsArmorOverridden": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bCanBeBumped": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bTerminateRagdollOnDeath": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bCanBePhysicsImpacted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_eDefaultAIBehaviour": {
       "type": "eDefaultAIBehaviour",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_eReportMethod": {
       "type": "EBioBaseAppearanceReportMethod",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_eDefaultClassification": {
       "type": "EBioPawnClassification",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_eUseRollingInPhysicsMode": {
       "type": "EPhysics",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RaceType": {
       "type": "ERaceType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CharacterType": {
       "type": "ECharacterType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AffiliationType": {
       "type": "EAffiliationType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ChallengeType": {
       "type": "EChallengeType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

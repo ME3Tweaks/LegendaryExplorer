@@ -4,27 +4,33 @@
   "variables": {
     "__OnExternalUIChange__Delegate": {
       "type": "OnExternalUIChange",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnControllerChange__Delegate": {
       "type": "OnControllerChange",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnConnectionStatusChange__Delegate": {
       "type": "OnConnectionStatusChange",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnStorageDeviceChange__Delegate": {
       "type": "OnStorageDeviceChange",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnReadTitleFileComplete__Delegate": {
       "type": "OnReadTitleFileComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnLinkStatusChange__Delegate": {
       "type": "OnLinkStatusChange",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -32,8 +38,9 @@
       "documentation": null,
       "signature_members": {
         "Filename": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "EOnlineEnumerationReadState",
@@ -43,12 +50,14 @@
       "documentation": null,
       "signature_members": {
         "Filename": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "FileContents": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -58,8 +67,9 @@
       "documentation": null,
       "signature_members": {
         "ReadTitleFileCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadTitleFileComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -69,8 +79,9 @@
       "documentation": null,
       "signature_members": {
         "ReadTitleFileCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadTitleFileComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -80,8 +91,9 @@
       "documentation": null,
       "signature_members": {
         "FileToRead": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -91,12 +103,14 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Filename": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -106,8 +120,9 @@
       "documentation": null,
       "signature_members": {
         "StorageDeviceChangeDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnStorageDeviceChange",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -117,8 +132,9 @@
       "documentation": null,
       "signature_members": {
         "StorageDeviceChangeDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnStorageDeviceChange",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -140,8 +156,9 @@
       "documentation": null,
       "signature_members": {
         "ConnectionStatusDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnConnectionStatusChange",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -151,8 +168,9 @@
       "documentation": null,
       "signature_members": {
         "ConnectionStatusDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnConnectionStatusChange",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -162,8 +180,9 @@
       "documentation": null,
       "signature_members": {
         "ConnectionStatus": {
-          "type": null,
-          "documentation": null
+          "type": "EOnlineServerConnectionStatus",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -173,8 +192,9 @@
       "documentation": null,
       "signature_members": {
         "ControllerId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -184,8 +204,9 @@
       "documentation": null,
       "signature_members": {
         "ControllerChangeDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnControllerChange",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -195,8 +216,9 @@
       "documentation": null,
       "signature_members": {
         "ControllerChangeDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnControllerChange",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -206,12 +228,14 @@
       "documentation": null,
       "signature_members": {
         "ControllerId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bIsConnected": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -221,8 +245,9 @@
       "documentation": null,
       "signature_members": {
         "NewPos": {
-          "type": null,
-          "documentation": null
+          "type": "ENetworkNotificationPosition",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -238,8 +263,9 @@
       "documentation": null,
       "signature_members": {
         "ExternalUIDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnExternalUIChange",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -249,8 +275,9 @@
       "documentation": null,
       "signature_members": {
         "ExternalUIDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnExternalUIChange",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -260,8 +287,9 @@
       "documentation": null,
       "signature_members": {
         "bIsOpening": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -271,8 +299,9 @@
       "documentation": null,
       "signature_members": {
         "LinkStatusDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnLinkStatusChange",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -282,8 +311,9 @@
       "documentation": null,
       "signature_members": {
         "LinkStatusDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnLinkStatusChange",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -293,8 +323,9 @@
       "documentation": null,
       "signature_members": {
         "bIsConnected": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -308,5 +339,7 @@
     }
   },
   "states": {},
+  "classflags": 16403,
+  "configname": "None",
   "documentation": null
 }

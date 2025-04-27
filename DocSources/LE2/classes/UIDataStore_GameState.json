@@ -4,7 +4,8 @@
   "variables": {
     "__OnRefreshDataFieldValue__Delegate": {
       "type": "OnRefreshDataFieldValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -22,5 +23,7 @@
     }
   },
   "states": {},
+  "classflags": 136315035,
+  "configname": "None",
   "documentation": null
 }

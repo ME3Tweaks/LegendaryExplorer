@@ -4,115 +4,143 @@
   "variables": {
     "History": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "AutoCompleteTree": {
       "type": "AutoCompleteNode",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "Scrollback": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "TypedStr": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ManualAutoCompleteList": {
       "type": "AutoCompleteCommand",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "AutoCompleteList": {
       "type": "AutoCompleteCommand",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "MapPathsForAutoComplete": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "AutoCompleteIndices": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "ConsoleTargetPlayer": {
       "type": "LocalPlayer",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DefaultTexture_Black": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DefaultTexture_White": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ConsoleKey": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "TypeKey": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "MaxScrollbackSize": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "SBHead": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SBPos": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HistoryTop": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "HistoryBot": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "HistoryCur": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "TypedStrPos": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AutoCompleteIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bNavigatingHistory": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bCaptureKeyInput": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bCtrl": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bEnableUI": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bAutoCompleteLocked": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bRequireCtrlToNavigateAutoComplete": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bIsRuntimeAutoCompleteUpToDate": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -120,8 +148,9 @@
       "documentation": null,
       "signature_members": {
         "bForce": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -131,8 +160,9 @@
       "documentation": null,
       "signature_members": {
         "Command": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -148,8 +178,9 @@
       "documentation": null,
       "signature_members": {
         "Text": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
         }
       },
       "returntype": "None",
@@ -165,12 +196,14 @@
       "documentation": null,
       "signature_members": {
         "ControllerId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Unicode": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -186,8 +219,9 @@
       "documentation": null,
       "signature_members": {
         "Text": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -203,24 +237,29 @@
       "documentation": null,
       "signature_members": {
         "ControllerId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Key": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "EInputEvent",
+          "documentation": null,
+          "flags": 128
         },
         "AmountDepressed": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bGamepad": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -242,8 +281,9 @@
       "documentation": null,
       "signature_members": {
         "Text": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
         }
       },
       "returntype": "None",
@@ -253,8 +293,9 @@
       "documentation": null,
       "signature_members": {
         "Canvas": {
-          "type": null,
-          "documentation": null
+          "type": "Canvas",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -264,12 +305,14 @@
       "documentation": null,
       "signature_members": {
         "Key": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "EInputEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -279,8 +322,9 @@
       "documentation": null,
       "signature_members": {
         "Command": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -296,8 +340,9 @@
       "documentation": null,
       "signature_members": {
         "Position": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -307,8 +352,9 @@
       "documentation": null,
       "signature_members": {
         "Text": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -318,8 +364,9 @@
       "documentation": null,
       "signature_members": {
         "Text": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
         }
       },
       "returntype": "None",
@@ -333,8 +380,9 @@
           "documentation": null,
           "signature_members": {
             "NextStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -344,8 +392,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -355,8 +404,9 @@
           "documentation": null,
           "signature_members": {
             "Canvas": {
-              "type": null,
-              "documentation": null
+              "type": "Canvas",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -366,24 +416,29 @@
           "documentation": null,
           "signature_members": {
             "ControllerId": {
-              "type": null,
-              "documentation": null
+              "type": "int",
+              "documentation": null,
+              "flags": 128
             },
             "Key": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             },
             "Event": {
-              "type": null,
-              "documentation": null
+              "type": "EInputEvent",
+              "documentation": null,
+              "flags": 128
             },
             "AmountDepressed": {
-              "type": null,
-              "documentation": null
+              "type": "float",
+              "documentation": null,
+              "flags": 144
             },
             "bGamepad": {
-              "type": null,
-              "documentation": null
+              "type": "bool",
+              "documentation": null,
+              "flags": 144
             }
           },
           "returntype": null,
@@ -393,12 +448,14 @@
           "documentation": null,
           "signature_members": {
             "ControllerId": {
-              "type": null,
-              "documentation": null
+              "type": "int",
+              "documentation": null,
+              "flags": 128
             },
             "Unicode": {
-              "type": null,
-              "documentation": null
+              "type": "string",
+              "documentation": null,
+              "flags": 4194432
             }
           },
           "returntype": null,
@@ -413,8 +470,9 @@
           "documentation": null,
           "signature_members": {
             "NextStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -424,8 +482,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -435,8 +494,9 @@
           "documentation": null,
           "signature_members": {
             "Canvas": {
-              "type": null,
-              "documentation": null
+              "type": "Canvas",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -446,24 +506,29 @@
           "documentation": null,
           "signature_members": {
             "ControllerId": {
-              "type": null,
-              "documentation": null
+              "type": "int",
+              "documentation": null,
+              "flags": 128
             },
             "Key": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             },
             "Event": {
-              "type": null,
-              "documentation": null
+              "type": "EInputEvent",
+              "documentation": null,
+              "flags": 128
             },
             "AmountDepressed": {
-              "type": null,
-              "documentation": null
+              "type": "float",
+              "documentation": null,
+              "flags": 144
             },
             "bGamepad": {
-              "type": null,
-              "documentation": null
+              "type": "bool",
+              "documentation": null,
+              "flags": 144
             }
           },
           "returntype": null,
@@ -473,12 +538,14 @@
           "documentation": null,
           "signature_members": {
             "ControllerId": {
-              "type": null,
-              "documentation": null
+              "type": "int",
+              "documentation": null,
+              "flags": 128
             },
             "Unicode": {
-              "type": null,
-              "documentation": null
+              "type": "string",
+              "documentation": null,
+              "flags": 4194432
             }
           },
           "returntype": null,
@@ -488,5 +555,7 @@
       "documentation": null
     }
   },
+  "classflags": 136315038,
+  "configname": "Input",
   "documentation": null
 }

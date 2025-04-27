@@ -4,14 +4,18 @@
   "variables": {
     "PreviewRadiusComponent": {
       "type": "DrawSphereComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633162
     },
     "Radius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142618770,
+  "configname": "None",
   "documentation": null
 }

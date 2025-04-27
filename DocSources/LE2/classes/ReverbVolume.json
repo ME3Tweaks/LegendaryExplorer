@@ -4,22 +4,28 @@
   "variables": {
     "AmbientZoneSettings": {
       "type": "InteriorSettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Settings": {
       "type": "ReverbSettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "NextLowerPriorityVolume": {
       "type": "ReverbVolume",
-      "documentation": null
+      "documentation": null,
+      "flags": 16785410
     },
     "Priority": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144704178,
+  "configname": "None",
   "documentation": null
 }

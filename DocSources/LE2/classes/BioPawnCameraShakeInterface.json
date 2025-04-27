@@ -4,11 +4,13 @@
   "variables": {
     "m_pendingRequests": {
       "type": "BioVisualEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_NodeToEffectMap": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     }
   },
   "functions": {
@@ -20,5 +22,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

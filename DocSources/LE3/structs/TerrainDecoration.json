@@ -2,35 +2,43 @@
   "members": {
     "Factory": {
       "type": "PrimitiveComponentFactory",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     },
     "MinScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaxScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Density": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SlopeRotationBlend": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RandSeed": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bRandomlyRotateYaw": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Instances": {
       "type": "TerrainDecorationInstance",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827456
     }
   },
   "classdef": "Terrain",

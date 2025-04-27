@@ -4,10 +4,13 @@
   "variables": {
     "SeenPlayer": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

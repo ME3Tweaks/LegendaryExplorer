@@ -7,12 +7,14 @@
       "documentation": null,
       "signature_members": {
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -20,5 +22,7 @@
     }
   },
   "states": {},
+  "classflags": 2097182,
+  "configname": "Credits",
   "documentation": null
 }

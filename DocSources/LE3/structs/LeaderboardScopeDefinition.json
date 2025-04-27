@@ -2,15 +2,18 @@
   "members": {
     "KeyScope": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "StartKeyScopeValue": {
       "type": "QWord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "EndKeyScopeValue": {
       "type": "QWord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "classdef": "SFXOnlineComponentBlazeLeaderboard",

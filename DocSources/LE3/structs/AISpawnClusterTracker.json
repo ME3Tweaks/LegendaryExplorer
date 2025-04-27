@@ -2,23 +2,28 @@
   "members": {
     "ClusterPawns": {
       "type": "Pawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "ObscuredSpawnProjectile": {
       "type": "SFXProjectile",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentType": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "VisibilityTimer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "classdef": "SFXSeqAct_AIFactory2",

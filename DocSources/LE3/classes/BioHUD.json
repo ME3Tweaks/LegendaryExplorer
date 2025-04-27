@@ -4,163 +4,203 @@
   "variables": {
     "DebugDrawList": {
       "type": "DebugDraw",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "TraceStrips": {
       "type": "TraceStripChannel",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "DesignerHudText": {
       "type": "DesignerText",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DesignerHudBars": {
       "type": "DesignerBar",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__DebugDraw__Delegate": {
       "type": "DebugDraw",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "TraceStripTickColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oActorForInfoDisplay": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "oGUIMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SafeAreaTexture": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TraceStripTickInterval": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TraceStripTimeSeconds": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TraceStripDrawHeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_ShowCoverLastTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SafeAreaRatioX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "SafeAreaRatioY": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fSafeXOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fSafeYOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_textX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_textY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_lineHeight": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_charWidth": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_leftColumnX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_rightColumnX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_farrightColumnX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_topRowY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "LastSaveStartTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastSaveEndTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "YellowColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "OrangeColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "DarkGreyColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "FadeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MinFadeDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bLockActorInfo": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TraceStripsPaused": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bShowCoverRotation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bShowClaimedCoverOnly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDisplaySafeArea": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDisplayingSave": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bUseGeneratedItemNames": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bDesignerHud": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -168,8 +208,9 @@
       "documentation": null,
       "signature_members": {
         "H": {
-          "type": null,
-          "documentation": null
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -179,16 +220,19 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "PathColor": {
-          "type": null,
-          "documentation": null
+          "type": "Color",
+          "documentation": null,
+          "flags": 128
         },
         "bDrawPathOnly": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -198,16 +242,19 @@
       "documentation": null,
       "signature_members": {
         "fX": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "fY": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Radius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -217,20 +264,24 @@
       "documentation": null,
       "signature_members": {
         "valueName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "LabelColor": {
-          "type": null,
-          "documentation": null
+          "type": "Color",
+          "documentation": null,
+          "flags": 144
         },
         "DataColor": {
-          "type": null,
-          "documentation": null
+          "type": "Color",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -240,20 +291,24 @@
       "documentation": null,
       "signature_members": {
         "valueName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "LabelColor": {
-          "type": null,
-          "documentation": null
+          "type": "Color",
+          "documentation": null,
+          "flags": 128
         },
         "DataColor": {
-          "type": null,
-          "documentation": null
+          "type": "Color",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -263,20 +318,24 @@
       "documentation": null,
       "signature_members": {
         "Chan": {
-          "type": null,
-          "documentation": null
+          "type": "TraceStripChannel",
+          "documentation": null,
+          "flags": 4194432
         },
         "Origin": {
-          "type": null,
-          "documentation": null
+          "type": "Vector2D",
+          "documentation": null,
+          "flags": 128
         },
         "Extent": {
-          "type": null,
-          "documentation": null
+          "type": "Vector2D",
+          "documentation": null,
+          "flags": 128
         },
         "fTimeScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -286,24 +345,29 @@
       "documentation": null,
       "signature_members": {
         "Origin": {
-          "type": null,
-          "documentation": null
+          "type": "Vector2D",
+          "documentation": null,
+          "flags": 128
         },
         "Extent": {
-          "type": null,
-          "documentation": null
+          "type": "Vector2D",
+          "documentation": null,
+          "flags": 128
         },
         "fTimeScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "fMostRecentTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "LineColor": {
-          "type": null,
-          "documentation": null
+          "type": "LinearColor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -331,8 +395,9 @@
       "documentation": null,
       "signature_members": {
         "TargetActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -342,8 +407,9 @@
       "documentation": null,
       "signature_members": {
         "TargetActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -353,8 +419,9 @@
       "documentation": null,
       "signature_members": {
         "TargetActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -364,8 +431,9 @@
       "documentation": null,
       "signature_members": {
         "TargetActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -375,8 +443,9 @@
       "documentation": null,
       "signature_members": {
         "oCurConv": {
-          "type": null,
-          "documentation": null
+          "type": "BioConversationController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -386,8 +455,9 @@
       "documentation": null,
       "signature_members": {
         "TargetActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -397,8 +467,9 @@
       "documentation": null,
       "signature_members": {
         "TargetActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -408,8 +479,9 @@
       "documentation": null,
       "signature_members": {
         "TargetActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -419,8 +491,9 @@
       "documentation": null,
       "signature_members": {
         "TargetActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -430,8 +503,9 @@
       "documentation": null,
       "signature_members": {
         "TargetActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -441,8 +515,9 @@
       "documentation": null,
       "signature_members": {
         "bShowRotation": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -452,8 +527,9 @@
       "documentation": null,
       "signature_members": {
         "fBufferTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -463,20 +539,24 @@
       "documentation": null,
       "signature_members": {
         "LocalPlayerOwner": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
         },
         "ScreenLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "OutLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "OutDirection": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -498,16 +578,19 @@
       "documentation": null,
       "signature_members": {
         "TargetActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "nmAnimnode": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "DrawColor": {
-          "type": null,
-          "documentation": null
+          "type": "LinearColor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -517,12 +600,14 @@
       "documentation": null,
       "signature_members": {
         "nmAxis": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "DrawColor": {
-          "type": null,
-          "documentation": null
+          "type": "LinearColor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -532,36 +617,44 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "X": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Y": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Width": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Lifetime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "C": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "Grows": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "Shrinks": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -571,12 +664,14 @@
       "documentation": null,
       "signature_members": {
         "nmButton": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "DrawColor": {
-          "type": null,
-          "documentation": null
+          "type": "LinearColor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -586,8 +681,9 @@
       "documentation": null,
       "signature_members": {
         "DebugDrawFunc": {
-          "type": null,
-          "documentation": null
+          "type": "DebugDraw",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -597,32 +693,39 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "S": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
         },
         "X": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Y": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "TimeOut": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "Scale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "Center": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -632,16 +735,19 @@
       "documentation": null,
       "signature_members": {
         "TargetActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "nmProperty": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "DrawColor": {
-          "type": null,
-          "documentation": null
+          "type": "LinearColor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -651,8 +757,9 @@
       "documentation": null,
       "signature_members": {
         "nSize": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -662,8 +769,9 @@
       "documentation": null,
       "signature_members": {
         "DebugDrawFunc": {
-          "type": null,
-          "documentation": null
+          "type": "DebugDraw",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -679,8 +787,9 @@
       "documentation": null,
       "signature_members": {
         "HUD": {
-          "type": null,
-          "documentation": null
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -690,8 +799,9 @@
       "documentation": null,
       "signature_members": {
         "HUD": {
-          "type": null,
-          "documentation": null
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -701,8 +811,9 @@
       "documentation": null,
       "signature_members": {
         "HUD": {
-          "type": null,
-          "documentation": null
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -712,8 +823,9 @@
       "documentation": null,
       "signature_members": {
         "HUD": {
-          "type": null,
-          "documentation": null
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -723,8 +835,9 @@
       "documentation": null,
       "signature_members": {
         "HUD": {
-          "type": null,
-          "documentation": null
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -752,20 +865,24 @@
       "documentation": null,
       "signature_members": {
         "X": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Y": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "DrawColor": {
-          "type": null,
-          "documentation": null
+          "type": "Color",
+          "documentation": null,
+          "flags": 128
         },
         "sText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -775,8 +892,9 @@
       "documentation": null,
       "signature_members": {
         "bModal": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -786,8 +904,9 @@
       "documentation": null,
       "signature_members": {
         "nElement": {
-          "type": null,
-          "documentation": null
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -797,12 +916,14 @@
       "documentation": null,
       "signature_members": {
         "bModalBar": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bLeftToRight": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -812,12 +933,14 @@
       "documentation": null,
       "signature_members": {
         "bModalBar": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nPercent": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -827,16 +950,19 @@
       "documentation": null,
       "signature_members": {
         "bModalBar": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nMarker1": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nMarker2": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -846,12 +972,14 @@
       "documentation": null,
       "signature_members": {
         "bModalCounter": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nValue": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -861,12 +989,14 @@
       "documentation": null,
       "signature_members": {
         "nElement": {
-          "type": null,
-          "documentation": null
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
         },
         "fAlpha": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -876,12 +1006,14 @@
       "documentation": null,
       "signature_members": {
         "nElement": {
-          "type": null,
-          "documentation": null
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
         },
         "stColor": {
-          "type": null,
-          "documentation": null
+          "type": "Color",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -891,12 +1023,14 @@
       "documentation": null,
       "signature_members": {
         "nElement": {
-          "type": null,
-          "documentation": null
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
         },
         "sText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -906,16 +1040,19 @@
       "documentation": null,
       "signature_members": {
         "nElement": {
-          "type": null,
-          "documentation": null
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
         },
         "bVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "fFadeTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -925,8 +1062,9 @@
       "documentation": null,
       "signature_members": {
         "bShow": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -936,12 +1074,14 @@
       "documentation": null,
       "signature_members": {
         "nElement": {
-          "type": null,
-          "documentation": null
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
         },
         "srText": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -951,24 +1091,29 @@
       "documentation": null,
       "signature_members": {
         "bModalTimer": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "fStartTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "fEndTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "fInterval": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -978,16 +1123,19 @@
       "documentation": null,
       "signature_members": {
         "nElement": {
-          "type": null,
-          "documentation": null
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
         },
         "fMinAlpha": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "fCycleTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -997,12 +1145,14 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "S": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -1024,8 +1174,9 @@
       "documentation": null,
       "signature_members": {
         "DebugDrawFunc": {
-          "type": null,
-          "documentation": null
+          "type": "DebugDraw",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -1041,8 +1192,9 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1052,8 +1204,9 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1063,8 +1216,9 @@
       "documentation": null,
       "signature_members": {
         "nTrace": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1074,8 +1228,9 @@
       "documentation": null,
       "signature_members": {
         "nmActor": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1085,8 +1240,9 @@
       "documentation": null,
       "signature_members": {
         "bShowRotation": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -1102,8 +1258,9 @@
       "documentation": null,
       "signature_members": {
         "nmNavigationPoint": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1119,8 +1276,9 @@
       "documentation": null,
       "signature_members": {
         "ClaimedCoverOnly": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -1130,8 +1288,9 @@
       "documentation": null,
       "signature_members": {
         "DebugDrawFunc": {
-          "type": null,
-          "documentation": null
+          "type": "DebugDraw",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1145,5 +1304,7 @@
     }
   },
   "states": {},
+  "classflags": 144703646,
+  "configname": "Game",
   "documentation": null
 }

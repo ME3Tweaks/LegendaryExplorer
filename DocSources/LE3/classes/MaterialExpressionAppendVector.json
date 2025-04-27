@@ -4,14 +4,18 @@
   "variables": {
     "A": {
       "type": "ExpressionInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "B": {
       "type": "ExpressionInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134226066,
+  "configname": "None",
   "documentation": null
 }

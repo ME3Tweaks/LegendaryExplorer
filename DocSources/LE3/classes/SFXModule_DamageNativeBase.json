@@ -4,31 +4,38 @@
   "variables": {
     "MaxHealth": {
       "type": "ScaledFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 554054975521
     },
     "CurrentHealth": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 274877906945
     },
     "NormalizedHealth": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "LevelScaledHealth": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "TOTAL_HEALTH_STEPS": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "LastHealthPct": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ReplicatedHealth": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294975520
     }
   },
   "functions": {
@@ -60,8 +67,9 @@
       "documentation": null,
       "signature_members": {
         "VarName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -77,8 +85,9 @@
       "documentation": null,
       "signature_members": {
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -94,12 +103,14 @@
       "documentation": null,
       "signature_members": {
         "NewHealth": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bRecomputeHealthSegment": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -109,8 +120,9 @@
       "documentation": null,
       "signature_members": {
         "NewMaxHealth": {
-          "type": null,
-          "documentation": null
+          "type": "ScaledFloat",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -118,5 +130,7 @@
     }
   },
   "states": {},
+  "classflags": 134217879,
+  "configname": "Game",
   "documentation": null
 }

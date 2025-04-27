@@ -4,59 +4,73 @@
   "variables": {
     "m_mapPlacement": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "m_aCameraList": {
       "type": "BioStageCamera",
-      "documentation": null
+      "documentation": null,
+      "flags": 104857665
     },
     "m_pMeshComp": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 101187593
     },
     "m_nmCurrentCamera": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fHeightHumanMale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_fHeightAdjust": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fStageZ": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fSpeakerFeetZ": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fSpeakerEyeHeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bDoHeightAdjustment": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bLookAtActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bDOFActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bDisableProceduralCameraHeightAdjust": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     }
   },
   "functions": {
@@ -64,8 +78,9 @@
       "documentation": null,
       "signature_members": {
         "HUD": {
-          "type": null,
-          "documentation": null
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -73,5 +88,7 @@
     }
   },
   "states": {},
+  "classflags": 144703638,
+  "configname": "Game",
   "documentation": null
 }

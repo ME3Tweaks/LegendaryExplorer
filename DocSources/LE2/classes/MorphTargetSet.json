@@ -4,11 +4,13 @@
   "variables": {
     "Targets": {
       "type": "MorphTarget",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "BaseSkelMesh": {
       "type": "SkeletalMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -16,8 +18,9 @@
       "documentation": null,
       "signature_members": {
         "MorphTargetName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "MorphTarget",
@@ -25,5 +28,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

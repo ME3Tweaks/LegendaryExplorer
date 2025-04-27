@@ -13,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "ImpactEffects": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPhysicalMaterialImpactEffects",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "ParticleSystem",
@@ -24,8 +25,9 @@
       "documentation": null,
       "signature_members": {
         "ImpactSounds": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPhysicalMaterialImpactSounds",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "WwiseEvent",
@@ -33,5 +35,7 @@
     }
   },
   "states": {},
+  "classflags": 10486327,
+  "configname": "Weapon",
   "documentation": null
 }

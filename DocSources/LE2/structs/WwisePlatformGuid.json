@@ -2,11 +2,13 @@
   "members": {
     "Guid": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "Platform": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     }
   },
   "classdef": "WwiseStream",

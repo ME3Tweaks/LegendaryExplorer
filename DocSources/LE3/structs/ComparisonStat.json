@@ -2,19 +2,23 @@
   "members": {
     "StatName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "StatBaseValue": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StatBonusValue": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StatCompValue": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXGUI_Store",

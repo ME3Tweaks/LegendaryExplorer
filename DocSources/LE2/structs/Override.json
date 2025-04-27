@@ -2,15 +2,18 @@
   "members": {
     "AnimSet_Override": {
       "type": "Override_AnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Asset_Override": {
       "type": "Override_Asset",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "iKeyIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "InterpTrackFaceFX",

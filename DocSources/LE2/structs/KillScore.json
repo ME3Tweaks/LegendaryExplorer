@@ -2,19 +2,23 @@
   "members": {
     "Message": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "DamageClassName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "Points": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "GrinderAchievementId": {
       "type": "EAchievementID",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "classdef": "SFXPRI",

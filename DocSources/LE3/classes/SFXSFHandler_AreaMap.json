@@ -4,15 +4,18 @@
   "variables": {
     "m_PostProcessEffect": {
       "type": "PostProcessSettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 71311368
     },
     "LocationIcons": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_bFromBrowserWheel": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -20,12 +23,14 @@
       "documentation": null,
       "signature_members": {
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -35,8 +40,9 @@
       "documentation": null,
       "signature_members": {
         "bFromBrowserWheel": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -52,8 +58,9 @@
       "documentation": null,
       "signature_members": {
         "HintName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -87,8 +94,9 @@
       "documentation": null,
       "signature_members": {
         "nScroll": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -98,20 +106,24 @@
       "documentation": null,
       "signature_members": {
         "NewMapAssetList": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "NewMapLayoutList": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "NewDrawerTextList": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "NewMapIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -121,16 +133,19 @@
       "documentation": null,
       "signature_members": {
         "nPxX": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "nPxY": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "nRotation": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -140,8 +155,9 @@
       "documentation": null,
       "signature_members": {
         "bShowingBumpers": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -157,12 +173,14 @@
       "documentation": null,
       "signature_members": {
         "oMapData": {
-          "type": null,
-          "documentation": null
+          "type": "SFXAreaMapData",
+          "documentation": null,
+          "flags": 128
         },
         "Floor": {
-          "type": null,
-          "documentation": null
+          "type": "SFXAreaMapLayout",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -184,8 +202,9 @@
       "documentation": null,
       "signature_members": {
         "oMapData": {
-          "type": null,
-          "documentation": null
+          "type": "SFXAreaMapData",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -213,8 +232,9 @@
       "documentation": null,
       "signature_members": {
         "oMapData": {
-          "type": null,
-          "documentation": null
+          "type": "SFXAreaMapData",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -234,5 +254,7 @@
     }
   },
   "states": {},
+  "classflags": 10485782,
+  "configname": "UI",
   "documentation": null
 }

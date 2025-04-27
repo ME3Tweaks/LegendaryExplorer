@@ -4,115 +4,143 @@
   "variables": {
     "AutomatedMapTestingList": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "AutomatedTestingExecCommandToRunAtStartMatch": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "AutomatedMapTestingTransitionMap": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SentinelTaskDescription": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SentinelTaskParameter": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SentinelTagDesc": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SentinelTravelArray": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "CommandsToRunAtEachTravelTheWorldNode": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "CommandStringToExec": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "SentinelPC": {
       "type": "PlayerController",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "AutomatedPerfRemainingTime": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AutomatedTestingMapIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NumAutomatedMapTestingCycles": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "NumberOfMatchesPlayed": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NumMapListCyclesDone": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SentinelNavigationIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "SentinelIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "NumRotationsIncrement": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "TravelPointsIncrement": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "NumMinutesPerMap": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bAutomatedPerfTesting": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAutoContinueToNextRound": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bUsingAutomatedTestingMapList": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAutomatedTestingWithOpen": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bCheckingForFragmentation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bCheckingForMemLeaks": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDoingASentinelRun": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bSentinelStreamingLevelStillLoading": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -174,12 +202,14 @@
       "documentation": null,
       "signature_members": {
         "InLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
         },
         "InRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -189,12 +219,14 @@
       "documentation": null,
       "signature_members": {
         "InLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
         },
         "InRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -204,12 +236,14 @@
       "documentation": null,
       "signature_members": {
         "InLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 130
         },
         "InRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 130
         }
       },
       "returntype": "None",
@@ -219,16 +253,19 @@
       "documentation": null,
       "signature_members": {
         "LevelName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "TravelPoints": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -256,8 +293,9 @@
       "documentation": null,
       "signature_members": {
         "RunResult": {
-          "type": null,
-          "documentation": null
+          "type": "EAutomatedRunResult",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -267,12 +305,14 @@
       "documentation": null,
       "signature_members": {
         "InLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 130
         },
         "InRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 130
         }
       },
       "returntype": "None",
@@ -282,16 +322,19 @@
       "documentation": null,
       "signature_members": {
         "TaskDescription": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "TaskParameter": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "TagDesc": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -301,8 +344,9 @@
       "documentation": null,
       "signature_members": {
         "Options": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -332,8 +376,9 @@
           "documentation": null,
           "signature_members": {
             "NumTravelLocations": {
-              "type": null,
-              "documentation": null
+              "type": "float",
+              "documentation": null,
+              "flags": 130
             }
           },
           "returntype": null,
@@ -343,8 +388,9 @@
           "documentation": null,
           "signature_members": {
             "TotalTimeInSeconds": {
-              "type": null,
-              "documentation": null
+              "type": "int",
+              "documentation": null,
+              "flags": 130
             }
           },
           "returntype": null,
@@ -354,12 +400,14 @@
           "documentation": null,
           "signature_members": {
             "NumTravelLocations": {
-              "type": null,
-              "documentation": null
+              "type": "int",
+              "documentation": null,
+              "flags": 130
             },
             "NumRotations": {
-              "type": null,
-              "documentation": null
+              "type": "int",
+              "documentation": null,
+              "flags": 130
             }
           },
           "returntype": null,
@@ -369,8 +417,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -380,5 +429,7 @@
       "documentation": null
     }
   },
+  "classflags": 144703638,
+  "configname": "Game",
   "documentation": null
 }

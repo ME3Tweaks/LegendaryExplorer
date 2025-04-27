@@ -4,127 +4,158 @@
   "variables": {
     "MaxShields": {
       "type": "ScaledFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "ShieldRegenDelay": {
       "type": "ScaledFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "__ShieldDestroyedPowerCallback__Delegate": {
       "type": "ShieldDestroyedPowerCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ShieldOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PS_Impact": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     },
     "PS_Recharged": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     },
     "PS_Breach": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     },
     "PS_CriticalHit": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     },
     "PS_Explode": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     },
     "PhysMat": {
       "type": "PhysicalMaterial",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ShieldsDownSound": {
       "type": "WwiseEventPairObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ShieldRechargeTime": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "PenetrationDefault": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "PenetrationVeryLight": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "PenetrationLight": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "PenetrationMedium": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "PenetrationHeavy": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "ShieldDisplayName": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ShieldScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ShieldRegenTimer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentShields": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PartialBreakPct": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "BoostedShieldMax": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ShieldPointsPerBar": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "HardenedDamageMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "bShowBarrierOnGUI": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bRechargeable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "bHardened": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "bFastCoverRegen": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "bAbsorbDamageOnBreak": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "Resistance": {
       "type": "ResistanceType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -138,12 +169,14 @@
       "documentation": null,
       "signature_members": {
         "thisPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "bDoNotActivate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -159,12 +192,14 @@
       "documentation": null,
       "signature_members": {
         "Weapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -174,16 +209,19 @@
       "documentation": null,
       "signature_members": {
         "Weapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -193,12 +231,14 @@
       "documentation": null,
       "signature_members": {
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -208,24 +248,29 @@
       "documentation": null,
       "signature_members": {
         "Weapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 384
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "Template": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
         },
         "SMC": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -235,16 +280,19 @@
       "documentation": null,
       "signature_members": {
         "Template": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
         },
         "ImpactScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "Offset": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -254,8 +302,9 @@
       "documentation": null,
       "signature_members": {
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -265,28 +314,34 @@
       "documentation": null,
       "signature_members": {
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 128
         },
         "InstigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -296,32 +351,39 @@
       "documentation": null,
       "signature_members": {
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 384
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "InstigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "DamageCauser": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -331,8 +393,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaSeconds": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -360,12 +423,14 @@
       "documentation": null,
       "signature_members": {
         "ShieldActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "Shield": {
-          "type": null,
-          "documentation": null
+          "type": "SFXShield_Base",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -379,8 +444,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -390,5 +456,7 @@
       "documentation": null
     }
   },
+  "classflags": 10485815,
+  "configname": "Weapon",
   "documentation": null
 }

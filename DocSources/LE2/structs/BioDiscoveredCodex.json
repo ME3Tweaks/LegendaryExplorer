@@ -2,11 +2,13 @@
   "members": {
     "VfTable": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8400898
     },
     "lstDiscoveredPages": {
       "type": "BioDiscoveredCodexPage",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     }
   },
   "classdef": "BioDefine",

@@ -2,27 +2,33 @@
   "members": {
     "SphereElems": {
       "type": "KSphereElem",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194369
     },
     "BoxElems": {
       "type": "KBoxElem",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194369
     },
     "SphylElems": {
       "type": "KSphylElem",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194369
     },
     "ConvexElems": {
       "type": "KConvexElem",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194369
     },
     "RenderInfo": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 17196650496
     },
     "bSkipCloseAndParallelChecks": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "KMeshProps",

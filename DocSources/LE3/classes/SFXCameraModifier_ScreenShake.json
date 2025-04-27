@@ -4,11 +4,13 @@
   "variables": {
     "Shakes": {
       "type": "ScreenShakeStruct",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "TestShake": {
       "type": "ScreenShakeStruct",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -16,8 +18,9 @@
       "documentation": null,
       "signature_members": {
         "NewShake": {
-          "type": null,
-          "documentation": null
+          "type": "ScreenShakeStruct",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -27,16 +30,19 @@
       "documentation": null,
       "signature_members": {
         "Camera": {
-          "type": null,
-          "documentation": null
+          "type": "Camera",
+          "documentation": null,
+          "flags": 128
         },
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "OutPOV": {
-          "type": null,
-          "documentation": null
+          "type": "TPOV",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -46,16 +52,19 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Shake": {
-          "type": null,
-          "documentation": null
+          "type": "ScreenShakeStruct",
+          "documentation": null,
+          "flags": 384
         },
         "OutPOV": {
-          "type": null,
-          "documentation": null
+          "type": "TPOV",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -65,8 +74,9 @@
       "documentation": null,
       "signature_members": {
         "Param": {
-          "type": null,
-          "documentation": null
+          "type": "EShakeParam",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -76,8 +86,9 @@
       "documentation": null,
       "signature_members": {
         "NewShake": {
-          "type": null,
-          "documentation": null
+          "type": "ScreenShakeStruct",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "ScreenShakeStruct",
@@ -87,32 +98,39 @@
       "documentation": null,
       "signature_members": {
         "Duration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "newRotAmplitude": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "newRotFrequency": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "newLocAmplitude": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "newLocFrequency": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "newFOVAmplitude": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "newFOVFrequency": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "ScreenShakeStruct",
@@ -128,8 +146,9 @@
       "documentation": null,
       "signature_members": {
         "ShakeName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -139,32 +158,39 @@
       "documentation": null,
       "signature_members": {
         "Duration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "newRotAmplitude": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "newRotFrequency": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "newLocAmplitude": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "newLocFrequency": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "newFOVAmplitude": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "newFOVFrequency": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -172,5 +198,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "Camera",
   "documentation": null
 }

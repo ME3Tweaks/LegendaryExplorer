@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "TrackInst": {
-          "type": null,
-          "documentation": null
+          "type": "InterpTrackInst",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Actor",
@@ -18,8 +19,9 @@
       "documentation": null,
       "signature_members": {
         "FindByTagVar": {
-          "type": null,
-          "documentation": null
+          "type": "BioSeqVar_ObjectFindByTag",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Object",
@@ -33,5 +35,7 @@
     }
   },
   "states": {},
+  "classflags": 134226067,
+  "configname": "Game",
   "documentation": null
 }

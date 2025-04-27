@@ -2,23 +2,28 @@
   "members": {
     "Registrants": {
       "type": "OnlineRegistrant",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ArbitrationRegistrants": {
       "type": "OnlineArbitrationRegistrant",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SessionInfo": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "SessionName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GameSettings": {
       "type": "OnlineGameSettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "OnlineSubsystem",

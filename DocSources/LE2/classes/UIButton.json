@@ -4,11 +4,13 @@
   "variables": {
     "BackgroundImageComponent": {
       "type": "UIComp_DrawImage",
-      "documentation": null
+      "documentation": null,
+      "flags": 101187595
     },
     "ClickedCue": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -16,8 +18,9 @@
       "documentation": null,
       "signature_members": {
         "NewImage": {
-          "type": null,
-          "documentation": null
+          "type": "Surface",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -25,5 +28,7 @@
     }
   },
   "states": {},
+  "classflags": 144704150,
+  "configname": "UI",
   "documentation": null
 }

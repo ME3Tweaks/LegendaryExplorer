@@ -4,23 +4,28 @@
   "variables": {
     "AudioEvent": {
       "type": "WwiseEventPair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AudioComponent": {
       "type": "WwiseAudioComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67772427
     },
     "bAutoPlay": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bWasPlaying": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIsPlaying": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -38,5 +43,7 @@
     }
   },
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

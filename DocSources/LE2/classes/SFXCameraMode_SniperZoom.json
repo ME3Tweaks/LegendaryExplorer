@@ -4,7 +4,8 @@
   "variables": {
     "ZoomData": {
       "type": "BioCameraZoom",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "TimeDelta": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -23,16 +25,19 @@
       "documentation": null,
       "signature_members": {
         "V": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "R": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         },
         "A": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -42,8 +47,9 @@
       "documentation": null,
       "signature_members": {
         "PPSettings": {
-          "type": null,
-          "documentation": null
+          "type": "PostProcessSettings",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -51,5 +57,7 @@
     }
   },
   "states": {},
+  "classflags": 18,
+  "configname": "None",
   "documentation": null
 }

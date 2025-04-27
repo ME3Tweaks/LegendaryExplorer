@@ -2,11 +2,13 @@
   "members": {
     "Target": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Effect": {
       "type": "BioVisualEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioUIWorld",

@@ -4,7 +4,8 @@
   "variables": {
     "ViewIdMappings": {
       "type": "StringIdToStringMapping",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     }
   },
   "functions": {
@@ -12,12 +13,14 @@
       "documentation": null,
       "signature_members": {
         "ViewName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ViewId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -27,8 +30,9 @@
       "documentation": null,
       "signature_members": {
         "ViewId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -36,5 +40,7 @@
     }
   },
   "states": {},
+  "classflags": 134217907,
+  "configname": "None",
   "documentation": null
 }

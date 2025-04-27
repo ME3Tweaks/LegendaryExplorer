@@ -2,11 +2,13 @@
   "members": {
     "sLinkName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "aLinks": {
       "type": "SFXSSNodePinLink",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "classdef": "SFXSceneShopNode",

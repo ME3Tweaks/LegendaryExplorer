@@ -2,15 +2,18 @@
   "members": {
     "TexCoords": {
       "type": "TextureCoordinates",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048577
     },
     "ForcedExtent": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048577
     },
     "RenderedImage": {
       "type": "UITexture",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048577
     }
   },
   "classdef": "UIRoot",

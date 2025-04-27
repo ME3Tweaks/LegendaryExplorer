@@ -4,31 +4,38 @@
   "variables": {
     "RTPCs": {
       "type": "RTPCPair",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DefaultFootStepEvent": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FootstepCullDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fLastFootStepTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "TimeBetweenFootsteps": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "RunThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bPlayFootstepSounds": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -36,12 +43,14 @@
       "documentation": null,
       "signature_members": {
         "FootDown": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "Actor",
@@ -51,8 +60,9 @@
       "documentation": null,
       "signature_members": {
         "pWwiseAudioComponent": {
-          "type": null,
-          "documentation": null
+          "type": "ActorComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -62,12 +72,14 @@
       "documentation": null,
       "signature_members": {
         "PhysMat": {
-          "type": null,
-          "documentation": null
+          "type": "PhysicalMaterial",
+          "documentation": null,
+          "flags": 128
         },
         "FootDown": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "WwiseEvent",
@@ -77,12 +89,14 @@
       "documentation": null,
       "signature_members": {
         "FootStepSounds": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPhysicalMaterialFootSteps",
+          "documentation": null,
+          "flags": 128
         },
         "FootDown": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "WwiseEvent",
@@ -92,12 +106,14 @@
       "documentation": null,
       "signature_members": {
         "FootDown": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -105,5 +121,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "Game",
   "documentation": null
 }

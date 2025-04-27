@@ -4,11 +4,13 @@
   "variables": {
     "Value": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Target": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -20,5 +22,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

@@ -4,27 +4,33 @@
   "variables": {
     "SupportedSpawnTags": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "CombatZone": {
       "type": "SFXCombatZone",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AnnexZoneLocation": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Weight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DynamicWeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "SpawnLocation": {
       "type": "EObjectiveLocation",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -32,8 +38,9 @@
       "documentation": null,
       "signature_members": {
         "ObjectiveData": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOperation_ObjectiveData",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -41,5 +48,7 @@
     }
   },
   "states": {},
+  "classflags": 10486290,
+  "configname": "None",
   "documentation": null
 }

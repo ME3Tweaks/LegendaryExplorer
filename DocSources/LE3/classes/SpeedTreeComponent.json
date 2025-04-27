@@ -4,103 +4,128 @@
   "variables": {
     "RotationOnlyMatrix": {
       "type": "Matrix",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "StaticLights": {
       "type": "SpeedTreeStaticLight",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "BranchLightMap": {
       "type": "LightMapRef",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "FrondLightMap": {
       "type": "LightMapRef",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "LeafMeshLightMap": {
       "type": "LightMapRef",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "LeafCardLightMap": {
       "type": "LightMapRef",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "BillboardLightMap": {
       "type": "LightMapRef",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "LightmassSettings": {
       "type": "LightmassPrimitiveSettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SpeedTree": {
       "type": "SpeedTree",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "Branch1Material": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Branch2Material": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FrondMaterial": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LeafCardMaterial": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LeafMeshMaterial": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BillboardMaterial": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Lod3DStart": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Lod3DEnd": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LodBillboardStart": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LodBillboardEnd": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LodLevelOverride": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseLeafCards": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseLeafMeshes": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseBranches": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseFronds": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseBillboards": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -108,8 +133,9 @@
       "documentation": null,
       "signature_members": {
         "MeshType": {
-          "type": null,
-          "documentation": null
+          "type": "ESpeedTreeMeshType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "MaterialInterface",
@@ -119,12 +145,14 @@
       "documentation": null,
       "signature_members": {
         "MeshType": {
-          "type": null,
-          "documentation": null
+          "type": "ESpeedTreeMeshType",
+          "documentation": null,
+          "flags": 128
         },
         "Material": {
-          "type": null,
-          "documentation": null
+          "type": "MaterialInterface",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -132,5 +160,7 @@
     }
   },
   "states": {},
+  "classflags": 2290094226,
+  "configname": "None",
   "documentation": null
 }

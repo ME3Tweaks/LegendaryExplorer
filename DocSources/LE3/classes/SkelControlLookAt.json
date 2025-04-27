@@ -4,123 +4,153 @@
   "variables": {
     "TargetLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DesiredTargetLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LimitLookDir": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "BaseLookDir": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "BaseBonePos": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "TargetSpaceBoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AllowRotationOtherBoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TargetLocationInterpSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaxAngle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OuterMaxAngle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DeadZoneAngle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LookAtAlpha": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "LookAtAlphaTarget": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "LookAtAlphaBlendTimeToGo": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "LastCalcTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bInvertLookAtAxis": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDefineUpAxis": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bInvertUpAxis": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bEnableLimit": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bLimitBasedOnRefPose": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDisableBeyondLimit": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bNotifyBeyondLimit": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bShowLimit": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAllowRotationX": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAllowRotationY": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAllowRotationZ": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TargetLocationSpace": {
       "type": "EBoneControlSpace",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LookAtAxis": {
       "type": "EAxis",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "UpAxis": {
       "type": "EAxis",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AllowRotationSpace": {
       "type": "EBoneControlSpace",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -128,20 +158,24 @@
       "documentation": null,
       "signature_members": {
         "PointLoc": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "bDrawDebugInfo": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bDebugUsePersistentLines": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bDebugFlushLinesFirst": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -151,8 +185,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -162,12 +197,14 @@
       "documentation": null,
       "signature_members": {
         "DesiredAlpha": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "DesiredBlendTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -177,8 +214,9 @@
       "documentation": null,
       "signature_members": {
         "NewTargetLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -186,5 +224,7 @@
     }
   },
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

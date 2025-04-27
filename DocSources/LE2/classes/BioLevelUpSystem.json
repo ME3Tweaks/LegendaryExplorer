@@ -4,7 +4,8 @@
   "variables": {
     "m_aLevelUp2DA": {
       "type": "Bio2DA",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -23,8 +25,9 @@
       "documentation": null,
       "signature_members": {
         "Squad": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerSquad",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -34,12 +37,14 @@
       "documentation": null,
       "signature_members": {
         "Level": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "experience": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -49,12 +54,14 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "newLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -62,5 +69,7 @@
     }
   },
   "states": {},
+  "classflags": 134217883,
+  "configname": "None",
   "documentation": null
 }

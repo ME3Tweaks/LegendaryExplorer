@@ -4,18 +4,23 @@
   "variables": {
     "InventoryList": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "bClearExisting": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bForceReplace": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

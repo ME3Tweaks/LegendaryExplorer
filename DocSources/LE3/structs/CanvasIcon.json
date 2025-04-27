@@ -2,23 +2,28 @@
   "members": {
     "Texture": {
       "type": "Texture",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "U": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "V": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "UL": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "VL": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "Canvas",

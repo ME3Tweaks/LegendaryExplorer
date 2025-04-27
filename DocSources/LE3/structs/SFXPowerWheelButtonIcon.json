@@ -2,11 +2,13 @@
   "members": {
     "sPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "eIcon": {
       "type": "SFXPowerWheelMapButtonIcon",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXGUIValue_PowerIcon",

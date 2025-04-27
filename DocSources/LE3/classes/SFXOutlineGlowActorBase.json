@@ -4,54 +4,68 @@
   "variables": {
     "CurrentColour": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "SeeThroughSmokeColour": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "SmokeLineOfSightOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "Source": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RenderMaterial": {
       "type": "MaterialInstanceConstant",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "GlowMaterial": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ColourParam": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "MultiplierParam": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "BlendTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "PostDeathGlowDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "LastDiedTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bSourceDied": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

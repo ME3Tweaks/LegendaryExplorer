@@ -2,11 +2,13 @@
   "members": {
     "StatValue": {
       "type": "SettingsData",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ColumnNo": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "OnlineStatsRead",

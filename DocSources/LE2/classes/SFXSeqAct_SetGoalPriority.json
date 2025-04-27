@@ -4,19 +4,23 @@
   "variables": {
     "m_oTarget": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_oGoal": {
       "type": "SFXNav_GoalPoint",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nSetPriority": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bResetPriorityToDefault": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -28,5 +32,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

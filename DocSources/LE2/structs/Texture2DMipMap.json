@@ -2,15 +2,18 @@
   "members": {
     "Data": {
       "type": "UntypedBulkData_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "SizeX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "SizeY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     }
   },
   "classdef": "Texture2D",

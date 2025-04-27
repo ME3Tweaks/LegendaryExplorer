@@ -2,23 +2,28 @@
   "members": {
     "Name": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Index": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Threshold": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AchievementId": {
       "type": "EAchievementID",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Stat": {
       "type": "ETrilogyProfileSetting",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXTrilogyProfileSettings",

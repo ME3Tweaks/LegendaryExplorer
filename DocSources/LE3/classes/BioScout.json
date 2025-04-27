@@ -4,10 +4,13 @@
   "variables": {
     "m_bAggressivePathPruning": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144704190,
+  "configname": "Game",
   "documentation": null
 }

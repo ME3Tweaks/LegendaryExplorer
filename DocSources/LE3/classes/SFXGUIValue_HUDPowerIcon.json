@@ -4,7 +4,8 @@
   "variables": {
     "bCooldownActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -36,8 +37,9 @@
       "documentation": null,
       "signature_members": {
         "pHenchPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -47,8 +49,9 @@
       "documentation": null,
       "signature_members": {
         "ePathState": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerWheelPowerState",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "string",
@@ -58,8 +61,9 @@
       "documentation": null,
       "signature_members": {
         "eMapIcon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerWheelMapButtonIcon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -69,8 +73,9 @@
       "documentation": null,
       "signature_members": {
         "pUsedPower": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerCustomActionBase",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -80,8 +85,9 @@
       "documentation": null,
       "signature_members": {
         "bMakeVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -91,12 +97,14 @@
       "documentation": null,
       "signature_members": {
         "nNewIcon": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sIconResourcePath": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -106,8 +114,9 @@
       "documentation": null,
       "signature_members": {
         "pPowerPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -117,8 +126,9 @@
       "documentation": null,
       "signature_members": {
         "bForceUpdate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -132,5 +142,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

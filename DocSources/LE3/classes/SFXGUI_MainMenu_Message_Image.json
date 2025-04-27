@@ -4,11 +4,13 @@
   "variables": {
     "ImagePath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ImageReference": {
       "type": "Texture",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -22,8 +24,9 @@
       "documentation": null,
       "signature_members": {
         "nMessageId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXGUI_MainMenu_Message",
@@ -37,5 +40,7 @@
     }
   },
   "states": {},
+  "classflags": 26,
+  "configname": "UI",
   "documentation": null
 }

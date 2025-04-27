@@ -4,175 +4,218 @@
   "variables": {
     "SelectionReticle": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SelectionMaterial": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PhysicsMomentumMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "PlayerMomentumCap": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "PlayerCoverDamageMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "PlayerStormDamageMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "PlayerCoverLeanDamageMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "PawnInRagdollDamageMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "PlayerCoverRegenTimerMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "HeatDissipationRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "CoverAimBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxPlayerLevel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxPlayerExperience": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "CreditsGlobal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "IridiumGlobal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "PlatinumGlobal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "PalladiumGlobal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "EezoGlobal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "IdGlobal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "CreditsLocal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "EezoLocal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "IridiumLocal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "PalladiumLocal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "PlatinumLocal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "IdLocal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "nLastDamage": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "fLastDamageUpdate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "fAmmoPulseTimer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "fTmpShieldIndicator": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fTmpHealthIndicator": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fHealthInterpSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WeaponsUseHeat": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bOutOfAmmoWeaponSwap": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bShieldsBlockPowers": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "UseSharedPowerCooldown": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bUseConsoleControls": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bShowScore": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bReviveSquadOnUse": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bIsFullAmmo": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bBudgetEnforced": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "CanShootDeadBodies": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bAimAssistEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bLastDamageUpdate": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -180,16 +223,19 @@
       "documentation": null,
       "signature_members": {
         "eType": {
-          "type": null,
-          "documentation": null
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
         },
         "Award": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "LevelId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -209,5 +255,7 @@
     }
   },
   "states": {},
+  "classflags": 22,
+  "configname": "Game",
   "documentation": null
 }

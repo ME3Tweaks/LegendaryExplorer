@@ -4,18 +4,23 @@
   "variables": {
     "PawnToPossess": {
       "type": "Pawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bKillOldPawn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bTryToLeaveVehicle": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

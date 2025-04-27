@@ -4,35 +4,43 @@
   "variables": {
     "Tracer": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "oMuzzleVFX": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "oMuzzleLoopVFX": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "oImpactVFX": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CastAtWeapon": {
       "type": "SFXWeapon",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bModifyTracer": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bModifyMuzzleFlash": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bModifyImpactVFX": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -40,8 +48,9 @@
       "documentation": null,
       "signature_members": {
         "Weapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -61,5 +70,7 @@
     }
   },
   "states": {},
+  "classflags": 18,
+  "configname": "None",
   "documentation": null
 }

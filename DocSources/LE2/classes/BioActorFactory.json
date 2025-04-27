@@ -4,42 +4,53 @@
   "variables": {
     "ActorResourceCollection": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "InitialVelocity": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ActorType": {
       "type": "BioActorType",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     },
     "AdditionalVelocity": {
       "type": "DistributionVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "InitialAngularVelocity": {
       "type": "DistributionVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "bEnableInitialVelocity": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bLocalSpaceInitialVelocity": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BakeActorResources": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RBChannel": {
       "type": "ERBCollisionChannel",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142618774,
+  "configname": "Editor",
   "documentation": null
 }

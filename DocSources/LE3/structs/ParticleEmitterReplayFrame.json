@@ -2,15 +2,18 @@
   "members": {
     "FrameState": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "EmitterType": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "OriginalEmitterIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     }
   },
   "classdef": "ParticleSystemReplay",

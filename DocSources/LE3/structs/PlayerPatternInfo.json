@@ -2,15 +2,18 @@
   "members": {
     "Stripe1Param": {
       "type": "VectorParameterValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Stripe2Param": {
       "type": "VectorParameterValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Stripe3Param": {
       "type": "VectorParameterValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioDefine",

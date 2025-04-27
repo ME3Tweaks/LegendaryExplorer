@@ -2,27 +2,33 @@
   "members": {
     "ValueVector": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Module": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Variable": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ValueFloat": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Type": {
       "type": "EParameterType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DataType": {
       "type": "EParameterDataType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "RvrClientEffectInterface",

@@ -4,15 +4,18 @@
   "variables": {
     "MaskList": {
       "type": "PerBoneMaskInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303233
     },
     "PawnOwner": {
       "type": "Pawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "RotationBlendType": {
       "type": "EBlendType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -20,16 +23,19 @@
       "documentation": null,
       "signature_members": {
         "MaskIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "DesiredWeight": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "BlendTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -37,5 +43,7 @@
     }
   },
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

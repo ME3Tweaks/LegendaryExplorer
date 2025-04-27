@@ -2,27 +2,33 @@
   "members": {
     "sTitle": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "sShortDescription": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "sLongDescription": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "sPrice": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "Id": {
       "type": "BWOfferId",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "nPrice": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     }
   },
   "classdef": "ISFXOnlineComponentCommerce",

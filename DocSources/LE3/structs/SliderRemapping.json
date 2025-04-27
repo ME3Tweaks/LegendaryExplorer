@@ -2,15 +2,18 @@
   "members": {
     "CategoryName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SliderName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Remappings": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "classdef": "BioMorphFaceFrontEnd",

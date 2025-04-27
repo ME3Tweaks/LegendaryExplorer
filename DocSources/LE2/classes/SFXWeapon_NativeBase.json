@@ -4,31 +4,38 @@
   "variables": {
     "bWeaponExpanded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bInstantExpansion": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bForceReplayAnimation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDrawingWeaponBlendOut": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bReloadWeaponBlendOut": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIsZoomed": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "VocalizationType": {
       "type": "ESFXVocalizationWeapon",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -36,16 +43,19 @@
       "documentation": null,
       "signature_members": {
         "Offset": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "Direction": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverDirection",
+          "documentation": null,
+          "flags": 128
         },
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -71,5 +81,7 @@
     }
   },
   "states": {},
+  "classflags": 144703671,
+  "configname": "Game",
   "documentation": null
 }

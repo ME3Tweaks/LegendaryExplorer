@@ -4,139 +4,173 @@
   "variables": {
     "ZoomSnapCurve": {
       "type": "InterpCurveFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "UseSucceeded": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "UseFailed": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CombatCam": {
       "type": "SFXCameraMode_Combat",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "ExploreCam": {
       "type": "SFXCameraMode_Explore",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "CombatStormCam": {
       "type": "SFXCameraMode_CombatStorm",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "ExploreStormCam": {
       "type": "SFXCameraMode_ExploreStorm",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "TightAimCam": {
       "type": "SFXCameraMode_TightAim",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "SniperZoomCam": {
       "type": "SFXCameraMode_SniperZoom",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "TightAimCoverCam": {
       "type": "SFXCameraMode_TightAimCover",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "TightAimCoverPopupCam": {
       "type": "SFXCameraMode_TightAimCover",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "SniperZoomCoverCam": {
       "type": "SFXCameraMode_SniperZoomCover",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "AimBackCam": {
       "type": "SFXCameraMode_Cover",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "CoverStand": {
       "type": "SFXCameraMode_Cover",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "CoverCrouch": {
       "type": "SFXCameraMode_Cover",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "CoverPeekLeftStand": {
       "type": "SFXCameraMode_CoverFixed",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "CoverPeekLeftCrouch": {
       "type": "SFXCameraMode_CoverFixed",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "CoverPeekRightStand": {
       "type": "SFXCameraMode_CoverFixed",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "CoverPeekRightCrouch": {
       "type": "SFXCameraMode_CoverFixed",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "SniperZoomCover_AimBack": {
       "type": "SFXCameraMode_SniperZoomCover",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "TightAimCover_AimBack": {
       "type": "SFXCameraMode_TightAimCover",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "ZoomSnapTransition": {
       "type": "SFXCameraTransition_ZoomSnap",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "InputDelayStormExit": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "InputDelayTightAimExit": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "RadarMapDisplayTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "SprintTransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SprintFastTransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DefaultAimTransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DefaultAimTransitionExit": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DefaultCombatTransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CoverEnter": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CoverTransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CoverSlowTransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SniperZoomTransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -156,8 +190,9 @@
       "documentation": null,
       "signature_members": {
         "Power": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -251,8 +286,9 @@
       "documentation": null,
       "signature_members": {
         "bForceExit": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -262,8 +298,9 @@
       "documentation": null,
       "signature_members": {
         "Ability": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -309,20 +346,24 @@
       "documentation": null,
       "signature_members": {
         "OldCameraMode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 128
         },
         "PreserveTarget": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "TransitionTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "Transition": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode_Interpolate",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "SFXCameraMode",
@@ -336,5 +377,7 @@
     }
   },
   "states": {},
+  "classflags": 10485782,
+  "configname": "Input",
   "documentation": null
 }

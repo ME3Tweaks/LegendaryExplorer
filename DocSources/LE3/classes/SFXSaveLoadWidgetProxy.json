@@ -4,23 +4,28 @@
   "variables": {
     "LoadingMessage": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "SavingMessage": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "DeletingMessage": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "NetworkMessage": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_bShowMessage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -28,8 +33,9 @@
       "documentation": null,
       "signature_members": {
         "bDoTransition": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -39,8 +45,9 @@
       "documentation": null,
       "signature_members": {
         "bDoTransition": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -50,8 +57,9 @@
       "documentation": null,
       "signature_members": {
         "bDoTransition": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -61,12 +69,14 @@
       "documentation": null,
       "signature_members": {
         "bDoTransition": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "srMessage": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -76,12 +86,14 @@
       "documentation": null,
       "signature_members": {
         "bDoTransition": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "srMessage": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -91,12 +103,14 @@
       "documentation": null,
       "signature_members": {
         "bDoTransition": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "srMessage": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -106,12 +120,14 @@
       "documentation": null,
       "signature_members": {
         "bDoTransition": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "srMessage": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -119,5 +135,7 @@
     }
   },
   "states": {},
+  "classflags": 134217886,
+  "configname": "UI",
   "documentation": null
 }

@@ -4,175 +4,218 @@
   "variables": {
     "m_ChosenTechData": {
       "type": "TechData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_TechChoices": {
       "type": "TechData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_ResearchChoices": {
       "type": "TechData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_ResearchSubMenuChoices": {
       "type": "TechData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_TopLevelChoices": {
       "type": "SFXChoiceEntry",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_TechTopChoices": {
       "type": "SFXChoiceEntry",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_ResearchTopChoices": {
       "type": "SFXChoiceEntry",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "ResearchSubMenus": {
       "type": "ResearchMenu",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_ChoiceGUIHandler": {
       "type": "BioSFHandler_ChoiceGUI",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_ChoiceGUIData": {
       "type": "SFXGameChoiceGUIData_Research",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_oMsgBox": {
       "type": "BioSFHandler_MessageBox",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "srText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srErrorAButton": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srErrorCanNotAfford": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srErrorDoNotQualify": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srErrorKnown": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srTechNameLabel": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srResearchConfirmMessage": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srResearchConfirm": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srResearchCancel": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srEezo": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srPlatinum": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srPalladium": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srIridium": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "nLastUnlockedResearch": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "nLastUnlockedTech": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srResearchDescription": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srResearchTokenizedDescriptionPlural": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srResearchTokenizedDescriptionSingular": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srResearchTokenizedDescriptionResources": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srUpgradeTokenizedDescription": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srTokenizedResearchCategory": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srTokenizedResearchCategoryCounter": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srTopLevelAButton": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_bFinished": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bAborted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bWasPaused": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bDidResearch": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bMessageBoxActivated": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "Mode": {
       "type": "EMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RMode": {
       "type": "EResearchMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "InitialMode": {
       "type": "EMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "InitialResearchMode": {
       "type": "EResearchMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -222,12 +265,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -237,12 +282,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -252,12 +299,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -267,12 +316,14 @@
       "documentation": null,
       "signature_members": {
         "stTreasure": {
-          "type": null,
-          "documentation": null
+          "type": "STreasure",
+          "documentation": null,
+          "flags": 128
         },
         "stTech": {
-          "type": null,
-          "documentation": null
+          "type": "STech",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -282,8 +333,9 @@
       "documentation": null,
       "signature_members": {
         "srError": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -293,12 +345,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -308,12 +362,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -323,12 +379,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -344,12 +402,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -359,8 +419,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -376,8 +437,9 @@
       "documentation": null,
       "signature_members": {
         "ResearchData": {
-          "type": null,
-          "documentation": null
+          "type": "TechData",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "string",
@@ -387,8 +449,9 @@
       "documentation": null,
       "signature_members": {
         "ResearchData": {
-          "type": null,
-          "documentation": null
+          "type": "TechData",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "string",
@@ -398,8 +461,9 @@
       "documentation": null,
       "signature_members": {
         "ResearchData": {
-          "type": null,
-          "documentation": null
+          "type": "TechData",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "string",
@@ -409,12 +473,14 @@
       "documentation": null,
       "signature_members": {
         "nLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "srString": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -424,8 +490,9 @@
       "documentation": null,
       "signature_members": {
         "Menu": {
-          "type": null,
-          "documentation": null
+          "type": "ResearchMenu",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -435,12 +502,14 @@
       "documentation": null,
       "signature_members": {
         "Data": {
-          "type": null,
-          "documentation": null
+          "type": "TechData",
+          "documentation": null,
+          "flags": 4194688
         },
         "nLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -502,5 +571,7 @@
     }
   },
   "states": {},
+  "classflags": 2097174,
+  "configname": "UI",
   "documentation": null
 }

@@ -4,10 +4,13 @@
   "variables": {
     "Events": {
       "type": "ParticleEvent_GenerateInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 37748745
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136319122,
+  "configname": "None",
   "documentation": null
 }

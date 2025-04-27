@@ -4,15 +4,18 @@
   "variables": {
     "oPlotTreasureResources2DA": {
       "type": "Bio2DA",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "oPlotTreasureTreasure2DA": {
       "type": "Bio2DA",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "oPlotTreasureTech2DA": {
       "type": "Bio2DA",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -20,8 +23,9 @@
       "documentation": null,
       "signature_members": {
         "sOutMapName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -31,16 +35,19 @@
       "documentation": null,
       "signature_members": {
         "nmLevel": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nmHeader": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nPlotTreasureValue": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -50,20 +57,24 @@
       "documentation": null,
       "signature_members": {
         "nmTech": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nmNameHeader": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nmHeader": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nTechValue": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -73,16 +84,19 @@
       "documentation": null,
       "signature_members": {
         "nmTech": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nmHeader": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nmTechName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -92,16 +106,19 @@
       "documentation": null,
       "signature_members": {
         "nTreasureId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nmHeader": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nPlotTreasureValue": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -111,16 +128,19 @@
       "documentation": null,
       "signature_members": {
         "nTreasureId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nmHeader": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nmPlotTreasureName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -128,5 +148,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "Plot",
   "documentation": null
 }

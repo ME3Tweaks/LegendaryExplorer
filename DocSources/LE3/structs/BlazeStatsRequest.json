@@ -2,23 +2,28 @@
   "members": {
     "pUniquePlayerId": {
       "type": "UniqueNetId",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "Scope": {
       "type": "LeaderboardStatScope",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "pJobId": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 1052672
     },
     "pExternalData": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 1052672
     },
     "nRequestedRecordsRange": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     }
   },
   "classdef": "SFXOnlineComponentBlazeStats",

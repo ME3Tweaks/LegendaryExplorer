@@ -4,351 +4,438 @@
   "variables": {
     "m_aBackupAnimSets": {
       "type": "AnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "STAT_dist": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "STAT_boost": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "STAT_AITime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "STAT_PathFindMode": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "STAT_PathFindModeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "STAT_FollowState": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "STAT_GroundSpeed": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_vFixedRotation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_rLastStopRotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_rSkidStartRotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_rSkidTargetRotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_oMeshAdjLastBase": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nmDebugKey": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fPowerUsePercent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fTurningAngle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fAnimStartTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fMoveStartElapsedTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fMoveStopElapsedTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fAnimMoveSpeedSnapshot": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fAnimMoveStartSpeedSnapshot": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fCurPhysSettleDownTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fInclineUpMod": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fInclineDownMod": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fSkidTurnThresh": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fPawnStopDecelTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fMeshAdjRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fManualMeshAdj": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fMeshAdjCheckFrequency": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fMeshAdjFarCheckFrequency": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fMeshAdjFarCheckDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fMeshAdjTimeTillCheck": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fMeshAdjLastDistFound": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "PawnMoveStartTimerThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PawnMoveStopTimerThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fDesiredMaxSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fCurrentInclineMoveMod": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fSkidDSDecelRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fMoveStopDSDecelRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "PathFind_LastMovment_Mode": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "STAT_boost_track": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "STAT_Dist_track": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "STAT_Samples": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "STAT_ERRORS": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "STAT_Teleports": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "STAT_AbortedMoveTowards": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CAMHOOK_NORMAL_FRONTBACK": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CAMHOOK_NORMAL_RIGHTLEFT": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CAMHOOK_NORMAL_UPDOWN": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CAMHOOK_COLL_UPDOWN": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CAMHOOK_COLL_FRONTBACK": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CAMHOOK_COLL_RIGHTLEFT": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CAMHOOK_COMBAT_UPDOWN": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CAMHOOK_COMBAT_FRONTBACK": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CAMHOOK_COMBAT_RIGHTLEFT": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CAMHOOK_SNIPER_UPDOWN": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CAMHOOK_SNIPER_FRONTBACK": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CAMHOOK_SNIPER_RIGHTLEFT": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CAMHOOK_TACSEL_UPDOWN": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CAMHOOK_TACSEL_FRONTBACK": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CAMHOOK_TACSEL_RIGHTLEFT": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nRemainInRagdoll": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fDeathCapabilityActivationTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "m_fVehicleExpScaleFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_bPowerUsePercentOverride": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bReadyForCombat": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bInMatinee": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bEnableStartAnim": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bEnableSkidAnim": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bEnableStopAnim": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bAllowStartAnimInCombat": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bAllowSkidAnimInCombat": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bAllowStopAnimInCombat": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bMeshAdjOn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bUseManualMeshAdj": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bDoneYawInterpolation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bDoneSpeedInterpolation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bCanBePhysicsImpacted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bCanBePhysicsImpactedOverride": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bIsFeigningDeath": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bCanUseDeathCapabilities": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_eCombatState": {
       "type": "EBioAnimCombatState",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_eTurningDirection": {
       "type": "EBioAnimTurnDirState",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_eAnimStartState": {
       "type": "EBioAnimStartState",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_eAnimSkidState": {
       "type": "EBioAnimSkidTurnState",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_eAnimStopState": {
       "type": "EBioAnimStopState",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_eGetUpState": {
       "type": "EBioAnimGetUpState",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -386,12 +473,14 @@
       "documentation": null,
       "signature_members": {
         "eState": {
-          "type": null,
-          "documentation": null
+          "type": "EActionStateVariable",
+          "documentation": null,
+          "flags": 128
         },
         "fDelay": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "EActionStateVariable",
@@ -413,8 +502,9 @@
       "documentation": null,
       "signature_members": {
         "B": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -424,12 +514,14 @@
       "documentation": null,
       "signature_members": {
         "B": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bForceState": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -439,8 +531,9 @@
       "documentation": null,
       "signature_members": {
         "LevelUpHelper": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerLevelUpHelper",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -450,8 +543,9 @@
       "documentation": null,
       "signature_members": {
         "LevelUpHelper": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerLevelUpHelper",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -461,8 +555,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -490,8 +585,9 @@
       "documentation": null,
       "signature_members": {
         "nAmt": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -507,8 +603,9 @@
       "documentation": null,
       "signature_members": {
         "nAmt": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -524,8 +621,9 @@
       "documentation": null,
       "signature_members": {
         "nAmt": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -535,8 +633,9 @@
       "documentation": null,
       "signature_members": {
         "nValue": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -552,8 +651,9 @@
       "documentation": null,
       "signature_members": {
         "nValue": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -569,8 +669,9 @@
       "documentation": null,
       "signature_members": {
         "nValue": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -586,8 +687,9 @@
       "documentation": null,
       "signature_members": {
         "Key": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -615,8 +717,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -626,20 +729,24 @@
       "documentation": null,
       "signature_members": {
         "table": {
-          "type": null,
-          "documentation": null
+          "type": "Bio2DA",
+          "documentation": null,
+          "flags": 128
         },
         "nRankedLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ColumnName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -653,5 +760,7 @@
     }
   },
   "states": {},
+  "classflags": 144707734,
+  "configname": "Game",
   "documentation": null
 }

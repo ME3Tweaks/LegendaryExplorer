@@ -2,27 +2,33 @@
   "members": {
     "m_aMaterials": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_oWeaponAnimSet": {
       "type": "AnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oWeaponAnimTree": {
       "type": "AnimTree",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oPhysicsAsset": {
       "type": "PhysicsAsset",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oModelMesh": {
       "type": "SkeletalMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_Label": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioAppearanceItemWeapon",

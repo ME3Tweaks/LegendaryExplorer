@@ -4,7 +4,8 @@
   "variables": {
     "m_anFlag": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "eFlag": {
-          "type": null,
-          "documentation": null
+          "type": "EBioCameraDebuggerFlag",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -23,12 +25,14 @@
       "documentation": null,
       "signature_members": {
         "eFlag": {
-          "type": null,
-          "documentation": null
+          "type": "EBioCameraDebuggerFlag",
+          "documentation": null,
+          "flags": 128
         },
         "B": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -36,5 +40,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

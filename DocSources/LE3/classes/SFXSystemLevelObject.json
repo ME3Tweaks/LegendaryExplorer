@@ -4,39 +4,48 @@
   "variables": {
     "ScanAudio": {
       "type": "WwiseAudioPair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ScanParticleSystem": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ScanEmitter": {
       "type": "EmitterSpawnable",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "AudioComponent": {
       "type": "WwiseAudioComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     },
     "SystemActionButtonText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ActiveWorld": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ShowOrbitRing": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "IsActualPlanet": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bShowAsScanned": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -68,12 +77,14 @@
       "documentation": null,
       "signature_members": {
         "oScanInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         },
         "vScanOrigin": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -95,8 +106,9 @@
       "documentation": null,
       "signature_members": {
         "soundPair": {
-          "type": null,
-          "documentation": null
+          "type": "WwiseAudioPair",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -112,8 +124,9 @@
       "documentation": null,
       "signature_members": {
         "bScanned": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -123,8 +136,9 @@
       "documentation": null,
       "signature_members": {
         "bPlaySound": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -132,5 +146,7 @@
     }
   },
   "states": {},
+  "classflags": 142606487,
+  "configname": "Game",
   "documentation": null
 }

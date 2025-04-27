@@ -4,127 +4,158 @@
   "variables": {
     "OwnerComponent": {
       "type": "PrimitiveComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641354
     },
     "BodyData": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "BoneSpring": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "BoneSpringKinActor": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "Velocity": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PreviousVelocity": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BodyIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 576460752303423490
     },
     "SceneIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "BoneLinearSpring": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "BoneLinearDamping": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "BoneAngularSpring": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "BoneAngularDamping": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "OverextensionThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CustomGravityFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LastEffectPlayedTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bEnableBoneSpringLinear": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bEnableBoneSpringAngular": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDisableOnOverextension": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bNotifyOwnerOnOverextension": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bTeleportOnOverextension": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseKinActorForBoneSpring": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bMakeSpringToBaseCollisionComponent": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bOnlyCollideWithPawns": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bEnableCollisionResponse": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bPushBody": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bForceUnfixed": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bInstanceAlwaysFullAnimWeight": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "PhysMaterialOverride": {
       "type": "PhysicalMaterial",
-      "documentation": null
+      "documentation": null,
+      "flags": 576460752303423491
     },
     "ContactReportForceThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "InstanceMassScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "InstanceDampingScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -138,8 +169,9 @@
       "documentation": null,
       "signature_members": {
         "Setup": {
-          "type": null,
-          "documentation": null
+          "type": "RB_BodySetup",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -149,8 +181,9 @@
       "documentation": null,
       "signature_members": {
         "Threshold": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -160,8 +193,9 @@
       "documentation": null,
       "signature_members": {
         "bEnableResponse": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -171,8 +205,9 @@
       "documentation": null,
       "signature_members": {
         "NewPhysMaterial": {
-          "type": null,
-          "documentation": null
+          "type": "PhysicalMaterial",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -182,8 +217,9 @@
       "documentation": null,
       "signature_members": {
         "bNewBlockRigidBody": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -193,12 +229,14 @@
       "documentation": null,
       "signature_members": {
         "InBoneTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Matrix",
+          "documentation": null,
+          "flags": 386
         },
         "bTeleport": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -208,20 +246,24 @@
       "documentation": null,
       "signature_members": {
         "InLinearSpring": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "InLinearDamping": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "InAngularSpring": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "InAngularDamping": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -231,16 +273,19 @@
       "documentation": null,
       "signature_members": {
         "bInEnableLinear": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bInEnableAngular": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "InBoneTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Matrix",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -250,8 +295,9 @@
       "documentation": null,
       "signature_members": {
         "Point": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Vector",
@@ -297,8 +343,9 @@
       "documentation": null,
       "signature_members": {
         "bNewFixed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -312,5 +359,7 @@
     }
   },
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

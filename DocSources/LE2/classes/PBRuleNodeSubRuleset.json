@@ -4,10 +4,13 @@
   "variables": {
     "SubRuleset": {
       "type": "ProcBuildingRuleset",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136327314,
+  "configname": "None",
   "documentation": null
 }

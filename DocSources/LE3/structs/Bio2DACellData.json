@@ -2,11 +2,13 @@
   "members": {
     "nDataType_NATIVE_MIRROR": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nData_NATIVE_MIRROR": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "Bio2DA",

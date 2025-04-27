@@ -4,23 +4,28 @@
   "variables": {
     "NextConstraint": {
       "type": "NavMeshPathConstraint",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NumNodesProcessed": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NumThrownOutNodes": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AddedDirectCost": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AddedHeuristicCost": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -38,5 +43,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

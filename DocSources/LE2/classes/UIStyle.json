@@ -4,27 +4,33 @@
   "variables": {
     "StyleName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227075
     },
     "StyleGroupName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "StyleDataClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "StateDataMap": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "StyleID": {
       "type": "STYLE_ID",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StyleTag": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -38,8 +44,9 @@
       "documentation": null,
       "signature_members": {
         "StateClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "UIStyle_Data",
@@ -49,8 +56,9 @@
       "documentation": null,
       "signature_members": {
         "StateObject": {
-          "type": null,
-          "documentation": null
+          "type": "UIState",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "UIStyle_Data",
@@ -58,5 +66,7 @@
     }
   },
   "states": {},
+  "classflags": 134218930,
+  "configname": "None",
   "documentation": null
 }

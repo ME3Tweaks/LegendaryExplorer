@@ -2,39 +2,48 @@
   "members": {
     "CareerName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "firstName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "className": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "CareerSaves": {
       "type": "SFXSavePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "CreationDate": {
       "type": "SaveTimeStamp",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DeviceID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bActiveCareer": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Origin": {
       "type": "EOriginType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Notoriety": {
       "type": "ENotorietyType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXSFHandler_Load",

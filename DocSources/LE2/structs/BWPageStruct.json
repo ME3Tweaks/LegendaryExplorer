@@ -2,19 +2,23 @@
   "members": {
     "Tag": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "oHandler": {
       "type": "BioSFHandler",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "srLabel": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Type": {
       "type": "MEBrowserWheelSubPages",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioSFHandler_BrowserWheel",

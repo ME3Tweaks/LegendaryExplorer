@@ -2,11 +2,13 @@
   "members": {
     "ButtonFontMarkupString": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "InputKeyData": {
       "type": "RawInputKeyEventData",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "classdef": "UIDataStore_InputAlias",

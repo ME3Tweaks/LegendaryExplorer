@@ -4,11 +4,13 @@
   "variables": {
     "PlayerIsDown": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlayerIsDead": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -22,8 +24,9 @@
       "documentation": null,
       "signature_members": {
         "NewPlayerIsDown": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -31,5 +34,7 @@
     }
   },
   "states": {},
+  "classflags": 134221970,
+  "configname": "UI",
   "documentation": null
 }

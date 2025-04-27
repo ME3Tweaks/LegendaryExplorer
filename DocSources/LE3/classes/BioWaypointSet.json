@@ -4,11 +4,13 @@
   "variables": {
     "WaypointReferences": {
       "type": "ActorReference",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     },
     "AlwaysShow": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -16,8 +18,9 @@
       "documentation": null,
       "signature_members": {
         "vLoc": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -27,8 +30,9 @@
       "documentation": null,
       "signature_members": {
         "nIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "NavigationPoint",
@@ -36,5 +40,7 @@
     }
   },
   "states": {},
+  "classflags": 144712338,
+  "configname": "None",
   "documentation": null
 }

@@ -4,22 +4,28 @@
   "variables": {
     "StateEventMap": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "GalaxyAtWarBoolVarIDs": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "GalaxyAtWarIntVarIDs": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "GalaxyAtWarFloatVarIDs": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

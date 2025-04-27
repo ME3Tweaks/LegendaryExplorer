@@ -2,11 +2,13 @@
   "members": {
     "ProfileSetting": {
       "type": "SettingsProperty",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Owner": {
       "type": "EOnlineProfilePropertyOwner",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "OnlinePlayerStorage",

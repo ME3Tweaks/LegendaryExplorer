@@ -4,43 +4,53 @@
   "variables": {
     "fFullPriceMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "nLastUnlockedTech": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srMultiLevelUpgradeName": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "nProfessorInPartyId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "nProfessorIsDeadId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srLabOpenResearchMessage": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srLabClosedResearchMessage": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "StateNewResearchAvailable": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "StateNewUpgradesAvailable": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srCanAffordResearch": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "functions": {
@@ -48,12 +58,14 @@
       "documentation": null,
       "signature_members": {
         "InvType": {
-          "type": null,
-          "documentation": null
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
         },
         "nAmount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -63,8 +75,9 @@
       "documentation": null,
       "signature_members": {
         "bUpgadesAvailable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -74,8 +87,9 @@
       "documentation": null,
       "signature_members": {
         "bResearchAvailable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -85,8 +99,9 @@
       "documentation": null,
       "signature_members": {
         "Path": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "Texture2D",
@@ -96,20 +111,24 @@
       "documentation": null,
       "signature_members": {
         "nmTech": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "sImagePath": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         },
         "sLargeImagePath": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         },
         "bNoLookup": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -119,8 +138,9 @@
       "documentation": null,
       "signature_members": {
         "nTreasureId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -130,8 +150,9 @@
       "documentation": null,
       "signature_members": {
         "nTreasureId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -141,12 +162,14 @@
       "documentation": null,
       "signature_members": {
         "nTreasureId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bDiscount": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "float",
@@ -156,8 +179,9 @@
       "documentation": null,
       "signature_members": {
         "nmTech": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -167,12 +191,14 @@
       "documentation": null,
       "signature_members": {
         "nTreasureId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bDiscount": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -182,8 +208,9 @@
       "documentation": null,
       "signature_members": {
         "nTreasureId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -193,8 +220,9 @@
       "documentation": null,
       "signature_members": {
         "nTreasureId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -204,12 +232,14 @@
       "documentation": null,
       "signature_members": {
         "nTreasureId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bDiscount": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -219,12 +249,14 @@
       "documentation": null,
       "signature_members": {
         "stTech": {
-          "type": null,
-          "documentation": null
+          "type": "STech",
+          "documentation": null,
+          "flags": 4194432
         },
         "bAddOne": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "string",
@@ -240,8 +272,9 @@
       "documentation": null,
       "signature_members": {
         "stTech": {
-          "type": null,
-          "documentation": null
+          "type": "STech",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -251,16 +284,19 @@
       "documentation": null,
       "signature_members": {
         "nmTech": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bNoAnimation": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bStorePurchase": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -270,8 +306,9 @@
       "documentation": null,
       "signature_members": {
         "nmTech": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -281,12 +318,14 @@
       "documentation": null,
       "signature_members": {
         "nTreasureId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bDiscount": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -296,8 +335,9 @@
       "documentation": null,
       "signature_members": {
         "msg": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -313,8 +353,9 @@
       "documentation": null,
       "signature_members": {
         "nmTech": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "STech",
@@ -324,8 +365,9 @@
       "documentation": null,
       "signature_members": {
         "nTreasureId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "STreasure",
@@ -335,8 +377,9 @@
       "documentation": null,
       "signature_members": {
         "nmLevel": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "SResourceBudget",
@@ -346,8 +389,9 @@
       "documentation": null,
       "signature_members": {
         "nID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SResourceBudget",
@@ -355,5 +399,7 @@
     }
   },
   "states": {},
+  "classflags": 18,
+  "configname": "Plot",
   "documentation": null
 }

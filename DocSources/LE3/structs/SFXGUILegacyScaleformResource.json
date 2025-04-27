@@ -2,15 +2,18 @@
   "members": {
     "MovieDef": {
       "type": "GPtr_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "MovieView": {
       "type": "GPtr_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "GFxMovie": {
       "type": "GFxMovie",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXGUIMovieLegacyAdapter",

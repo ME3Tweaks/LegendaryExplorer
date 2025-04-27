@@ -4,63 +4,78 @@
   "variables": {
     "AssaultRifles": {
       "type": "LoadoutWeaponInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "Shotguns": {
       "type": "LoadoutWeaponInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "SniperRifles": {
       "type": "LoadoutWeaponInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "AutoPistols": {
       "type": "LoadoutWeaponInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "HeavyPistols": {
       "type": "LoadoutWeaponInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "HeavyWeapons": {
       "type": "LoadoutWeaponInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "PlotWeapons": {
       "type": "PlotWeapon",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "StandardWeapons": {
       "type": "ELoadoutWeapons",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "UnlockableStandardWeapons": {
       "type": "UnlockableWeaponClass",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "PlayerLoadoutInfo": {
       "type": "LoadoutInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "HenchLoadoutInfo": {
       "type": "LoadoutInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "PlayerBonusWeapons": {
       "type": "BonusWeaponInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "PlayerSpecialWeapons": {
       "type": "SpecialWeaponInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "HenchmenSpecialWeapons": {
       "type": "SpecialWeaponInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "MaxWeapons": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -68,12 +83,14 @@
       "documentation": null,
       "signature_members": {
         "HenchTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "WeaponClassName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -83,12 +100,14 @@
       "documentation": null,
       "signature_members": {
         "HenchTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Weapon": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -98,8 +117,9 @@
       "documentation": null,
       "signature_members": {
         "WeaponClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -109,12 +129,14 @@
       "documentation": null,
       "signature_members": {
         "HenchTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "WeaponGroup": {
-          "type": null,
-          "documentation": null
+          "type": "ELoadoutWeapons",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -124,8 +146,9 @@
       "documentation": null,
       "signature_members": {
         "HenchTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -135,8 +158,9 @@
       "documentation": null,
       "signature_members": {
         "WeaponGroup": {
-          "type": null,
-          "documentation": null
+          "type": "ELoadoutWeapons",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -146,8 +170,9 @@
       "documentation": null,
       "signature_members": {
         "Idx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -157,8 +182,9 @@
       "documentation": null,
       "signature_members": {
         "WeaponClassName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Class",
@@ -168,16 +194,19 @@
       "documentation": null,
       "signature_members": {
         "WClassName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "GroupIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "EntryIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -187,16 +216,19 @@
       "documentation": null,
       "signature_members": {
         "WClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "GroupIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "EntryIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -206,8 +238,9 @@
       "documentation": null,
       "signature_members": {
         "Idx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "LoadoutWeaponInfo",
@@ -215,5 +248,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "Game",
   "documentation": null
 }

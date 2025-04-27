@@ -4,7 +4,8 @@
   "variables": {
     "m_bIsInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "attribute": {
-          "type": null,
-          "documentation": null
+          "type": "BioComplexFloatStructAttribute",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "float",
@@ -27,5 +29,7 @@
     }
   },
   "states": {},
+  "classflags": 134217875,
+  "configname": "None",
   "documentation": null
 }

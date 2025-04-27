@@ -2,11 +2,13 @@
   "members": {
     "OwningPylon": {
       "type": "ActorReference",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PolyId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "Pylon",

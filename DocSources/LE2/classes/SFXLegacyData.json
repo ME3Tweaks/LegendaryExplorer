@@ -4,23 +4,28 @@
   "variables": {
     "PlayerRecord": {
       "type": "PlayerSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "ImportVarTable": {
       "type": "BioGlobalVariableTable",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LegacyCredits": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ParagonPoints": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RenegadePoints": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -28,24 +33,29 @@
       "documentation": null,
       "signature_members": {
         "IsFemale": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "CharacterClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 384
         },
         "FirstName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         },
         "Origin": {
-          "type": null,
-          "documentation": null
+          "type": "EOriginType",
+          "documentation": null,
+          "flags": 384
         },
         "Notoriety": {
-          "type": null,
-          "documentation": null
+          "type": "ENotorietyType",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -55,8 +65,9 @@
       "documentation": null,
       "signature_members": {
         "SaveGame": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSaveGame",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -118,5 +129,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "Game",
   "documentation": null
 }

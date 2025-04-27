@@ -2,19 +2,23 @@
   "members": {
     "Formatting": {
       "type": "UIImageAdjustmentData",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Coordinates": {
       "type": "TextureCoordinates",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bOverrideCoordinates": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverrideFormatting": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "UIRoot",

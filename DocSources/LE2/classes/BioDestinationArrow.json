@@ -4,7 +4,8 @@
   "variables": {
     "Mesh": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "clr": {
-          "type": null,
-          "documentation": null
+          "type": "eColorSelection",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -21,5 +23,7 @@
     }
   },
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

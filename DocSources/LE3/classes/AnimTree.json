@@ -4,31 +4,38 @@
   "variables": {
     "AnimGroups": {
       "type": "AnimGroup",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "ComposePrePassBoneNames": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "ComposePostPassBoneNames": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "RootMorphNodes": {
       "type": "MorphNodeBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "SkelControlLists": {
       "type": "SkelControlListHead",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "SavedPose": {
       "type": "BoneAtom",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "bUseSavedPose": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -36,8 +43,9 @@
       "documentation": null,
       "signature_members": {
         "InNodeName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "MorphNodeBase",
@@ -47,8 +55,9 @@
       "documentation": null,
       "signature_members": {
         "InControlName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SkelControlBase",
@@ -58,12 +67,14 @@
       "documentation": null,
       "signature_members": {
         "GroupName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "RelativePosition": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -73,8 +84,9 @@
       "documentation": null,
       "signature_members": {
         "GroupName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -84,8 +96,9 @@
       "documentation": null,
       "signature_members": {
         "GroupName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "AnimNodeSequence",
@@ -95,8 +108,9 @@
       "documentation": null,
       "signature_members": {
         "GroupName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -106,8 +120,9 @@
       "documentation": null,
       "signature_members": {
         "GroupName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -117,8 +132,9 @@
       "documentation": null,
       "signature_members": {
         "GroupName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "AnimNodeSequence",
@@ -128,16 +144,19 @@
       "documentation": null,
       "signature_members": {
         "SeqNode": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
         },
         "GroupName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bCreateIfNotFound": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -147,12 +166,14 @@
       "documentation": null,
       "signature_members": {
         "GroupName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "NewRateScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -162,8 +183,9 @@
       "documentation": null,
       "signature_members": {
         "bUseSaved": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -171,5 +193,7 @@
     }
   },
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

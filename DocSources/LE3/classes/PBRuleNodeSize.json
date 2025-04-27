@@ -4,18 +4,23 @@
   "variables": {
     "DecisionSize": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseTopLevelScopeSize": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SizeAxis": {
       "type": "EProcBuildingAxis",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136327314,
+  "configname": "None",
   "documentation": null
 }

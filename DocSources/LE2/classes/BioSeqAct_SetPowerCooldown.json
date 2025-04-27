@@ -4,15 +4,18 @@
   "variables": {
     "m_oPawn": {
       "type": "Pawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nmPower": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fCooldownTimeRemaining": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -30,5 +33,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

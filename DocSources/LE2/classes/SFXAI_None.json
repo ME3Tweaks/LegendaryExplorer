@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "oWpn": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -18,16 +19,19 @@
       "documentation": null,
       "signature_members": {
         "NewMoveGoal": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "NewMoveOffset": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "MoveDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "MoveToDelegate",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -37,16 +41,19 @@
       "documentation": null,
       "signature_members": {
         "oTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "bCheckLOS": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "FireDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "FireWeaponDelegate",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -56,20 +63,24 @@
       "documentation": null,
       "signature_members": {
         "nmPowerToUse": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "oTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "PowerDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "UsePowerDelegate",
+          "documentation": null,
+          "flags": 4194448
         },
         "bIgnoreSuppression": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -79,8 +90,9 @@
       "documentation": null,
       "signature_members": {
         "oTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -93,5 +105,7 @@
       "documentation": null
     }
   },
+  "classflags": 10486294,
+  "configname": "AI",
   "documentation": null
 }

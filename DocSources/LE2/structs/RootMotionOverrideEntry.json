@@ -2,15 +2,18 @@
   "members": {
     "Node": {
       "type": "AnimNode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RMMode": {
       "type": "ERootMotionMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RMRMode": {
       "type": "ERootMotionRotationMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioPawn",

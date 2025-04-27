@@ -2,11 +2,13 @@
   "members": {
     "Parts": {
       "type": "SkeletalMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "BaseMesh": {
       "type": "SkeletalMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXPlayerCustomization",

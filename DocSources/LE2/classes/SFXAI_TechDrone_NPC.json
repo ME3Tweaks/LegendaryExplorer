@@ -4,19 +4,23 @@
   "variables": {
     "bHasHowled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bHasFlanked": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bHasTaunted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bHasWarned": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -44,5 +48,7 @@
       "documentation": null
     }
   },
+  "classflags": 10486294,
+  "configname": "AI",
   "documentation": null
 }

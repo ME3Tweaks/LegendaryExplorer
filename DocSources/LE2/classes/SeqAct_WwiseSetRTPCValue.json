@@ -4,22 +4,28 @@
   "variables": {
     "Param": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_RTPCHandlers": {
       "type": "WwiseRTPCForActorHandler",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "Value": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Running": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

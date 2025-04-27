@@ -2,11 +2,13 @@
   "members": {
     "AnimName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StanceID": {
       "type": "EBodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioPawn",

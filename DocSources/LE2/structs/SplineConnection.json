@@ -2,11 +2,13 @@
   "members": {
     "SplineComponent": {
       "type": "SplineComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "ConnectTo": {
       "type": "SplineActor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SplineActor",

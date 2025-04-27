@@ -4,14 +4,18 @@
   "variables": {
     "DrawScale3D": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StaticMesh": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134230166,
+  "configname": "Editor",
   "documentation": null
 }

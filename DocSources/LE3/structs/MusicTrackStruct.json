@@ -2,31 +2,38 @@
   "members": {
     "TheSoundCue": {
       "type": "SoundCue",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FadeInTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FadeInVolumeLevel": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FadeOutTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FadeOutVolumeLevel": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAutoPlay": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPersistentAcrossLevels": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "MusicTrackDataStructures",

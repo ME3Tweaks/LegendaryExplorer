@@ -2,11 +2,13 @@
   "members": {
     "fOriginalExperience": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fNewExperience": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXMatchResultsData",

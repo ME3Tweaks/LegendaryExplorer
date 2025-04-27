@@ -2,15 +2,18 @@
   "members": {
     "Effect": {
       "type": "RvrClientEffectSpawnable",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Priority": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TimeStamp": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "RvrClientEffectPool",

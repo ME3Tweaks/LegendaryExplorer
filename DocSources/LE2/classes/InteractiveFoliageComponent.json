@@ -4,10 +4,13 @@
   "variables": {
     "FoliageSceneProxy": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101250
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 2290094226,
+  "configname": "None",
   "documentation": null
 }

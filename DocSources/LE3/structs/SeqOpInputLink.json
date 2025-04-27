@@ -2,27 +2,33 @@
   "members": {
     "LinkDesc": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "LinkAction": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LinkedOp": {
       "type": "SequenceOp",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "QueuedActivations": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bHasImpulse": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDisabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SequenceOp",

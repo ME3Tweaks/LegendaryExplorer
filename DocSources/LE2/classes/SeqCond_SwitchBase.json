@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "RemoveIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -18,8 +19,9 @@
       "documentation": null,
       "signature_members": {
         "InsertIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -29,8 +31,9 @@
       "documentation": null,
       "signature_members": {
         "ValueIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -44,5 +47,7 @@
     }
   },
   "states": {},
+  "classflags": 136315539,
+  "configname": "None",
   "documentation": null
 }

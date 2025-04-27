@@ -4,75 +4,93 @@
   "variables": {
     "m_BlazeUI": {
       "type": "SFXOnlineComponentUI",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ConnectionMessageBoxId": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MessagingComputer": {
       "type": "SFXGUI_MainMenu_RightComputer",
-      "documentation": null
+      "documentation": null,
+      "flags": 71311368
     },
     "MenuComputer": {
       "type": "SFXGUI_MainMenu_RTT",
-      "documentation": null
+      "documentation": null,
+      "flags": 71311368
     },
     "srDemo": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srCerb_ActivateCerb": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srCerb_ConnectTo": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srCerb_ConnectingToCerb": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srCerb_ConnectedToCerb": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srNotificationOriginSignin": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srFriendBeatMe": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srFriendBeatByMe": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "fTimeSinceLastPendingLoadMessageCheck": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "fPendingLoadMessageCheckThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bEARegistrationScreenVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bConnectButtonVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bProcessedRankChanges": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_CerbConnectState": {
       "type": "SFXOnlineUIState",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -80,8 +98,9 @@
       "documentation": null,
       "signature_members": {
         "connectMode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineConnectMode",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -91,8 +110,9 @@
       "documentation": null,
       "signature_members": {
         "MessageTypesToClear": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineConnection_MessageType",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -108,8 +128,9 @@
       "documentation": null,
       "signature_members": {
         "usingGamepad": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -119,12 +140,14 @@
       "documentation": null,
       "signature_members": {
         "nEventID": {
-          "type": null,
-          "documentation": null
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -146,28 +169,34 @@
       "documentation": null,
       "signature_members": {
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineConnection_MessageType",
+          "documentation": null,
+          "flags": 128
         },
         "MessageData": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Title": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Image": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "DLC_ID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ServerID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -189,8 +218,9 @@
       "documentation": null,
       "signature_members": {
         "bVal": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -200,8 +230,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -217,28 +248,34 @@
       "documentation": null,
       "signature_members": {
         "i_sTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "i_sInfo": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "i_sImage": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineConnection_MessageType",
+          "documentation": null,
+          "flags": 128
         },
         "nDLC_ID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ServerID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -248,28 +285,34 @@
       "documentation": null,
       "signature_members": {
         "i_sTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "i_sInfo": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "i_sImage": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineConnection_MessageType",
+          "documentation": null,
+          "flags": 128
         },
         "nDLC_ID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ServerID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -279,20 +322,24 @@
       "documentation": null,
       "signature_members": {
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineConnection_MessageType",
+          "documentation": null,
+          "flags": 128
         },
         "MessageData": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "nDLC_ID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ServerID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -332,8 +379,9 @@
       "documentation": null,
       "signature_members": {
         "bNewValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -355,8 +403,9 @@
       "documentation": null,
       "signature_members": {
         "RankBypassNotifications": {
-          "type": null,
-          "documentation": null
+          "type": "RankBypassNotification",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -396,8 +445,9 @@
       "documentation": null,
       "signature_members": {
         "srMessage": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -419,12 +469,14 @@
       "documentation": null,
       "signature_members": {
         "sMessage": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -434,8 +486,9 @@
       "documentation": null,
       "signature_members": {
         "eState": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineUIState",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -445,8 +498,9 @@
       "documentation": null,
       "signature_members": {
         "srMessage": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -454,5 +508,7 @@
     }
   },
   "states": {},
+  "classflags": 144703638,
+  "configname": "UI",
   "documentation": null
 }

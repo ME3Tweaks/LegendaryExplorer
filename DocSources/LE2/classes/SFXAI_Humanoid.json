@@ -4,15 +4,18 @@
   "variables": {
     "m_nInvalidatedCoverRetries": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nCoverMoveCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_eCurrentBehaviour": {
       "type": "EHumanoidBehaviours",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -20,8 +23,9 @@
       "documentation": null,
       "signature_members": {
         "bHit": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -31,8 +35,9 @@
       "documentation": null,
       "signature_members": {
         "NewBehaviour": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -63,5 +68,7 @@
       "documentation": null
     }
   },
+  "classflags": 10486294,
+  "configname": "AI",
   "documentation": null
 }

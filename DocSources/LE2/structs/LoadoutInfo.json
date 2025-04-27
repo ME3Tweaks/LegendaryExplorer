@@ -2,11 +2,13 @@
   "members": {
     "WeaponClasses": {
       "type": "ELoadoutWeapons",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ClassName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXPlayerSquadLoadoutData",

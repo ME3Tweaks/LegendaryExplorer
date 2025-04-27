@@ -4,7 +4,8 @@
   "variables": {
     "m_oVolume": {
       "type": "WwiseVolume",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -16,5 +17,7 @@
     }
   },
   "states": {},
+  "classflags": 144703642,
+  "configname": "None",
   "documentation": null
 }

@@ -2,31 +2,38 @@
   "members": {
     "VfTable": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 9449474
     },
     "NodeDataStore": {
       "type": "UIDataStore",
-      "documentation": null
+      "documentation": null,
+      "flags": 1056770
     },
     "ParentNode": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 1060866
     },
     "SourceText": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242881
     },
     "Extent": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048577
     },
     "Scaling": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048577
     },
     "bForceWrap": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     }
   },
   "classdef": "UIRoot",

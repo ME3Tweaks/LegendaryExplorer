@@ -2,27 +2,33 @@
   "members": {
     "UniqueName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "className": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Value": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Type": {
       "type": "EPermanentGameEffect_Type",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GAWAssetType": {
       "type": "EGAWAssetType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GAWAssetSubType": {
       "type": "EGAWAssetSubType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXPawn_Player",

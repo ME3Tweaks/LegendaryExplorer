@@ -2,7 +2,8 @@
   "members": {
     "Emitters": {
       "type": "ParticleEmitterReplayFrame",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     }
   },
   "classdef": "ParticleSystemReplay",

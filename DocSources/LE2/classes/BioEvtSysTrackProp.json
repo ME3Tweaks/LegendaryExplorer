@@ -4,7 +4,8 @@
   "variables": {
     "m_aPropKeys": {
       "type": "BioPropTrackData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "pWeaponIn": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -23,12 +25,14 @@
       "documentation": null,
       "signature_members": {
         "pWeaponIn": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         },
         "pActor": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -38,8 +42,9 @@
       "documentation": null,
       "signature_members": {
         "pWeaponIn": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -49,12 +54,14 @@
       "documentation": null,
       "signature_members": {
         "pWeaponIn": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         },
         "pActor": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -64,8 +71,9 @@
       "documentation": null,
       "signature_members": {
         "pWeaponIn": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -75,12 +83,14 @@
       "documentation": null,
       "signature_members": {
         "pWeaponIn": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         },
         "pActor": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -90,8 +100,9 @@
       "documentation": null,
       "signature_members": {
         "pWeaponIn": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -101,12 +112,14 @@
       "documentation": null,
       "signature_members": {
         "pWeaponIn": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         },
         "pActor": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -116,8 +129,9 @@
       "documentation": null,
       "signature_members": {
         "pWeaponIn": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -127,12 +141,14 @@
       "documentation": null,
       "signature_members": {
         "pWeaponIn": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         },
         "pActor": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -142,8 +158,9 @@
       "documentation": null,
       "signature_members": {
         "pWeaponIn": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -153,12 +170,14 @@
       "documentation": null,
       "signature_members": {
         "pWeaponIn": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         },
         "pActor": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -168,8 +187,9 @@
       "documentation": null,
       "signature_members": {
         "pWeaponIn": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -179,12 +199,14 @@
       "documentation": null,
       "signature_members": {
         "pWeaponIn": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         },
         "pActor": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -194,12 +216,14 @@
       "documentation": null,
       "signature_members": {
         "pParticleSystem": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
         },
         "nLooping": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "float",
@@ -209,8 +233,9 @@
       "documentation": null,
       "signature_members": {
         "cWeaponIn": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SkeletalMesh",
@@ -220,16 +245,19 @@
       "documentation": null,
       "signature_members": {
         "pActor": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "pWeaponIn": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         },
         "nSpawned": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -239,12 +267,14 @@
       "documentation": null,
       "signature_members": {
         "cWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "pInst": {
-          "type": null,
-          "documentation": null
+          "type": "BioEvtSysTrackPropInst",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -254,12 +284,14 @@
       "documentation": null,
       "signature_members": {
         "cWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "pInst": {
-          "type": null,
-          "documentation": null
+          "type": "BioEvtSysTrackPropInst",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -269,12 +301,14 @@
       "documentation": null,
       "signature_members": {
         "cWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "pInst": {
-          "type": null,
-          "documentation": null
+          "type": "BioEvtSysTrackPropInst",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Object",
@@ -312,5 +346,7 @@
     }
   },
   "states": {},
+  "classflags": 134226066,
+  "configname": "None",
   "documentation": null
 }

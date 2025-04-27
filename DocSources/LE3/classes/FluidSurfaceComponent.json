@@ -4,211 +4,263 @@
   "variables": {
     "ClampMap": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "ShadowMaps": {
       "type": "ShadowMap2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "LightMap": {
       "type": "LightMapRef",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "FluidSimulation": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "LightmassSettings": {
       "type": "LightmassPrimitiveSettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SimulationPosition": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "DetailPosition": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "FluidMaterial": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TargetSimulation": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TargetDetail": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LightMapResolution": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SimulationQuadsX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SimulationQuadsY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "GridSpacing": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "GridSpacingLowRes": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "GPUTessellationFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FluidDamping": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FluidTravelSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FluidHeightScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FluidUpdateRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ForceImpact": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ForceContinuous": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LightingContrast": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DeactivationDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DetailResolution": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DetailSize": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DetailDamping": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DetailTravelSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DetailTransfer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DetailHeightScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DetailUpdateRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "NormalLength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TestRippleSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TestRippleFrequency": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TestRippleRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FluidWidth": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FluidHeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TestRippleTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "TestRippleAngle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "DeactivationTimer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "ViewDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "EnableSimulation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "EnableDetail": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPause": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "bShowSimulationNormals": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "bShowSimulationPosition": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bShowDetailNormals": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bShowDetailPosition": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bShowFluidSimulation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "bShowFluidDetail": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "bTestRipple": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bTestRippleCenterOnDetail": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -216,20 +268,24 @@
       "documentation": null,
       "signature_members": {
         "WorldPos": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Strength": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Radius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bImpulse": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -239,8 +295,9 @@
       "documentation": null,
       "signature_members": {
         "WorldPos": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -250,8 +307,9 @@
       "documentation": null,
       "signature_members": {
         "WorldPos": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -259,5 +317,7 @@
     }
   },
   "states": {},
+  "classflags": 2290094226,
+  "configname": "None",
   "documentation": null
 }

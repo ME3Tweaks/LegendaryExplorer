@@ -2,15 +2,18 @@
   "members": {
     "Emitters": {
       "type": "Emitter",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Template": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NextIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXObjectPool",

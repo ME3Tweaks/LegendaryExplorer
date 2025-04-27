@@ -2,23 +2,28 @@
   "members": {
     "DisplayFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LODHysteresis": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LODMaterialMap": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194369
     },
     "bEnableShadowCasting": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194369
     },
     "TriangleSorting": {
       "type": "TriangleSortOption",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194369
     }
   },
   "classdef": "SkeletalMesh",

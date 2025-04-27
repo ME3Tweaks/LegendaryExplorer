@@ -4,31 +4,38 @@
   "variables": {
     "VfTable_IUIEventContainer": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "StateSequence": {
       "type": "UIStateSequence",
-      "documentation": null
+      "documentation": null,
+      "flags": 88080392
     },
     "StateInputActions": {
       "type": "InputKeyAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DisabledInputActions": {
       "type": "InputKeyAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MouseCursorName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlayerIndexMask": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "StackPriority": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     }
   },
   "functions": {
@@ -36,8 +43,9 @@
       "documentation": null,
       "signature_members": {
         "ObjectsToRemove": {
-          "type": null,
-          "documentation": null
+          "type": "SequenceObject",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -47,8 +55,9 @@
       "documentation": null,
       "signature_members": {
         "ObjectToRemove": {
-          "type": null,
-          "documentation": null
+          "type": "SequenceObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -58,12 +67,14 @@
       "documentation": null,
       "signature_members": {
         "NewObj": {
-          "type": null,
-          "documentation": null
+          "type": "SequenceObject",
+          "documentation": null,
+          "flags": 128
         },
         "bRecurse": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -73,12 +84,14 @@
       "documentation": null,
       "signature_members": {
         "out_Events": {
-          "type": null,
-          "documentation": null
+          "type": "UIEvent",
+          "documentation": null,
+          "flags": 4194688
         },
         "LimitClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -88,16 +101,19 @@
       "documentation": null,
       "signature_members": {
         "Target": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
         },
         "NewState": {
-          "type": null,
-          "documentation": null
+          "type": "UIState",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -107,16 +123,19 @@
       "documentation": null,
       "signature_members": {
         "Target": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bPoppedState": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -126,16 +145,19 @@
       "documentation": null,
       "signature_members": {
         "Target": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bPushedState": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -145,12 +167,14 @@
       "documentation": null,
       "signature_members": {
         "Target": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -160,12 +184,14 @@
       "documentation": null,
       "signature_members": {
         "Target": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -175,8 +201,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -186,8 +213,9 @@
       "documentation": null,
       "signature_members": {
         "WidgetClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -195,5 +223,7 @@
     }
   },
   "states": {},
+  "classflags": 144707731,
+  "configname": "None",
   "documentation": null
 }

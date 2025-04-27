@@ -4,22 +4,28 @@
   "variables": {
     "m_sGalaxyMapResource": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_oGalaxyMapReferenced": {
       "type": "GFxMovieInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pGalaxyMap": {
       "type": "SFXGalaxy",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Data": {
       "type": "SFXGalaxyMapGameData",
-      "documentation": null
+      "documentation": null,
+      "flags": 71434249
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703638,
+  "configname": "UI",
   "documentation": null
 }

@@ -2,15 +2,18 @@
   "members": {
     "LinkedEvents": {
       "type": "SequenceEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "LinkDesc": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ExpectedType": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SequenceOp",

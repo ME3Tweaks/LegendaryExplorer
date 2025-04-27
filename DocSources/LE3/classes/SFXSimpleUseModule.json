@@ -4,23 +4,28 @@
   "variables": {
     "__OnUsed__Delegate": {
       "type": "OnUsed",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "fUseRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481985
     },
     "bStickForward": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDeactivated": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "bPlayUseAnimation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -40,8 +45,9 @@
       "documentation": null,
       "signature_members": {
         "User": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -51,8 +57,9 @@
       "documentation": null,
       "signature_members": {
         "oHost": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -60,5 +67,7 @@
     }
   },
   "states": {},
+  "classflags": 142610578,
+  "configname": "None",
   "documentation": null
 }

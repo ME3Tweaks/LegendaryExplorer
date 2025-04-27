@@ -4,31 +4,38 @@
   "variables": {
     "AnimatedReactions": {
       "type": "EAICustomAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Player": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Instigator": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Radius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Damage": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Momentum": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "VerticalOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -46,5 +53,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

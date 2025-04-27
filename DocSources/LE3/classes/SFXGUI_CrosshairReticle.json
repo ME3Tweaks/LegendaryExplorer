@@ -4,43 +4,53 @@
   "variables": {
     "m_aCrosshairRawBuffer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_oActualReticle": {
       "type": "GFxValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_oCrosshairTop": {
       "type": "GFxValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_oCrosshairRight": {
       "type": "GFxValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_oCrosshairBottom": {
       "type": "GFxValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_oCrosshairLeft": {
       "type": "GFxValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fCacheCrosshairRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nCrosshairBufferIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fCrosshairAccuracyModifier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fCacheTargetInSights": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -54,8 +64,9 @@
       "documentation": null,
       "signature_members": {
         "bInstant": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -65,8 +76,9 @@
       "documentation": null,
       "signature_members": {
         "bInstant": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -76,8 +88,9 @@
       "documentation": null,
       "signature_members": {
         "bInSights": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -97,5 +110,7 @@
     }
   },
   "states": {},
+  "classflags": 134217878,
+  "configname": "UI",
   "documentation": null
 }

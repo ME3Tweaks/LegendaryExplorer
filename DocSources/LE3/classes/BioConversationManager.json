@@ -4,27 +4,33 @@
   "variables": {
     "m_mapKismetToConversation": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "m_aPreloadingConversations": {
       "type": "BioConversationController",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_aReadyConversations": {
       "type": "BioConversationController",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_aActiveConversations": {
       "type": "BioConversationController",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_aSimpleDialogPlayers": {
       "type": "BioSimpleDialog",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_bActivatingConversation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -32,16 +38,19 @@
       "documentation": null,
       "signature_members": {
         "eConvType": {
-          "type": null,
-          "documentation": null
+          "type": "EBioConversationType",
+          "documentation": null,
+          "flags": 144
         },
         "bIncludeFull": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bIncludeAmbient": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -51,8 +60,9 @@
       "documentation": null,
       "signature_members": {
         "nResourceID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "BioConversationController",
@@ -68,16 +78,19 @@
       "documentation": null,
       "signature_members": {
         "sReason": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "pIgnoreConv": {
-          "type": null,
-          "documentation": null
+          "type": "BioConversation",
+          "documentation": null,
+          "flags": 128
         },
         "pOnlyThis": {
-          "type": null,
-          "documentation": null
+          "type": "BioConversation",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -87,20 +100,24 @@
       "documentation": null,
       "signature_members": {
         "nResourceID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "pIgnoreController": {
-          "type": null,
-          "documentation": null
+          "type": "BioConversationController",
+          "documentation": null,
+          "flags": 144
         },
         "bIncludeFull": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bIncludeAmbient": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -110,12 +127,14 @@
       "documentation": null,
       "signature_members": {
         "pController": {
-          "type": null,
-          "documentation": null
+          "type": "BioConversationController",
+          "documentation": null,
+          "flags": 128
         },
         "sReason": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -125,8 +144,9 @@
       "documentation": null,
       "signature_members": {
         "pNewDialogObject": {
-          "type": null,
-          "documentation": null
+          "type": "BioSimpleDialog",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -136,16 +156,19 @@
       "documentation": null,
       "signature_members": {
         "nEventName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "srReplyLine": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "srVOLine": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "BioSimpleDialog",
@@ -153,5 +176,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

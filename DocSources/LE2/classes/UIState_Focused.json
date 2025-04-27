@@ -7,12 +7,14 @@
       "documentation": null,
       "signature_members": {
         "Target": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -20,5 +22,7 @@
     }
   },
   "states": {},
+  "classflags": 211816594,
+  "configname": "None",
   "documentation": null
 }

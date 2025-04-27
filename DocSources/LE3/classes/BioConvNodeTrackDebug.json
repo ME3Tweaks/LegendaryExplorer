@@ -4,7 +4,8 @@
   "variables": {
     "m_aDbgStrings": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     }
   },
   "functions": {
@@ -40,5 +41,7 @@
     }
   },
   "states": {},
+  "classflags": 136323218,
+  "configname": "None",
   "documentation": null
 }

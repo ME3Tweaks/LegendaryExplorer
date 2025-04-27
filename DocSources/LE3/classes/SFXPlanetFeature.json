@@ -4,75 +4,93 @@
   "variables": {
     "RTPCName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "LandingSiteMapName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Position": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "StartEvent": {
       "type": "WwiseBaseSoundObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StopEvent": {
       "type": "WwiseBaseSoundObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FeatureMarker": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ParticleComponent": {
       "type": "ParticleSystemComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     },
     "FeatureTransition": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FeatureTransitionParameter": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LandingSiteText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MarkerScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ScaledAmount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CritPathFeature": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Hidden": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FeatureType": {
       "type": "EFeatureType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FeatureTransitionRegion": {
       "type": "EBioRegionAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FeatureTransitionPlot": {
       "type": "ESFXPlanetFeatureEventTransitionPlotAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FeatureTransitionName": {
       "type": "ESFXPlanetFeatureEventTransitionAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -80,12 +98,14 @@
       "documentation": null,
       "signature_members": {
         "aPlotNames": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 4194688
         },
         "eMapLevel": {
-          "type": null,
-          "documentation": null
+          "type": "EBioGalaxyMapState",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -147,5 +167,7 @@
     }
   },
   "states": {},
+  "classflags": 142610582,
+  "configname": "Game",
   "documentation": null
 }

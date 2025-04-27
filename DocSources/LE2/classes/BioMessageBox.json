@@ -4,27 +4,33 @@
   "variables": {
     "m_aRawText": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aWrappedText": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_nScrollPosition": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nLineCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nMaxScrollPosition": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StartDrawTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -56,8 +62,9 @@
       "documentation": null,
       "signature_members": {
         "oCanvas": {
-          "type": null,
-          "documentation": null
+          "type": "Canvas",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -73,8 +80,9 @@
       "documentation": null,
       "signature_members": {
         "aText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -84,8 +92,9 @@
       "documentation": null,
       "signature_members": {
         "S": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
         }
       },
       "returntype": "None",
@@ -101,8 +110,9 @@
       "documentation": null,
       "signature_members": {
         "oCanvas": {
-          "type": null,
-          "documentation": null
+          "type": "Canvas",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -110,5 +120,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

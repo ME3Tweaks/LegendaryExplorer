@@ -4,51 +4,63 @@
   "variables": {
     "Members": {
       "type": "MemberData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aPerceivedSquads": {
       "type": "BioBaseSquad",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "PlaypenVolumes": {
       "type": "BioPlaypenVolume",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "SquadFaction": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_pHackedSquad": {
       "type": "BioBaseSquad",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlaypenAdditiveVolumeColour": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlaypenSubtractiveVolumeColour": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SquadMemberLineColour": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ObjVersion": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fThreatModifier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSquadEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bEngagedHostileAction": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -80,12 +92,14 @@
       "documentation": null,
       "signature_members": {
         "oTestActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "bRequiresTargetFlag": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "ePawnValidType",
@@ -95,8 +109,9 @@
       "documentation": null,
       "signature_members": {
         "oPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -106,8 +121,9 @@
       "documentation": null,
       "signature_members": {
         "oPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -117,12 +133,14 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "bCheckPlaypens": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -138,8 +156,9 @@
       "documentation": null,
       "signature_members": {
         "oActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "BioEpicPawnBehavior",
@@ -149,8 +168,9 @@
       "documentation": null,
       "signature_members": {
         "oActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "BioBaseSquad",
@@ -160,8 +180,9 @@
       "documentation": null,
       "signature_members": {
         "nmTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Pawn",
@@ -171,12 +192,14 @@
       "documentation": null,
       "signature_members": {
         "member": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -204,8 +227,9 @@
       "documentation": null,
       "signature_members": {
         "oPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Actor",
@@ -215,8 +239,9 @@
       "documentation": null,
       "signature_members": {
         "oPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Actor",
@@ -232,8 +257,9 @@
       "documentation": null,
       "signature_members": {
         "Volume": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlaypenVolume",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -243,8 +269,9 @@
       "documentation": null,
       "signature_members": {
         "Volume": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlaypenVolume",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -254,8 +281,9 @@
       "documentation": null,
       "signature_members": {
         "Volume": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlaypenVolume",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -271,8 +299,9 @@
       "documentation": null,
       "signature_members": {
         "oActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -282,8 +311,9 @@
       "documentation": null,
       "signature_members": {
         "oActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -293,8 +323,9 @@
       "documentation": null,
       "signature_members": {
         "vLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "bool",
@@ -304,8 +335,9 @@
       "documentation": null,
       "signature_members": {
         "vLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "bool",
@@ -315,8 +347,9 @@
       "documentation": null,
       "signature_members": {
         "oPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -326,8 +359,9 @@
       "documentation": null,
       "signature_members": {
         "oController": {
-          "type": null,
-          "documentation": null
+          "type": "BioAiController",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -337,12 +371,14 @@
       "documentation": null,
       "signature_members": {
         "oSource": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "oTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -352,16 +388,19 @@
       "documentation": null,
       "signature_members": {
         "oSource": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "oTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "bExposed": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -371,8 +410,9 @@
       "documentation": null,
       "signature_members": {
         "pSquad": {
-          "type": null,
-          "documentation": null
+          "type": "BioBaseSquad",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -382,8 +422,9 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -393,8 +434,9 @@
       "documentation": null,
       "signature_members": {
         "pSquad": {
-          "type": null,
-          "documentation": null
+          "type": "BioBaseSquad",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -404,16 +446,19 @@
       "documentation": null,
       "signature_members": {
         "pSquad": {
-          "type": null,
-          "documentation": null
+          "type": "BioBaseSquad",
+          "documentation": null,
+          "flags": 128
         },
         "pSource": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 144
         },
         "pTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -423,12 +468,14 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "oIndicator": {
-          "type": null,
-          "documentation": null
+          "type": "BioTacticalMoveToIndicator",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -438,8 +485,9 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "BioTacticalMoveToIndicator",
@@ -449,8 +497,9 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -460,8 +509,9 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -477,8 +527,9 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -488,8 +539,9 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Pawn",
@@ -517,8 +569,9 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -526,5 +579,7 @@
     }
   },
   "states": {},
+  "classflags": 144703635,
+  "configname": "Game",
   "documentation": null
 }

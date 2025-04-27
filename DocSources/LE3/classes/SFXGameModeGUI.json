@@ -4,19 +4,23 @@
   "variables": {
     "StackedGuis": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DeathCam": {
       "type": "BioCameraBehaviorFlourish",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "InstantTransition": {
       "type": "SFXCameraTransition_GalaxyMap",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "DeathTransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -36,8 +40,9 @@
       "documentation": null,
       "signature_members": {
         "ModeSpecifier": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -53,8 +58,9 @@
       "documentation": null,
       "signature_members": {
         "ModeSpecifier": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -64,20 +70,24 @@
       "documentation": null,
       "signature_members": {
         "OldCameraMode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 128
         },
         "PreserveTarget": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "TransitionTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "Transition": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode_Interpolate",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "SFXCameraMode",
@@ -111,8 +121,9 @@
       "documentation": null,
       "signature_members": {
         "bForward": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -132,5 +143,7 @@
     }
   },
   "states": {},
+  "classflags": 10485782,
+  "configname": "Input",
   "documentation": null
 }

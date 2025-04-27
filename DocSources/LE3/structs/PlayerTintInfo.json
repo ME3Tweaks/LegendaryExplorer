@@ -2,11 +2,13 @@
   "members": {
     "TintParam": {
       "type": "VectorParameterValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PhongParam": {
       "type": "VectorParameterValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioDefine",

@@ -4,62 +4,78 @@
   "variables": {
     "RTPCName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Position": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "StartEvent": {
       "type": "WwiseBaseSoundObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StopEvent": {
       "type": "WwiseBaseSoundObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ParticleComponent": {
       "type": "ParticleSystemComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     },
     "Amount": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FeatureTransition": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FeatureTransitionParameter": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ScaledAmount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "FeatureType": {
       "type": "EFeatureType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MineralType": {
       "type": "EMineralType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FeatureTransitionRegion": {
       "type": "EBioRegionAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FeatureTransitionPlot": {
       "type": "ESFXPlanetFeatureEventTransitionPlotAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FeatureTransitionName": {
       "type": "ESFXPlanetFeatureEventTransitionAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

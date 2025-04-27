@@ -4,35 +4,43 @@
   "variables": {
     "m_fLastLineCheckTime": {
       "type": "Double",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "WwiseEventArray": {
       "type": "WwiseEventPair",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "AudioComponent": {
       "type": "WwiseAudioComponentMultiLoc",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "m_fTimeBetweenLineChecks": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAutoPlay": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bWasPlaying": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "DrawSoundLocations": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bIs2D": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -76,8 +84,9 @@
       "documentation": null,
       "signature_members": {
         "T": {
-          "type": null,
-          "documentation": null
+          "type": "WwiseVolumeTimer",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -85,5 +94,7 @@
     }
   },
   "states": {},
+  "classflags": 144704178,
+  "configname": "None",
   "documentation": null
 }

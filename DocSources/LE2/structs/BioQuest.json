@@ -2,23 +2,28 @@
   "members": {
     "VfTable": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8400898
     },
     "lstGoals": {
       "type": "BioQuestGoal",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "lstTasks": {
       "type": "BioQuestTask",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "lstPlotItems": {
       "type": "BioPlotItem",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "bMission": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioDefine",

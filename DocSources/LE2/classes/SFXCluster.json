@@ -4,43 +4,53 @@
   "variables": {
     "Systems": {
       "type": "SFXSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "RelayConnections": {
       "type": "SFXCluster",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "StarColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StarColor2": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ClusterTexture": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "NebularDensity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CloudTile": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SphereIntensity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SphereSize": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ExploredCluster": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -48,8 +58,9 @@
       "documentation": null,
       "signature_members": {
         "Child": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGalaxyMapObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -59,8 +70,9 @@
       "documentation": null,
       "signature_members": {
         "Children": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGalaxyMapObject",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -74,5 +86,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

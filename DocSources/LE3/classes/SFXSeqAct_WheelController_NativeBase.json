@@ -4,23 +4,28 @@
   "variables": {
     "Wheels": {
       "type": "WheelInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Chassis": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SteeringWheel": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SteeringLimit": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SuspensionVariance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -28,12 +33,14 @@
       "documentation": null,
       "signature_members": {
         "LocalChassisVelocityX": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "WheelTargetFacing": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -47,5 +54,7 @@
     }
   },
   "states": {},
+  "classflags": 136315027,
+  "configname": "None",
   "documentation": null
 }

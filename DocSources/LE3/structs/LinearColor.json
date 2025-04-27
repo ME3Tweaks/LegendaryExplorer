@@ -2,19 +2,23 @@
   "members": {
     "R": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "G": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "B": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "A": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "Object",

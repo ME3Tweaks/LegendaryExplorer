@@ -2,19 +2,23 @@
   "members": {
     "C": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CA": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "T": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TA": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioCheatManagerNonNative",

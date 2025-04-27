@@ -4,71 +4,88 @@
   "variables": {
     "IntelSummary": {
       "type": "StoreItemData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "StoreItemArray": {
       "type": "StoreItemData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "DefaultImage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "MallStoreArray": {
       "type": "SFXGUIData_Store",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "StoreHeaderImageRef": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "StoreName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "DiscoveryID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "DiscountUnlockID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "DiscountPercent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MarkupPercent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srStoreDescription": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ConfirmationMessageATextOverride": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srOutOfStock": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srOutOfStockDescription": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bApplyIntelSummary": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bUseChoiceNameAsConfirmationMessage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ItemType": {
       "type": "EItemType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -80,5 +97,7 @@
     }
   },
   "states": {},
+  "classflags": 136320150,
+  "configname": "UI",
   "documentation": null
 }

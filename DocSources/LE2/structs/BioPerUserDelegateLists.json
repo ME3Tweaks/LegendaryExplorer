@@ -2,11 +2,13 @@
   "members": {
     "AchievementDelegates": {
       "type": "OnUnlockAchievementComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "AchievementReadDelegates": {
       "type": "OnReadAchievementsComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "classdef": "SFXOnlineComponentUnrealPlayer",

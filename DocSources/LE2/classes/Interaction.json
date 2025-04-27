@@ -4,19 +4,23 @@
   "variables": {
     "__OnReceivedNativeInputKey__Delegate": {
       "type": "OnReceivedNativeInputKey",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnReceivedNativeInputAxis__Delegate": {
       "type": "OnReceivedNativeInputAxis",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnReceivedNativeInputChar__Delegate": {
       "type": "OnReceivedNativeInputChar",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnInitialize__Delegate": {
       "type": "OnInitialize",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -24,12 +28,14 @@
       "documentation": null,
       "signature_members": {
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "RemovedPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -39,12 +45,14 @@
       "documentation": null,
       "signature_members": {
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "AddedPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -78,8 +86,9 @@
       "documentation": null,
       "signature_members": {
         "Canvas": {
-          "type": null,
-          "documentation": null
+          "type": "Canvas",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -89,8 +98,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -100,12 +110,14 @@
       "documentation": null,
       "signature_members": {
         "ControllerId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Unicode": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -115,24 +127,29 @@
       "documentation": null,
       "signature_members": {
         "ControllerId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Key": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Delta": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bGamepad": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -142,24 +159,29 @@
       "documentation": null,
       "signature_members": {
         "ControllerId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Key": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "EventType": {
-          "type": null,
-          "documentation": null
+          "type": "EInputEvent",
+          "documentation": null,
+          "flags": 128
         },
         "AmountDepressed": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bGamepad": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -167,5 +189,7 @@
     }
   },
   "states": {},
+  "classflags": 134217882,
+  "configname": "None",
   "documentation": null
 }

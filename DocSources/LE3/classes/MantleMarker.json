@@ -4,10 +4,13 @@
   "variables": {
     "OwningSlot": {
       "type": "CoverInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

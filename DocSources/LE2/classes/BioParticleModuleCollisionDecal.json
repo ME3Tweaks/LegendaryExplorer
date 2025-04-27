@@ -4,23 +4,28 @@
   "variables": {
     "CollisionEmitter": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 37748745
     },
     "ColorParams": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "DecalTemplate": {
       "type": "BioDecalComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 101187593
     },
     "CollisionEmitterTemplate": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bEnableMultiHitDecal": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -28,20 +33,24 @@
       "documentation": null,
       "signature_members": {
         "PSC": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystemComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "HitComponent": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -49,5 +58,7 @@
     }
   },
   "states": {},
+  "classflags": 142618770,
+  "configname": "None",
   "documentation": null
 }

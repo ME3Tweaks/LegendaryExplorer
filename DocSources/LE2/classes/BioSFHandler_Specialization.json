@@ -4,31 +4,38 @@
   "variables": {
     "__EvolvePowerDelegate__Delegate": {
       "type": "EvolvePowerDelegate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__CancelEvolutionDelegate__Delegate": {
       "type": "CancelEvolutionDelegate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_OriginalPower": {
       "type": "SFXPower",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_EvolvedPower1": {
       "type": "SFXPower",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_EvolvedPower2": {
       "type": "SFXPower",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_Description": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fRScrollValue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -42,8 +49,9 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -59,8 +67,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -70,12 +79,14 @@
       "documentation": null,
       "signature_members": {
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -85,12 +96,14 @@
       "documentation": null,
       "signature_members": {
         "nCommand": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "Parameters": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -112,12 +125,14 @@
       "documentation": null,
       "signature_members": {
         "oPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "nmPowerName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -127,8 +142,9 @@
       "documentation": null,
       "signature_members": {
         "OriginalPower": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPower",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -138,12 +154,14 @@
       "documentation": null,
       "signature_members": {
         "OriginalPower": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPower",
+          "documentation": null,
+          "flags": 128
         },
         "EvolvedPowerClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -151,5 +169,7 @@
     }
   },
   "states": {},
+  "classflags": 2097182,
+  "configname": "UI",
   "documentation": null
 }

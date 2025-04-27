@@ -4,15 +4,18 @@
   "variables": {
     "__OnFlushOnlineStatsComplete__Delegate": {
       "type": "OnFlushOnlineStatsComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnRegisterHostStatGuidComplete__Delegate": {
       "type": "OnRegisterHostStatGuidComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnReadOnlineStatsComplete__Delegate": {
       "type": "OnReadOnlineStatsComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -20,8 +23,9 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -31,12 +35,14 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -46,8 +52,9 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -57,8 +64,9 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -68,16 +76,19 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Player": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "StatsWrite": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineStatsWrite",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -87,8 +98,9 @@
       "documentation": null,
       "signature_members": {
         "FlushOnlineStatsCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnFlushOnlineStatsComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -98,8 +110,9 @@
       "documentation": null,
       "signature_members": {
         "ReadOnlineStatsCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadOnlineStatsComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -109,8 +122,9 @@
       "documentation": null,
       "signature_members": {
         "RegisterHostStatGuidCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnRegisterHostStatGuidComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -120,8 +134,9 @@
       "documentation": null,
       "signature_members": {
         "FlushOnlineStatsCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnFlushOnlineStatsComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -131,8 +146,9 @@
       "documentation": null,
       "signature_members": {
         "ReadOnlineStatsCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadOnlineStatsComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -142,8 +158,9 @@
       "documentation": null,
       "signature_members": {
         "RegisterHostStatGuidCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnRegisterHostStatGuidComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -153,8 +170,9 @@
       "documentation": null,
       "signature_members": {
         "StatsRead": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineStatsRead",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -176,12 +194,14 @@
       "documentation": null,
       "signature_members": {
         "Players": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 4194690
         },
         "StatsRead": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineStatsRead",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -191,16 +211,19 @@
       "documentation": null,
       "signature_members": {
         "StatsRead": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineStatsRead",
+          "documentation": null,
+          "flags": 128
         },
         "StartIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "NumToRead": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -210,16 +233,19 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "StatsRead": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineStatsRead",
+          "documentation": null,
+          "flags": 128
         },
         "NumRows": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -229,12 +255,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "StatsRead": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineStatsRead",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -244,8 +272,9 @@
       "documentation": null,
       "signature_members": {
         "HostStatGuid": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "bool",
@@ -255,12 +284,14 @@
       "documentation": null,
       "signature_members": {
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "ClientStatGuid": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "bool",
@@ -270,16 +301,19 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "LeaderboardId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerScores": {
-          "type": null,
-          "documentation": null
+          "type": "OnlinePlayerScore",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "bool",
@@ -287,5 +321,7 @@
     }
   },
   "states": {},
+  "classflags": 16403,
+  "configname": "None",
   "documentation": null
 }

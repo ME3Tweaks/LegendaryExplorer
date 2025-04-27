@@ -2,15 +2,18 @@
   "members": {
     "ScopeFrame": {
       "type": "Matrix",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DimX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DimZ": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "ProcBuilding",

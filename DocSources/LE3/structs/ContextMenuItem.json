@@ -2,23 +2,28 @@
   "members": {
     "ItemText": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "ParentItem": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 1060866
     },
     "OwnerMenu": {
       "type": "UIContextMenu",
-      "documentation": null
+      "documentation": null,
+      "flags": 1056770
     },
     "ItemId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "ItemType": {
       "type": "EContextMenuItemType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     }
   },
   "classdef": "UIContextMenu",

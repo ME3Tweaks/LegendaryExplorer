@@ -2,15 +2,18 @@
   "members": {
     "Name": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048577
     },
     "CanonicalName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048577
     },
     "ModuleID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXSaveGame",

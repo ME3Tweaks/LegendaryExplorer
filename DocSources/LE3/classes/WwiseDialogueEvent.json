@@ -4,10 +4,13 @@
   "variables": {
     "Arguments": {
       "type": "WwiseDialogueArgument",
-      "documentation": null
+      "documentation": null,
+      "flags": 4325379
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

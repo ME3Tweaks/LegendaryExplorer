@@ -4,10 +4,13 @@
   "variables": {
     "ListEntriesCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

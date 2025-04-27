@@ -4,66 +4,83 @@
   "variables": {
     "HenchIdentities": {
       "type": "SelectIdentity",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "SelectAppearances": {
       "type": "AppearanceSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "PowerInfos": {
       "type": "PowerInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "SelectInfos": {
       "type": "SelectInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "DefaultImage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "SelectName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srSelectTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srDefaultAButtonText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srDefaultBButtonText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srDefaultXButtonText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srDefaultYButtonText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srPartyConfirm": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srPartyCancel": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srPartyQuestion": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srInfoExit": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 2101270,
+  "configname": "UI",
   "documentation": null
 }

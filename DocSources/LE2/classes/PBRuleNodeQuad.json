@@ -4,30 +4,38 @@
   "variables": {
     "Material": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RepeatMaxSizeX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RepeatMaxSizeZ": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "QuadLightmapRes": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "YOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDisableMaterialRepeat": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136327314,
+  "configname": "None",
   "documentation": null
 }

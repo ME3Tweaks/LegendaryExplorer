@@ -4,10 +4,13 @@
   "variables": {
     "TrackKeys": {
       "type": "ParticleReplayTrackKey",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303168
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142614674,
+  "configname": "None",
   "documentation": null
 }

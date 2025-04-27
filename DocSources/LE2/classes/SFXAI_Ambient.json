@@ -4,31 +4,38 @@
   "variables": {
     "m_oCurrentWaypoint": {
       "type": "SFXNav_WayPoint",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_WaypointAnimName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nWaypointIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nWaypointBodyStance": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bPaused": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bCountingUp": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_eWalkOrder": {
       "type": "eWalkWaypointsTypes",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -36,12 +43,14 @@
       "documentation": null,
       "signature_members": {
         "AnimName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "eStance": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -57,24 +66,29 @@
       "documentation": null,
       "signature_members": {
         "oRoute": {
-          "type": null,
-          "documentation": null
+          "type": "Route",
+          "documentation": null,
+          "flags": 128
         },
         "nNearestWaypoint": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bWalking": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "eWalkOrder": {
-          "type": null,
-          "documentation": null
+          "type": "eWalkWaypointsTypes",
+          "documentation": null,
+          "flags": 128
         },
         "bSkipNodes": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -84,12 +98,14 @@
       "documentation": null,
       "signature_members": {
         "vLoc": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "oRoute": {
-          "type": null,
-          "documentation": null
+          "type": "Route",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -163,5 +179,7 @@
       "documentation": null
     }
   },
+  "classflags": 10486294,
+  "configname": "AI",
   "documentation": null
 }

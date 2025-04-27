@@ -4,7 +4,8 @@
   "variables": {
     "CharmPersuadeDefs": {
       "type": "LevelCompletionData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -22,5 +23,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

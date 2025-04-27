@@ -2,11 +2,13 @@
   "members": {
     "Relationships": {
       "type": "WwiseRelationships",
-      "documentation": null
+      "documentation": null,
+      "flags": 4325379
     },
     "Platform": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     }
   },
   "classdef": "WwiseEvent",

@@ -4,99 +4,123 @@
   "variables": {
     "pProceduralCamera": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_vFixedCamPosition": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_rFixedCamRotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_vProceduralCamPosition": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_rProceduralCamRotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_tDOFData": {
       "type": "BioStageDOFData",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_rRotationOffset": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_vPrevFixedCamPos": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_rPrevFixedCamRot": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_tPrevDOFData": {
       "type": "BioStageDOFData",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ViewSource": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Target": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pIdleCamAnimSet": {
       "type": "AnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nProceduralCameraClass": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fNearPlane": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CAMERA_FOV": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fLateralOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fPrevCamFOV": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fPrevNearPlane": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fIdleCamTimeIndex": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_idleCamAnimIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bDOFSettingDisabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bSavedData": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bIdleCamEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -104,8 +128,9 @@
       "documentation": null,
       "signature_members": {
         "PPSettings": {
-          "type": null,
-          "documentation": null
+          "type": "PostProcessSettings",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -115,8 +140,9 @@
       "documentation": null,
       "signature_members": {
         "PPSettings": {
-          "type": null,
-          "documentation": null
+          "type": "PostProcessSettings",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -126,8 +152,9 @@
       "documentation": null,
       "signature_members": {
         "M": {
-          "type": null,
-          "documentation": null
+          "type": "BioCheatManager",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -137,16 +164,19 @@
       "documentation": null,
       "signature_members": {
         "vCamLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "rCamRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         },
         "bInvert": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -180,8 +210,9 @@
       "documentation": null,
       "signature_members": {
         "NewOwner": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -203,8 +234,9 @@
       "documentation": null,
       "signature_members": {
         "TimeDelta": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -212,5 +244,7 @@
     }
   },
   "states": {},
+  "classflags": 134217878,
+  "configname": "Game",
   "documentation": null
 }

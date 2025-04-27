@@ -4,123 +4,153 @@
   "variables": {
     "__ExternalCallback_OnComplete__Delegate": {
       "type": "ExternalCallback_OnComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_WorldInfo": {
       "type": "BioWorldInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_oUIWorldPawn": {
       "type": "SFXPawn_Player",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_oPlayerPawn": {
       "type": "SFXPawn_Player",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nRotating": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RotationDegreesPerSecond": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "TypeOptionTitle": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "HelmetOptionTitle": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "TorsoOptionTitle": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ShoulderOptionTitle": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ArmOptionTitle": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "LegOptionTitle": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "SpecOptionTitle": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "Tint1OptionTitle": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "Tint2OptionTitle": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "PatternOptionTitle": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "PatternColorOptionTitle": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "CasualOptionTitle": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "CasualID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FullBodyID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TorsoID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ShoulderID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ArmID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LegID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Tint1ID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Tint2ID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PatternID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PatternColorID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HelmetID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bStopScroll": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -128,12 +158,14 @@
       "documentation": null,
       "signature_members": {
         "nOptIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nOptionIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -143,12 +175,14 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "AppearanceData": {
-          "type": null,
-          "documentation": null
+          "type": "CustomizableElement",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "int",
@@ -158,12 +192,14 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "AppearanceData": {
-          "type": null,
-          "documentation": null
+          "type": "CustomizableElement",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "int",
@@ -173,8 +209,9 @@
       "documentation": null,
       "signature_members": {
         "nCategory": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -208,20 +245,24 @@
       "documentation": null,
       "signature_members": {
         "nEntryIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nTitleText": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Elements": {
-          "type": null,
-          "documentation": null
+          "type": "CustomizableElement",
+          "documentation": null,
+          "flags": 4194688
         },
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -231,8 +272,9 @@
       "documentation": null,
       "signature_members": {
         "Element": {
-          "type": null,
-          "documentation": null
+          "type": "CustomizableElement",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -242,8 +284,9 @@
       "documentation": null,
       "signature_members": {
         "nStringRef": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -259,8 +302,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -270,12 +314,14 @@
       "documentation": null,
       "signature_members": {
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -309,8 +355,9 @@
       "documentation": null,
       "signature_members": {
         "pDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "ExternalCallback_OnComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -324,5 +371,7 @@
     }
   },
   "states": {},
+  "classflags": 136315038,
+  "configname": "UI",
   "documentation": null
 }

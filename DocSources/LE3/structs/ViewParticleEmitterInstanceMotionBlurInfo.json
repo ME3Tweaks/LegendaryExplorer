@@ -2,7 +2,8 @@
   "members": {
     "EmitterInstanceMBInfoMap": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     }
   },
   "classdef": "ParticleSystemComponent",

@@ -4,39 +4,48 @@
   "variables": {
     "PartPool": {
       "type": "FracturedStaticMeshPart",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "FreeParts": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ActorsWithDeferredPartsToSpawn": {
       "type": "FracturedStaticMeshActor",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "FSMPartPoolSize": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DestroyVibrationLevel": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DestroyMinAngVel": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ExplosionVelScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bEnableAntiVibration": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bEnableSpawnChunkEffectForRadialDamage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -68,16 +77,19 @@
       "documentation": null,
       "signature_members": {
         "Parent": {
-          "type": null,
-          "documentation": null
+          "type": "FracturedStaticMeshActor",
+          "documentation": null,
+          "flags": 128
         },
         "SpawnLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "SpawnRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "FracturedStaticMeshPart",
@@ -111,8 +123,9 @@
       "documentation": null,
       "signature_members": {
         "Part": {
-          "type": null,
-          "documentation": null
+          "type": "FracturedStaticMeshPart",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -122,20 +135,24 @@
       "documentation": null,
       "signature_members": {
         "Effect": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
         },
         "ChunkBox": {
-          "type": null,
-          "documentation": null
+          "type": "Box",
+          "documentation": null,
+          "flags": 128
         },
         "ChunkDir": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Scale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -151,16 +168,19 @@
       "documentation": null,
       "signature_members": {
         "Parent": {
-          "type": null,
-          "documentation": null
+          "type": "FracturedStaticMeshActor",
+          "documentation": null,
+          "flags": 128
         },
         "SpawnLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "SpawnRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "FracturedStaticMeshPart",
@@ -170,8 +190,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -185,5 +206,7 @@
     }
   },
   "states": {},
+  "classflags": 144703634,
+  "configname": "Game",
   "documentation": null
 }

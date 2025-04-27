@@ -2,11 +2,13 @@
   "members": {
     "Source": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Target": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXCovGoal_NoFriendlyLOF",

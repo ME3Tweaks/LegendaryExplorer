@@ -2,11 +2,13 @@
   "members": {
     "UnlockPlotName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WeaponClass": {
       "type": "ELoadoutWeapons",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXPlayerSquadLoadoutData",

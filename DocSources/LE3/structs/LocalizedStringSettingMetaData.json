@@ -2,19 +2,23 @@
   "members": {
     "ColumnHeaderText": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "ValueMappings": {
       "type": "StringIdToStringMapping",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "Name": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "Id": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "classdef": "Settings",

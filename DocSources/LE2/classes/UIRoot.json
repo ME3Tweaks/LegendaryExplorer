@@ -25,8 +25,9 @@
       "documentation": null,
       "signature_members": {
         "SourceWidget": {
-          "type": null,
-          "documentation": null
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -36,20 +37,24 @@
       "documentation": null,
       "signature_members": {
         "InDataStoreMarkup": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "OutStringValue": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         },
         "OwnerScene": {
-          "type": null,
-          "documentation": null
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 144
         },
         "OwnerPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -59,20 +64,24 @@
       "documentation": null,
       "signature_members": {
         "InDataStoreMarkup": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "OutFieldValue": {
-          "type": null,
-          "documentation": null
+          "type": "UIProviderFieldValue",
+          "documentation": null,
+          "flags": 4194688
         },
         "OwnerScene": {
-          "type": null,
-          "documentation": null
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 144
         },
         "OwnerPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -82,20 +91,24 @@
       "documentation": null,
       "signature_members": {
         "InDataStoreMarkup": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "InStringValue": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "OwnerScene": {
-          "type": null,
-          "documentation": null
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 144
         },
         "OwnerPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -105,20 +118,24 @@
       "documentation": null,
       "signature_members": {
         "InDataStoreMarkup": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "InFieldValue": {
-          "type": null,
-          "documentation": null
+          "type": "UIProviderFieldValue",
+          "documentation": null,
+          "flags": 4194690
         },
         "OwnerScene": {
-          "type": null,
-          "documentation": null
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 144
         },
         "OwnerPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -128,16 +145,19 @@
       "documentation": null,
       "signature_members": {
         "DataStoreTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "OwnerScene": {
-          "type": null,
-          "documentation": null
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 144
         },
         "InPlayerOwner": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "UIDataStore",
@@ -147,20 +167,24 @@
       "documentation": null,
       "signature_members": {
         "Widget": {
-          "type": null,
-          "documentation": null
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
         },
         "bIncludeAnchorPosition": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bIncudeRotation": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bIncludeScale": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Matrix",
@@ -170,8 +194,9 @@
       "documentation": null,
       "signature_members": {
         "bCaptureMouse": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -181,12 +206,14 @@
       "documentation": null,
       "signature_members": {
         "CursorXL": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "CursorYL": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -196,16 +223,19 @@
       "documentation": null,
       "signature_members": {
         "CursorX": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "CursorY": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "Scene": {
-          "type": null,
-          "documentation": null
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 146
         }
       },
       "returntype": "bool",
@@ -215,8 +245,9 @@
       "documentation": null,
       "signature_members": {
         "Face": {
-          "type": null,
-          "documentation": null
+          "type": "EUIWidgetFace",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "EUIOrientation",
@@ -244,8 +275,9 @@
       "documentation": null,
       "signature_members": {
         "ConsoleType": {
-          "type": null,
-          "documentation": null
+          "type": "EConsoleType",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -255,8 +287,9 @@
       "documentation": null,
       "signature_members": {
         "OwningPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "EInputPlatformType",
@@ -264,5 +297,7 @@
     }
   },
   "states": {},
+  "classflags": 134217875,
+  "configname": "None",
   "documentation": null
 }

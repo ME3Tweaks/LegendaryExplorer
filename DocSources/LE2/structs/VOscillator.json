@@ -2,15 +2,18 @@
   "members": {
     "X": {
       "type": "FOscillator",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Y": {
       "type": "FOscillator",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Z": {
       "type": "FOscillator",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "CameraShake",

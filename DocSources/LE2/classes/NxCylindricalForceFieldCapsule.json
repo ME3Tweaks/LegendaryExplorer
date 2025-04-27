@@ -4,7 +4,8 @@
   "variables": {
     "RenderComponent": {
       "type": "DrawCapsuleComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     }
   },
   "functions": {
@@ -16,5 +17,7 @@
     }
   },
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

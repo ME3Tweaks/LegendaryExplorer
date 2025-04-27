@@ -2,11 +2,13 @@
   "members": {
     "FocusedControl": {
       "type": "UIObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 1056768
     },
     "LastFocusedControl": {
       "type": "UIObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 1056768
     }
   },
   "classdef": "UIRoot",

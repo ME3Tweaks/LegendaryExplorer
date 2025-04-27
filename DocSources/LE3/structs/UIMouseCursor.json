@@ -2,11 +2,13 @@
   "members": {
     "CursorStyle": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Cursor": {
       "type": "UITexture",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "UIRoot",

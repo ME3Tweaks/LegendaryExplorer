@@ -2,19 +2,23 @@
   "members": {
     "ExpressionGUID": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ParameterName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FontValue": {
       "type": "Font",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FontPage": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "MaterialInstanceConstant",

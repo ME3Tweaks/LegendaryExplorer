@@ -4,7 +4,8 @@
   "variables": {
     "DamageNPC": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -22,5 +23,7 @@
     }
   },
   "states": {},
+  "classflags": 8388626,
+  "configname": "None",
   "documentation": null
 }

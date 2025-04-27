@@ -4,34 +4,43 @@
   "variables": {
     "m_lstSpawns": {
       "type": "RvrClientEffectSpawnedActor",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_lstSavedStates": {
       "type": "RvrClientEffectSavedState",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718592
     },
     "m_lstBoneMap": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_nSavedStateHead": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nSavedStates": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nRemainingSpawns": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fSpawnPotential": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703642,
+  "configname": "None",
   "documentation": null
 }

@@ -4,79 +4,98 @@
   "variables": {
     "BlendOut": {
       "type": "BioAnimCheckBlendOut",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "Intro2BodyBlendDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "Body2OutroBlendDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "Intro2OutroBlendDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "Outro2IntroBlendDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "IntroIsBlocking": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "OutroIsBlocking": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bStopInputOnBlockingTransitions": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bRequestedBlendOut": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bCanceledBlendOut": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bSkipIntro": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bBlocking": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "IntroRootMotionMode": {
       "type": "ERootMotionMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "IntroRootRotationMode": {
       "type": "ERootMotionRotationMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "OutroRootMotionMode": {
       "type": "ERootMotionMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "OutroRootRotationMode": {
       "type": "ERootMotionRotationMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "CurrentState": {
       "type": "EBioAnimNodeCover2Transition",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RootMotionMode": {
       "type": "ERootMotionMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RootRotationMode": {
       "type": "ERootMotionRotationMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -84,12 +103,14 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "bIgnore": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -97,5 +118,7 @@
     }
   },
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

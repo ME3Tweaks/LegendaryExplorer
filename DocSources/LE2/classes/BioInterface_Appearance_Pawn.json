@@ -4,43 +4,53 @@
   "variables": {
     "m_headGearVisibilityOverride": {
       "type": "BioPawnHeadGearVisibility",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "m_headGearVisibilityRunTimeOverride": {
       "type": "BioPawnHeadGearVisibility",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_cachedHeadGearVisibility": {
       "type": "BioPawnHeadGearVisibility",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_oSettings": {
       "type": "Bio_Appr_Character_Settings",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "CreatureSpeedOverride": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "m_nmCreatureSpeed": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nmBloodColor": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_oCreatureSpeedsTable": {
       "type": "Bio2DA",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pMaterialParameters": {
       "type": "BioMaterialOverride",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "m_bHeadGearVisiblePreference": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -72,8 +82,9 @@
       "documentation": null,
       "signature_members": {
         "SpeedsRecord": {
-          "type": null,
-          "documentation": null
+          "type": "CreatureSpeeds",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -83,8 +94,9 @@
       "documentation": null,
       "signature_members": {
         "bForceUpdate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -94,12 +106,14 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "Appearance": {
-          "type": null,
-          "documentation": null
+          "type": "Bio_Appr_Character",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -109,8 +123,9 @@
       "documentation": null,
       "signature_members": {
         "B": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -118,5 +133,7 @@
     }
   },
   "states": {},
+  "classflags": 144707730,
+  "configname": "None",
   "documentation": null
 }

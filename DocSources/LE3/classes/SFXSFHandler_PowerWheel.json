@@ -4,475 +4,593 @@
   "variables": {
     "m_aMappingIconPaths": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_oPowerIndices": {
       "type": "SFXPowerWheelPawnIndices",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_oWeaponIndices": {
       "type": "SFXPowerWheelPawnIndices",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_oMapTextIcon1": {
       "type": "SFXPowerWheelButtonIcon",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_oMapTextIcon2": {
       "type": "SFXPowerWheelButtonIcon",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aPowerIconInfo": {
       "type": "SFXPowerIconData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aPowerIcons": {
       "type": "SFXGUIValue_PowerIcon",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aWeaponIcons": {
       "type": "SFXPowerWheelIconWeapon",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aRadarElementData": {
       "type": "SFXRadarElementData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sWheelPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sWheelInnerPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sTitleTextPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sNameTextPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sInfoTextPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sInfoTextBGPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sUseButtonPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sUseTextPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sMapButton1Path": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sMapText1Path": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sMapButton2Path": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sMapText2Path": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sMapText3Path": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sMapButton3Path": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aRadarIconFramePaths": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sShepardBlockerPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sHench1BlockerPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sHench2BlockerPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sRadarPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sTeam1StatusTextPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sTeam1PowerTextPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sHench1PortraitImagePath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sHench1PortraitMovieClipPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sTeam2StatusTextPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sTeam2PowerTextPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sHench2PortraitImagePath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sHench2PortraitMovieClipPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sWheelArrowPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sNuiSpeechIconPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sNotSuggestedPrefix": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_sNotSuggestedSuffix": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_sMap1Token": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_sMap2Token": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_sMap3Token": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_sMapHench1Token": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_sMapHench2Token": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "__WeaponSort__Delegate": {
       "type": "WeaponSort",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aWeaponStateFrames": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_vLStickInput": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pPlayerController": {
       "type": "BioPlayerController",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pPlayerSquad": {
       "type": "BioBaseSquad",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_vViewportOffsets": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pShepardPawn": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pHench1Pawn": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pHench2Pawn": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pCurrentPlayerSelection": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_vCacheRadarBoundaryTopLeft": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_vCacheRadarBoundaryBottomRight": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_vBoundaryDimensions": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fButtonTextPadding": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fMovieWidth": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fMovieHeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fRemainingRadarPulseTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fInfoTextChangeDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fRemainingInfoTextChangeDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fTimeToNextVehicleRadarUpdate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fTimeToNextObjectiveUpdate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fLastProcessedStickAngle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fCurrentProcessedStickAngle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fThumbstickInterpSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fLastStickDeflection": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fLStickAngleDeltaDeg": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fLStickStickyIconAngle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nCurrentPowerIconIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nCurrentWeaponIconIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nCurrentSelectedWeapon": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fCacheTargetDirection": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fCacheNorthDirection": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fCachePathDirection": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fCacheRadarBoundaryRotation": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_srBlocked": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srPawnIncapacitated": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srWeaponSwitching": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srWeaponOverheating": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srWeaponReloading": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srDisplayTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srWeaponWheelDisplayTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srPowerWheelDisplayTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srEquip": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srUse": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srMap": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srOverheated": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srRecharging": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srUnavailable": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srRadarRangeUnits": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srNorthText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_srObjective": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fRadarDirectionChangeDelta": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fRadarElementLocationChangeDelta": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fRadarRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fBoundaryShrinkFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fVehicleRadarUpdateInterval": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fRadarObjectiveUpdateInterval": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_bVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bRadarVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bRadarOn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bInOutTransition": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bProcessSquadHenchmen": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bCanMapPlayerPowers": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bHavePathAssistGoal": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bPingPathAssistArrow": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bInfoTextBackgroundVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bDesiredInfoTextBackgroundVisibility": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bWheelArrowVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bObjectiveRadarOn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bPulsingRadar": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bShowUseMapText": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bSquadChanged": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_ePowerWheelMode": {
       "type": "SFXPowerWheelMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -480,8 +598,9 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -491,8 +610,9 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -502,8 +622,9 @@
       "documentation": null,
       "signature_members": {
         "aRadarData": {
-          "type": null,
-          "documentation": null
+          "type": "SFXRadarElementData",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -513,8 +634,9 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -530,8 +652,9 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -541,8 +664,9 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -552,16 +676,19 @@
       "documentation": null,
       "signature_members": {
         "vTopLeft": {
-          "type": null,
-          "documentation": null
+          "type": "Vector2D",
+          "documentation": null,
+          "flags": 384
         },
         "vBottomRight": {
-          "type": null,
-          "documentation": null
+          "type": "Vector2D",
+          "documentation": null,
+          "flags": 384
         },
         "fBoundaryRotation": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -571,8 +698,9 @@
       "documentation": null,
       "signature_members": {
         "nmPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "BioPawn",
@@ -582,16 +710,19 @@
       "documentation": null,
       "signature_members": {
         "fArrowDirection": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "fNorthDirection": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "fPathingArrowDirection": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -601,12 +732,14 @@
       "documentation": null,
       "signature_members": {
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -622,12 +755,14 @@
       "documentation": null,
       "signature_members": {
         "nIconIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bSkipTransition": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -637,12 +772,14 @@
       "documentation": null,
       "signature_members": {
         "nIconIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bForceUpdate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -658,12 +795,14 @@
       "documentation": null,
       "signature_members": {
         "nIconIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bSkipTransition": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -673,8 +812,9 @@
       "documentation": null,
       "signature_members": {
         "nIconIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -684,8 +824,9 @@
       "documentation": null,
       "signature_members": {
         "eIcon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerWheelMapButtonIcon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -701,8 +842,9 @@
       "documentation": null,
       "signature_members": {
         "fPulseTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -712,12 +854,14 @@
       "documentation": null,
       "signature_members": {
         "bVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bObjectiveMode": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -727,8 +871,9 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -744,12 +889,14 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "nmPower": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -759,16 +906,19 @@
       "documentation": null,
       "signature_members": {
         "oIcon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerWheelButtonIcon",
+          "documentation": null,
+          "flags": 4194688
         },
         "eNewIcon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerWheelMapButtonIcon",
+          "documentation": null,
+          "flags": 128
         },
         "bClear": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -778,28 +928,34 @@
       "documentation": null,
       "signature_members": {
         "sText1": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "eIcon1": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerWheelMapButtonIcon",
+          "documentation": null,
+          "flags": 128
         },
         "sText2": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         },
         "eIcon2": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerWheelMapButtonIcon",
+          "documentation": null,
+          "flags": 144
         },
         "sText3": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         },
         "eIcon3": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerWheelMapButtonIcon",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -815,12 +971,14 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "ePawn": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerWheelPawnID",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -830,8 +988,9 @@
       "documentation": null,
       "signature_members": {
         "sText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -841,12 +1000,14 @@
       "documentation": null,
       "signature_members": {
         "nWeapIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "eNewWeapState": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerWheelWeaponState",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -856,16 +1017,19 @@
       "documentation": null,
       "signature_members": {
         "nWeapIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sWeaponIconResource": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "nNewWeapIcon": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -875,8 +1039,9 @@
       "documentation": null,
       "signature_members": {
         "bVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -886,8 +1051,9 @@
       "documentation": null,
       "signature_members": {
         "oIcon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGUIValue_PowerIcon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -903,8 +1069,9 @@
       "documentation": null,
       "signature_members": {
         "bObjectiveMode": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -914,8 +1081,9 @@
       "documentation": null,
       "signature_members": {
         "aRadarData": {
-          "type": null,
-          "documentation": null
+          "type": "SFXRadarElementData",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -931,8 +1099,9 @@
       "documentation": null,
       "signature_members": {
         "nIconIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -942,12 +1111,14 @@
       "documentation": null,
       "signature_members": {
         "oIcon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerWheelIconWeapon",
+          "documentation": null,
+          "flags": 4194432
         },
         "sAltPath": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -957,12 +1128,14 @@
       "documentation": null,
       "signature_members": {
         "PowerName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -972,12 +1145,14 @@
       "documentation": null,
       "signature_members": {
         "A": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         },
         "B": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -987,8 +1162,9 @@
       "documentation": null,
       "signature_members": {
         "bVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -998,8 +1174,9 @@
       "documentation": null,
       "signature_members": {
         "bMakeVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1021,12 +1198,14 @@
       "documentation": null,
       "signature_members": {
         "pPanel": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGUIMovieLegacyAdapter",
+          "documentation": null,
+          "flags": 128
         },
         "Icon": {
-          "type": null,
-          "documentation": null
+          "type": "GFxValue",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1042,8 +1221,9 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1053,8 +1233,9 @@
       "documentation": null,
       "signature_members": {
         "i_bValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1070,8 +1251,9 @@
       "documentation": null,
       "signature_members": {
         "eMode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerWheelMode",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1081,8 +1263,9 @@
       "documentation": null,
       "signature_members": {
         "nWeaponIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1092,16 +1275,19 @@
       "documentation": null,
       "signature_members": {
         "sName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sDesc": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bDisplayNuiSpeechIcon": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1111,16 +1297,19 @@
       "documentation": null,
       "signature_members": {
         "sPortraitImagePath": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sPortraitMovieClipPath": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "HenchPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1130,12 +1319,14 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "ePawnID": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerWheelPawnID",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1145,16 +1336,19 @@
       "documentation": null,
       "signature_members": {
         "pWeap": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         },
         "nSlotIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1164,20 +1358,24 @@
       "documentation": null,
       "signature_members": {
         "pPanel": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGUIMovieLegacyAdapter",
+          "documentation": null,
+          "flags": 128
         },
         "oIcon": {
-          "type": null,
-          "documentation": null
+          "type": "GFxValue",
+          "documentation": null,
+          "flags": 128
         },
         "sIconResource": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "nNewType": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1187,12 +1385,14 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "aWeapons": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -1200,5 +1400,7 @@
     }
   },
   "states": {},
+  "classflags": 136315038,
+  "configname": "UI",
   "documentation": null
 }

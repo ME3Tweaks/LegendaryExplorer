@@ -4,135 +4,168 @@
   "variables": {
     "InputTimers": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "LookStickResponseCurve": {
       "type": "InterpCurveFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MouseDampeningCurve": {
       "type": "InterpCurveFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "StaticConsoleBinds": {
       "type": "StaticKeyBind",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "StaticPCBinds": {
       "type": "StaticKeyBind",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_aFlyCamConsoleBinds": {
       "type": "StaticKeyBind",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DebugMenu": {
       "type": "DebugMenuEntry",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "DebugSubMenu": {
       "type": "DebugMenuEntry",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "AxisBuffer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastAxisBuffer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AccumulatedAimVector": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nmMappedPower": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nmMappedPower2": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nmMappedPower3": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "aGuiStrafe": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4
     },
     "aGuiBaseY": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4
     },
     "aGuiTurn": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4
     },
     "aGuiLookUp": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4
     },
     "aGuiMouseX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4
     },
     "aGuiMouseY": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4
     },
     "MoveStickMag": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RawJoyUpDown": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "GuiDeadzone": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_KeyInputDisabled": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nCurConvSelection": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fConversationReplyLeftRight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fConversationReplyUpDown": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fQuickOrderTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "AccumulatedRotationSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CoverRemapThresholdPC": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CoverRemapThreshold": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bUseMouseDampening": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bWantsToZoom": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4
     }
   },
   "functions": {
@@ -146,8 +179,9 @@
       "documentation": null,
       "signature_members": {
         "bState": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -157,8 +191,9 @@
       "documentation": null,
       "signature_members": {
         "bState": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -174,16 +209,19 @@
       "documentation": null,
       "signature_members": {
         "DeltaRot": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         },
         "NewRight": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "NewUp": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -193,8 +231,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -204,8 +243,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -215,8 +255,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -226,8 +267,9 @@
       "documentation": null,
       "signature_members": {
         "FOVScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -237,8 +279,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -248,16 +291,19 @@
       "documentation": null,
       "signature_members": {
         "RawStickValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Input": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraInput",
+          "documentation": null,
+          "flags": 128
         },
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -279,8 +325,9 @@
       "documentation": null,
       "signature_members": {
         "bValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -290,8 +337,9 @@
       "documentation": null,
       "signature_members": {
         "bValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -307,12 +355,14 @@
       "documentation": null,
       "signature_members": {
         "Cmd": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bButtonPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -322,20 +372,24 @@
       "documentation": null,
       "signature_members": {
         "Key": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 386
         },
         "Control": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Shift": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Alt": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -351,24 +405,29 @@
       "documentation": null,
       "signature_members": {
         "nmPower": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "oTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
         },
         "vTargetLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "vOriginalCameraLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "rOriginalCameraRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -376,5 +435,7 @@
     }
   },
   "states": {},
+  "classflags": 136315038,
+  "configname": "Input",
   "documentation": null
 }

@@ -2,11 +2,13 @@
   "members": {
     "sTokens": {
       "type": "BWEntitlementToken",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "Id": {
       "type": "BWEntitlementId",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     }
   },
   "classdef": "ISFXOnlineComponentCommerce",

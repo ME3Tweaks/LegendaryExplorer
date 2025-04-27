@@ -4,87 +4,108 @@
   "variables": {
     "__OnReadPlayerStorageForNetIdComplete__Delegate": {
       "type": "OnReadPlayerStorageForNetIdComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnLoginCancelled__Delegate": {
       "type": "OnLoginCancelled",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnMutingChange__Delegate": {
       "type": "OnMutingChange",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnFriendsChange__Delegate": {
       "type": "OnFriendsChange",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnLoginFailed__Delegate": {
       "type": "OnLoginFailed",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnLogoutCompleted__Delegate": {
       "type": "OnLogoutCompleted",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnLoginStatusChange__Delegate": {
       "type": "OnLoginStatusChange",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnReadProfileSettingsComplete__Delegate": {
       "type": "OnReadProfileSettingsComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnWriteProfileSettingsComplete__Delegate": {
       "type": "OnWriteProfileSettingsComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnReadPlayerStorageComplete__Delegate": {
       "type": "OnReadPlayerStorageComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnLoginChange__Delegate": {
       "type": "OnLoginChange",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnWritePlayerStorageComplete__Delegate": {
       "type": "OnWritePlayerStorageComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnReadFriendsComplete__Delegate": {
       "type": "OnReadFriendsComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnKeyboardInputComplete__Delegate": {
       "type": "OnKeyboardInputComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnAddFriendByNameComplete__Delegate": {
       "type": "OnAddFriendByNameComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnFriendInviteReceived__Delegate": {
       "type": "OnFriendInviteReceived",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnReceivedGameInvite__Delegate": {
       "type": "OnReceivedGameInvite",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnJoinFriendGameComplete__Delegate": {
       "type": "OnJoinFriendGameComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnFriendMessageReceived__Delegate": {
       "type": "OnFriendMessageReceived",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnUnlockAchievementComplete__Delegate": {
       "type": "OnUnlockAchievementComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnReadAchievementsComplete__Delegate": {
       "type": "OnReadAchievementsComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -92,12 +113,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "ReadFriendsCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadFriendsComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -113,8 +136,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "EFeaturePrivilegeLevel",
@@ -124,8 +148,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "EFeaturePrivilegeLevel",
@@ -135,8 +160,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "EFeaturePrivilegeLevel",
@@ -146,8 +172,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "EFeaturePrivilegeLevel",
@@ -157,8 +184,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "EFeaturePrivilegeLevel",
@@ -168,8 +196,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "EFeaturePrivilegeLevel",
@@ -179,12 +208,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "ReadFriendsCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadFriendsComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -194,20 +225,24 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "Achievements": {
-          "type": null,
-          "documentation": null
+          "type": "AchievementDetails",
+          "documentation": null,
+          "flags": 4194688
         },
         "TitleId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "SetIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "EOnlineEnumerationReadState",
@@ -217,20 +252,24 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "Friends": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineFriend",
+          "documentation": null,
+          "flags": 4194688
         },
         "Count": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "StartingAt": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "EOnlineEnumerationReadState",
@@ -240,8 +279,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "ELoginStatus",
@@ -251,8 +291,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -262,8 +303,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "OnlineProfileSettings",
@@ -273,12 +315,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -288,8 +332,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -299,8 +344,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -310,12 +356,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -325,20 +373,24 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "LoginName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Password": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bWantsLocalOnly": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -348,8 +400,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -359,8 +412,9 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -370,20 +424,24 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "RequestingPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "RequestingNick": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Message": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -393,20 +451,24 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "SendingPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "SendingNick": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Message": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -422,8 +484,9 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -433,8 +496,9 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -450,8 +514,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -461,12 +526,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "errorCode": {
-          "type": null,
-          "documentation": null
+          "type": "EOnlineServerConnectionStatus",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -476,12 +543,14 @@
       "documentation": null,
       "signature_members": {
         "NewStatus": {
-          "type": null,
-          "documentation": null
+          "type": "ELoginStatus",
+          "documentation": null,
+          "flags": 128
         },
         "NewId": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -491,8 +560,9 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -508,8 +578,9 @@
       "documentation": null,
       "signature_members": {
         "TitleId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -519,8 +590,9 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -530,12 +602,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -545,12 +619,14 @@
       "documentation": null,
       "signature_members": {
         "NetId": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -560,12 +636,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -575,12 +653,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "InviterName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -590,8 +670,9 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -601,12 +682,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -616,12 +699,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -631,20 +716,24 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "TitleId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "bShouldReadText": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bShouldReadImages": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -654,16 +743,19 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "Count": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "StartingAt": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -673,12 +765,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerStorage": {
-          "type": null,
-          "documentation": null
+          "type": "OnlinePlayerStorage",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -688,12 +782,14 @@
       "documentation": null,
       "signature_members": {
         "NetId": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerStorage": {
-          "type": null,
-          "documentation": null
+          "type": "OnlinePlayerStorage",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -703,16 +799,19 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "ProfileSettings": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineProfileSettings",
+          "documentation": null,
+          "flags": 128
         },
         "bIsTrilogyProfile": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -722,20 +821,24 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "StatusId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "LocalizedStringSettings": {
-          "type": null,
-          "documentation": null
+          "type": "LocalizedStringSetting",
+          "documentation": null,
+          "flags": 4194690
         },
         "Properties": {
-          "type": null,
-          "documentation": null
+          "type": "SettingsProperty",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -745,8 +848,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -756,32 +860,39 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "TitleText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "DescriptionText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bIsPassword": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bShouldValidate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "DefaultText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         },
         "MaxResultLength": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -791,8 +902,9 @@
       "documentation": null,
       "signature_members": {
         "bShowOnlineOnly": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -802,12 +914,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "AchievementId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -817,12 +931,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerStorage": {
-          "type": null,
-          "documentation": null
+          "type": "OnlinePlayerStorage",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -832,16 +948,19 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "ProfileSettings": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineProfileSettings",
+          "documentation": null,
+          "flags": 128
         },
         "bIsTrilogyProfile": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -851,12 +970,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "RequestingPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -866,12 +987,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "FriendDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnAddFriendByNameComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -881,16 +1004,19 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "NewFriend": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "Message": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -900,16 +1026,19 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "FriendName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Message": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -919,12 +1048,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "InviteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnFriendInviteReceived",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -934,12 +1065,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "MessageDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnFriendMessageReceived",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -949,12 +1082,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "FriendsDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnFriendsChange",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -964,8 +1099,9 @@
       "documentation": null,
       "signature_members": {
         "JoinFriendGameCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnJoinFriendGameComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -975,8 +1111,9 @@
       "documentation": null,
       "signature_members": {
         "InputDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnKeyboardInputComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -986,8 +1123,9 @@
       "documentation": null,
       "signature_members": {
         "CancelledDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnLoginCancelled",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -997,8 +1135,9 @@
       "documentation": null,
       "signature_members": {
         "LoginDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnLoginChange",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1008,12 +1147,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "LoginDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnLoginFailed",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1023,12 +1164,14 @@
       "documentation": null,
       "signature_members": {
         "LoginStatusDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnLoginStatusChange",
+          "documentation": null,
+          "flags": 4194432
         },
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1038,12 +1181,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "LogoutDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnLogoutCompleted",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1053,8 +1198,9 @@
       "documentation": null,
       "signature_members": {
         "MutingDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnMutingChange",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1064,12 +1210,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "ReadAchievementsCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadAchievementsComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1079,12 +1227,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "ReadPlayerStorageCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadPlayerStorageComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1094,12 +1244,14 @@
       "documentation": null,
       "signature_members": {
         "NetId": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "ReadPlayerStorageForNetIdCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadPlayerStorageForNetIdComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1109,12 +1261,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "ReadProfileSettingsCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadProfileSettingsComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1124,12 +1278,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "ReceivedGameInviteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReceivedGameInvite",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1139,12 +1295,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "UnlockAchievementCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnUnlockAchievementComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1154,12 +1312,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "WritePlayerStorageCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnWritePlayerStorageComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1169,12 +1329,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "WriteProfileSettingsCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnWriteProfileSettingsComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1184,12 +1346,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "Query": {
-          "type": null,
-          "documentation": null
+          "type": "FriendsQuery",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -1199,12 +1363,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "FriendDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnAddFriendByNameComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1214,12 +1380,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "InviteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnFriendInviteReceived",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1229,12 +1397,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "MessageDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnFriendMessageReceived",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1244,12 +1414,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "FriendsDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnFriendsChange",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1259,8 +1431,9 @@
       "documentation": null,
       "signature_members": {
         "JoinFriendGameCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnJoinFriendGameComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1270,8 +1443,9 @@
       "documentation": null,
       "signature_members": {
         "InputDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnKeyboardInputComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1281,8 +1455,9 @@
       "documentation": null,
       "signature_members": {
         "CancelledDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnLoginCancelled",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1292,8 +1467,9 @@
       "documentation": null,
       "signature_members": {
         "LoginDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnLoginChange",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1303,12 +1479,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "LoginDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnLoginFailed",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1318,12 +1496,14 @@
       "documentation": null,
       "signature_members": {
         "LoginStatusDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnLoginStatusChange",
+          "documentation": null,
+          "flags": 4194432
         },
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1333,12 +1513,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "LogoutDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnLogoutCompleted",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1348,8 +1530,9 @@
       "documentation": null,
       "signature_members": {
         "MutingDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnMutingChange",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1359,12 +1542,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "ReadAchievementsCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadAchievementsComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1374,12 +1559,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "ReadPlayerStorageCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadPlayerStorageComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1389,12 +1576,14 @@
       "documentation": null,
       "signature_members": {
         "NetId": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "ReadPlayerStorageForNetIdCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadPlayerStorageForNetIdComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1404,12 +1593,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "ReadProfileSettingsCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadProfileSettingsComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1419,12 +1610,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "ReceivedGameInviteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReceivedGameInvite",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1434,12 +1627,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "UnlockAchievementCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnUnlockAchievementComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1449,12 +1644,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "WritePlayerStorageCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnWritePlayerStorageComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1464,12 +1661,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "WriteProfileSettingsCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnWriteProfileSettingsComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1479,12 +1678,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "MessageIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1494,12 +1695,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "RequestingPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1509,12 +1712,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "FriendMessages": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineFriendMessage",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -1524,8 +1729,9 @@
       "documentation": null,
       "signature_members": {
         "bWasCanceled": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "string",
@@ -1535,8 +1741,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "OnlinePlayerStorage",
@@ -1546,12 +1753,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1561,12 +1770,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "Friend": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1576,12 +1787,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "FormerFriend": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1591,16 +1804,19 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "Friend": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "Text": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -1610,16 +1826,19 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "Friends": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 4194432
         },
         "Text": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -1629,16 +1848,19 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "Friend": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "Message": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -1646,5 +1868,7 @@
     }
   },
   "states": {},
+  "classflags": 16403,
+  "configname": "None",
   "documentation": null
 }

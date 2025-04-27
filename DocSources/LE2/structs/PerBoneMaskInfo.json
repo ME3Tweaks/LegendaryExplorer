@@ -2,43 +2,53 @@
   "members": {
     "BranchList": {
       "type": "BranchInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "WeightRuleList": {
       "type": "WeightRule",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "PerBoneWeights": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "TransformReqBone": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "DesiredWeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BlendTimeToGo": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TransformReqBoneIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bWeightBasedOnNodeRules": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDisableForNonLocalHumanPlayers": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPendingBlend": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "classdef": "AnimNode_MultiBlendPerBone",

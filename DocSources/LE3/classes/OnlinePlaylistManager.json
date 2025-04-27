@@ -4,31 +4,38 @@
   "variables": {
     "Playlists": {
       "type": "Playlist",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "PlaylistFileNames": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DatastoresToRefresh": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "__OnReadPlaylistComplete__Delegate": {
       "type": "OnReadPlaylistComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DownloadCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SuccessfulCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "VersionNumber": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -54,12 +61,14 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Filename": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -81,12 +90,14 @@
       "documentation": null,
       "signature_members": {
         "PlaylistId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ContentIds": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -96,12 +107,14 @@
       "documentation": null,
       "signature_members": {
         "PlaylistId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "GameSettingsId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "OnlineGameSettings",
@@ -111,16 +124,19 @@
       "documentation": null,
       "signature_members": {
         "PlaylistId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "TeamSize": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "TeamCount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -130,8 +146,9 @@
       "documentation": null,
       "signature_members": {
         "PlaylistId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -141,8 +158,9 @@
       "documentation": null,
       "signature_members": {
         "PlaylistId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -150,5 +168,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "Playlist",
   "documentation": null
 }

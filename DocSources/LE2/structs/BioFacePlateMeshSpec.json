@@ -2,11 +2,13 @@
   "members": {
     "m_pMesh": {
       "type": "SkeletalMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bHidesVisor": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "Bio_Appr_Character_HeadGear",

@@ -4,23 +4,28 @@
   "variables": {
     "Players": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "PlayersPawns": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "PlayerIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAllPlayers": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bReturnPawns": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -38,5 +43,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

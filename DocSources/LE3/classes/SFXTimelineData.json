@@ -4,35 +4,43 @@
   "variables": {
     "Timeline": {
       "type": "TimelineEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "__AOEEvalFunc__Delegate": {
       "type": "AOEEvalFunc",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__InputHandler__Delegate": {
       "type": "InputHandler",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Source": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "Target": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "FuncOwner": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "Lifetime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LifetimeLeft": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -40,12 +48,14 @@
       "documentation": null,
       "signature_members": {
         "ChkOwner": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "ChkTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -55,8 +65,9 @@
       "documentation": null,
       "signature_members": {
         "oFuncOwner": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -66,12 +77,14 @@
       "documentation": null,
       "signature_members": {
         "Alias": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bPress": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -85,5 +98,7 @@
     }
   },
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

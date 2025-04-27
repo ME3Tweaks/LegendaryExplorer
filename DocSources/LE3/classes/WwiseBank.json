@@ -4,30 +4,38 @@
   "variables": {
     "Children": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 143362
     },
     "Bundle": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "Parent": {
       "type": "WwiseBank",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "IsLocalised": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "IsLoaded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 139267
     },
     "GenerateDefinition": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

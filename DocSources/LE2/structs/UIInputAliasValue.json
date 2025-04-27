@@ -2,11 +2,13 @@
   "members": {
     "InputAliasName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "ModifierFlagMask": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     }
   },
   "classdef": "UIRoot",

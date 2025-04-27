@@ -4,31 +4,38 @@
   "variables": {
     "CamOverridePostProcess": {
       "type": "PostProcessSettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 8594128897
     },
     "DrawFrustum": {
       "type": "DrawFrustumComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "MeshComp": {
       "type": "StaticMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "AspectRatio": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934625
     },
     "FOVAngle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934625
     },
     "CamOverridePostProcessAlpha": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "bConstrainAspectRatio": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -36,16 +43,19 @@
       "documentation": null,
       "signature_members": {
         "HUD": {
-          "type": null,
-          "documentation": null
+          "type": "HUD",
+          "documentation": null,
+          "flags": 128
         },
         "out_YL": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "out_YPos": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -55,12 +65,14 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "OutPOV": {
-          "type": null,
-          "documentation": null
+          "type": "TPOV",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -68,5 +80,7 @@
     }
   },
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

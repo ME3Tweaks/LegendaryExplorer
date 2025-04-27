@@ -4,14 +4,18 @@
   "variables": {
     "m_CameraList": {
       "type": "BioStageCamera",
-      "documentation": null
+      "documentation": null,
+      "flags": 4325377
     },
     "m_Mesh": {
       "type": "SkeletalMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

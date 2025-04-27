@@ -4,14 +4,18 @@
   "variables": {
     "LightComponents": {
       "type": "LightComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827466
     },
     "MaxLightComponents": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144704150,
+  "configname": "Engine",
   "documentation": null
 }

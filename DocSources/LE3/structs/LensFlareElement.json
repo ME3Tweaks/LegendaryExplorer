@@ -2,75 +2,93 @@
   "members": {
     "LFMaterialIndex": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827457
     },
     "Scaling": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827457
     },
     "AxisScaling": {
       "type": "RawDistributionVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827457
     },
     "Rotation": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827457
     },
     "Color": {
       "type": "RawDistributionVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827457
     },
     "Alpha": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827457
     },
     "Offset": {
       "type": "RawDistributionVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827457
     },
     "DistMap_Scale": {
       "type": "RawDistributionVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827457
     },
     "DistMap_Color": {
       "type": "RawDistributionVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827457
     },
     "DistMap_Alpha": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827457
     },
     "LFMaterials": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Size": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ElementName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RayDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseSourceDistance": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bNormalizeRadialDistance": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bModulateColorBySource": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "LensFlare",

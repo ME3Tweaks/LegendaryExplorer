@@ -2,15 +2,18 @@
   "members": {
     "m_aoSliderData": {
       "type": "BioMorphFaceFESliderBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_fRandWeights": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_fRandWeightsTotal": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioMorphFaceFrontEnd",

@@ -4,7 +4,8 @@
   "variables": {
     "PartialGoal": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     }
   },
   "functions": {
@@ -24,12 +25,14 @@
       "documentation": null,
       "signature_members": {
         "NavHandle": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationHandle",
+          "documentation": null,
+          "flags": 128
         },
         "InMaxPathVisits": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -37,5 +40,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

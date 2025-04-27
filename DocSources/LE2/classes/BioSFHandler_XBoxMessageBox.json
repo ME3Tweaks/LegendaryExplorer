@@ -4,11 +4,13 @@
   "variables": {
     "nSelectedButton": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bMessageBoxVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -16,24 +18,29 @@
       "documentation": null,
       "signature_members": {
         "srTitle": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "srMessage": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "srButtons": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 4194690
         },
         "nIcon": {
-          "type": null,
-          "documentation": null
+          "type": "MessageBoxIcon",
+          "documentation": null,
+          "flags": 144
         },
         "nDefaultButton": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -41,5 +48,7 @@
     }
   },
   "states": {},
+  "classflags": 136315034,
+  "configname": "None",
   "documentation": null
 }

@@ -4,43 +4,53 @@
   "variables": {
     "m_aInputEventCooldowns": {
       "type": "SFXInputEventCooldownStruct",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "BannedChars": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_pEngine": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "MousePositionOverride": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "UDLRInitialCooldown": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "UDLRHeldCooldown": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "RTT_HitCheckDistance_UU": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_eLastUDLREvent": {
       "type": "BioGuiEvents",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nLStickX": {
       "type": "BioThumbstickDir",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nLStickY": {
       "type": "BioThumbstickDir",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -48,12 +58,14 @@
       "documentation": null,
       "signature_members": {
         "nEvent": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "fTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -61,5 +73,7 @@
     }
   },
   "states": {},
+  "classflags": 134217878,
+  "configname": "UI",
   "documentation": null
 }

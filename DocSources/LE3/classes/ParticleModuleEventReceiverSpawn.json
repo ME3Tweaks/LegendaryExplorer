@@ -4,26 +4,33 @@
   "variables": {
     "InheritVelocityScaleRw": {
       "type": "BioRawDistributionRwVector3",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "SpawnCount": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "bUseParticleTime": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUsePSysLocation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bInheritVelocity": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142610578,
+  "configname": "None",
   "documentation": null
 }

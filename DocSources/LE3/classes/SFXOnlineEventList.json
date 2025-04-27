@@ -4,7 +4,8 @@
   "variables": {
     "EventList": {
       "type": "SFXOnlineEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -23,8 +25,9 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -34,12 +37,14 @@
       "documentation": null,
       "signature_members": {
         "eEventType": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
         },
         "PendingEvents": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -49,8 +54,9 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXOnlineEvent",
@@ -60,8 +66,9 @@
       "documentation": null,
       "signature_members": {
         "nEventIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXOnlineEvent",
@@ -77,8 +84,9 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -86,5 +94,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

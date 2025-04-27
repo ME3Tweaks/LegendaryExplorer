@@ -4,19 +4,23 @@
   "variables": {
     "VfTable_IISFXOnlineComponent": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "__OnEvent__Delegate": {
       "type": "OnEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "EventList": {
       "type": "SFXOnlineEventList",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EventNotifier": {
       "type": "SFXOnlineEventNotifier",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -24,12 +28,14 @@
       "documentation": null,
       "signature_members": {
         "EventType": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
         },
         "PendingEvents": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -45,12 +51,14 @@
       "documentation": null,
       "signature_members": {
         "eEventType": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
         },
         "nEventID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "SFXOnlineEvent",
@@ -60,8 +68,9 @@
       "documentation": null,
       "signature_members": {
         "EventType": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -71,12 +80,14 @@
       "documentation": null,
       "signature_members": {
         "eEventType": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
         },
         "nEventID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -86,8 +97,9 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -97,16 +109,19 @@
       "documentation": null,
       "signature_members": {
         "eEventType": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
         },
         "eStatus": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventStatus",
+          "documentation": null,
+          "flags": 144
         },
         "eOutcome": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventStatusFinished",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -116,12 +131,14 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         },
         "eStatusFinished": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventStatusFinished",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -131,16 +148,19 @@
       "documentation": null,
       "signature_members": {
         "eEventType": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
         },
         "eStatusFinished": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventStatusFinished",
+          "documentation": null,
+          "flags": 128
         },
         "nEventID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -150,20 +170,24 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         },
         "eEventType": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
         },
         "EventId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "TimeOut": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -173,16 +197,19 @@
       "documentation": null,
       "signature_members": {
         "eEventType": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
         },
         "nEventID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "fTimeOut": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -192,8 +219,9 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -203,8 +231,9 @@
       "documentation": null,
       "signature_members": {
         "oOnlineSubsystem": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineSubsystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -220,8 +249,9 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -231,8 +261,9 @@
       "documentation": null,
       "signature_members": {
         "oCallbackTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -242,12 +273,14 @@
       "documentation": null,
       "signature_members": {
         "eEventType": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
         },
         "fnEventCallback": {
-          "type": null,
-          "documentation": null
+          "type": "OnEvent",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -257,8 +290,9 @@
       "documentation": null,
       "signature_members": {
         "oCallbackTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -268,12 +302,14 @@
       "documentation": null,
       "signature_members": {
         "eEventType": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
         },
         "fnEventCallback": {
-          "type": null,
-          "documentation": null
+          "type": "OnEvent",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -283,12 +319,14 @@
       "documentation": null,
       "signature_members": {
         "eEventType": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
         },
         "nEventID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -298,12 +336,14 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         },
         "fnWorkComplete": {
-          "type": null,
-          "documentation": null
+          "type": "OnEvent",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -313,12 +353,14 @@
       "documentation": null,
       "signature_members": {
         "aEventObjects": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 4194432
         },
         "fnWorkComplete": {
-          "type": null,
-          "documentation": null
+          "type": "OnEvent",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -328,16 +370,19 @@
       "documentation": null,
       "signature_members": {
         "aEventTypes": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 4194432
         },
         "fnWorkComplete": {
-          "type": null,
-          "documentation": null
+          "type": "OnEvent",
+          "documentation": null,
+          "flags": 4194432
         },
         "aWorkEventIds": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -347,16 +392,19 @@
       "documentation": null,
       "signature_members": {
         "eEventType": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
         },
         "fnWorkComplete": {
-          "type": null,
-          "documentation": null
+          "type": "OnEvent",
+          "documentation": null,
+          "flags": 4194432
         },
         "nEventID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -364,5 +412,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

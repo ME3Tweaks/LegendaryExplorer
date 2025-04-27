@@ -4,102 +4,128 @@
   "variables": {
     "ShadowMaps": {
       "type": "ShadowMap2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "IrrelevantLights": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "TerrainObject": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "SectionBaseX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "SectionBaseY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "SectionSizeX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "SectionSizeY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "TrueSectionSizeX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "TrueSectionSizeY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "LightMap": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "PatchBounds": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "PatchBatches": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "BatchMaterials": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "FullBatch": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "PatchBatchOffsets": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "WorkingOffsets": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "PatchBatchTriangles": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "PatchCachedTessellationValues": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "TesselationLevels": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "BVTree": {
       "type": "TerrainBVTree",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "CollisionVertices": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "RBHeightfield": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "bDisplayCollisionLevel": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bPhysicsMeshDirty": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 2155872658,
+  "configname": "None",
   "documentation": null
 }

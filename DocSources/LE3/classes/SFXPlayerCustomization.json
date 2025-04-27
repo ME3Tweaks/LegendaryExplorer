@@ -4,115 +4,143 @@
   "variables": {
     "CasualAppearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "FullBodyAppearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "FullBodyHelmetAppearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "TorsoAppearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "ShoulderAppearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "ArmAppearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "LegAppearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "HelmetAppearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "SpecAppearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "Tint1Appearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "Tint2Appearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "PatternAppearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "PatternColorAppearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "EmissiveAppearances": {
       "type": "CustomizableElement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "FemaleIconicHeadMesh": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "MaleIconicHeadMesh": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "FemaleCustomMorphHead": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "MaleCustomMorphHead": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "MaleIconicFaceFXAsset": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "MaleMorphHeadFaceFXAsset": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "FemaleIconicFaceFXAsset": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "FemaleMorphHeadFaceFXAsset": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Scars": {
       "type": "ScarInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "IconicFemaleMaterialOverride": {
       "type": "BioMaterialOverride",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CosmeticSurgeryPlotID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CosmeticSUrgeryPlotID_ME3": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "N7ArmourName": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "N7ArmourDescription": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     }
   },
   "functions": {
@@ -120,20 +148,24 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bIsFemale": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Meshes": {
-          "type": null,
-          "documentation": null
+          "type": "CustomizableElement",
+          "documentation": null,
+          "flags": 4194688
         },
         "Element": {
-          "type": null,
-          "documentation": null
+          "type": "CustomizableElement",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "MaterialInstance",
@@ -143,16 +175,19 @@
       "documentation": null,
       "signature_members": {
         "Scar": {
-          "type": null,
-          "documentation": null
+          "type": "ScarInfo",
+          "documentation": null,
+          "flags": 4194432
         },
         "bIsFemale": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "InHead": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -162,8 +197,9 @@
       "documentation": null,
       "signature_members": {
         "bIsFemale": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "BioMaterialOverride",
@@ -173,24 +209,29 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bIsFemale": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Part": {
-          "type": null,
-          "documentation": null
+          "type": "EHelmetPart",
+          "documentation": null,
+          "flags": 128
         },
         "Meshes": {
-          "type": null,
-          "documentation": null
+          "type": "CustomizableElement",
+          "documentation": null,
+          "flags": 4194688
         },
         "Element": {
-          "type": null,
-          "documentation": null
+          "type": "CustomizableElement",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "SkeletalMesh",
@@ -200,20 +241,24 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bIsFemale": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Meshes": {
-          "type": null,
-          "documentation": null
+          "type": "CustomizableElement",
+          "documentation": null,
+          "flags": 4194688
         },
         "Element": {
-          "type": null,
-          "documentation": null
+          "type": "CustomizableElement",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "SkeletalMesh",
@@ -221,5 +266,7 @@
     }
   },
   "states": {},
+  "classflags": 2097175,
+  "configname": "Game",
   "documentation": null
 }

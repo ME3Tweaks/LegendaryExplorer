@@ -4,7 +4,8 @@
   "variables": {
     "StackedGuis": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -18,8 +19,9 @@
       "documentation": null,
       "signature_members": {
         "ModeSpecifier": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -29,8 +31,9 @@
       "documentation": null,
       "signature_members": {
         "ModeSpecifier": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -44,5 +47,7 @@
     }
   },
   "states": {},
+  "classflags": 2097174,
+  "configname": "Input",
   "documentation": null
 }

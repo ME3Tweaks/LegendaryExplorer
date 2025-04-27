@@ -4,151 +4,188 @@
   "variables": {
     "DoubleClickStartTime": {
       "type": "Double",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "InitialPressedKeys": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "ActiveScenes": {
       "type": "UIScene",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202498
     },
     "AnimSequencePool": {
       "type": "UIAnimationSeq",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "NavAliases": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202498
     },
     "AxisInputKeys": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202498
     },
     "MessageBoxClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "DefaultUITexture": {
       "type": "Texture",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "CurrentMouseCursor": {
       "type": "UITexture",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "DoubleClickStartPosition": {
       "type": "IntPoint",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "DebugTarget": {
       "type": "UIScreenObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "LatestDeltaTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "OverlaySceneAlphaModulation": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bRenderCursor": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bUpdateInputProcessingStatus": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bUpdateCursorRenderStatus": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bUpdateSceneViewportSizes": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bEnableDebugInput": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bRenderDebugInfo": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bRenderDebugInfoAtTop": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bRenderActiveControlInfo": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bRenderFocusedControlInfo": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bRenderTargetControlInfo": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bSelectVisibleTargetsOnly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bInteractiveMode": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bDisplayFullPaths": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bShowWidgetPath": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bShowRenderBounds": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bShowCurrentState": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bShowMousePos": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bRestrictActiveControlToFocusedScene": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bCaptureUnprocessedInput": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "bSynchronizePlayers": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "bKillRestoreMenuProgression": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bDebugResolveScene": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "bBlockSceneUpdates": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "bBlockUpdatesAfterStackModification": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     }
   },
   "functions": {
@@ -156,24 +193,29 @@
       "documentation": null,
       "signature_members": {
         "SceneClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "OutScene": {
-          "type": null,
-          "documentation": null
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 384
         },
         "bIterateBackwards": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "StartingIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "SceneFilterMask": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -195,16 +237,19 @@
       "documentation": null,
       "signature_members": {
         "SceneClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "SceneTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         },
         "SceneTemplate": {
-          "type": null,
-          "documentation": null
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "UIScene",
@@ -214,16 +259,19 @@
       "documentation": null,
       "signature_members": {
         "WidgetClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "WidgetTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Owner": {
-          "type": null,
-          "documentation": null
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "UIObject",
@@ -233,12 +281,14 @@
       "documentation": null,
       "signature_members": {
         "SceneTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "SceneOwner": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "UIScene",
@@ -248,8 +298,9 @@
       "documentation": null,
       "signature_members": {
         "SceneToFind": {
-          "type": null,
-          "documentation": null
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 130
         }
       },
       "returntype": "int",
@@ -259,12 +310,14 @@
       "documentation": null,
       "signature_members": {
         "SceneTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "SceneOwner": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -274,8 +327,9 @@
       "documentation": null,
       "signature_members": {
         "NameOfSequence": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "UIAnimationSeq",
@@ -285,12 +339,14 @@
       "documentation": null,
       "signature_members": {
         "MatchingPlayerOwner": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
         },
         "bIgnoreUnfocusedScenes": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "UIScene",
@@ -300,12 +356,14 @@
       "documentation": null,
       "signature_members": {
         "MatchingPlayerOwner": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
         },
         "bIgnoreUnfocusedScenes": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -321,16 +379,19 @@
       "documentation": null,
       "signature_members": {
         "SourceScene": {
-          "type": null,
-          "documentation": null
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 130
         },
         "bRequireMatchingPlayerOwner": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bIgnoreUnfocusedScenes": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "UIScene",
@@ -340,16 +401,19 @@
       "documentation": null,
       "signature_members": {
         "StartingSceneIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "MatchingPlayerOwner": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
         },
         "bIgnoreUnfocusedScenes": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "UIScene",
@@ -359,12 +423,14 @@
       "documentation": null,
       "signature_members": {
         "SourceScene": {
-          "type": null,
-          "documentation": null
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 130
         },
         "bIgnoreUnfocusedScenes": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "UIScene",
@@ -374,16 +440,19 @@
       "documentation": null,
       "signature_members": {
         "SourceScene": {
-          "type": null,
-          "documentation": null
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 130
         },
         "bRequireMatchingPlayerOwner": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bIgnoreUnfocusedScenes": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "UIScene",
@@ -393,16 +462,19 @@
       "documentation": null,
       "signature_members": {
         "StartingSceneIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "MatchingPlayerOwner": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
         },
         "bIgnoreUnfocusedScenes": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "UIScene",
@@ -412,8 +484,9 @@
       "documentation": null,
       "signature_members": {
         "SceneIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "UIScene",
@@ -441,8 +514,9 @@
       "documentation": null,
       "signature_members": {
         "ControllerId": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -452,12 +526,14 @@
       "documentation": null,
       "signature_members": {
         "bDesiredPauseState": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -479,8 +555,9 @@
       "documentation": null,
       "signature_members": {
         "NewActiveControl": {
-          "type": null,
-          "documentation": null
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -490,16 +567,19 @@
       "documentation": null,
       "signature_members": {
         "MaxPlayersAllowed": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "bAllowJoins": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bAllowRemoval": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -509,12 +589,14 @@
       "documentation": null,
       "signature_members": {
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "AddedPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -524,12 +606,14 @@
       "documentation": null,
       "signature_members": {
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "RemovedPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -551,16 +635,19 @@
       "documentation": null,
       "signature_members": {
         "SceneTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ScenePlayerOwner": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
         },
         "bCloseChildScenes": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -570,8 +657,9 @@
       "documentation": null,
       "signature_members": {
         "SceneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -581,12 +669,14 @@
       "documentation": null,
       "signature_members": {
         "SceneClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -596,16 +686,19 @@
       "documentation": null,
       "signature_members": {
         "SceneTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "CustomMessageBoxClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
         },
         "SceneTemplate": {
-          "type": null,
-          "documentation": null
+          "type": "UIMessageBoxBase",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "UIMessageBoxBase",
@@ -615,16 +708,19 @@
       "documentation": null,
       "signature_members": {
         "Sender": {
-          "type": null,
-          "documentation": null
+          "type": "UIMessageBoxBase",
+          "documentation": null,
+          "flags": 128
         },
         "SelectedInputAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -634,20 +730,24 @@
       "documentation": null,
       "signature_members": {
         "Message": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Aliases": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         },
         "Title": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         },
         "Question": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -663,20 +763,24 @@
       "documentation": null,
       "signature_members": {
         "TravellingPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "TravelURL": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "TravelType": {
-          "type": null,
-          "documentation": null
+          "type": "ETravelType",
+          "documentation": null,
+          "flags": 128
         },
         "bIsSeamlessTravel": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -686,12 +790,14 @@
       "documentation": null,
       "signature_members": {
         "ControllerId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bConnected": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -701,8 +807,9 @@
       "documentation": null,
       "signature_members": {
         "bConnected": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -712,8 +819,9 @@
       "documentation": null,
       "signature_members": {
         "NewConnectionStatus": {
-          "type": null,
-          "documentation": null
+          "type": "EOnlineServerConnectionStatus",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -729,12 +837,14 @@
       "documentation": null,
       "signature_members": {
         "MenuPath": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -750,8 +860,9 @@
       "documentation": null,
       "signature_members": {
         "BaseScene": {
-          "type": null,
-          "documentation": null
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -767,8 +878,9 @@
       "documentation": null,
       "signature_members": {
         "DataStoreMarkup": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -778,8 +890,9 @@
       "documentation": null,
       "signature_members": {
         "bVerbose": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -807,40 +920,49 @@
       "documentation": null,
       "signature_members": {
         "SceneTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Title": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Message": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Question": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "ButtonAliases": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194432
         },
         "SelectionCallback": {
-          "type": null,
-          "documentation": null
+          "type": "UIMessageBoxBase.OnOptionSelected",
+          "documentation": null,
+          "flags": 4194432
         },
         "ScenePlayerOwner": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
         },
         "out_CreatedScene": {
-          "type": null,
-          "documentation": null
+          "type": "UIMessageBoxBase",
+          "documentation": null,
+          "flags": 400
         },
         "ForcedPriority": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -850,8 +972,9 @@
       "documentation": null,
       "signature_members": {
         "bEnable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -859,5 +982,7 @@
     }
   },
   "states": {},
+  "classflags": 134217886,
+  "configname": "UI",
   "documentation": null
 }

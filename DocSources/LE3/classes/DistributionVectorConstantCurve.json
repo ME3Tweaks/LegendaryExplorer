@@ -4,18 +4,23 @@
   "variables": {
     "ConstantCurve": {
       "type": "InterpCurveVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "bLockAxes": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LockedAxes": {
       "type": "EDistributionVectorLockFlags",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134230162,
+  "configname": "None",
   "documentation": null
 }

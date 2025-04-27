@@ -4,155 +4,193 @@
   "variables": {
     "DebugDrawList": {
       "type": "DebugDraw",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__DebugDraw__Delegate": {
       "type": "DebugDraw",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_oActorForInfoDisplay": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "oGUIMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SafeAreaTexture": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_messageBox": {
       "type": "BioMessageBox",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "m_oDebugMenu": {
       "type": "BioDebugMenu",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "m_fNextTimeToShowCover": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fCanvasOrgX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fCanvasOrgY": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "SafeAreaRatioX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "SafeAreaRatioY": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "nFontTestType": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fSafeXOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fSafeYOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_textX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_textY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_lineHeight": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_charWidth": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_leftColumnX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_rightColumnX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_farrightColumnX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_topRowY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "LastSaveStartTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "LastSaveEndTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "YellowColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "OrangeColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "DarkGreyColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_bShowPlayerLocation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bDisplayActorInfo": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bLockActorInfo": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bShowCover": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bShowCoverRotation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bShowCoverNames": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bDisplaySafeArea": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bFontTest": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDisplayingSave": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "m_bUseGeneratedItemNames": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     }
   },
   "functions": {
@@ -166,12 +204,14 @@
       "documentation": null,
       "signature_members": {
         "ProfileTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "Nav": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -181,8 +221,9 @@
       "documentation": null,
       "signature_members": {
         "oActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -192,8 +233,9 @@
       "documentation": null,
       "signature_members": {
         "nmNavigationPoint": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -203,16 +245,19 @@
       "documentation": null,
       "signature_members": {
         "pPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "PathColor": {
-          "type": null,
-          "documentation": null
+          "type": "Color",
+          "documentation": null,
+          "flags": 128
         },
         "bDrawPathOnly": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -234,8 +279,9 @@
       "documentation": null,
       "signature_members": {
         "bShowRotation": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -245,8 +291,9 @@
       "documentation": null,
       "signature_members": {
         "bShowRotation": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -274,8 +321,9 @@
       "documentation": null,
       "signature_members": {
         "nmActor": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -297,8 +345,9 @@
       "documentation": null,
       "signature_members": {
         "sMaterial": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -308,20 +357,24 @@
       "documentation": null,
       "signature_members": {
         "valuename": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "LabelColor": {
-          "type": null,
-          "documentation": null
+          "type": "Color",
+          "documentation": null,
+          "flags": 128
         },
         "DataColor": {
-          "type": null,
-          "documentation": null
+          "type": "Color",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -331,20 +384,24 @@
       "documentation": null,
       "signature_members": {
         "valuename": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "LabelColor": {
-          "type": null,
-          "documentation": null
+          "type": "Color",
+          "documentation": null,
+          "flags": 144
         },
         "DataColor": {
-          "type": null,
-          "documentation": null
+          "type": "Color",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -354,16 +411,19 @@
       "documentation": null,
       "signature_members": {
         "fX": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "fY": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Radius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -373,8 +433,9 @@
       "documentation": null,
       "signature_members": {
         "nSize": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -384,24 +445,29 @@
       "documentation": null,
       "signature_members": {
         "X": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Y": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "CX": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "CY": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "nSize": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -411,28 +477,34 @@
       "documentation": null,
       "signature_members": {
         "X": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Y": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Size": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Angle": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "XSt": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "YSt": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -442,28 +514,34 @@
       "documentation": null,
       "signature_members": {
         "X1": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Y1": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nSize1": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "X2": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Y2": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nSize2": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -473,16 +551,19 @@
       "documentation": null,
       "signature_members": {
         "X": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Y1": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Y2": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -492,16 +573,19 @@
       "documentation": null,
       "signature_members": {
         "X1": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "X2": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Y": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -511,28 +595,34 @@
       "documentation": null,
       "signature_members": {
         "X1": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Y1": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "nSize1": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "X2": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Y2": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "nSize2": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -548,16 +638,19 @@
       "documentation": null,
       "signature_members": {
         "sText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "OutArray": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         },
         "nTextWidth": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -567,20 +660,24 @@
       "documentation": null,
       "signature_members": {
         "X": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Y": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "DrawColor": {
-          "type": null,
-          "documentation": null
+          "type": "Color",
+          "documentation": null,
+          "flags": 128
         },
         "sText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -596,8 +693,9 @@
       "documentation": null,
       "signature_members": {
         "DebugDrawFunc": {
-          "type": null,
-          "documentation": null
+          "type": "DebugDraw",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -607,8 +705,9 @@
       "documentation": null,
       "signature_members": {
         "DebugDrawFunc": {
-          "type": null,
-          "documentation": null
+          "type": "DebugDraw",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -618,8 +717,9 @@
       "documentation": null,
       "signature_members": {
         "H": {
-          "type": null,
-          "documentation": null
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -659,16 +759,19 @@
       "documentation": null,
       "signature_members": {
         "Y": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sFontName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sTestString": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -678,24 +781,29 @@
       "documentation": null,
       "signature_members": {
         "Y": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sFontName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "nPoint": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bScaled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "fScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -717,8 +825,9 @@
       "documentation": null,
       "signature_members": {
         "oCurConv": {
-          "type": null,
-          "documentation": null
+          "type": "BioConversation",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -728,8 +837,9 @@
       "documentation": null,
       "signature_members": {
         "V": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Vector",
@@ -739,16 +849,19 @@
       "documentation": null,
       "signature_members": {
         "Mat": {
-          "type": null,
-          "documentation": null
+          "type": "MaterialInstanceConstant",
+          "documentation": null,
+          "flags": 128
         },
         "XL": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "YL": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -758,12 +871,14 @@
       "documentation": null,
       "signature_members": {
         "X": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Y": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -773,20 +888,24 @@
       "documentation": null,
       "signature_members": {
         "R": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "G": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "B": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "A": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "LinearColor",
@@ -796,20 +915,24 @@
       "documentation": null,
       "signature_members": {
         "LocalPlayerOwner": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
         },
         "ScreenLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "OutLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "OutDirection": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -819,20 +942,24 @@
       "documentation": null,
       "signature_members": {
         "X": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Y": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "targetBehavior": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
         },
         "oBP": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -842,16 +969,19 @@
       "documentation": null,
       "signature_members": {
         "X": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Y": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "targetBehavior": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "int",
@@ -861,16 +991,19 @@
       "documentation": null,
       "signature_members": {
         "X": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Y": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "oController": {
-          "type": null,
-          "documentation": null
+          "type": "BioAiController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -880,12 +1013,14 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "EnumName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "Name",
@@ -895,28 +1030,34 @@
       "documentation": null,
       "signature_members": {
         "oMatInstance": {
-          "type": null,
-          "documentation": null
+          "type": "MaterialInstanceConstant",
+          "documentation": null,
+          "flags": 128
         },
         "vWorldLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "bScaleWithDistance": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "fMinTextureSize": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "fMaxTextureSize": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "fScaleRange": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -932,8 +1073,9 @@
       "documentation": null,
       "signature_members": {
         "targetActorBehavior": {
-          "type": null,
-          "documentation": null
+          "type": "BioActorBehavior",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -943,8 +1085,9 @@
       "documentation": null,
       "signature_members": {
         "targetActorBehavior": {
-          "type": null,
-          "documentation": null
+          "type": "BioActorBehavior",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -954,8 +1097,9 @@
       "documentation": null,
       "signature_members": {
         "targetActorBehavior": {
-          "type": null,
-          "documentation": null
+          "type": "BioActorBehavior",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -965,8 +1109,9 @@
       "documentation": null,
       "signature_members": {
         "targetActorBehavior": {
-          "type": null,
-          "documentation": null
+          "type": "BioActorBehavior",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -976,8 +1121,9 @@
       "documentation": null,
       "signature_members": {
         "targetActorBehavior": {
-          "type": null,
-          "documentation": null
+          "type": "BioActorBehavior",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -987,8 +1133,9 @@
       "documentation": null,
       "signature_members": {
         "targetActorBehavior": {
-          "type": null,
-          "documentation": null
+          "type": "BioActorBehavior",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -996,5 +1143,7 @@
     }
   },
   "states": {},
+  "classflags": 144703646,
+  "configname": "Game",
   "documentation": null
 }

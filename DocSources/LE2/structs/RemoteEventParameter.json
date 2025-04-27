@@ -2,11 +2,13 @@
   "members": {
     "ParameterName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "VariableType": {
       "type": "KismetVarTypes",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SequenceObject",

@@ -4,43 +4,53 @@
   "variables": {
     "StreamingStates": {
       "type": "BioStreamingState",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "TierName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "TierInfo": {
       "type": "BioTierInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "m_oAreaMapOverride": {
       "type": "GFxMovieInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_StoredStateIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nPriorityLevel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bInPlotStreaming": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bErrorsLogged": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bIgnoreForStreamingCoverage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Tier": {
       "type": "EBioAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     }
   },
   "functions": {
@@ -48,8 +58,9 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -59,20 +70,24 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "OtherComp": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -82,12 +97,14 @@
       "documentation": null,
       "signature_members": {
         "Sequences": {
-          "type": null,
-          "documentation": null
+          "type": "Sequence",
+          "documentation": null,
+          "flags": 4194432
         },
         "PlayerPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -97,12 +114,14 @@
       "documentation": null,
       "signature_members": {
         "Sequences": {
-          "type": null,
-          "documentation": null
+          "type": "Sequence",
+          "documentation": null,
+          "flags": 4194432
         },
         "PlayerPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -112,8 +131,9 @@
       "documentation": null,
       "signature_members": {
         "bForce": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -123,12 +143,14 @@
       "documentation": null,
       "signature_members": {
         "Touched": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "bTouched": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -138,8 +160,9 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -153,5 +176,7 @@
     }
   },
   "states": {},
+  "classflags": 144704178,
+  "configname": "Engine",
   "documentation": null
 }

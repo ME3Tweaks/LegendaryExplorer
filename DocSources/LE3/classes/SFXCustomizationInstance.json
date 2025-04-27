@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "InTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -18,8 +19,9 @@
       "documentation": null,
       "signature_members": {
         "MIC": {
-          "type": null,
-          "documentation": null
+          "type": "MaterialInstanceConstant",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -27,5 +29,7 @@
     }
   },
   "states": {},
+  "classflags": 19,
+  "configname": "None",
   "documentation": null
 }

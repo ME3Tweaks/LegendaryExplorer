@@ -2,11 +2,13 @@
   "members": {
     "Callback": {
       "type": "OnAsyncGroupLoaded",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "AsyncLoadGroup": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXAsyncAssetLoader",

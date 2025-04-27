@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "vSteering": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -18,8 +19,9 @@
       "documentation": null,
       "signature_members": {
         "vSteering": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -44,5 +46,7 @@
       "documentation": null
     }
   },
+  "classflags": 18,
+  "configname": "None",
   "documentation": null
 }

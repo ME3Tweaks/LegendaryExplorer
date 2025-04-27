@@ -4,10 +4,13 @@
   "variables": {
     "m_aFOVOObjects": {
       "type": "BioSeqAct_FaceOnlyVO",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

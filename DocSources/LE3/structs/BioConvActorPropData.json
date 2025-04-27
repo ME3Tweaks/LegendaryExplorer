@@ -2,11 +2,13 @@
   "members": {
     "mapMeshPropData": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mapWeaponPropData": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     }
   },
   "classdef": "BioConversationController",

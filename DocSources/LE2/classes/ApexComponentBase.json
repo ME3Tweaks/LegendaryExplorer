@@ -4,26 +4,33 @@
   "variables": {
     "ComponentBaseResources": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "Asset": {
       "type": "ApexAsset",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ReleaseResourcesFence": {
       "type": "RenderCommandFence_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "WireframeColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAssetChanged": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 2290094226,
+  "configname": "None",
   "documentation": null
 }

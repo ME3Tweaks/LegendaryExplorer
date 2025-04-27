@@ -4,10 +4,13 @@
   "variables": {
     "m_ActiveCharId": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315034,
+  "configname": "UI",
   "documentation": null
 }

@@ -4,15 +4,18 @@
   "variables": {
     "PSC_Smoke": {
       "type": "ParticleSystemComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "SmokeDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -42,5 +45,7 @@
     }
   },
   "states": {},
+  "classflags": 144703635,
+  "configname": "None",
   "documentation": null
 }

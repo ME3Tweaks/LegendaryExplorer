@@ -4,30 +4,38 @@
   "variables": {
     "m_aValuesToCheck": {
       "type": "SFXSSPlotValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     },
     "m_nIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Region": {
       "type": "EBioRegionAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Plot": {
       "type": "EBioPlotAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "VarType": {
       "type": "ESFXSSPlotVarType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Variable": {
       "type": "EBioAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

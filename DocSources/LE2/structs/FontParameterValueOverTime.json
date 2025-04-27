@@ -2,11 +2,13 @@
   "members": {
     "FontValue": {
       "type": "Font",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FontPage": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "MaterialInstanceTimeVarying",

@@ -2,11 +2,13 @@
   "members": {
     "Multiply": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Add": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "GFxValue",

@@ -4,35 +4,43 @@
   "variables": {
     "Height": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "Density": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "LightBrightness": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934595
     },
     "LightColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934595
     },
     "ExtinctionDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934595
     },
     "StartDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934595
     },
     "FalloffStrength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934595
     },
     "bEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     }
   },
   "functions": {
@@ -40,8 +48,9 @@
       "documentation": null,
       "signature_members": {
         "bSetEnabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -49,5 +58,7 @@
     }
   },
   "states": {},
+  "classflags": 134230162,
+  "configname": "None",
   "documentation": null
 }

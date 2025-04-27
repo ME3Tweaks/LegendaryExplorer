@@ -4,51 +4,63 @@
   "variables": {
     "AILogFilter": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "DemoActionString": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194336
     },
     "CommandList": {
       "type": "GameAICommand",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "AILogFile": {
       "type": "FileLog",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bHasRunawayCommandList": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bAILogging": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "bAILogToWindow": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "bFlushAILogEachLine": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "bMapBasedLogName": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "bAIDrawDebug": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "bAIBroken": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bUseIterativePathFinding": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -62,20 +74,24 @@
       "documentation": null,
       "signature_members": {
         "TargetDesiredRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         },
         "InLockDesiredRotation": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "InUnlockWhenReached": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "InterpolationTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -85,12 +101,14 @@
       "documentation": null,
       "signature_members": {
         "AbortCmd": {
-          "type": null,
-          "documentation": null
+          "type": "GameAICommand",
+          "documentation": null,
+          "flags": 128
         },
         "AbortClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -100,16 +118,19 @@
       "documentation": null,
       "signature_members": {
         "LogText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
         },
         "LogCategory": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         },
         "bForce": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -131,8 +152,9 @@
       "documentation": null,
       "signature_members": {
         "SearchClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "GameAICommand",
@@ -142,16 +164,19 @@
       "documentation": null,
       "signature_members": {
         "Goal": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "WithinDistance": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bAllowPartialPath": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -161,16 +186,19 @@
       "documentation": null,
       "signature_members": {
         "Goal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "WithinDistance": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bAllowPartialPath": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -192,8 +220,9 @@
       "documentation": null,
       "signature_members": {
         "InClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 130
         }
       },
       "returntype": "GameAICommand",
@@ -203,8 +232,9 @@
       "documentation": null,
       "signature_members": {
         "ToBePoppedCommand": {
-          "type": null,
-          "documentation": null
+          "type": "GameAICommand",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -214,8 +244,9 @@
       "documentation": null,
       "signature_members": {
         "NewCommand": {
-          "type": null,
-          "documentation": null
+          "type": "GameAICommand",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -225,8 +256,9 @@
       "documentation": null,
       "signature_members": {
         "LogText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
         }
       },
       "returntype": "None",
@@ -264,8 +296,9 @@
           "documentation": null,
           "signature_members": {
             "NextStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -275,8 +308,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -286,5 +320,7 @@
       "documentation": null
     }
   },
+  "classflags": 144703639,
+  "configname": "Game",
   "documentation": null
 }

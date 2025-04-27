@@ -4,35 +4,43 @@
   "variables": {
     "explicitCamera": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Stage": {
       "type": "BioStage",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Intimacy": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "useForNextCamera": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "forceCrossingLineOfAction": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "saveOldCameraData": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "standardCamera": {
       "type": "EBioCommonStageCameras",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Camera": {
       "type": "EBioAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -44,5 +52,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

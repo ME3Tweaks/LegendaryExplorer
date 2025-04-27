@@ -2,47 +2,58 @@
   "members": {
     "m_mWoundEllipse": {
       "type": "Matrix",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "HitBox": {
       "type": "BoxSphereBounds",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nmPart": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "HitBoxBone": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_pWoundModel": {
       "type": "SkeletalMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_pBloodTexture": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_pEffect": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fEffectDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fEffectRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_eWoundSeverity": {
       "type": "EWoundSeverity",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXModule_Wound",

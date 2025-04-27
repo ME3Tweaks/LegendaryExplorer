@@ -4,43 +4,53 @@
   "variables": {
     "CameraOwner": {
       "type": "Camera",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AlphaInTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AlphaOutTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Alpha": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "TargetAlpha": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bDisabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bPendingDisable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bExclusive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDebug": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Priority": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -48,12 +58,14 @@
       "documentation": null,
       "signature_members": {
         "Camera": {
-          "type": null,
-          "documentation": null
+          "type": "Camera",
+          "documentation": null,
+          "flags": 128
         },
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -63,20 +75,24 @@
       "documentation": null,
       "signature_members": {
         "ViewTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "out_ViewRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         },
         "out_DeltaRot": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -98,8 +114,9 @@
       "documentation": null,
       "signature_members": {
         "bImmediate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -109,8 +126,9 @@
       "documentation": null,
       "signature_members": {
         "Camera": {
-          "type": null,
-          "documentation": null
+          "type": "Camera",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -120,8 +138,9 @@
       "documentation": null,
       "signature_members": {
         "Camera": {
-          "type": null,
-          "documentation": null
+          "type": "Camera",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -137,16 +156,19 @@
       "documentation": null,
       "signature_members": {
         "Camera": {
-          "type": null,
-          "documentation": null
+          "type": "Camera",
+          "documentation": null,
+          "flags": 128
         },
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "OutPOV": {
-          "type": null,
-          "documentation": null
+          "type": "TPOV",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -160,5 +182,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

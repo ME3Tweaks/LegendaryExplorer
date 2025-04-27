@@ -4,67 +4,83 @@
   "variables": {
     "Teams": {
       "type": "TeamInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 1077936128
     },
     "ServerName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 1078214689
     },
     "MessageOfTheDay": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 1078214689
     },
     "PRIArray": {
       "type": "PlayerReplicationInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "InactivePRIArray": {
       "type": "PlayerReplicationInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "GameClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     },
     "CurrentGameData": {
       "type": "CurrentGameDataStore",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Winner": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "RemainingTime": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741856
     },
     "ElapsedTime": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741856
     },
     "RemainingMinute": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741856
     },
     "GoalScore": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741856
     },
     "TimeLimit": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741856
     },
     "bStopCountDown": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "bMatchHasBegun": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     },
     "bMatchIsOver": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     }
   },
   "functions": {
@@ -78,12 +94,14 @@
       "documentation": null,
       "signature_members": {
         "A": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "B": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -99,8 +117,9 @@
       "documentation": null,
       "signature_members": {
         "VarName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -110,8 +129,9 @@
       "documentation": null,
       "signature_members": {
         "VarName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -127,12 +147,14 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "TI": {
-          "type": null,
-          "documentation": null
+          "type": "TeamInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -154,8 +176,9 @@
       "documentation": null,
       "signature_members": {
         "PRI": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -177,8 +200,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "PlayerReplicationInfo",
@@ -188,8 +212,9 @@
       "documentation": null,
       "signature_members": {
         "pris": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -205,12 +230,14 @@
       "documentation": null,
       "signature_members": {
         "P1": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
         },
         "P2": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -238,8 +265,9 @@
       "documentation": null,
       "signature_members": {
         "PRI": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -259,5 +287,7 @@
     }
   },
   "states": {},
+  "classflags": 144705686,
+  "configname": "Game",
   "documentation": null
 }

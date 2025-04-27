@@ -4,23 +4,28 @@
   "variables": {
     "__UsePowerDelegate__Delegate": {
       "type": "UsePowerDelegate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__FireWeaponDelegate__Delegate": {
       "type": "FireWeaponDelegate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__MoveToDelegate__Delegate": {
       "type": "MoveToDelegate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SFXChildCommand": {
       "type": "SFXAICommand",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bAbortIfChildFailed": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -28,12 +33,14 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -43,12 +50,14 @@
       "documentation": null,
       "signature_members": {
         "EnemyIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "TimeSinceSeen": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -58,12 +67,14 @@
       "documentation": null,
       "signature_members": {
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Wall": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -73,8 +84,9 @@
       "documentation": null,
       "signature_members": {
         "NewEnemy": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -90,8 +102,9 @@
       "documentation": null,
       "signature_members": {
         "NewCommand": {
-          "type": null,
-          "documentation": null
+          "type": "GameAICommand",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -107,24 +120,29 @@
       "documentation": null,
       "signature_members": {
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -134,12 +152,14 @@
       "documentation": null,
       "signature_members": {
         "W": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         },
         "FireMode": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -149,8 +169,9 @@
       "documentation": null,
       "signature_members": {
         "nReason": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -166,24 +187,29 @@
       "documentation": null,
       "signature_members": {
         "oTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "bCheckLOS": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bForceShoot": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "fAttackDuration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "FireDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "FireWeaponDelegate",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -193,8 +219,9 @@
       "documentation": null,
       "signature_members": {
         "nReason": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -204,8 +231,9 @@
       "documentation": null,
       "signature_members": {
         "nReason": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -215,20 +243,24 @@
       "documentation": null,
       "signature_members": {
         "NewMoveGoal": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "NewMoveOffset": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bForceWalk": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "MoveDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "MoveToDelegate",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -238,12 +270,14 @@
       "documentation": null,
       "signature_members": {
         "ArmourPiece": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -253,32 +287,39 @@
       "documentation": null,
       "signature_members": {
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "ArmourPiece": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
         },
         "DamageCauser": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -288,8 +329,9 @@
       "documentation": null,
       "signature_members": {
         "FriendPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -305,8 +347,9 @@
       "documentation": null,
       "signature_members": {
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -316,20 +359,24 @@
       "documentation": null,
       "signature_members": {
         "Label": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "TimeBeforeImpact": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Power": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerCustomAction",
+          "documentation": null,
+          "flags": 128
         },
         "Projectile": {
-          "type": null,
-          "documentation": null
+          "type": "SFXProjectile_PowerCustomAction",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -345,8 +392,9 @@
       "documentation": null,
       "signature_members": {
         "OldCommandName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -362,8 +410,9 @@
       "documentation": null,
       "signature_members": {
         "ActorToFollow": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -373,8 +422,9 @@
       "documentation": null,
       "signature_members": {
         "nReason": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -384,20 +434,24 @@
       "documentation": null,
       "signature_members": {
         "nmPowerToUse": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "oTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "PowerDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "UsePowerDelegate",
+          "documentation": null,
+          "flags": 4194448
         },
         "bIgnoreSuppression": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -405,5 +459,7 @@
     }
   },
   "states": {},
+  "classflags": 18,
+  "configname": "None",
   "documentation": null
 }

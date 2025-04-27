@@ -2,51 +2,63 @@
   "members": {
     "Anim": {
       "type": "CameraAnim",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Anim_Left": {
       "type": "CameraAnim",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Anim_Right": {
       "type": "CameraAnim",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Anim_Rear": {
       "type": "CameraAnim",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AnimPlayRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AnimScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AnimBlendInTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AnimBlendOutTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RandomSegmentDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bUseDirectionalAnimVariants": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bRandomSegment": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bSingleInstance": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "GameTypes",

@@ -2,27 +2,33 @@
   "members": {
     "CurrentMap": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "NextMap": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "NextStart": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "EndGmAct": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "EndGmX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "EndGmY": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "classdef": "SFXSeqAct_LeaveMission",

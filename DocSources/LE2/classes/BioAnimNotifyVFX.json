@@ -4,10 +4,13 @@
   "variables": {
     "m_nmVisualEffectLabel": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134230162,
+  "configname": "None",
   "documentation": null
 }

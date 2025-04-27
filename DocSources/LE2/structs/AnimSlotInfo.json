@@ -2,11 +2,13 @@
   "members": {
     "ChannelWeights": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "SlotName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     }
   },
   "classdef": "Actor",

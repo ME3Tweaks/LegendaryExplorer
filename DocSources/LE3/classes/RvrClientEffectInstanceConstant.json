@@ -4,11 +4,13 @@
   "variables": {
     "m_lstParameters": {
       "type": "RvrClientEffectParameter",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_pClientEffect": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -16,16 +18,19 @@
       "documentation": null,
       "signature_members": {
         "pComponent": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "pInstance": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectModuleInstance",
+          "documentation": null,
+          "flags": 128
         },
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -33,5 +38,7 @@
     }
   },
   "states": {},
+  "classflags": 134230162,
+  "configname": "None",
   "documentation": null
 }

@@ -4,10 +4,13 @@
   "variables": {
     "m_pComponent": {
       "type": "WwiseAudioComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142614674,
+  "configname": "None",
   "documentation": null
 }

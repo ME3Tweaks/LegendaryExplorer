@@ -7,16 +7,19 @@
       "documentation": null,
       "signature_members": {
         "Movie": {
-          "type": null,
-          "documentation": null
+          "type": "GFxMovie",
+          "documentation": null,
+          "flags": 128
         },
         "Cmd": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "arg": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -24,5 +27,7 @@
     }
   },
   "states": {},
+  "classflags": 134217875,
+  "configname": "None",
   "documentation": null
 }

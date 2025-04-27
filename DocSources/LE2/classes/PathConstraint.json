@@ -4,11 +4,13 @@
   "variables": {
     "NextConstraint": {
       "type": "PathConstraint",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CacheIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "functions": {
@@ -26,5 +28,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

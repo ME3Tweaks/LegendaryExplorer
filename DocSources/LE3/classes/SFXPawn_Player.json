@@ -4,359 +4,448 @@
   "variables": {
     "WeaponEncumbranceModifiers": {
       "type": "ScaledFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PendingMorphHeadData": {
       "type": "MorphHeadSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "firstName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "PlayerClassName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "faceCode": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_sWwiseRTPCNameUseCasual": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "AsyncAppearanceMeshes": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71835656
     },
     "PermanentGameEffects": {
       "type": "PermanentGameEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "EncumbranceCapacityBonuses": {
       "type": "SFXGameEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PendingMorphHeadResources": {
       "type": "SFXAsyncAssetRequest",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "ArmorEffectDescriptions": {
       "type": "ArmorEffectDescription",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "DetachOnDestroy": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1152921504678682632
     },
     "__AsyncUpdating_OnCompleted__Delegate": {
       "type": "AsyncUpdating_OnCompleted",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "HitShake": {
       "type": "ScreenShakeStruct",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ZoomHitShake": {
       "type": "ScreenShakeStruct",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CoverShake": {
       "type": "ScreenShakeStruct",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CharacterGUID": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CamperAverageLoc": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlayerCombatVoc": {
       "type": "SFXVocalizationBank",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlayerExplorationVoc": {
       "type": "SFXVocalizationBank",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlayerStealthVoc": {
       "type": "SFXVocalizationBank",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "GenericPlayerCombatVoc": {
       "type": "SFXVocalizationBank",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BaseHelmetMesh": {
       "type": "SkeletalMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "OverrideHelmetMesh": {
       "type": "SkeletalMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "MalePhys": {
       "type": "PhysicsAsset",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FemalePhys": {
       "type": "PhysicsAsset",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlayerClass": {
       "type": "SFXCharacterClass",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     },
     "ShieldImpactSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ImpactSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_GUI_Icon": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AsyncGroupName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "PermanentGameEffect_CategoryPrefix": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EncumbranceEffectName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PrimaryWeapon": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SecondaryWeapon": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EnterCoverSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EnterCoverVoc": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CoverForceFeedback": {
       "type": "ForceFeedbackWaveform",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CoverEnterFoleySound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PopUpDamageMultiplier": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "CasualID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OverrideCasualID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "FullBodyID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TorsoID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ShoulderID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ArmID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LegID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SpecID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Tint1ID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Tint2ID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PatternID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PatternColorID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "HelmetID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "EmissiveID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OverrideHelmetID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "BaseHelmetData": {
       "type": "HelmetMetaData",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "OverrideHelmetData": {
       "type": "HelmetMetaData",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "OutOfAmmoTimestamp": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "OutOfAmmoSwapThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "TotalXP": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "CampingTickCounter": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CampingTolerance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CamperBusterDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EncumbranceCapacity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EncumbranceMinCooldown": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EncumbranceMaxCooldown": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentWeaponEncumbrance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     },
     "LastCoverEnterDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PopUpDamageMultiplierDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxTotalReputation": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ParagonScarBias": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "FullParagonScarBiasValue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "NoParagonScarBiasValue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bUseCasualAppearance": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUsingOverrideHelmet": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bFullHelmetRequired": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIsFullAmmo": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bOverrideHideScars": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIgnoreHeadOffsetsInMeshMerge": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bInPersonalization": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bAsyncUpdatingAppearance": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bCanRoll": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bCannotUseCover": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bCanBeStopped": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bHasPendingSavedMorphHead": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bHasPendingExistingMorphHead": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CombatAppearance": {
       "type": "EPlayerAppearanceType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Origin": {
       "type": "EOriginType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Notoriety": {
       "type": "ENotorietyType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -370,12 +459,14 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "OutResults": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -385,8 +476,9 @@
       "documentation": null,
       "signature_members": {
         "SourcePawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -402,8 +494,9 @@
       "documentation": null,
       "signature_members": {
         "dmgType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -437,32 +530,39 @@
       "documentation": null,
       "signature_members": {
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 128
         },
         "DamageCauser": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -484,8 +584,9 @@
       "documentation": null,
       "signature_members": {
         "VarName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -495,8 +596,9 @@
       "documentation": null,
       "signature_members": {
         "SourcePawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -518,32 +620,39 @@
       "documentation": null,
       "signature_members": {
         "Resistance": {
-          "type": null,
-          "documentation": null
+          "type": "EPowerResistance",
+          "documentation": null,
+          "flags": 128
         },
         "Caster": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Force": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -553,16 +662,19 @@
       "documentation": null,
       "signature_members": {
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -572,20 +684,24 @@
       "documentation": null,
       "signature_members": {
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -595,36 +711,44 @@
       "documentation": null,
       "signature_members": {
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageCalc": {
-          "type": null,
-          "documentation": null
+          "type": "DamageCalculationAlgorithm",
+          "documentation": null,
+          "flags": 384
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 386
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "DamageCauser": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -634,12 +758,14 @@
       "documentation": null,
       "signature_members": {
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "HitLoc": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -649,12 +775,14 @@
       "documentation": null,
       "signature_members": {
         "C": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "bVehicleTransition": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -664,16 +792,19 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "out_ViewRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         },
         "out_DeltaRot": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -689,8 +820,9 @@
       "documentation": null,
       "signature_members": {
         "MeshToAdd": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -700,8 +832,9 @@
       "documentation": null,
       "signature_members": {
         "PrestreamMesh": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMesh",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SkeletalMeshComponent",
@@ -717,8 +850,9 @@
       "documentation": null,
       "signature_members": {
         "Bonus": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGameEffect",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -728,8 +862,9 @@
       "documentation": null,
       "signature_members": {
         "PreviousWeaponNames": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -745,16 +880,19 @@
       "documentation": null,
       "signature_members": {
         "InTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "InSettings": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCustomizationInstance",
+          "documentation": null,
+          "flags": 144
         },
         "UIWorldConfigFlags": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -770,8 +908,9 @@
       "documentation": null,
       "signature_members": {
         "UniqueName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -787,8 +926,9 @@
       "documentation": null,
       "signature_members": {
         "LoadedAssets": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -816,8 +956,9 @@
       "documentation": null,
       "signature_members": {
         "PreferredWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "SFXWeapon",
@@ -827,16 +968,19 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bUseFullArmourHelmets": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "HelmetDetails": {
-          "type": null,
-          "documentation": null
+          "type": "HelmetMetaData",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "SkeletalMesh",
@@ -846,20 +990,24 @@
       "documentation": null,
       "signature_members": {
         "bHideScars": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "CharmSkill": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "IntimidateSkill": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ReputationSkill": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -869,12 +1017,14 @@
       "documentation": null,
       "signature_members": {
         "ChkWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         },
         "NewWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -890,8 +1040,9 @@
       "documentation": null,
       "signature_members": {
         "UniqueName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -907,12 +1058,14 @@
       "documentation": null,
       "signature_members": {
         "WeaponClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "bEquipWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -922,12 +1075,14 @@
       "documentation": null,
       "signature_members": {
         "ChkLoadout": {
-          "type": null,
-          "documentation": null
+          "type": "SFXLoadoutData",
+          "documentation": null,
+          "flags": 128
         },
         "bForceFromEngineLoadout": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -937,8 +1092,9 @@
       "documentation": null,
       "signature_members": {
         "InMorphHead": {
-          "type": null,
-          "documentation": null
+          "type": "BioMorphFace",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -954,8 +1110,9 @@
       "documentation": null,
       "signature_members": {
         "InRecord": {
-          "type": null,
-          "documentation": null
+          "type": "MorphHeadSaveRecord",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -965,12 +1122,14 @@
       "documentation": null,
       "signature_members": {
         "MeshCmpt": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "MatIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "MaterialInstanceConstant",
@@ -980,8 +1139,9 @@
       "documentation": null,
       "signature_members": {
         "NewWeaponClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -997,8 +1157,9 @@
       "documentation": null,
       "signature_members": {
         "nmPowerClass": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXPowerCustomActionBase",
@@ -1008,8 +1169,9 @@
       "documentation": null,
       "signature_members": {
         "Assets": {
-          "type": null,
-          "documentation": null
+          "type": "SFXAsyncAssetRequest",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -1019,8 +1181,9 @@
       "documentation": null,
       "signature_members": {
         "ArmorEffects": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "string",
@@ -1030,8 +1193,9 @@
       "documentation": null,
       "signature_members": {
         "OutElement": {
-          "type": null,
-          "documentation": null
+          "type": "CustomizableElement",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -1053,12 +1217,14 @@
       "documentation": null,
       "signature_members": {
         "bHideScars": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Scar": {
-          "type": null,
-          "documentation": null
+          "type": "ScarInfo",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -1074,16 +1240,19 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Meshes": {
-          "type": null,
-          "documentation": null
+          "type": "CustomizableElement",
+          "documentation": null,
+          "flags": 4194688
         },
         "Effects": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -1093,8 +1262,9 @@
       "documentation": null,
       "signature_members": {
         "Assets": {
-          "type": null,
-          "documentation": null
+          "type": "SFXAsyncAssetRequest",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -1104,8 +1274,9 @@
       "documentation": null,
       "signature_members": {
         "Effects": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -1115,20 +1286,24 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Part": {
-          "type": null,
-          "documentation": null
+          "type": "EHelmetPart",
+          "documentation": null,
+          "flags": 128
         },
         "ArrayToSearch": {
-          "type": null,
-          "documentation": null
+          "type": "CustomizableElement",
+          "documentation": null,
+          "flags": 4194690
         },
         "Element": {
-          "type": null,
-          "documentation": null
+          "type": "CustomizableElement",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "SFXAsyncAssetRequest",
@@ -1138,12 +1313,14 @@
       "documentation": null,
       "signature_members": {
         "Element": {
-          "type": null,
-          "documentation": null
+          "type": "CustomizableElement",
+          "documentation": null,
+          "flags": 4194688
         },
         "Part": {
-          "type": null,
-          "documentation": null
+          "type": "EHelmetPart",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXAsyncAssetRequest",
@@ -1159,16 +1336,19 @@
       "documentation": null,
       "signature_members": {
         "Angle": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "SideAngle": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "OutActions": {
-          "type": null,
-          "documentation": null
+          "type": "EAICustomAction",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -1184,12 +1364,14 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Meshes": {
-          "type": null,
-          "documentation": null
+          "type": "CustomizableElement",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "SFXAsyncAssetRequest",
@@ -1199,12 +1381,14 @@
       "documentation": null,
       "signature_members": {
         "ParagonPercent": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "RenegadePercent": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -1232,8 +1416,9 @@
       "documentation": null,
       "signature_members": {
         "Encumbrance": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -1243,12 +1428,14 @@
       "documentation": null,
       "signature_members": {
         "NewWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         },
         "bDeleteTossedWeapons": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -1276,28 +1463,34 @@
       "documentation": null,
       "signature_members": {
         "Paragon": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "ParagonOffset": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Renegade": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Reputation": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "ParagonPercent": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "RenegadePercent": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -1313,16 +1506,19 @@
       "documentation": null,
       "signature_members": {
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "dmgType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Cause": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1356,12 +1552,14 @@
       "documentation": null,
       "signature_members": {
         "CovInfo": {
-          "type": null,
-          "documentation": null
+          "type": "CovPosInfo",
+          "documentation": null,
+          "flags": 128
         },
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1377,8 +1575,9 @@
       "documentation": null,
       "signature_members": {
         "MeshToRemove": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -1388,8 +1587,9 @@
       "documentation": null,
       "signature_members": {
         "Bonus": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGameEffect",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1411,12 +1611,14 @@
       "documentation": null,
       "signature_members": {
         "InComponent": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "InMesh": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMesh",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1426,8 +1628,9 @@
       "documentation": null,
       "signature_members": {
         "bForceUpdate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -1437,8 +1640,9 @@
       "documentation": null,
       "signature_members": {
         "dynamicLoadPath": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1454,12 +1658,14 @@
       "documentation": null,
       "signature_members": {
         "ChkWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         },
         "NewWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1481,12 +1687,14 @@
       "documentation": null,
       "signature_members": {
         "PreviousWeaponNames": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194432
         },
         "NewWeaponClass": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1496,12 +1704,14 @@
       "documentation": null,
       "signature_members": {
         "CompletedDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "AsyncUpdating_OnCompleted",
+          "documentation": null,
+          "flags": 4194448
         },
         "bBlockForAssetLoad": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -1547,20 +1757,24 @@
       "documentation": null,
       "signature_members": {
         "InSettings": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCustomizationInstance",
+          "documentation": null,
+          "flags": 128
         },
         "InTargetActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "InHeadMesh": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "bHideScars": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1570,12 +1784,14 @@
       "documentation": null,
       "signature_members": {
         "InComponent": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "InMesh": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMesh",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1597,8 +1813,9 @@
       "documentation": null,
       "signature_members": {
         "NewWeaponName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -1642,8 +1859,9 @@
           "documentation": null,
           "signature_members": {
             "NextStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -1653,8 +1871,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -1664,16 +1883,19 @@
           "documentation": null,
           "signature_members": {
             "Killer": {
-              "type": null,
-              "documentation": null
+              "type": "Controller",
+              "documentation": null,
+              "flags": 128
             },
             "DamageType": {
-              "type": null,
-              "documentation": null
+              "type": "Class",
+              "documentation": null,
+              "flags": 128
             },
             "HitLocation": {
-              "type": null,
-              "documentation": null
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -1683,32 +1905,39 @@
           "documentation": null,
           "signature_members": {
             "DamageAmount": {
-              "type": null,
-              "documentation": null
+              "type": "float",
+              "documentation": null,
+              "flags": 128
             },
             "EventInstigator": {
-              "type": null,
-              "documentation": null
+              "type": "Controller",
+              "documentation": null,
+              "flags": 128
             },
             "HitLocation": {
-              "type": null,
-              "documentation": null
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
             },
             "Momentum": {
-              "type": null,
-              "documentation": null
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
             },
             "DamageType": {
-              "type": null,
-              "documentation": null
+              "type": "Class",
+              "documentation": null,
+              "flags": 128
             },
             "HitInfo": {
-              "type": null,
-              "documentation": null
+              "type": "TraceHitInfo",
+              "documentation": null,
+              "flags": 144
             },
             "DamageCauser": {
-              "type": null,
-              "documentation": null
+              "type": "Actor",
+              "documentation": null,
+              "flags": 144
             }
           },
           "returntype": null,
@@ -1729,8 +1958,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -1751,8 +1981,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -1762,5 +1993,7 @@
       "documentation": null
     }
   },
+  "classflags": 10486327,
+  "configname": "Game",
   "documentation": null
 }

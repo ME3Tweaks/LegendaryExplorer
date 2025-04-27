@@ -2,15 +2,18 @@
   "members": {
     "pNode": {
       "type": "SFXSceneShopNode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nmEventName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fEventTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXSceneShopGameDataInst",

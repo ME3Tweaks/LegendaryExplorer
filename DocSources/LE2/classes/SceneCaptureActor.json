@@ -4,7 +4,8 @@
   "variables": {
     "SceneCapture": {
       "type": "SceneCaptureComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633163
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -21,5 +23,7 @@
     }
   },
   "states": {},
+  "classflags": 144703635,
+  "configname": "None",
   "documentation": null
 }

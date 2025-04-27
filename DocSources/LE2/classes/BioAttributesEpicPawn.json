@@ -4,27 +4,33 @@
   "variables": {
     "m_FirstName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_PowerCooldownMultiplier": {
       "type": "BioComplexFloatStructAttribute",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_ScanLevel": {
       "type": "BioComplexIntStructAttribute",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_RadarRange": {
       "type": "BioComplexFloatStructAttribute",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_LastName": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_initialRadarRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     }
   },
   "functions": {
@@ -42,5 +48,7 @@
     }
   },
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

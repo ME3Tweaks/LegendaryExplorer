@@ -2,11 +2,13 @@
   "members": {
     "Link": {
       "type": "CoverLink",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     },
     "SlotIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     }
   },
   "classdef": "CoverLink",

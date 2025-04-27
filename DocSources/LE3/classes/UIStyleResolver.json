@@ -13,20 +13,24 @@
       "documentation": null,
       "signature_members": {
         "ActiveSkin": {
-          "type": null,
-          "documentation": null
+          "type": "UISkin",
+          "documentation": null,
+          "flags": 128
         },
         "bClearExistingValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "CurrentMenuState": {
-          "type": null,
-          "documentation": null
+          "type": "UIState",
+          "documentation": null,
+          "flags": 144
         },
         "StylePropertyName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 146
         }
       },
       "returntype": "bool",
@@ -36,8 +40,9 @@
       "documentation": null,
       "signature_members": {
         "NewResolverTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -45,5 +50,7 @@
     }
   },
   "states": {},
+  "classflags": 134234259,
+  "configname": "None",
   "documentation": null
 }

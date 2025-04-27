@@ -4,19 +4,23 @@
   "variables": {
     "m_vfxSpecs": {
       "type": "BioAppearanceItemWeaponVFXSpec",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_variants": {
       "type": "BioAppearanceItemSophisticatedVariant",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "m_oPawnWeaponAnimations": {
       "type": "AnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_previewVariantLabel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     }
   },
   "functions": {
@@ -24,8 +28,9 @@
       "documentation": null,
       "signature_members": {
         "Variant": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "PhysicsAsset",
@@ -35,8 +40,9 @@
       "documentation": null,
       "signature_members": {
         "Variant": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "AnimTree",
@@ -46,8 +52,9 @@
       "documentation": null,
       "signature_members": {
         "Variant": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "AnimSet",
@@ -57,12 +64,14 @@
       "documentation": null,
       "signature_members": {
         "Variant": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "SkeletalMeshComponent": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -72,8 +81,9 @@
       "documentation": null,
       "signature_members": {
         "Variant": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SkeletalMesh",
@@ -81,5 +91,7 @@
     }
   },
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

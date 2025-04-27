@@ -4,62 +4,78 @@
   "variables": {
     "PosTrack": {
       "type": "InterpCurveVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "EulerTrack": {
       "type": "InterpCurveVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "LookupTrack": {
       "type": "InterpLookupTrack",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "LookAtGroupName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LinCurveTension": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AngCurveTension": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseQuatInterpolation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bShowArrowAtKeys": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDisableMovement": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bShowTranslationOnCurveEd": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bShowRotationOnCurveEd": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bHide3DTrack": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MoveFrame": {
       "type": "EInterpTrackMoveFrame",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     },
     "RotMode": {
       "type": "EInterpTrackMoveRotMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134226066,
+  "configname": "None",
   "documentation": null
 }

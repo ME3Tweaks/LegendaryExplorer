@@ -4,39 +4,48 @@
   "variables": {
     "BlazeJobIds": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "JobId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SchedulingsLeft": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RescheduleCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "JobIsCanceled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "IsProcessing": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RunningError": {
       "type": "OnlineJobErrorCode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "JobCategory": {
       "type": "OnlineJobCategory",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "JobType": {
       "type": "OnlineJobType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -44,8 +53,9 @@
       "documentation": null,
       "signature_members": {
         "WithError": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineJobErrorCode",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -67,8 +77,9 @@
       "documentation": null,
       "signature_members": {
         "WithError": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineJobErrorCode",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -108,8 +119,9 @@
       "documentation": null,
       "signature_members": {
         "NewJobId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -159,5 +171,7 @@
     }
   },
   "states": {},
+  "classflags": 134217879,
+  "configname": "Game",
   "documentation": null
 }

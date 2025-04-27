@@ -4,31 +4,38 @@
   "variables": {
     "VfTable_IISFXOnlineComponent": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "mPendingRequests": {
       "type": "SFXOnlineImageRequest",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "mCompletedRequests": {
       "type": "SFXOnlineImageRequest",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "mBaseUrl": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnImageRequestCompleted__Delegate": {
       "type": "OnImageRequestCompleted",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "mMaxImages": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "mMaxBytes": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -48,8 +55,9 @@
       "documentation": null,
       "signature_members": {
         "ImageName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "SFXOnlineImageRequest",
@@ -59,8 +67,9 @@
       "documentation": null,
       "signature_members": {
         "request": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineImageRequest",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -70,8 +79,9 @@
       "documentation": null,
       "signature_members": {
         "oOnlineSubsystem": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineSubsystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -81,8 +91,9 @@
       "documentation": null,
       "signature_members": {
         "request": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineHTTPRequest",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -98,8 +109,9 @@
       "documentation": null,
       "signature_members": {
         "imageRequest": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineImageRequest",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -109,8 +121,9 @@
       "documentation": null,
       "signature_members": {
         "BaseUrl": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -120,8 +133,9 @@
       "documentation": null,
       "signature_members": {
         "maxBytes": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -131,8 +145,9 @@
       "documentation": null,
       "signature_members": {
         "maxImages": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -142,8 +157,9 @@
       "documentation": null,
       "signature_members": {
         "ImageName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "SFXOnlineImageRequest",
@@ -153,12 +169,14 @@
       "documentation": null,
       "signature_members": {
         "ImageName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "CompletedCallback": {
-          "type": null,
-          "documentation": null
+          "type": "OnImageRequestCompleted",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -168,8 +186,9 @@
       "documentation": null,
       "signature_members": {
         "request": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineImageRequest",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -179,8 +198,9 @@
       "documentation": null,
       "signature_members": {
         "request": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineImageRequest",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -190,8 +210,9 @@
       "documentation": null,
       "signature_members": {
         "request": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineHTTPRequest",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXOnlineImageRequest",
@@ -205,5 +226,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "Engine",
   "documentation": null
 }

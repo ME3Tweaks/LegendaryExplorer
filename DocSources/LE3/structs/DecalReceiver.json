@@ -2,11 +2,13 @@
   "members": {
     "RenderData": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "Component": {
       "type": "PrimitiveComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633162
     }
   },
   "classdef": "DecalComponent",

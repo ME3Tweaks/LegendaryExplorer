@@ -2,11 +2,13 @@
   "members": {
     "Id": {
       "type": "BWConsumableId",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "nCopies": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     }
   },
   "classdef": "ISFXOnlineComponentCommerce",

@@ -4,59 +4,73 @@
   "variables": {
     "VfTable_FInterpEdInputInterface": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "InterpTracks": {
       "type": "InterpTrack",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194312
     },
     "GroupAnimSets": {
       "type": "AnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_nmSFXFindActor": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "GroupName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GroupColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BioForcedLodModel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCollapsed": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bDontPrime": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsFolder": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsParented": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsSelected": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_eSFXFindActorMode": {
       "type": "ESFXFindByTagTypes",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -64,8 +78,9 @@
       "documentation": null,
       "signature_members": {
         "aOutGroupAnimSets": {
-          "type": null,
-          "documentation": null
+          "type": "AnimSet",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -73,5 +88,7 @@
     }
   },
   "states": {},
+  "classflags": 134226066,
+  "configname": "None",
   "documentation": null
 }

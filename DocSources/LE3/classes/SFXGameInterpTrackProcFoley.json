@@ -4,11 +4,13 @@
   "variables": {
     "m_aProcFoleyStartStopKeys": {
       "type": "BioProcFoleyData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_TrackFoleySound": {
       "type": "WwiseEventPairObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -38,5 +40,7 @@
     }
   },
   "states": {},
+  "classflags": 134226066,
+  "configname": "None",
   "documentation": null
 }

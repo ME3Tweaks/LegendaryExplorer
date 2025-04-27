@@ -4,22 +4,28 @@
   "variables": {
     "DestructibleParameters": {
       "type": "PhysXDestructibleParameters",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     },
     "DestructibleAssets": {
       "type": "PhysXDestructibleAsset",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "CookingScales": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "FracturedStaticMesh": {
       "type": "FracturedStaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

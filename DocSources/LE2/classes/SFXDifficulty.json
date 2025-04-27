@@ -4,103 +4,128 @@
   "variables": {
     "PlayerHealthMultiplierLow": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "PlayerHealthMultiplierHigh": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "HenchHealthMultiplierLow": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "HenchHealthMultiplierHigh": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "EnemyHealthMultiplierLow": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "EnemyHealthMultiplierHigh": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "FriendlyHealthMultiplierLow": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "FriendlyHealthMultiplierHigh": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "EnemyShieldBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "EnemyAimMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "AmmoDecayMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "BleedOutInterval": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "BreachDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "DifficultyLevel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MinScore": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxScore": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "PlayerShieldRechargeModifier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxAttackTickets": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxAttackTicketsHench": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxTargetTickets": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxTargetTicketsHench": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "AmmoPct": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "EnemyPowerCooldownMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "SquadPowerDurationMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "SquadPowerCooldownMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -108,8 +133,9 @@
       "documentation": null,
       "signature_members": {
         "PRI": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPRI",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -125,8 +151,9 @@
       "documentation": null,
       "signature_members": {
         "Owner": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -136,8 +163,9 @@
       "documentation": null,
       "signature_members": {
         "Owner": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -145,5 +173,7 @@
     }
   },
   "states": {},
+  "classflags": 23,
+  "configname": "Game",
   "documentation": null
 }

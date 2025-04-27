@@ -2,19 +2,23 @@
   "members": {
     "A": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "B": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "C": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "D": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "Object",

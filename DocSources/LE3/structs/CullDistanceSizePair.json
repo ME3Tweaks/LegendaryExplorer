@@ -2,11 +2,13 @@
   "members": {
     "Size": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CullDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "CullDistanceVolume",

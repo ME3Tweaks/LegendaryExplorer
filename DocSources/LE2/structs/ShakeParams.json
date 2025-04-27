@@ -2,19 +2,23 @@
   "members": {
     "X": {
       "type": "EShakeParam",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Y": {
       "type": "EShakeParam",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Z": {
       "type": "EShakeParam",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Padding": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     }
   },
   "classdef": "SFXCameraModifier_ScreenShake",

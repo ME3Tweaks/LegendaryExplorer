@@ -4,7 +4,8 @@
   "variables": {
     "TREASURE": {
       "type": "ETreasureIndex",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -22,5 +23,7 @@
     }
   },
   "states": {},
+  "classflags": 136315027,
+  "configname": "None",
   "documentation": null
 }

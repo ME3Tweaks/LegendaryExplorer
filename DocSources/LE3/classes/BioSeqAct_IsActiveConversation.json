@@ -4,19 +4,23 @@
   "variables": {
     "Conversation": {
       "type": "BioConversation",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bCheckForFovoToo": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bCheckForFull": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bCheckForAmbient": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -28,5 +32,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

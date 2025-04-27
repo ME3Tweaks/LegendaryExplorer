@@ -4,143 +4,178 @@
   "variables": {
     "FixedRelativeBoundingBox": {
       "type": "BioRwBox",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Emitters": {
       "type": "ParticleEmitter",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "LODDistances": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194369
     },
     "LODSettings": {
       "type": "ParticleSystemLOD",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "SoloTracking": {
       "type": "LODSoloTrack",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "CustomOcclusionBounds": {
       "type": "Box",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ThumbnailAngle": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MacroUVPosition": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PreviewComponent": {
       "type": "ParticleSystemComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     },
     "CurveEdSetup": {
       "type": "InterpCurveEdSetup",
-      "documentation": null
+      "documentation": null,
+      "flags": 8
     },
     "UpdateTime_FPS": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "UpdateTime_Delta": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WarmupTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ThumbnailDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ThumbnailWarmup": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LODDistanceCheckTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "EditorLODSetting": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SecondsBeforeInactive": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Delay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DelayLow": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MacroUVRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bOrientZAxisTowardCamera": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bRegenerateLODDuplicate": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bUseFixedRelativeBoundingBox": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BioLockLowestLODToHighest": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bShouldResetPeakCounts": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bHasPhysics": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bBioDependsOnPhysics": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bUseRealtimeThumbnail": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ThumbnailImageOutOfDate": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bSkipSpawnCountCheck": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseDelayRange": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SystemUpdateMode": {
       "type": "EParticleSystemUpdateMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LODMethod": {
       "type": "ParticleSystemLODMethod",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OcclusionBoundsMethod": {
       "type": "EParticleSystemOcclusionBoundsMethod",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -148,12 +183,14 @@
       "documentation": null,
       "signature_members": {
         "LODLevelIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "InDistance": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -163,8 +200,9 @@
       "documentation": null,
       "signature_members": {
         "InMethod": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystemLODMethod",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -174,8 +212,9 @@
       "documentation": null,
       "signature_members": {
         "LODLevelIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -195,5 +234,7 @@
     }
   },
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

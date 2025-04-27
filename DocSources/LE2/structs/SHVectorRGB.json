@@ -2,15 +2,18 @@
   "members": {
     "R": {
       "type": "SHVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "G": {
       "type": "SHVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "B": {
       "type": "SHVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "Object",

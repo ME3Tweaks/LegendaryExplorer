@@ -4,31 +4,38 @@
   "variables": {
     "Pages": {
       "type": "PhotoModeOptionPage",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "SliderOptions": {
       "type": "PhotoModeSliderOption",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "RangeSliderOptions": {
       "type": "PhotoModeRangeSliderOption",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "TextSliderOptions": {
       "type": "PhotoModeTextSliderOption",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "PhotoMode": {
       "type": "SFXGameModePhoto",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bOptionsHidden": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -36,8 +43,9 @@
       "documentation": null,
       "signature_members": {
         "bIsUsingGamepad": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -47,12 +55,14 @@
       "documentation": null,
       "signature_members": {
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -74,12 +84,14 @@
       "documentation": null,
       "signature_members": {
         "OptionId": {
-          "type": null,
-          "documentation": null
+          "type": "PhotoModeOptionType",
+          "documentation": null,
+          "flags": 128
         },
         "ValueIdx": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -89,8 +101,9 @@
       "documentation": null,
       "signature_members": {
         "OptionId": {
-          "type": null,
-          "documentation": null
+          "type": "PhotoModeOptionType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -100,8 +113,9 @@
       "documentation": null,
       "signature_members": {
         "OptionId": {
-          "type": null,
-          "documentation": null
+          "type": "PhotoModeOptionType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -111,12 +125,14 @@
       "documentation": null,
       "signature_members": {
         "OptionId": {
-          "type": null,
-          "documentation": null
+          "type": "PhotoModeOptionType",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -142,5 +158,7 @@
     }
   },
   "states": {},
+  "classflags": 136315038,
+  "configname": "UI",
   "documentation": null
 }

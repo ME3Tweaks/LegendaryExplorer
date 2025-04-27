@@ -4,35 +4,43 @@
   "variables": {
     "LastParty": {
       "type": "RecentParty",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "RecentPlayers": {
       "type": "UniqueNetId",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "RecentParties": {
       "type": "RecentParty",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "CurrentPlayers": {
       "type": "CurrentPlayerMet",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MaxRecentPlayers": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxRecentParties": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "RecentPlayersAddIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RecentPartiesAddIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -46,8 +54,9 @@
       "documentation": null,
       "signature_members": {
         "Players": {
-          "type": null,
-          "documentation": null
+          "type": "CurrentPlayerMet",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -57,8 +66,9 @@
       "documentation": null,
       "signature_members": {
         "Players": {
-          "type": null,
-          "documentation": null
+          "type": "CurrentPlayerMet",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -68,16 +78,19 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "Title": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Description": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -87,16 +100,19 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "Title": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Description": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -106,16 +122,19 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "Title": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Description": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -125,16 +144,19 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "Title": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Description": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -144,12 +166,14 @@
       "documentation": null,
       "signature_members": {
         "PartyLeader": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "PartyMembers": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -159,8 +183,9 @@
       "documentation": null,
       "signature_members": {
         "Player": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -170,8 +195,9 @@
       "documentation": null,
       "signature_members": {
         "Player": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -181,8 +207,9 @@
       "documentation": null,
       "signature_members": {
         "Players": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -192,8 +219,9 @@
       "documentation": null,
       "signature_members": {
         "Players": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -209,12 +237,14 @@
       "documentation": null,
       "signature_members": {
         "PartyLeader": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "PartyMembers": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -230,8 +260,9 @@
       "documentation": null,
       "signature_members": {
         "NewPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -239,5 +270,7 @@
     }
   },
   "states": {},
+  "classflags": 2097174,
+  "configname": "Engine",
   "documentation": null
 }

@@ -4,10 +4,13 @@
   "variables": {
     "ShadowmapFlags": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 406,
+  "configname": "Engine",
   "documentation": null
 }

@@ -2,19 +2,23 @@
   "members": {
     "ViewLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ViewDir": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "InViewer": {
       "type": "PlayerController",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Viewer": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "WorldInfo",

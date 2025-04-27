@@ -4,19 +4,23 @@
   "variables": {
     "m_Powers": {
       "type": "SFXPowerCustomActionBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_SavedPawnPowerStates": {
       "type": "SavedPawnPowerData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_WorldInfo": {
       "type": "BioWorldInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_Pawn": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -30,8 +34,9 @@
       "documentation": null,
       "signature_members": {
         "WorldInfo": {
-          "type": null,
-          "documentation": null
+          "type": "BioWorldInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -41,8 +46,9 @@
       "documentation": null,
       "signature_members": {
         "nPowerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -52,12 +58,14 @@
       "documentation": null,
       "signature_members": {
         "PowerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "CostToIncrease": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -73,12 +81,14 @@
       "documentation": null,
       "signature_members": {
         "OriginalPower": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerCustomActionBase",
+          "documentation": null,
+          "flags": 128
         },
         "nEvolveIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -88,8 +98,9 @@
       "documentation": null,
       "signature_members": {
         "nPowerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -111,8 +122,9 @@
       "documentation": null,
       "signature_members": {
         "PowerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -122,12 +134,14 @@
       "documentation": null,
       "signature_members": {
         "nPowerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "RequiredLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 400
         }
       },
       "returntype": "bool",
@@ -143,8 +157,9 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -158,5 +173,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

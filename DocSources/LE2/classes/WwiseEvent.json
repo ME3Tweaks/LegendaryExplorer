@@ -4,46 +4,58 @@
   "variables": {
     "References": {
       "type": "WwisePlatformRelationships",
-      "documentation": null
+      "documentation": null,
+      "flags": 4325379
     },
     "Id": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 135171
     },
     "PrepareState": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 139267
     },
     "DurationSeconds": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "m_fMaxAudible3DSoundDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101248
     },
     "m_nNumberOf3DSoundsPlaying": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101248
     },
     "m_nNumberOfSoundsUseAttenuation": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101248
     },
     "m_nNumberOfSoundsWithUserDefinedPositioning": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101248
     },
     "IsLocalised": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "m_bHasEnvironmentalSettings": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101248
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

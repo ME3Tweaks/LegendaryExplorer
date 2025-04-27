@@ -4,14 +4,18 @@
   "variables": {
     "SpawnLocationExtents": {
       "type": "SFXObjectiveSpawnLocationSize",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "LineColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 2290098326,
+  "configname": "Editor",
   "documentation": null
 }

@@ -4,106 +4,133 @@
   "variables": {
     "Lifetime": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "StartSize": {
       "type": "RawDistributionVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "StartRotation": {
       "type": "RawDistributionVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "LifeMultiplier": {
       "type": "RawDistributionVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "PC_VelocityScale": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "PC_StartLocation": {
       "type": "RawDistributionVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "PC_StartRadius": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "PC_StartHeight": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "ColorOverLife": {
       "type": "RawDistributionVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "AlphaOverLife": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "bInheritParent": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MultiplyX": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MultiplyY": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MultiplyZ": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsUsingCylinder": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPositive_X": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPositive_Y": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPositive_Z": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bNegative_X": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bNegative_Y": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bNegative_Z": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSurfaceOnly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bVelocity": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bRadialVelocity": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PC_HeightAxis": {
       "type": "CylinderHeightAxis",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142618770,
+  "configname": "None",
   "documentation": null
 }

@@ -4,7 +4,8 @@
   "variables": {
     "m_aFacingKeys": {
       "type": "BioSetFacingData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     }
   },
   "functions": {
@@ -40,5 +41,7 @@
     }
   },
   "states": {},
+  "classflags": 134226066,
+  "configname": "None",
   "documentation": null
 }

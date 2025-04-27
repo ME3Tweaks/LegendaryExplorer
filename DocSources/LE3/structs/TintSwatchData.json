@@ -2,11 +2,13 @@
   "members": {
     "SwatchID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SwatchColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXSFHandler_Personalization",

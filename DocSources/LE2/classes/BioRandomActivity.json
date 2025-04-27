@@ -4,18 +4,23 @@
   "variables": {
     "m_afTwitchProbabilitys": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_fBaseTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fVarianceTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 12306,
+  "configname": "None",
   "documentation": null
 }

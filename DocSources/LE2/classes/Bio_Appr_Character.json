@@ -4,102 +4,128 @@
   "variables": {
     "Head": {
       "type": "Bio_Appr_Character_Head",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     },
     "m_aLookBoneDefs": {
       "type": "LookAtBoneDef",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "vProceduralCameraPosition": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "rProceduralCameraRotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "vCameraFocusPoint": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oSettings": {
       "type": "Bio_Appr_Character_Settings",
-      "documentation": null
+      "documentation": null,
+      "flags": 67772425
     },
     "Body": {
       "type": "Bio_Appr_Character_Body",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     },
     "BloodColor": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LifetimeCrust": {
       "type": "BioVFXTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DeathCrust": {
       "type": "BioVFXTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CreatureSpeed": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MovementInfo": {
       "type": "SFXMovementData",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_LookAtDefinition": {
       "type": "BioLookAtDefinition",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nmDefaultGesturesPoseAnim": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_pCookedDefGestPoseSet": {
       "type": "BioDynamicAnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DefaultFaceFXAsset": {
       "type": "FaceFXAsset",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LifetimeMaterialFadeDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fFov": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fNearClip": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fDOFFocusInnerRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fDOFFocusDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "HideEquipedItems": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CanStrafe": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ModelType": {
       "type": "eModelType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

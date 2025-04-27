@@ -2,7 +2,8 @@
   "members": {
     "EdgeList": {
       "type": "EdgePointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     }
   },
   "classdef": "NavigationHandle",

@@ -4,7 +4,8 @@
   "variables": {
     "__OnCloakEnded__Delegate": {
       "type": "OnCloakEnded",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -40,5 +41,7 @@
     }
   },
   "states": {},
+  "classflags": 18,
+  "configname": "None",
   "documentation": null
 }

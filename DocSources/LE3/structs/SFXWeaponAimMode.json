@@ -2,23 +2,28 @@
   "members": {
     "ScopeResource": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "ZoomFOV": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "FrictionMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "AdhesionMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "bScoped": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     }
   },
   "classdef": "SFXWeapon",

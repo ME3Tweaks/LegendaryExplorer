@@ -4,14 +4,18 @@
   "variables": {
     "Scale": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SourceMaterial": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134230162,
+  "configname": "None",
   "documentation": null
 }

@@ -13,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "bForced": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -36,16 +37,19 @@
       "documentation": null,
       "signature_members": {
         "NewAction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Sync": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 144
         },
         "NewPowerAction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -53,5 +57,7 @@
     }
   },
   "states": {},
+  "classflags": 10485782,
+  "configname": "Game",
   "documentation": null
 }

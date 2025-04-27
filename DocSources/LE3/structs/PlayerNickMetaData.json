@@ -2,11 +2,13 @@
   "members": {
     "PlayerNickColumnName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227074
     },
     "PlayerNickName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "classdef": "UIDataStore_OnlineStats",

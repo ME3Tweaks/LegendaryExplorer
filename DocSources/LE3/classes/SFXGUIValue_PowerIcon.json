@@ -4,103 +4,128 @@
   "variables": {
     "m_aPowerStatePaths": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "oMappedIcon": {
       "type": "SFXPowerWheelButtonIcon",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "sPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "sID": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "sIconResource": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "sName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "sDescription": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "sMappedBGPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "CurrentInfoText": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "pPower": {
       "type": "SFXPowerCustomActionBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "pPawn": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nmPowerName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fBoundary": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nIcon": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nCooldownValue": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bHenchIcon": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDirty": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bSelected": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDelayedFlash": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bMapped": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDragHover": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FlashWhenTextChanges": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "eState": {
       "type": "SFXPowerWheelPowerState",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "eDesiredState": {
       "type": "SFXPowerWheelPowerState",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -150,12 +175,14 @@
       "documentation": null,
       "signature_members": {
         "pTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "sOutInfo": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -183,8 +210,9 @@
       "documentation": null,
       "signature_members": {
         "ePathState": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerWheelPowerState",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "string",
@@ -206,8 +234,9 @@
       "documentation": null,
       "signature_members": {
         "bIconIsRendering": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -217,8 +246,9 @@
       "documentation": null,
       "signature_members": {
         "eMapIcon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerWheelMapButtonIcon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -228,8 +258,9 @@
       "documentation": null,
       "signature_members": {
         "bHover": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -239,12 +270,14 @@
       "documentation": null,
       "signature_members": {
         "bHover": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bSkipTransition": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -254,12 +287,14 @@
       "documentation": null,
       "signature_members": {
         "nNewIcon": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sIconResourcePath": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -269,8 +304,9 @@
       "documentation": null,
       "signature_members": {
         "pNewPower": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerCustomActionBase",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -280,8 +316,9 @@
       "documentation": null,
       "signature_members": {
         "bSelect": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -291,12 +328,14 @@
       "documentation": null,
       "signature_members": {
         "eNewState": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerWheelPowerState",
+          "documentation": null,
+          "flags": 128
         },
         "bForceUpdate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -318,8 +357,9 @@
       "documentation": null,
       "signature_members": {
         "bForceUpdate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -339,5 +379,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

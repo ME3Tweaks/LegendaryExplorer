@@ -4,15 +4,18 @@
   "variables": {
     "m_aTrackKeys": {
       "type": "BioTrackKey",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_nCurrentKey": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nNextKey": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -48,5 +51,7 @@
     }
   },
   "states": {},
+  "classflags": 134226067,
+  "configname": "None",
   "documentation": null
 }

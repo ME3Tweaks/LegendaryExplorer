@@ -4,31 +4,38 @@
   "variables": {
     "m_aIgnorePawn": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "EventProperties": {
       "type": "SFXVocalizationEventProperties",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "QueuedEvents": {
       "type": "SFXVocalizationEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "OverridesAllIfSet": {
       "type": "SFXVocalizationBank",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DebugCounter": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bDebugging": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bAlwaysPlay": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -36,12 +43,14 @@
       "documentation": null,
       "signature_members": {
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -51,8 +60,9 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXVocalizationBank",
@@ -62,8 +72,9 @@
       "documentation": null,
       "signature_members": {
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "SFXVocalizationEvent",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "bool",
@@ -73,20 +84,24 @@
       "documentation": null,
       "signature_members": {
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "SFXVocalizationEvent",
+          "documentation": null,
+          "flags": 386
         },
         "LineToPlay": {
-          "type": null,
-          "documentation": null
+          "type": "SFXVocalizationLine",
+          "documentation": null,
+          "flags": 4194690
         },
         "Speaker": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "DelaySec": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -96,12 +111,14 @@
       "documentation": null,
       "signature_members": {
         "idx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -111,12 +128,14 @@
       "documentation": null,
       "signature_members": {
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "EChallengeType",
+          "documentation": null,
+          "flags": 128
         },
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -126,12 +145,14 @@
       "documentation": null,
       "signature_members": {
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "ECharacterType",
+          "documentation": null,
+          "flags": 128
         },
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -141,12 +162,14 @@
       "documentation": null,
       "signature_members": {
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "ESFXVocalizationGender",
+          "documentation": null,
+          "flags": 128
         },
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -156,16 +179,19 @@
       "documentation": null,
       "signature_members": {
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "ESFXVocalizationLocation",
+          "documentation": null,
+          "flags": 128
         },
         "BP": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "Speaker": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -175,12 +201,14 @@
       "documentation": null,
       "signature_members": {
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "ESFXVocalizationName",
+          "documentation": null,
+          "flags": 128
         },
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -190,12 +218,14 @@
       "documentation": null,
       "signature_members": {
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "ESFXVocalizationWeapon",
+          "documentation": null,
+          "flags": 128
         },
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -205,8 +235,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -216,8 +247,9 @@
       "documentation": null,
       "signature_members": {
         "oPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -227,8 +259,9 @@
       "documentation": null,
       "signature_members": {
         "VocEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXVocalizationEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -238,8 +271,9 @@
       "documentation": null,
       "signature_members": {
         "oPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -247,5 +281,7 @@
     }
   },
   "states": {},
+  "classflags": 144703642,
+  "configname": "Game",
   "documentation": null
 }

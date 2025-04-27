@@ -2,15 +2,18 @@
   "members": {
     "Prefix": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Description": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Color": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "Engine",

@@ -2,15 +2,18 @@
   "members": {
     "DoorGUID": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CurrentState": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OldState": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXSaveGame",

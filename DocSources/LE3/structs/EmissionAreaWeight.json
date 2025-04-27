@@ -2,11 +2,13 @@
   "members": {
     "AreaTag": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Weight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioParticleModuleLocationAttachedMesh",

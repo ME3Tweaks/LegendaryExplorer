@@ -4,15 +4,18 @@
   "variables": {
     "MissionScores": {
       "type": "MissionScore",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "FullGameExperience": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "SideContentXP": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -30,5 +33,7 @@
     }
   },
   "states": {},
+  "classflags": 2097174,
+  "configname": "Game",
   "documentation": null
 }

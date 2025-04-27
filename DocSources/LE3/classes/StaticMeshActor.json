@@ -4,11 +4,13 @@
   "variables": {
     "StaticMeshComponent": {
       "type": "StaticMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67764235
     },
     "oAudioComponent": {
       "type": "AudioComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     }
   },
   "functions": {
@@ -20,5 +22,7 @@
     }
   },
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

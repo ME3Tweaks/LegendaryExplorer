@@ -4,43 +4,53 @@
   "variables": {
     "PrimaryKey": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "SecondaryKey": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "UnselectKey": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "OryginalControllerRef": {
       "type": "PlayerController",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OryginalPlayer": {
       "type": "Player",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DrawFrustum": {
       "type": "DrawFrustumComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "SelectedActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SelectedComponent": {
       "type": "PrimitiveComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "bShowSelectedInfo": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bIsFrozenRendering": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -48,12 +58,14 @@
       "documentation": null,
       "signature_members": {
         "Command": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bWriteToLog": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "string",
@@ -63,8 +75,9 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -74,8 +87,9 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -91,16 +105,19 @@
       "documentation": null,
       "signature_members": {
         "HitLoc": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -110,16 +127,19 @@
       "documentation": null,
       "signature_members": {
         "HitLoc": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -147,24 +167,29 @@
       "documentation": null,
       "signature_members": {
         "ControllerId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Key": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "EInputEvent",
+          "documentation": null,
+          "flags": 128
         },
         "AmountDepressed": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bGamepad": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -196,8 +221,9 @@
           "documentation": null,
           "signature_members": {
             "DeltaTime": {
-              "type": null,
-              "documentation": null
+              "type": "float",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -207,5 +233,7 @@
       "documentation": null
     }
   },
+  "classflags": 144703670,
+  "configname": "Input",
   "documentation": null
 }

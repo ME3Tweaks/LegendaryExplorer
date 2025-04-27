@@ -13,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "oInventory": {
-          "type": null,
-          "documentation": null
+          "type": "SFXInventoryManager",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -24,8 +25,9 @@
       "documentation": null,
       "signature_members": {
         "oInventory": {
-          "type": null,
-          "documentation": null
+          "type": "SFXInventoryManager",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -39,5 +41,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

@@ -4,39 +4,48 @@
   "variables": {
     "VfTable_IISFXOnlineComponentUserInterface": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "m_oGUI": {
       "type": "SFXSFHandler_EANetworking",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "HandlerId": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "__ExternalCallback_OnDisplayNotification__Delegate": {
       "type": "ExternalCallback_OnDisplayNotification",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__ExternalCallback_ClearNotifications__Delegate": {
       "type": "ExternalCallback_ClearNotifications",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__ExternalCallback_SetState__Delegate": {
       "type": "ExternalCallback_SetState",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__ExternalCallback_CloseEANetworking__Delegate": {
       "type": "ExternalCallback_CloseEANetworking",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__ExternalCallback_HasCerberusDLC__Delegate": {
       "type": "ExternalCallback_HasCerberusDLC",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__ExternalCallback_ShowStore__Delegate": {
       "type": "ExternalCallback_ShowStore",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -50,8 +59,9 @@
       "documentation": null,
       "signature_members": {
         "aOffers": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOfferDescriptor",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -61,8 +71,9 @@
       "documentation": null,
       "signature_members": {
         "bVal": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -78,20 +89,24 @@
       "documentation": null,
       "signature_members": {
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineConnection_MessageType",
+          "documentation": null,
+          "flags": 128
         },
         "MessageData": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Title": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Image": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -101,8 +116,9 @@
       "documentation": null,
       "signature_members": {
         "eState": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineUIState",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -118,12 +134,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "context": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -133,12 +151,14 @@
       "documentation": null,
       "signature_members": {
         "bContinue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "ParentEmail": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -148,28 +168,34 @@
       "documentation": null,
       "signature_members": {
         "bContinue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "i_sCountryCode": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "BirthDay": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "BirthMonth": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "BirthYear": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "i_sLanguageCode": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -179,16 +205,19 @@
       "documentation": null,
       "signature_members": {
         "Email": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Password": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "eReturnCode": {
-          "type": null,
-          "documentation": null
+          "type": "EAGUI_EmailPswdMismatchResult",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -198,8 +227,9 @@
       "documentation": null,
       "signature_members": {
         "aiChosen": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -209,48 +239,59 @@
       "documentation": null,
       "signature_members": {
         "sEmail": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sPassword": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bEAProducts": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bThirdParty": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bBioWareProducts": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "i_sCountryCode": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "BirthDay": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "BirthMonth": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "BirthYear": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "i_sLanguageCode": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bSubmit": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -266,12 +307,14 @@
       "documentation": null,
       "signature_members": {
         "bContinue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "i_sCode": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -281,8 +324,9 @@
       "documentation": null,
       "signature_members": {
         "eReturnCode": {
-          "type": null,
-          "documentation": null
+          "type": "EAGUI_CerberusIntroResult",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -298,8 +342,9 @@
       "documentation": null,
       "signature_members": {
         "bAccept": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -309,32 +354,39 @@
       "documentation": null,
       "signature_members": {
         "sEmail": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sPassword": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bEAProducts": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bThirdParty": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bRegisterProduct": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bBioWareProducts": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bSubmit": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -344,8 +396,9 @@
       "documentation": null,
       "signature_members": {
         "eReturnEnum": {
-          "type": null,
-          "documentation": null
+          "type": "EAGUI_MsgBoxResult",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -355,16 +408,19 @@
       "documentation": null,
       "signature_members": {
         "Email": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Password": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "eReturnCode": {
-          "type": null,
-          "documentation": null
+          "type": "EAGUI_NucleusLoginResult",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -374,8 +430,9 @@
       "documentation": null,
       "signature_members": {
         "bContinue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -391,12 +448,14 @@
       "documentation": null,
       "signature_members": {
         "m_CountryCodeList": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "m_CountryDisplayList": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -406,12 +465,14 @@
       "documentation": null,
       "signature_members": {
         "Email": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Password": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -421,52 +482,64 @@
       "documentation": null,
       "signature_members": {
         "sEmail": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sPassword": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bEAProducts": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bThirdParty": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bBioWareProducts": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "i_sCountryCode": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "BirthDay": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "BirthMonth": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "BirthYear": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "i_sLanguageCode": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "m_CountryCodeList": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "m_CountryDisplayList": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -500,12 +573,14 @@
       "documentation": null,
       "signature_members": {
         "i_sTermsOfService": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bTOSChanged": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -515,32 +590,39 @@
       "documentation": null,
       "signature_members": {
         "sEmail": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sPassword": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bEAProducts": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bThirdParty": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bRegisterProduct": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bBioWareProducts": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bUnderage": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -550,16 +632,19 @@
       "documentation": null,
       "signature_members": {
         "srMessage": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "srButton1Text": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "srButton2Text": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -569,24 +654,29 @@
       "documentation": null,
       "signature_members": {
         "sTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sMessage": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sButton1Text": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         },
         "sButton2Text": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         },
         "sButton3Text": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -596,16 +686,19 @@
       "documentation": null,
       "signature_members": {
         "Email": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Password": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "eScreenState": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -621,8 +714,9 @@
       "documentation": null,
       "signature_members": {
         "aOffers": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOfferDescriptor",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -632,8 +726,9 @@
       "documentation": null,
       "signature_members": {
         "bVal": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -649,8 +744,9 @@
       "documentation": null,
       "signature_members": {
         "eState": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineUIState",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -666,20 +762,24 @@
       "documentation": null,
       "signature_members": {
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineConnection_MessageType",
+          "documentation": null,
+          "flags": 128
         },
         "MessageData": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Title": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Image": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -689,8 +789,9 @@
       "documentation": null,
       "signature_members": {
         "bAccept": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -700,8 +801,9 @@
       "documentation": null,
       "signature_members": {
         "bCerberusContent": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -717,8 +819,9 @@
       "documentation": null,
       "signature_members": {
         "connectMode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineConnectMode",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -734,8 +837,9 @@
       "documentation": null,
       "signature_members": {
         "i_NetworkingGUI": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSFHandler_EANetworking",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -745,8 +849,9 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -768,8 +873,9 @@
       "documentation": null,
       "signature_members": {
         "oOnlineSubsystem": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineSubsystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -777,5 +883,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

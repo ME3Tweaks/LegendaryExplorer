@@ -4,35 +4,43 @@
   "variables": {
     "m_aTarget": {
       "type": "BioSeqVar_ObjectFindByTag",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     },
     "RelativeOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RelativeRotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDetach": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bHardAttach": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseRelativeOffset": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseRelativeRotation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -40,8 +48,9 @@
       "documentation": null,
       "signature_members": {
         "pTrackInst": {
-          "type": null,
-          "documentation": null
+          "type": "BioInterpTrackInst",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -73,5 +82,7 @@
     }
   },
   "states": {},
+  "classflags": 142614674,
+  "configname": "None",
   "documentation": null
 }

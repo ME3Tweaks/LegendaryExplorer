@@ -4,7 +4,8 @@
   "variables": {
     "selectable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -22,5 +23,7 @@
     }
   },
   "states": {},
+  "classflags": 142610582,
+  "configname": "Game",
   "documentation": null
 }

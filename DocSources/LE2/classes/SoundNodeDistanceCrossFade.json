@@ -4,10 +4,13 @@
   "variables": {
     "CrossFadeInput": {
       "type": "DistanceDatum",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718665
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142610578,
+  "configname": "None",
   "documentation": null
 }

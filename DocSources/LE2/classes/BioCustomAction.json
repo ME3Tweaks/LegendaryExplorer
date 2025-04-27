@@ -4,99 +4,123 @@
   "variables": {
     "PreciseDestination": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "PreciseRotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "oPawn": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SpeedModifier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16387
     },
     "LastCanDoCustomActionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "PreciseRotationInterpolationTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bLockPawnRotation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bBreakFromCover": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bDisableMovement": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bDisableLook": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bDisableCollision": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bDisablePhysics": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bDisableLeftHandIK": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bIgnoreDamage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bNotifyKnockedOutOfCover": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bCameraFocusOnPawn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bLastCanDoCustomAction": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIgnoreInputForCustomAction": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bReachPreciseDestination": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bReachedPreciseDestination": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bReachPreciseRotation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bReachedPreciseRotation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bForcePrecisePosition": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "VocalizationEvent": {
       "type": "ESFXVocalizationEventID",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -104,8 +128,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -115,8 +140,9 @@
       "documentation": null,
       "signature_members": {
         "FF": {
-          "type": null,
-          "documentation": null
+          "type": "ForceFeedbackWaveform",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -126,8 +152,9 @@
       "documentation": null,
       "signature_members": {
         "Shake": {
-          "type": null,
-          "documentation": null
+          "type": "ScreenShakeStruct",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -137,12 +164,14 @@
       "documentation": null,
       "signature_members": {
         "SkelComp": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "ExtractedRootMotionDelta": {
-          "type": null,
-          "documentation": null
+          "type": "BoneAtom",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -152,8 +181,9 @@
       "documentation": null,
       "signature_members": {
         "SkelComp": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -163,8 +193,9 @@
       "documentation": null,
       "signature_members": {
         "bToggleOn": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -180,12 +211,14 @@
       "documentation": null,
       "signature_members": {
         "RotationToFace": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         },
         "InterpolationTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -195,8 +228,9 @@
       "documentation": null,
       "signature_members": {
         "DestinationToReach": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -206,16 +240,19 @@
       "documentation": null,
       "signature_members": {
         "SeqNode": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
         },
         "PlayedTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "ExcessTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -225,12 +262,14 @@
       "documentation": null,
       "signature_members": {
         "SeqNode": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
         },
         "NotifyObject": {
-          "type": null,
-          "documentation": null
+          "type": "BioAnimNotify_CustomAction",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -240,12 +279,14 @@
       "documentation": null,
       "signature_members": {
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Wall": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -255,12 +296,14 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -310,5 +353,7 @@
     }
   },
   "states": {},
+  "classflags": 134217879,
+  "configname": "Game",
   "documentation": null
 }

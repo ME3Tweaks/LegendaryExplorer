@@ -4,27 +4,33 @@
   "variables": {
     "m_aDOFData": {
       "type": "BioDOFTrackData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_fDOFDefaultBlurKernel": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_fDOFDefaultExponent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_fDOFDefaultFStop": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_fDOFDefaultMaxNearBlur": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_fDOFDefaultMaxFarBlur": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     }
   },
   "functions": {
@@ -60,5 +66,7 @@
     }
   },
   "states": {},
+  "classflags": 134226070,
+  "configname": "Game",
   "documentation": null
 }

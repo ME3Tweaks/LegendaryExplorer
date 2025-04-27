@@ -2,11 +2,13 @@
   "members": {
     "Quaternion": {
       "type": "Quat",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Translation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "AnimNodeAimOffset",

@@ -4,35 +4,43 @@
   "variables": {
     "InterpAction": {
       "type": "SeqAct_Interp",
-      "documentation": null
+      "documentation": null,
+      "flags": 34
     },
     "PlayRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "Position": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "ClientSidePositionErrorTolerance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsPlaying": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "bReversePlayback": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "bPaused": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "SFXReplicationTriggerDummy": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     }
   },
   "functions": {
@@ -50,5 +58,7 @@
     }
   },
   "states": {},
+  "classflags": 144705682,
+  "configname": "None",
   "documentation": null
 }

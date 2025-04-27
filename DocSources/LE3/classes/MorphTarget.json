@@ -4,30 +4,38 @@
   "variables": {
     "MorphLODModels": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "MaterialSlotId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ScalarParameterName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaterialInstanceConstant": {
       "type": "MaterialInstanceConstant",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "OffsetSkeleton": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "OffsetSkeleton_dep": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 402,
+  "configname": "None",
   "documentation": null
 }

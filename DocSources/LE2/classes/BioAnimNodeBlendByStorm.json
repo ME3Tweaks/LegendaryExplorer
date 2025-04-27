@@ -4,18 +4,23 @@
   "variables": {
     "MovementSync": {
       "type": "BioAnimMovementSync",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "Idle2StormBlendDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "Storm2IdleBlendDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

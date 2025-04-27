@@ -4,19 +4,23 @@
   "variables": {
     "VfTable_FTickableObject": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "m_aPackageRequests": {
       "type": "SFXAsyncPackageRequest",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_OnGroupLoadedCallbacks": {
       "type": "SFXAsyncLoadGroupCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnAsyncGroupLoaded__Delegate": {
       "type": "OnAsyncGroupLoaded",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -24,16 +28,19 @@
       "documentation": null,
       "signature_members": {
         "nmAsyncGroupTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Assets": {
-          "type": null,
-          "documentation": null
+          "type": "SFXAsyncAssetRequest",
+          "documentation": null,
+          "flags": 4194690
         },
         "AsyncGroupLoaded": {
-          "type": null,
-          "documentation": null
+          "type": "OnAsyncGroupLoaded",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -43,8 +50,9 @@
       "documentation": null,
       "signature_members": {
         "nmAsyncGroupTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -54,12 +62,14 @@
       "documentation": null,
       "signature_members": {
         "nmAsyncGroupTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "oAssets": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -69,8 +79,9 @@
       "documentation": null,
       "signature_members": {
         "nmAsyncGroupTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -84,5 +95,7 @@
     }
   },
   "states": {},
+  "classflags": 136315034,
+  "configname": "None",
   "documentation": null
 }

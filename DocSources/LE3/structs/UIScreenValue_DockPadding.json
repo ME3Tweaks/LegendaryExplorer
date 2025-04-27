@@ -2,11 +2,13 @@
   "members": {
     "PaddingValue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     },
     "PaddingScaleType": {
       "type": "EUIDockPaddingEvalType",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     }
   },
   "classdef": "UIRoot",

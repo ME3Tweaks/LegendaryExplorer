@@ -2,11 +2,13 @@
   "members": {
     "Modifiers": {
       "type": "TimeModifier",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     },
     "SkelControlName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "AnimSequence",

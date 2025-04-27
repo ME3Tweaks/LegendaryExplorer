@@ -4,22 +4,28 @@
   "variables": {
     "JumpDest": {
       "type": "NavigationPoint",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "LandingOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TouchingCylinder": {
       "type": "CylinderComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "JumpDist": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

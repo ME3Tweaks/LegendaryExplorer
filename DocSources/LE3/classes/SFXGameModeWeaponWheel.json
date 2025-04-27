@@ -4,7 +4,8 @@
   "variables": {
     "DisableMoveTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     }
   },
   "functions": {
@@ -40,5 +41,7 @@
     }
   },
   "states": {},
+  "classflags": 2097174,
+  "configname": "Input",
   "documentation": null
 }

@@ -2,15 +2,18 @@
   "members": {
     "nmStageSpecificCam": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bForceCrossingLineOfAction": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseForNextCamera": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioEvtSysTrackSwitchCamera",

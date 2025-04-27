@@ -4,47 +4,58 @@
   "variables": {
     "m_vExtents": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_vExtentShrinkDelta": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_oReticleTarget": {
       "type": "GFxValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_oReticleTargetBase": {
       "type": "GFxValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fMinTargetSelectionWidth": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fMinTargetSelectionHeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fReticleShrinkTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fFlourishLifeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fSelectionBoxScalingFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_bPreviouslyInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bDoingActionFlourish": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -52,8 +63,9 @@
       "documentation": null,
       "signature_members": {
         "bTransition": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -63,8 +75,9 @@
       "documentation": null,
       "signature_members": {
         "sSFReticlePath": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -72,5 +85,7 @@
     }
   },
   "states": {},
+  "classflags": 134217886,
+  "configname": "UI",
   "documentation": null
 }

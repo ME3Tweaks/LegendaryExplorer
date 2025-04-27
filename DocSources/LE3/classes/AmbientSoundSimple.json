@@ -4,18 +4,23 @@
   "variables": {
     "AmbientProperties": {
       "type": "SoundNodeAmbient",
-      "documentation": null
+      "documentation": null,
+      "flags": 67239937
     },
     "SoundCueInstance": {
       "type": "SoundCue",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303178
     },
     "SoundNodeInstance": {
       "type": "SoundNodeAmbient",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303178
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144704154,
+  "configname": "None",
   "documentation": null
 }

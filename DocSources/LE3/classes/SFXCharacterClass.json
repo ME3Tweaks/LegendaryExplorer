@@ -4,94 +4,118 @@
   "variables": {
     "WeaponEncumbranceModifiers": {
       "type": "ScaledFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "className": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "MappedPowers": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "PowerUnlockRequirements": {
       "type": "PowerUnlockRequirement",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SquadScreenPowerOrder": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "StartingPowerRanks": {
       "type": "PowerStartingRank",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "AutoLevelUpInfo": {
       "type": "PowerAutoLevelUp",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Loadout": {
       "type": "SFXLoadoutData",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BioticStrength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TechStrength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CombatStrength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "srClassName": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "srClassDesc": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "srClassPrimaryDesc": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "srClassSecondaryDesc": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BloodColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RichPresenceContextStringIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "StartingEncumbranceCapacity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "EncumbranceMinCooldown": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "EncumbranceMaxCooldown": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxWeapons": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ClassType": {
       "type": "ECharacterClass",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 4118,
+  "configname": "Game",
   "documentation": null
 }

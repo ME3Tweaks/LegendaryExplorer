@@ -4,23 +4,28 @@
   "variables": {
     "fGroundOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fClimbSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fMaxClimbSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fMaxAcceleration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fStopSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -34,8 +39,9 @@
       "documentation": null,
       "signature_members": {
         "NextStage": {
-          "type": null,
-          "documentation": null
+          "type": "EMoveStage",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -49,5 +55,7 @@
     }
   },
   "states": {},
+  "classflags": 144703639,
+  "configname": "Game",
   "documentation": null
 }

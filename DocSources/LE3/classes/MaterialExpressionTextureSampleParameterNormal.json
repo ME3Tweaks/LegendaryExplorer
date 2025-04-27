@@ -4,10 +4,13 @@
   "variables": {
     "InstanceOverride": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134226066,
+  "configname": "None",
   "documentation": null
 }

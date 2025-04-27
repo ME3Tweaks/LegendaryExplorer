@@ -4,39 +4,48 @@
   "variables": {
     "LeaderboardGroups": {
       "type": "LeaderboardMapGroup",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "CachedRecords": {
       "type": "LeaderboardRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "RequestedData": {
       "type": "SFXLeaderboardRequestData",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentData": {
       "type": "SFXLeaderboardRequestData",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RecordsPerRequest": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "RowsInTable": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "SeamlessRankToMoveTo": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SeamlessRankToSelect": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StartTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -44,28 +53,34 @@
       "documentation": null,
       "signature_members": {
         "NewRecords": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardRecord",
+          "documentation": null,
+          "flags": 4194432
         },
         "NumRanks": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "TopRank": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "RankToMoveTo": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "RankToSelect": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bFriends": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -75,28 +90,34 @@
       "documentation": null,
       "signature_members": {
         "records": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardRecord",
+          "documentation": null,
+          "flags": 4194434
         },
         "NumRanks": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "TopRank": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "RankToMoveTo": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "RankToSelect": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bFriends": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -118,8 +139,9 @@
       "documentation": null,
       "signature_members": {
         "columnDefinitions": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardColumn",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -129,8 +151,9 @@
       "documentation": null,
       "signature_members": {
         "sNewTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -182,8 +205,9 @@
       "documentation": null,
       "signature_members": {
         "RowNumber": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -193,28 +217,34 @@
       "documentation": null,
       "signature_members": {
         "aColumnInfo": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardColumn",
+          "documentation": null,
+          "flags": 4194432
         },
         "aResults": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardRecord",
+          "documentation": null,
+          "flags": 4194432
         },
         "iTotalRanks": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "uidEntity": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "nErrorCode": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardStatsError",
+          "documentation": null,
+          "flags": 128
         },
         "pExternalData": {
-          "type": null,
-          "documentation": null
+          "type": "Pointer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -224,28 +254,34 @@
       "documentation": null,
       "signature_members": {
         "aColumnInfo": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardColumn",
+          "documentation": null,
+          "flags": 4194432
         },
         "aResults": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardRecord",
+          "documentation": null,
+          "flags": 4194432
         },
         "iTotalRanks": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "uidEntity": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "nErrorCode": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardStatsError",
+          "documentation": null,
+          "flags": 128
         },
         "pExternalData": {
-          "type": null,
-          "documentation": null
+          "type": "Pointer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -261,20 +297,24 @@
       "documentation": null,
       "signature_members": {
         "PrimaryIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "SecondaryIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nRange": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "iPlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -284,20 +324,24 @@
       "documentation": null,
       "signature_members": {
         "PrimaryIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "SecondaryIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nRank": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nRange": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -331,8 +375,9 @@
       "documentation": null,
       "signature_members": {
         "Rank": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -346,5 +391,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "UI",
   "documentation": null
 }

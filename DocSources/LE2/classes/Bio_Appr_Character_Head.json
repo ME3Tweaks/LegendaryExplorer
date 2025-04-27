@@ -4,63 +4,78 @@
   "variables": {
     "m_aMaterialConfig": {
       "type": "BioCharacterHeadAppearanceMaterialConfig",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "MorphConstraints": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "AnimSets": {
       "type": "AnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_aHairAppearance": {
       "type": "Bio_Appr_Character_Hair",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     },
     "TextureOverrides": {
       "type": "BioWrinkleConfig",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_oSettings": {
       "type": "Bio_Appr_Character_Head_Settings",
-      "documentation": null
+      "documentation": null,
+      "flags": 67772425
     },
     "PhysicsAsset": {
       "type": "PhysicsAsset",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "WrinkleNormalMap": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "WrinkleNormalMask_1": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "WrinkleNormalMask_2": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DefaultFaceFXAsset": {
       "type": "FaceFXAsset",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oPortraitMaterial": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oModelMesh": {
       "type": "SkeletalMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "HeadTrack": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "UseWrinkles": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -72,5 +87,7 @@
     }
   },
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

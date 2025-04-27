@@ -2,19 +2,23 @@
   "members": {
     "Title": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "TotalTitle": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Pct": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BonusPct": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioDefine",

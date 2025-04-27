@@ -4,18 +4,23 @@
   "variables": {
     "Actors": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "GroupName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCachedList": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 169869458,
+  "configname": "None",
   "documentation": null
 }

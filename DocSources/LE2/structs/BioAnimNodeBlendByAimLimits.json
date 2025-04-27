@@ -2,19 +2,23 @@
   "members": {
     "DegreesLeft": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "DegreesRight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "DegreesUp": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "DegreesDown": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     }
   },
   "classdef": "BioAnimNodeBlendByAim",

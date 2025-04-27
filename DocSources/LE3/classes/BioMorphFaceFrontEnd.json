@@ -4,51 +4,63 @@
   "variables": {
     "m_pModifierData": {
       "type": "Slider",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "CachedFaceCodeRemappings": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "m_oFaceData": {
       "type": "FaceData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_sPlayerName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_oBaseSettings": {
       "type": "BaseHeads",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aBaseHeads": {
       "type": "BaseHeads",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MaleRemappings": {
       "type": "SliderRemapping",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "FemaleRemappings": {
       "type": "SliderRemapping",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "WorkingMorphFace": {
       "type": "BioMorphFace",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_iCurrentBaseHead": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bDebugStrings": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bIsMale": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -56,8 +68,9 @@
       "documentation": null,
       "signature_members": {
         "sFaceCode": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -67,12 +80,14 @@
       "documentation": null,
       "signature_members": {
         "pSrcPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "bUpdate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -94,8 +109,9 @@
       "documentation": null,
       "signature_members": {
         "categoryIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -105,8 +121,9 @@
       "documentation": null,
       "signature_members": {
         "categoryIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -122,8 +139,9 @@
       "documentation": null,
       "signature_members": {
         "categoryIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -133,12 +151,14 @@
       "documentation": null,
       "signature_members": {
         "categoryIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sliderIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -148,12 +168,14 @@
       "documentation": null,
       "signature_members": {
         "categoryIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sliderIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -163,12 +185,14 @@
       "documentation": null,
       "signature_members": {
         "categoryIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sliderIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -178,12 +202,14 @@
       "documentation": null,
       "signature_members": {
         "categoryIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sliderIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -193,12 +219,14 @@
       "documentation": null,
       "signature_members": {
         "categoryIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sliderIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -208,12 +236,14 @@
       "documentation": null,
       "signature_members": {
         "categoryIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sliderIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -223,12 +253,14 @@
       "documentation": null,
       "signature_members": {
         "categoryIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sliderIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -238,20 +270,24 @@
       "documentation": null,
       "signature_members": {
         "categoryIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sliderIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sliderValue": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bUpdate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -261,12 +297,14 @@
       "documentation": null,
       "signature_members": {
         "Data": {
-          "type": null,
-          "documentation": null
+          "type": "SFXMorphFaceFrontEndDataSource",
+          "documentation": null,
+          "flags": 128
         },
         "bReset": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "BioMorphFace",
@@ -282,12 +320,14 @@
       "documentation": null,
       "signature_members": {
         "nCategory": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bUpdate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -303,12 +343,14 @@
       "documentation": null,
       "signature_members": {
         "nCategory": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bUpdate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -330,8 +372,9 @@
       "documentation": null,
       "signature_members": {
         "sPlayerName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -345,5 +388,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "UI",
   "documentation": null
 }

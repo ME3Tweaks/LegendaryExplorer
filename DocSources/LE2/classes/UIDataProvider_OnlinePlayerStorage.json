@@ -4,19 +4,23 @@
   "variables": {
     "PlayerStorageArrayProviders": {
       "type": "PlayerStorageArrayProvider",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Profile": {
       "type": "OnlinePlayerStorage",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ProviderName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bWasErrorLastRead": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -24,8 +28,9 @@
       "documentation": null,
       "signature_members": {
         "SettingName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -35,12 +40,14 @@
       "documentation": null,
       "signature_members": {
         "SourceProvider": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 128
         },
         "PropTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -62,8 +69,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -73,12 +81,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -94,8 +104,9 @@
       "documentation": null,
       "signature_members": {
         "InPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -105,12 +116,14 @@
       "documentation": null,
       "signature_members": {
         "PlayerInterface": {
-          "type": null,
-          "documentation": null
+          "type": "OnlinePlayerInterface",
+          "documentation": null,
+          "flags": 128
         },
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -120,12 +133,14 @@
       "documentation": null,
       "signature_members": {
         "PlayerInterface": {
-          "type": null,
-          "documentation": null
+          "type": "OnlinePlayerInterface",
+          "documentation": null,
+          "flags": 128
         },
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -135,16 +150,19 @@
       "documentation": null,
       "signature_members": {
         "PlayerInterface": {
-          "type": null,
-          "documentation": null
+          "type": "OnlinePlayerInterface",
+          "documentation": null,
+          "flags": 128
         },
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerStorage": {
-          "type": null,
-          "documentation": null
+          "type": "OnlinePlayerStorage",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -154,16 +172,19 @@
       "documentation": null,
       "signature_members": {
         "PlayerInterface": {
-          "type": null,
-          "documentation": null
+          "type": "OnlinePlayerInterface",
+          "documentation": null,
+          "flags": 128
         },
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerStorage": {
-          "type": null,
-          "documentation": null
+          "type": "OnlinePlayerStorage",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -171,5 +192,7 @@
     }
   },
   "states": {},
+  "classflags": 136315034,
+  "configname": "Game",
   "documentation": null
 }

@@ -4,15 +4,18 @@
   "variables": {
     "GameSettingsCfgList": {
       "type": "GameSettingsCfg",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "SettingsProviderClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "SelectedIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -20,8 +23,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerOwner": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -31,8 +35,9 @@
       "documentation": null,
       "signature_members": {
         "PlayerOwner": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -54,8 +59,9 @@
       "documentation": null,
       "signature_members": {
         "SettingsName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -65,8 +71,9 @@
       "documentation": null,
       "signature_members": {
         "NewIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -88,8 +95,9 @@
       "documentation": null,
       "signature_members": {
         "ControllerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -99,12 +107,14 @@
       "documentation": null,
       "signature_members": {
         "SourceProvider": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 128
         },
         "SettingsName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -112,5 +122,7 @@
     }
   },
   "states": {},
+  "classflags": 136315035,
+  "configname": "None",
   "documentation": null
 }

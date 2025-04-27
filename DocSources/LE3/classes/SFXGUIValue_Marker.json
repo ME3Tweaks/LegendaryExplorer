@@ -4,103 +4,128 @@
   "variables": {
     "CurrentTitle": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MarkerRootDI": {
       "type": "ASDisplayInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MarkerReticuleFreeArrowClipDI": {
       "type": "ASDisplayInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MarkerReticuleClipDI": {
       "type": "ASDisplayInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MarkerMiscTextClipAnimDI": {
       "type": "ASDisplayInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MarkerTitleTextClipAnimDI": {
       "type": "ASDisplayInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ScreenEdgeBorder": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "Actor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SkelMeshComponent": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "MarkerClip": {
       "type": "GFxValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MarkerReticuleFreeArrowClip": {
       "type": "GFxValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MarkerReticuleClip": {
       "type": "GFxValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MarkerIconClip": {
       "type": "GFxValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MarkerMiscTextClipAnim": {
       "type": "GFxValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MarkerTitleTextClipAnim": {
       "type": "GFxValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BoneIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "UpdateDeltaT": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OffscreenDirectionDampenPower": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "FullyInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MarkerReticuleArrowClipDIDirty": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MarkerMiscTextClipAnimDIDirty": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MarkerTitleTextClipAnimDIDirty": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PreviousIsOffscreen": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TitleVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DefaultPawnAimNodeToAttachTo": {
       "type": "EAimNodes",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -108,8 +133,9 @@
       "documentation": null,
       "signature_members": {
         "TimeVisible": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -125,8 +151,9 @@
       "documentation": null,
       "signature_members": {
         "NewTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -136,28 +163,34 @@
       "documentation": null,
       "signature_members": {
         "SceneView": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGUISceneView",
+          "documentation": null,
+          "flags": 386
         },
         "WorldLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 130
         },
         "ScreenCoords": {
-          "type": null,
-          "documentation": null
+          "type": "Vector2D",
+          "documentation": null,
+          "flags": 384
         },
         "PostProjectCoords": {
-          "type": null,
-          "documentation": null
+          "type": "Vector4",
+          "documentation": null,
+          "flags": 384
         },
         "LocationIsOffscreen": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "LocationIsBehindView": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -167,8 +200,9 @@
       "documentation": null,
       "signature_members": {
         "Module": {
-          "type": null,
-          "documentation": null
+          "type": "SFXModule_Marker",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Vector",
@@ -184,8 +218,9 @@
       "documentation": null,
       "signature_members": {
         "SceneView": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGUISceneView",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -195,12 +230,14 @@
       "documentation": null,
       "signature_members": {
         "MarkerIsOffscreen": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "OffscreenDirection": {
-          "type": null,
-          "documentation": null
+          "type": "Vector4",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -210,8 +247,9 @@
       "documentation": null,
       "signature_members": {
         "TimeVisible": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -221,8 +259,9 @@
       "documentation": null,
       "signature_members": {
         "TimeVisible": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -244,12 +283,14 @@
       "documentation": null,
       "signature_members": {
         "sArrowFrame": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sOffscreenArrowFrame": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -259,8 +300,9 @@
       "documentation": null,
       "signature_members": {
         "NewText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -282,12 +324,14 @@
       "documentation": null,
       "signature_members": {
         "NewActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "Module": {
-          "type": null,
-          "documentation": null
+          "type": "SFXModule_Marker",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -303,8 +347,9 @@
       "documentation": null,
       "signature_members": {
         "Title": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -312,5 +357,7 @@
     }
   },
   "states": {},
+  "classflags": 142606494,
+  "configname": "UI",
   "documentation": null
 }

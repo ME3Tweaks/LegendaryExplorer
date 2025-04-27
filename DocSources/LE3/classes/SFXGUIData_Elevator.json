@@ -4,31 +4,38 @@
   "variables": {
     "ElevatorDestinations": {
       "type": "ElevatorDestinationData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "DefaultImage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "ElevatorName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srElevatorTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srElevatorDescription": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srDefaultAButtonText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srDefaultBButtonText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -36,16 +43,19 @@
       "documentation": null,
       "signature_members": {
         "Elevator": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGUIMovie",
+          "documentation": null,
+          "flags": 128
         },
         "Destination": {
-          "type": null,
-          "documentation": null
+          "type": "ElevatorDestinationData",
+          "documentation": null,
+          "flags": 4194432
         },
         "Desc": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -55,16 +65,19 @@
       "documentation": null,
       "signature_members": {
         "Elevator": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGUIMovie",
+          "documentation": null,
+          "flags": 128
         },
         "Destination": {
-          "type": null,
-          "documentation": null
+          "type": "ElevatorDestinationData",
+          "documentation": null,
+          "flags": 4194432
         },
         "Title": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -72,5 +85,7 @@
     }
   },
   "states": {},
+  "classflags": 136320150,
+  "configname": "UI",
   "documentation": null
 }

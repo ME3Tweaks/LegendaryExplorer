@@ -4,7 +4,8 @@
   "variables": {
     "m_Helper": {
       "type": "SFXPowerLevelUpHelper",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     }
   },
   "functions": {
@@ -28,5 +29,7 @@
     }
   },
   "states": {},
+  "classflags": 10485778,
+  "configname": "None",
   "documentation": null
 }

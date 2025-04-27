@@ -4,98 +4,123 @@
   "variables": {
     "CollisionGeom": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "CollisionGeomScale3D": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "PreCachedPhysData": {
       "type": "KCachedConvexData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "PreCachedPhysScale": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194307
     },
     "MaterialParamName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     },
     "PhysMaterial": {
       "type": "PhysicalMaterial",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fDetachHPThresholdPercent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fDetachHPPercent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fDamageScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MassScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PreCachedPhysDataVersion": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bDetachable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPartBasedDamageEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bFixed": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bNoCollision": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bBlockZeroExtent": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bBlockNonZeroExtent": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bEnableContinuousCollisionDetection": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAlwaysFullAnimWeight": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bConsiderForBounds": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ePartGroup": {
       "type": "EBioPartGroup",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SleepFamily": {
       "type": "ESleepFamily",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

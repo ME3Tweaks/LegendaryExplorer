@@ -4,83 +4,103 @@
   "variables": {
     "ControllerState": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TimeStampMS": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PawnDesiredYaw": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MoveMag": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AimDeltaRotYaw": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AimDeltaRotPitch": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsInStationaryCover": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bWantsToStorm": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bStorming": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bCancelStorm": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bWantsToCrouch": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bWantsToPortArm": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAimAssistActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsDead": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsSniping": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SavedMoveType": {
       "type": "ESFXSavedMoveType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CoverType": {
       "type": "ECoverType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CoverAction": {
       "type": "ECoverAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CoverDirection": {
       "type": "ECoverDirection",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentSlotDirection": {
       "type": "ECoverDirection",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -88,8 +108,9 @@
       "documentation": null,
       "signature_members": {
         "BioPC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -105,8 +126,9 @@
       "documentation": null,
       "signature_members": {
         "PreviousMove": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSavedMove",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -116,8 +138,9 @@
       "documentation": null,
       "signature_members": {
         "PreviousMove": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSavedMove",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -133,12 +156,14 @@
       "documentation": null,
       "signature_members": {
         "Flags": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "EDoubleClickDir",
@@ -148,20 +173,24 @@
       "documentation": null,
       "signature_members": {
         "P": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         },
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "newAccel": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "InDoubleClick": {
-          "type": null,
-          "documentation": null
+          "type": "EDoubleClickDir",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -169,5 +198,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

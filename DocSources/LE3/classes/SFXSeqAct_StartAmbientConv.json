@@ -4,74 +4,93 @@
   "variables": {
     "m_aConnectedActors": {
       "type": "SFXConvActorVar",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "Conv": {
       "type": "BioConversation",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_pConvController": {
       "type": "BioConversationController",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_pOwner": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fInterruptRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DelayTimeAfterLoadingScreen": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_fPostLoadingScreenDelayTimer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bNoGestures": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bFOVOMode": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bLookAtActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bDisableLookAtRangeCheck": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bDisableDelayUntilPreload": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bDisableProceduralFoley": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bAllowStartingIfAlreadyActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bSubtitleHasPriority": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bPreLoading": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bPlayRequested": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

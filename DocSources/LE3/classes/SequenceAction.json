@@ -4,18 +4,23 @@
   "variables": {
     "Targets": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "HandlerName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bCallHandler": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315027,
+  "configname": "None",
   "documentation": null
 }

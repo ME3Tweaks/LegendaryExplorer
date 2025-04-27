@@ -4,50 +4,63 @@
   "variables": {
     "m_oMember": {
       "type": "Pawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "m_nmTechnique": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "m_nSubTechnique": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "m_fRating": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "m_fMinRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "m_fMaxRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "m_fBestRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "m_fTmpRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bCanCasterMoveDuring": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nCapType": {
       "type": "EBioCapabilityTypes",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "m_nCapMode": {
       "type": "EBioCapMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

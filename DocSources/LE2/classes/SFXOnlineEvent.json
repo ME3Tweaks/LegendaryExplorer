@@ -4,39 +4,48 @@
   "variables": {
     "ErrorString": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "EventID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TimeOut": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ErrorCode": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "IsUnique": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TimeOutEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EventType": {
       "type": "SFXOnlineEventType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentStatus": {
       "type": "SFXOnlineEventStatus",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Outcome": {
       "type": "SFXOnlineEventStatusFinished",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -44,8 +53,9 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -97,8 +107,9 @@
       "documentation": null,
       "signature_members": {
         "fEventTimeout": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -114,8 +125,9 @@
       "documentation": null,
       "signature_members": {
         "sMessage": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -131,8 +143,9 @@
       "documentation": null,
       "signature_members": {
         "nCode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -148,8 +161,9 @@
       "documentation": null,
       "signature_members": {
         "eNewStatus": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventStatus",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -165,8 +179,9 @@
       "documentation": null,
       "signature_members": {
         "eStatusFinished": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventStatusFinished",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -182,8 +197,9 @@
       "documentation": null,
       "signature_members": {
         "nNewEventId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -199,8 +215,9 @@
       "documentation": null,
       "signature_members": {
         "eNewEventType": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -214,5 +231,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

@@ -4,22 +4,28 @@
   "variables": {
     "Active": {
       "type": "BioActiveUseArtPlaceable",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nmSkillToGoto": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bTransitionIntialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDone": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

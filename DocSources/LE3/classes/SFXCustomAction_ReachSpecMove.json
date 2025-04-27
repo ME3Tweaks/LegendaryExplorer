@@ -4,15 +4,18 @@
   "variables": {
     "MovementPath": {
       "type": "ReachSpec",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "BlockingStartCylinder": {
       "type": "SFXReachSpecPlaceholderCylinder",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BlockingEndCylinder": {
       "type": "SFXReachSpecPlaceholderCylinder",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -32,8 +35,9 @@
       "documentation": null,
       "signature_members": {
         "bForced": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -43,12 +47,14 @@
       "documentation": null,
       "signature_members": {
         "SyncPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "bForced": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -80,5 +86,7 @@
     }
   },
   "states": {},
+  "classflags": 144703638,
+  "configname": "Game",
   "documentation": null
 }

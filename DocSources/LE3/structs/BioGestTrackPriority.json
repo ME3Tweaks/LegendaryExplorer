@@ -2,11 +2,13 @@
   "members": {
     "nTrackIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nPriority": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioEvtSysTrackGesture",

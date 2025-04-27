@@ -2,7 +2,8 @@
   "members": {
     "Points": {
       "type": "InterpLookupPoint",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "classdef": "InterpTrackMove",

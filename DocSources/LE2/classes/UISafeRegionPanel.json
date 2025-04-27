@@ -4,26 +4,33 @@
   "variables": {
     "RegionPercentages": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 67125249
     },
     "bForce4x3AspectRatio": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseFullRegionIn4x3": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPrimarySafeRegion": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RegionType": {
       "type": "ESafeRegionType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144704150,
+  "configname": "Game",
   "documentation": null
 }

@@ -2,19 +2,23 @@
   "members": {
     "EventName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "EventID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "MaxValue": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "MappingType": {
       "type": "EPropertyValueMappingType",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "classdef": "GameplayEvents",

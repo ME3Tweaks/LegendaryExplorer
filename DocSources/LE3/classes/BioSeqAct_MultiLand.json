@@ -4,35 +4,43 @@
   "variables": {
     "ReticleRotStart": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ReticleRotMaxClamp": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ReticleRotMinClamp": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Planet": {
       "type": "InterpActor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Reticle": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LandingSiteMarker": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CurrentPlanet": {
       "type": "BioPlanet",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LandingSiteScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -46,8 +54,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -67,5 +76,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

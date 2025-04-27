@@ -4,31 +4,38 @@
   "variables": {
     "m_aObjComment": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4755801206507438081
     },
     "ParentSequence": {
       "type": "Sequence",
-      "documentation": null
+      "documentation": null,
+      "flags": 16777218
     },
     "ObjInstanceVersion": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "ObjPosX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ObjPosY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDeletable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOutputObjCommentToScreen": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -66,8 +73,9 @@
       "documentation": null,
       "signature_members": {
         "TargetObject": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -83,12 +91,14 @@
       "documentation": null,
       "signature_members": {
         "LogText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bWarning": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -96,5 +106,7 @@
     }
   },
   "states": {},
+  "classflags": 136315027,
+  "configname": "None",
   "documentation": null
 }

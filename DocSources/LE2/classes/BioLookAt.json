@@ -4,34 +4,43 @@
   "variables": {
     "m_Controllers": {
       "type": "BioPawnLookAtController",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_oTarget": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oPawn": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_Definition": {
       "type": "BioLookAtDefinition",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nRank": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fLookAtNoticeTimer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bDisabling": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

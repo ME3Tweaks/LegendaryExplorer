@@ -2,55 +2,68 @@
   "members": {
     "Nebulae": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Sunlight": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Planet": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlanetSphere": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Corona": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Object": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Clouds": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Card": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlanetRing": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BackgroundCloud": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Citadel": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Camera": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Scanner": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXGalaxyMapGameData",

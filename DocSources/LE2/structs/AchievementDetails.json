@@ -2,39 +2,48 @@
   "members": {
     "AchievementName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "Description": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "HowTo": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "Image": {
       "type": "Surface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Id": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "GamerPoints": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bIsSecret": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bWasAchievedOnline": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bWasAchievedOffline": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "classdef": "OnlineSubsystem",

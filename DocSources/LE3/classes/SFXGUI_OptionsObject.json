@@ -4,7 +4,8 @@
   "variables": {
     "OptionId": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "nValue": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -23,8 +25,9 @@
       "documentation": null,
       "signature_members": {
         "Option": {
-          "type": null,
-          "documentation": null
+          "type": "RadioGroupOption",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -34,8 +37,9 @@
       "documentation": null,
       "signature_members": {
         "Option": {
-          "type": null,
-          "documentation": null
+          "type": "SliderOption",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -45,8 +49,9 @@
       "documentation": null,
       "signature_members": {
         "Option": {
-          "type": null,
-          "documentation": null
+          "type": "TextSliderOption",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -78,5 +83,7 @@
     }
   },
   "states": {},
+  "classflags": 134217875,
+  "configname": "None",
   "documentation": null
 }

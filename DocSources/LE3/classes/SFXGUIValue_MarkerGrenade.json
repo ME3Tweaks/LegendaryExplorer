@@ -4,19 +4,23 @@
   "variables": {
     "MarkerScale": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "Player": {
       "type": "Pawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FadeInExponent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "DisplayRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -30,8 +34,9 @@
       "documentation": null,
       "signature_members": {
         "SceneView": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGUISceneView",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -39,5 +44,7 @@
     }
   },
   "states": {},
+  "classflags": 142606494,
+  "configname": "UI",
   "documentation": null
 }

@@ -2,51 +2,63 @@
   "members": {
     "Cluster": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ClusterCircle": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "GalaxySphere": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Twinkle": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Crosshair": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Camera": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ClusterPath": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DisabledClusterCircle": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ReaperIcon": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ReaperClusterCircle": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CurrentLocationIcon": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PulsingCircleHighlight": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXGalaxyMapGameData",

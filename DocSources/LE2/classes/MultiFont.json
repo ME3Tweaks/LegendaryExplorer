@@ -4,7 +4,8 @@
   "variables": {
     "ResolutionTestTable": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "HeightTest": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -21,5 +23,7 @@
     }
   },
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

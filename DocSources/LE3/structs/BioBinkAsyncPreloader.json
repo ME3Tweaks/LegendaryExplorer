@@ -2,19 +2,23 @@
   "members": {
     "Callback": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Context": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PreloadMovieHandle": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentState": {
       "type": "EBioBinkAsyncState",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "classdef": "InterpData",

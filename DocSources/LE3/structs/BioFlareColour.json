@@ -2,11 +2,13 @@
   "members": {
     "Tint": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "IntensityThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioLineBloomEffect",

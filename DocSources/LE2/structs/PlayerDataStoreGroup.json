@@ -2,11 +2,13 @@
   "members": {
     "DataStores": {
       "type": "UIDataStore",
-      "documentation": null
+      "documentation": null,
+      "flags": 5251074
     },
     "PlayerOwner": {
       "type": "LocalPlayer",
-      "documentation": null
+      "documentation": null,
+      "flags": 1056770
     }
   },
   "classdef": "DataStoreClient",

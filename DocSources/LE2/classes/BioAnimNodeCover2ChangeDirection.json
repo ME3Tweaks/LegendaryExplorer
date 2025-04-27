@@ -4,26 +4,33 @@
   "variables": {
     "IdleToTransitionBlendDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TransitionToIdleBlendDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bBlocking": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentCoverDirection": {
       "type": "ECoverDirection",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "PendingCoverDirection": {
       "type": "ECoverDirection",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

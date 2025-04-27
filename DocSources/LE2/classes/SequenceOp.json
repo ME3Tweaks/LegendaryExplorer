@@ -4,51 +4,63 @@
   "variables": {
     "InputLinks": {
       "type": "SeqOpInputLink",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "OutputLinks": {
       "type": "SeqOpOutputLink",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "VariableLinks": {
       "type": "SeqVarLink",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "EventLinks": {
       "type": "SeqEventLink",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PlayerIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16785408
     },
     "ActivateCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "SearchTag": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2105346
     },
     "bActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bLatentExecution": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bManualHandleOutputs": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bAutoActivateOutputLinks": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GamepadID": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 16785408
     }
   },
   "functions": {
@@ -56,8 +68,9 @@
       "documentation": null,
       "signature_members": {
         "InputIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -67,8 +80,9 @@
       "documentation": null,
       "signature_members": {
         "TheActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Controller",
@@ -78,8 +92,9 @@
       "documentation": null,
       "signature_members": {
         "TheActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Pawn",
@@ -107,12 +122,14 @@
       "documentation": null,
       "signature_members": {
         "OldVersion": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "NewVersion": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -122,12 +139,14 @@
       "documentation": null,
       "signature_members": {
         "OldVersion": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "NewVersion": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -137,12 +156,14 @@
       "documentation": null,
       "signature_members": {
         "sLink": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "srValue": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -152,12 +173,14 @@
       "documentation": null,
       "signature_members": {
         "sLink": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sValue": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -167,12 +190,14 @@
       "documentation": null,
       "signature_members": {
         "sLink": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "oValue": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -182,12 +207,14 @@
       "documentation": null,
       "signature_members": {
         "sLink": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sValue": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -197,12 +224,14 @@
       "documentation": null,
       "signature_members": {
         "sLink": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -212,12 +241,14 @@
       "documentation": null,
       "signature_members": {
         "sLink": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "nValue": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -227,12 +258,14 @@
       "documentation": null,
       "signature_members": {
         "sLink": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -254,8 +287,9 @@
       "documentation": null,
       "signature_members": {
         "LinkDesc": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -265,8 +299,9 @@
       "documentation": null,
       "signature_members": {
         "OutputIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -276,12 +311,14 @@
       "documentation": null,
       "signature_members": {
         "aStringRef": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 4194688
         },
         "sDescription": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -291,12 +328,14 @@
       "documentation": null,
       "signature_members": {
         "nameVars": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         },
         "inDesc": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -306,12 +345,14 @@
       "documentation": null,
       "signature_members": {
         "strVars": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         },
         "inDesc": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -321,12 +362,14 @@
       "documentation": null,
       "signature_members": {
         "floatVars": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 4194688
         },
         "inDesc": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -336,12 +379,14 @@
       "documentation": null,
       "signature_members": {
         "intVars": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
         },
         "inDesc": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -351,16 +396,19 @@
       "documentation": null,
       "signature_members": {
         "VarClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "OutVariable": {
-          "type": null,
-          "documentation": null
+          "type": "SequenceVariable",
+          "documentation": null,
+          "flags": 384
         },
         "inDesc": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -370,12 +418,14 @@
       "documentation": null,
       "signature_members": {
         "boolVars": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 4194688
         },
         "inDesc": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -385,12 +435,14 @@
       "documentation": null,
       "signature_members": {
         "outIData": {
-          "type": null,
-          "documentation": null
+          "type": "InterpData",
+          "documentation": null,
+          "flags": 4194688
         },
         "inDesc": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -400,12 +452,14 @@
       "documentation": null,
       "signature_members": {
         "objVars": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 4194688
         },
         "inDesc": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -415,16 +469,19 @@
       "documentation": null,
       "signature_members": {
         "out_Objects": {
-          "type": null,
-          "documentation": null
+          "type": "SequenceObject",
+          "documentation": null,
+          "flags": 4194688
         },
         "ObjectType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
         },
         "bRecurse": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -434,8 +491,9 @@
       "documentation": null,
       "signature_members": {
         "bConsiderInputLinks": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -443,5 +501,7 @@
     }
   },
   "states": {},
+  "classflags": 136315027,
+  "configname": "None",
   "documentation": null
 }

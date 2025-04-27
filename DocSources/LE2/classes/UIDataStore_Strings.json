@@ -4,10 +4,13 @@
   "variables": {
     "LocFileProviders": {
       "type": "UIConfigFileProvider",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315034,
+  "configname": "None",
   "documentation": null
 }

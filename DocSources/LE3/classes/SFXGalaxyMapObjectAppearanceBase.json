@@ -4,35 +4,43 @@
   "variables": {
     "MaterialOverrides": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "MeshRotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MeshRotationSpeed": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MeshResource": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SkeletalMeshResource": {
       "type": "SkeletalMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MeshScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fAccumulatedRotationTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "NoAppearance": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -40,12 +48,14 @@
       "documentation": null,
       "signature_members": {
         "pGalaxy": {
-          "type": null,
-          "documentation": null
+          "type": "BioCameraBehaviorGalaxy",
+          "documentation": null,
+          "flags": 128
         },
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -55,12 +65,14 @@
       "documentation": null,
       "signature_members": {
         "oObjectActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "pGalaxy": {
-          "type": null,
-          "documentation": null
+          "type": "BioCameraBehaviorGalaxy",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -74,5 +86,7 @@
     }
   },
   "states": {},
+  "classflags": 134221970,
+  "configname": "None",
   "documentation": null
 }

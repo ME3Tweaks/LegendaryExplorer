@@ -2,11 +2,13 @@
   "members": {
     "EventCallback": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EventType": {
       "type": "SFXOnlineEventType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXOnlineComponent",

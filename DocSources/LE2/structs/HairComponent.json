@@ -2,35 +2,43 @@
   "members": {
     "StyleName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MeshName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ScalpMorphName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aHairTextures": {
       "type": "TextureData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aHairScalars": {
       "type": "ScalarData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "HairMesh": {
       "type": "SkeletalMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ScalpMorphWeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HairType": {
       "type": "EBioMorphUtilityHairComponentType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioMorphUtility",

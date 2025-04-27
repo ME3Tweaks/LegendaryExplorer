@@ -2,19 +2,23 @@
   "members": {
     "OnDependency": {
       "type": "OnDependencyEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SourceGUI": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DependentGUI": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OptContext": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXGUIInteraction",

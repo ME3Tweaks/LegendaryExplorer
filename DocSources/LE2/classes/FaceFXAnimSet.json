@@ -4,30 +4,38 @@
   "variables": {
     "RawFaceFXAnimSetBytes": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "RawFaceFXMiniSessionBytes": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "ReferencedSoundCues": {
       "type": "WwiseBaseSoundObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "InternalFaceFXAnimSet": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "NumLoadErrors": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bBioSoundCuesFixedUp": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

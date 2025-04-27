@@ -2,47 +2,58 @@
   "members": {
     "MaterialOverrides": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SectionOverrides": {
       "type": "BuildingMatOverrides",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Mesh": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Translation": {
       "type": "DistributionVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "Rotation": {
       "type": "DistributionVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "DimX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DimZ": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Chance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OverriddenMeshLightMapRes": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bMeshScaleTranslation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bOverrideMeshLightMapRes": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "PBRuleNodeMesh",

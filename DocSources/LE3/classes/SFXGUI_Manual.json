@@ -4,95 +4,118 @@
   "variables": {
     "Category1": {
       "type": "ManualCategory",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "Category2": {
       "type": "ManualCategory",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "Category3": {
       "type": "ManualCategory",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "Chapters": {
       "type": "ManualChapter",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "Pages": {
       "type": "ManualPage",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_aCurrentChapterIndicies": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "TitleText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ExitText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "BackText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "CloseSubListText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "Tab1Text": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "Tab2Text": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "Tab3Text": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ViewText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ContinueText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nCurrentChapterIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nCurrentTab": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "KinectStartTabOverride": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "KinectStartChapterOverride": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_nStartTabOverride": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nStartChapterOverride": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bOpenedFromMainMenu": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -100,8 +123,9 @@
       "documentation": null,
       "signature_members": {
         "aItems": {
-          "type": null,
-          "documentation": null
+          "type": "ManualListItem",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -111,8 +135,9 @@
       "documentation": null,
       "signature_members": {
         "nLastEntryID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -122,8 +147,9 @@
       "documentation": null,
       "signature_members": {
         "fScroll": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -133,12 +159,14 @@
       "documentation": null,
       "signature_members": {
         "sInfo": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sImgResource": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -148,8 +176,9 @@
       "documentation": null,
       "signature_members": {
         "aSubItems": {
-          "type": null,
-          "documentation": null
+          "type": "ManualListItem",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -159,20 +188,24 @@
       "documentation": null,
       "signature_members": {
         "nQuestPrimary": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nQuestSecondary": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nCodexPrimary": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nCodexSecondary": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -182,8 +215,9 @@
       "documentation": null,
       "signature_members": {
         "nForceTab": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -199,16 +233,19 @@
       "documentation": null,
       "signature_members": {
         "sLabel": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "sTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         },
         "nListLen": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -218,8 +255,9 @@
       "documentation": null,
       "signature_members": {
         "Fnc": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -235,8 +273,9 @@
       "documentation": null,
       "signature_members": {
         "nPageIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -246,8 +285,9 @@
       "documentation": null,
       "signature_members": {
         "nTab": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -263,8 +303,9 @@
       "documentation": null,
       "signature_members": {
         "nListIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -274,8 +315,9 @@
       "documentation": null,
       "signature_members": {
         "usingGamepad": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -285,12 +327,14 @@
       "documentation": null,
       "signature_members": {
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -318,12 +362,14 @@
       "documentation": null,
       "signature_members": {
         "aChapterIndices": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194434
         },
         "nSelectChapterId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -333,8 +379,9 @@
       "documentation": null,
       "signature_members": {
         "ChapterIDs": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "int",
@@ -372,5 +419,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "UI",
   "documentation": null
 }

@@ -4,11 +4,13 @@
   "variables": {
     "WeaponMods": {
       "type": "SFXWeaponMod",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "ExtraMeshComponents": {
       "type": "ExtraMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 4726784
     }
   },
   "functions": {
@@ -16,12 +18,14 @@
       "documentation": null,
       "signature_members": {
         "ModClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "nLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -37,8 +41,9 @@
       "documentation": null,
       "signature_members": {
         "ModClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -48,8 +53,9 @@
       "documentation": null,
       "signature_members": {
         "bHidden": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -57,5 +63,7 @@
     }
   },
   "states": {},
+  "classflags": 10489874,
+  "configname": "None",
   "documentation": null
 }

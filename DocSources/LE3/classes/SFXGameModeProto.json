@@ -4,27 +4,33 @@
   "variables": {
     "OldGroundSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OldCombatGroundSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastJoyRightKey": {
       "type": "EProtoInputTrapKey",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastJoyUpKey": {
       "type": "EProtoInputTrapKey",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastLookRightKey": {
       "type": "EProtoInputTrapKey",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastLookUpKey": {
       "type": "EProtoInputTrapKey",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -212,8 +218,9 @@
       "documentation": null,
       "signature_members": {
         "Key": {
-          "type": null,
-          "documentation": null
+          "type": "EProtoInputTrapKey",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -251,5 +258,7 @@
     }
   },
   "states": {},
+  "classflags": 2097174,
+  "configname": "Input",
   "documentation": null
 }

@@ -2,11 +2,13 @@
   "members": {
     "Position": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Velocity": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "AnimNotify_Trails",

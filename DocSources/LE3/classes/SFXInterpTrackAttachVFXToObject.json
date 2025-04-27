@@ -4,19 +4,23 @@
   "variables": {
     "m_aAttachToTarget": {
       "type": "BioSeqVar_ObjectFindByTag",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     },
     "m_vOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nmSocketOrBone": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oEffect": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -48,8 +52,9 @@
       "documentation": null,
       "signature_members": {
         "pTrackInst": {
-          "type": null,
-          "documentation": null
+          "type": "BioInterpTrackInst",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -57,5 +62,7 @@
     }
   },
   "states": {},
+  "classflags": 142614674,
+  "configname": "None",
   "documentation": null
 }

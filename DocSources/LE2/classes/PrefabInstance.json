@@ -4,50 +4,63 @@
   "variables": {
     "PI_Bytes": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "PI_CompleteObjects": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "PI_ReferencedObjects": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "PI_SavedNames": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "ArchetypeToInstanceMap": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "PI_ObjectMap": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "TemplatePrefab": {
       "type": "Prefab",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "SequenceInstance": {
       "type": "PrefabSequence",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "TemplateVersion": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "PI_PackageVersion": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "PI_LicenseePackageVersion": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

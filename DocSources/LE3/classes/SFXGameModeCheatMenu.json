@@ -19,8 +19,9 @@
       "documentation": null,
       "signature_members": {
         "HUD": {
-          "type": null,
-          "documentation": null
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -82,5 +83,7 @@
     }
   },
   "states": {},
+  "classflags": 2097174,
+  "configname": "Input",
   "documentation": null
 }

@@ -4,59 +4,73 @@
   "variables": {
     "m_sBackgroundMusic": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnSuccessCallback__Delegate": {
       "type": "OnSuccessCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnFailureCallback__Delegate": {
       "type": "OnFailureCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnCancelCallback__Delegate": {
       "type": "OnCancelCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_oDependent": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_oUsingPawn": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_sTecPlotStateName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fTecTimeMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nStartingResource": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nPhase2Resource": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nPhase2Time": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bRewardOnTimeFail": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bSuccessfulEndGame": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bCanceled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -76,12 +90,14 @@
       "documentation": null,
       "signature_members": {
         "bGameWon": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nRemainingResource": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -121,8 +137,9 @@
       "documentation": null,
       "signature_members": {
         "n_TimeTaken": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -132,8 +149,9 @@
       "documentation": null,
       "signature_members": {
         "n_TimeTaken": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -143,8 +161,9 @@
       "documentation": null,
       "signature_members": {
         "n_TimeTaken": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -152,5 +171,7 @@
     }
   },
   "states": {},
+  "classflags": 136315031,
+  "configname": "UI",
   "documentation": null
 }

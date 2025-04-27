@@ -4,7 +4,8 @@
   "variables": {
     "m_LightEnvSeq": {
       "type": "BioSeqAct_ToggleLightEnv",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -28,5 +29,7 @@
     }
   },
   "states": {},
+  "classflags": 142614674,
+  "configname": "None",
   "documentation": null
 }

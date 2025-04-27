@@ -4,159 +4,198 @@
   "variables": {
     "HitReactions": {
       "type": "HitReactionSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "Resistance": {
       "type": "ResistanceInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ShieldHitFFWaveform": {
       "type": "ForceFeedbackWaveform",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CE_DeathEffect": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CE_PlayerFrameBufferEffect": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DeathSoundEffect": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WoundPct": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "DamageRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HeadGibChance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DeathEffectPriority": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Range_Melee": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Range_Short": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Range_Medium": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Range_Long": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FlinchChance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FlinchDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SourceDisplayName": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bSpawnWeaponImpacts": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIgnoreShields": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPartBasedDamageDisabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bHealthDamage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDamagesFriends": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCanGibHead": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsMelee": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCausesNormalizedDamage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUsesDamageScaling": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIgnoreDamageGating": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAlwaysPlayHitReact": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCriticalHit": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bMPKillDamage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCausesRagdoll": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCausesRagdollOnDeath": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDisableAIControl": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bImmediateDeath": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIgnoresCoverDirection": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bNoShake": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bCorpseDestroyedOnDeath": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "FalloffType": {
       "type": "ESFXDamageFalloffType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WoundDamage": {
       "type": "EWoundDamage",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     }
   },
   "functions": {
@@ -164,8 +203,9 @@
       "documentation": null,
       "signature_members": {
         "DamageCalc": {
-          "type": null,
-          "documentation": null
+          "type": "DamageCalculationAlgorithm",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "float",
@@ -175,12 +215,14 @@
       "documentation": null,
       "signature_members": {
         "Target": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -190,8 +232,9 @@
       "documentation": null,
       "signature_members": {
         "DamageCalc": {
-          "type": null,
-          "documentation": null
+          "type": "DamageCalculationAlgorithm",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -199,5 +242,7 @@
     }
   },
   "states": {},
+  "classflags": 134217911,
+  "configname": "Weapon",
   "documentation": null
 }

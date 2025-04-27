@@ -4,11 +4,13 @@
   "variables": {
     "Vocalizations": {
       "type": "SFXVocalizationRole",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "VocalizationsV2": {
       "type": "SFXVocalizationEventV2",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -16,24 +18,29 @@
       "documentation": null,
       "signature_members": {
         "Role": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Variation": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Sound": {
-          "type": null,
-          "documentation": null
+          "type": "WwiseEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -43,12 +50,14 @@
       "documentation": null,
       "signature_members": {
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 384
         },
         "Variation": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -58,12 +67,14 @@
       "documentation": null,
       "signature_members": {
         "I": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "J": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -71,5 +82,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

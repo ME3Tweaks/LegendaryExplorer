@@ -13,12 +13,14 @@
       "documentation": null,
       "signature_members": {
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -38,5 +40,7 @@
       "documentation": null
     }
   },
+  "classflags": 10485782,
+  "configname": "Weapon",
   "documentation": null
 }

@@ -2,11 +2,13 @@
   "members": {
     "Subscribers": {
       "type": "OnEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "Waiters": {
       "type": "OnEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     }
   },
   "classdef": "SFXOnlineComponentCoordinator",

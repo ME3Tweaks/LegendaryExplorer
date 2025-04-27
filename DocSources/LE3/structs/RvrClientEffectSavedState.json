@@ -2,47 +2,58 @@
   "members": {
     "Atoms": {
       "type": "BoneAtom",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Attachments": {
       "type": "RvrClientEffectSavedAttachment",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827456
     },
     "location": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Rotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Velocity": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ComponentTranslation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ComponentRotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ComponentScale3D": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ComponentScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LOD": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TimeStamp": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "RvrCEffectModuleSpawnActorInstance",

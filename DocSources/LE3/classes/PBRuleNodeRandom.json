@@ -4,18 +4,23 @@
   "variables": {
     "NumOutputs": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MinNumExecuted": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaxNumExecuted": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136327314,
+  "configname": "None",
   "documentation": null
 }

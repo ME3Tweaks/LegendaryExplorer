@@ -2,51 +2,63 @@
   "members": {
     "UniqueId": {
       "type": "UniqueNetId",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "Data1": {
       "type": "QWord",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "Data2": {
       "type": "QWord",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "NickName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "SessionInfo": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "TitleId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bIsLocal": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bIsInPartyVoice": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bIsTalking": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bIsInGameSession": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "LocalUserNum": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "NatType": {
       "type": "ENATType",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "classdef": "OnlineSubsystem",

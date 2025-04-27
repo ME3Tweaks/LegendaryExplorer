@@ -2,35 +2,43 @@
   "members": {
     "Inputs": {
       "type": "InputEntry",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MatchDelegate": {
       "type": "InputMatchDelegate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MatchActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MatchFuncName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FailedFuncName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RequestName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MatchIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LastMatchTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "classdef": "PlayerController",

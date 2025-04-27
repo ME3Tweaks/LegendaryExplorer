@@ -2,39 +2,48 @@
   "members": {
     "DistributionFloat": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827457
     },
     "DistributionVector": {
       "type": "RawDistributionVector",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827457
     },
     "Parameter": {
       "type": "RvrClientEffectParameter",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "bDistanceBased": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bNormalizeTime": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSuppressDuringRegular": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSuppressDuringCooldown": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ValueModifierOperation": {
       "type": "EValueModifierOperation",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ValueModifierSelection": {
       "type": "EValueModifierSelection",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "RvrClientEffectModule",

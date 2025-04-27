@@ -4,39 +4,48 @@
   "variables": {
     "lstChoices": {
       "type": "SFXChoiceEntry",
-      "documentation": null
+      "documentation": null,
+      "flags": 4341761
     },
     "m_srTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "m_srSubTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "m_srAText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "m_srBText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "m_srOptionalPaneTitleText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "m_srOptionalPaneItemValuePrefixText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "m_ShowOptionalPane": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "m_eOptionalPaneResourceType": {
       "type": "EInventoryResourceTypes",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     }
   },
   "functions": {
@@ -44,12 +53,14 @@
       "documentation": null,
       "signature_members": {
         "Data": {
-          "type": null,
-          "documentation": null
+          "type": "SFXChoiceEntry",
+          "documentation": null,
+          "flags": 4194688
         },
         "nTokenID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -59,16 +70,19 @@
       "documentation": null,
       "signature_members": {
         "Data": {
-          "type": null,
-          "documentation": null
+          "type": "SFXChoiceEntry",
+          "documentation": null,
+          "flags": 4194688
         },
         "nTokenID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sValue": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -84,8 +98,9 @@
       "documentation": null,
       "signature_members": {
         "Params": {
-          "type": null,
-          "documentation": null
+          "type": "SFXChoiceEntry",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -95,20 +110,24 @@
       "documentation": null,
       "signature_members": {
         "bShowOptionalPane": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "srOptionalPaneTitleText": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 144
         },
         "srOptionalPaneItemValuePrefixText": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 144
         },
         "srOptionalPaneValuePrefixText": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -118,20 +137,24 @@
       "documentation": null,
       "signature_members": {
         "srTitle": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "srSubTitle": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "srAText": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "srBText": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -139,5 +162,7 @@
     }
   },
   "states": {},
+  "classflags": 136319126,
+  "configname": "UI",
   "documentation": null
 }

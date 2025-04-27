@@ -4,371 +4,463 @@
   "variables": {
     "m_mapPawnProps": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "m_StartingList": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4325377
     },
     "m_EntryList": {
       "type": "BioDialogEntryNode",
-      "documentation": null
+      "documentation": null,
+      "flags": 4325377
     },
     "m_ReplyList": {
       "type": "BioDialogReplyNode",
-      "documentation": null
+      "documentation": null,
+      "flags": 4325377
     },
     "m_SpeakerList": {
       "type": "BioDialogSpeaker",
-      "documentation": null
+      "documentation": null,
+      "flags": 4325377
     },
     "m_LookAtList": {
       "type": "BioDialogLookat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_ScriptList": {
       "type": "BioDialogScript",
-      "documentation": null
+      "documentation": null,
+      "flags": 4325377
     },
     "m_lstCurrentReplyIndices": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_sAreaCode": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_aFSPrevPositions": {
       "type": "BioSavedActorPos",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_sCurrentSubTitle": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_sCurrentFaceFXAnim": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_aMaleFaceSets": {
       "type": "FaceFXAnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "m_aFemaleFaceSets": {
       "type": "FaceFXAnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "m_aMaleSoundObjects": {
       "type": "WwiseBaseSoundObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aFemaleSoundObjects": {
       "type": "WwiseBaseSoundObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aPreLoadNodesVisited": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_aExtraParticipants": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "PreloadAnimations": {
       "type": "AnimSequence",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202498
     },
     "m_CachedLightingState": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "m_tNextLightingOverride": {
       "type": "BioNextLightingData",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_tNextCamOverride": {
       "type": "BioNextCamData",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_tInterruptInfo": {
       "type": "BioInterruptReplyInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "vLineOfAction": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_pConversationOwner": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_pConversationPlayer": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_pSpeaker": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_oPreviousSpeaker": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_pListener": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_pKismetStart": {
       "type": "BioSeqAct_StartConversation",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_stage": {
       "type": "BioStage",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_pCurrentSound": {
       "type": "WwiseBaseSoundObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "MatineeSequence": {
       "type": "Sequence",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "FaceFXSet": {
       "type": "FaceFXAnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "m_pNonSpeakerFaceFXSet": {
       "type": "FaceFXAnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pPreLoadingSoundCue": {
       "type": "WwiseBaseSoundObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nResRefID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     },
     "m_nCurrentEntry": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fStartTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nSelectedReply": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nCurrentReply": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_intimacy": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fShowRepliesOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_fShowLastLineOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_fNodePlayTimer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fInterruptRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fSubtitleTimingModifier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_fSubtitleTimingMinimum": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_fVOPreloadDelayTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_nNodeStateFlags": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fRemainingVOLength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fRemainingLastLineSubtitleDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nDelayedReplyChoice": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_colSubtitleColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_fAudioHitchBuffer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fPreLoadTimer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fPreLoadStartDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_srPreLoadedStrRef": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fDefaultInterruptWindowDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "m_fDefaultInterruptWindowStart": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "m_nTeleLinesHit": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nTeleLinesSkipped": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fTeleAverageSkipTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bOneLinerConversation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     },
     "bUseFixedCameras": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bConversationEnded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bHasAttachedCameraTrack": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bHasAttachedDOFTrack": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bSkipRequested": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bForceUnskippable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bDisplayNonAmbientName": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_bSkipProtectionDisabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bAmbient": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bPutPlayerIntoCombat": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bDisableTargeting": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bSkippable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bFailed": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bInterrupted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bKismetInitiated": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bConversationOver": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bEnableLookAtWithStage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_bPlayerIsFemale": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bNoGestures": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bForceShowReplies": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bCleanupNeeded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bEarlyTermination": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bRemoveWeapons": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_bPlayingNonTextLine": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bNextLinePreLoadEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_bPlayerSexIsValid": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bVerifyPreLoadingCorrectness": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_bAutoAdvanceSkippableLinesWithNoVO": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     }
   },
   "functions": {
@@ -376,8 +468,9 @@
       "documentation": null,
       "signature_members": {
         "bDisableCamera": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -399,12 +492,14 @@
       "documentation": null,
       "signature_members": {
         "fStart": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "fDuraton": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -420,8 +515,9 @@
       "documentation": null,
       "signature_members": {
         "fDelta": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -443,8 +539,9 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "EConvGUIStyles",
@@ -454,8 +551,9 @@
       "documentation": null,
       "signature_members": {
         "nEntryIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -471,8 +569,9 @@
       "documentation": null,
       "signature_members": {
         "Script": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -482,8 +581,9 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -493,8 +593,9 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -504,8 +605,9 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -515,12 +617,14 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bParse": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "string",
@@ -530,8 +634,9 @@
       "documentation": null,
       "signature_members": {
         "bParse": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "string",
@@ -541,8 +646,9 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Actor",
@@ -558,8 +664,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -569,8 +676,9 @@
       "documentation": null,
       "signature_members": {
         "pBioPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -580,8 +688,9 @@
       "documentation": null,
       "signature_members": {
         "bWasNonAmbient": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -615,8 +724,9 @@
       "documentation": null,
       "signature_members": {
         "nReply": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -626,8 +736,9 @@
       "documentation": null,
       "signature_members": {
         "nReply": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -637,8 +748,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -654,12 +766,14 @@
       "documentation": null,
       "signature_members": {
         "aOwner": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "aPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -669,12 +783,14 @@
       "documentation": null,
       "signature_members": {
         "nObjectIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bNoisyErrors": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Actor",
@@ -684,16 +800,19 @@
       "documentation": null,
       "signature_members": {
         "pActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "Position": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "facing": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -701,5 +820,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "Game",
   "documentation": null
 }

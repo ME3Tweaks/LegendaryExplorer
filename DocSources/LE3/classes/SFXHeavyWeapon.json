@@ -4,7 +4,8 @@
   "variables": {
     "bTossOnWeaponSwitch": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "Amount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -23,8 +25,9 @@
       "documentation": null,
       "signature_members": {
         "FireModeNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -40,8 +43,9 @@
       "documentation": null,
       "signature_members": {
         "Ammo": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -79,8 +83,9 @@
           "documentation": null,
           "signature_members": {
             "FireModeNum": {
-              "type": null,
-              "documentation": null
+              "type": "byte",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -90,5 +95,7 @@
       "documentation": null
     }
   },
+  "classflags": 10486327,
+  "configname": "Weapon",
   "documentation": null
 }

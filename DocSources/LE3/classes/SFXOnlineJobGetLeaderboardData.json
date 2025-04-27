@@ -4,43 +4,53 @@
   "variables": {
     "mPlayerId": {
       "type": "UniqueNetId",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Scope": {
       "type": "LeaderboardStatScope",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnJobCompletion__Delegate": {
       "type": "OnJobCompletion",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnResultsRetrieved__Delegate": {
       "type": "OnResultsRetrieved",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ExternalData": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "nLeaderboardId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nRankStart": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nRankRange": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bCenteredLeaderboard": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bFriendLeaderboard": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -48,24 +58,29 @@
       "documentation": null,
       "signature_members": {
         "LeaderboardId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerID": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "RankRange": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ResultsRetrievedDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnResultsRetrieved",
+          "documentation": null,
+          "flags": 4194432
         },
         "pExternalData": {
-          "type": null,
-          "documentation": null
+          "type": "Pointer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "SFXOnlineJobGetLeaderboardData",
@@ -75,16 +90,19 @@
       "documentation": null,
       "signature_members": {
         "LeaderboardId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ResultsRetrievedDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnResultsRetrieved",
+          "documentation": null,
+          "flags": 4194432
         },
         "pExternalData": {
-          "type": null,
-          "documentation": null
+          "type": "Pointer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "SFXOnlineJobGetLeaderboardData",
@@ -94,20 +112,24 @@
       "documentation": null,
       "signature_members": {
         "oScope": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardStatScope",
+          "documentation": null,
+          "flags": 4194432
         },
         "RankRange": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ResultsRetrievedDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnResultsRetrieved",
+          "documentation": null,
+          "flags": 4194432
         },
         "pExternalData": {
-          "type": null,
-          "documentation": null
+          "type": "Pointer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "SFXOnlineJobGetLeaderboardData",
@@ -117,24 +139,29 @@
       "documentation": null,
       "signature_members": {
         "LeaderboardId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "RankStart": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "RankRange": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ResultsRetrievedDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnResultsRetrieved",
+          "documentation": null,
+          "flags": 4194432
         },
         "pExternalData": {
-          "type": null,
-          "documentation": null
+          "type": "Pointer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "SFXOnlineJobGetLeaderboardData",
@@ -144,28 +171,34 @@
       "documentation": null,
       "signature_members": {
         "aColumInfo": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardColumn",
+          "documentation": null,
+          "flags": 4194432
         },
         "aResults": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardRecord",
+          "documentation": null,
+          "flags": 4194432
         },
         "iTotalRanks": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "uidEntity": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "nErrorCode": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardStatsError",
+          "documentation": null,
+          "flags": 128
         },
         "pExternalData": {
-          "type": null,
-          "documentation": null
+          "type": "Pointer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -175,28 +208,34 @@
       "documentation": null,
       "signature_members": {
         "aColumInfo": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardColumn",
+          "documentation": null,
+          "flags": 4194432
         },
         "aResults": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardRecord",
+          "documentation": null,
+          "flags": 4194432
         },
         "iTotalRanks": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "uidEntity": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "nErrorCode": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardStatsError",
+          "documentation": null,
+          "flags": 128
         },
         "pExternalData": {
-          "type": null,
-          "documentation": null
+          "type": "Pointer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -206,28 +245,34 @@
       "documentation": null,
       "signature_members": {
         "aColumInfo": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardColumn",
+          "documentation": null,
+          "flags": 4194432
         },
         "aResults": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardRecord",
+          "documentation": null,
+          "flags": 4194432
         },
         "iTotalRanks": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "uidEntity": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
         },
         "nErrorCode": {
-          "type": null,
-          "documentation": null
+          "type": "LeaderboardStatsError",
+          "documentation": null,
+          "flags": 128
         },
         "pExternalData": {
-          "type": null,
-          "documentation": null
+          "type": "Pointer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -241,5 +286,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "Game",
   "documentation": null
 }

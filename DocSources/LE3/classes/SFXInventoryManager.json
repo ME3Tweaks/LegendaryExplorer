@@ -4,195 +4,243 @@
   "variables": {
     "MaxGrenadeBonus": {
       "type": "ScaledFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "CurrentWeaponSelection": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WeaponRecoilOffset": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TotalRecoil": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Drift": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DriftTarget": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AttachedFlashlight": {
       "type": "Light",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AttachedAmbientLight": {
       "type": "Light",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AttachedFlashlightVFX": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Credits": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Medigel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Grenades": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 33
     },
     "Eezo": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Iridium": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Palladium": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Platinum": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Probes": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CurrentFuel": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaxCredits": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxEezo": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxIridium": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxPalladium": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxPlatinum": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxMedigel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxGrenades": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxGrenadesMP": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxProbes": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxFuel": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "FuelEfficiency": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ExtraMedigelPlotInt": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "DriftPitch": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DriftYaw": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DriftInterpSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DriftInterpResetSize": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DriftInterpMinSize": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DriftNoiseMagPitch": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DriftNoiseMagYaw": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DriftRampUpRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DriftRampUpDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AmbientLightCachedBrightness": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FlashlightCachedBrightness": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FlashlightCachedRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FlashlightCachedColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AmbientLightCachedColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ReplicatedWeaponIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     },
     "bWeaponFired": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bFlashlightAttached": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 274877906944
     },
     "bCanPickUpGrenades": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -200,12 +248,14 @@
       "documentation": null,
       "signature_members": {
         "NewInventoryItemClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "bDoNotActivate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Inventory",
@@ -233,8 +283,9 @@
       "documentation": null,
       "signature_members": {
         "VarName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -244,8 +295,9 @@
       "documentation": null,
       "signature_members": {
         "Slot": {
-          "type": null,
-          "documentation": null
+          "type": "EAttachSlot",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -255,8 +307,9 @@
       "documentation": null,
       "signature_members": {
         "WpnForSwitch": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -266,20 +319,24 @@
       "documentation": null,
       "signature_members": {
         "ttype": {
-          "type": null,
-          "documentation": null
+          "type": "ETreasureType",
+          "documentation": null,
+          "flags": 128
         },
         "nBudgetPercent": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bAbsoluteAmount": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bIsSalvage": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -301,8 +358,9 @@
       "documentation": null,
       "signature_members": {
         "bForceADifferentWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Weapon",
@@ -312,8 +370,9 @@
       "documentation": null,
       "signature_members": {
         "DesiredWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -335,8 +394,9 @@
       "documentation": null,
       "signature_members": {
         "DesiredWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -346,8 +406,9 @@
       "documentation": null,
       "signature_members": {
         "DesiredWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -357,8 +418,9 @@
       "documentation": null,
       "signature_members": {
         "DesiredWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -368,8 +430,9 @@
       "documentation": null,
       "signature_members": {
         "FireModeNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -379,8 +442,9 @@
       "documentation": null,
       "signature_members": {
         "FireModeNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -390,8 +454,9 @@
       "documentation": null,
       "signature_members": {
         "bForceADifferentWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -401,16 +466,19 @@
       "documentation": null,
       "signature_members": {
         "oLight": {
-          "type": null,
-          "documentation": null
+          "type": "Light",
+          "documentation": null,
+          "flags": 128
         },
         "oAmbientLight": {
-          "type": null,
-          "documentation": null
+          "type": "Light",
+          "documentation": null,
+          "flags": 144
         },
         "CE_WeaponEffect": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectInterface",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -420,20 +488,24 @@
       "documentation": null,
       "signature_members": {
         "eInvResType": {
-          "type": null,
-          "documentation": null
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
         },
         "Amount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bShowNotification": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bIgnoreBudget": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -443,8 +515,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -454,8 +527,9 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Inventory",
@@ -465,8 +539,9 @@
       "documentation": null,
       "signature_members": {
         "oInventory": {
-          "type": null,
-          "documentation": null
+          "type": "Inventory",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -494,8 +569,9 @@
       "documentation": null,
       "signature_members": {
         "eInvResType": {
-          "type": null,
-          "documentation": null
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -505,12 +581,14 @@
       "documentation": null,
       "signature_members": {
         "Slot": {
-          "type": null,
-          "documentation": null
+          "type": "ELoadoutWeapons",
+          "documentation": null,
+          "flags": 128
         },
         "bIgnoreWielded": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "SFXWeapon",
@@ -520,12 +598,14 @@
       "documentation": null,
       "signature_members": {
         "Slot": {
-          "type": null,
-          "documentation": null
+          "type": "EAttachSlot",
+          "documentation": null,
+          "flags": 128
         },
         "bIgnoreWielded": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "SFXWeapon",
@@ -535,12 +615,14 @@
       "documentation": null,
       "signature_members": {
         "ttype": {
-          "type": null,
-          "documentation": null
+          "type": "ETreasureType",
+          "documentation": null,
+          "flags": 128
         },
         "ResourceAmount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -550,20 +632,24 @@
       "documentation": null,
       "signature_members": {
         "ttype": {
-          "type": null,
-          "documentation": null
+          "type": "ETreasureType",
+          "documentation": null,
+          "flags": 128
         },
         "nBudgetPercent": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bAbsoluteAmount": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bIsSalvage": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -573,16 +659,19 @@
       "documentation": null,
       "signature_members": {
         "ttype": {
-          "type": null,
-          "documentation": null
+          "type": "ETreasureType",
+          "documentation": null,
+          "flags": 128
         },
         "ResourceAmount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bAbsoluteAmount": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -592,20 +681,24 @@
       "documentation": null,
       "signature_members": {
         "InvType": {
-          "type": null,
-          "documentation": null
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
         },
         "Amount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bIsSalvage": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bIgnoreBudget": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -615,16 +708,19 @@
       "documentation": null,
       "signature_members": {
         "ttype": {
-          "type": null,
-          "documentation": null
+          "type": "ETreasureType",
+          "documentation": null,
+          "flags": 128
         },
         "ResourceAmount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bAbsoluteAmount": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -640,36 +736,44 @@
       "documentation": null,
       "signature_members": {
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 384
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "DamageCauser": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "TotalDamageDone": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -691,12 +795,14 @@
       "documentation": null,
       "signature_members": {
         "NewWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         },
         "InstantSwitch": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -712,8 +818,9 @@
       "documentation": null,
       "signature_members": {
         "WpnForSwitch": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -723,8 +830,9 @@
       "documentation": null,
       "signature_members": {
         "F": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -740,8 +848,9 @@
       "documentation": null,
       "signature_members": {
         "WeapToSwitch": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -751,8 +860,9 @@
       "documentation": null,
       "signature_members": {
         "PitchRecoil": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -762,12 +872,14 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "out_DeltaRot": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -777,12 +889,14 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "out_DeltaRot": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -790,5 +904,7 @@
     }
   },
   "states": {},
+  "classflags": 144705686,
+  "configname": "Weapon",
   "documentation": null
 }

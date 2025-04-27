@@ -4,7 +4,8 @@
   "variables": {
     "Materials": {
       "type": "TerrainFilteredMaterial",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194307
     }
   },
   "functions": {
@@ -18,8 +19,9 @@
       "documentation": null,
       "signature_members": {
         "NewMaterials": {
-          "type": null,
-          "documentation": null
+          "type": "TerrainFilteredMaterial",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -27,5 +29,7 @@
     }
   },
   "states": {},
+  "classflags": 134226066,
+  "configname": "None",
   "documentation": null
 }

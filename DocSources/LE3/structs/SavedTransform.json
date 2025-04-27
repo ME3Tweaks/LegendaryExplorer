@@ -2,11 +2,13 @@
   "members": {
     "location": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Rotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SeqAct_Interp",

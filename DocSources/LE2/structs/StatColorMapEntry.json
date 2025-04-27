@@ -2,11 +2,13 @@
   "members": {
     "In": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "Out": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     }
   },
   "classdef": "Engine",

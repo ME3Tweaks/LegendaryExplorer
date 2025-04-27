@@ -4,47 +4,58 @@
   "variables": {
     "m_sRTPCName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_nmPower": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Script": {
       "type": "BioPowerScript",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     },
     "Instigator": {
       "type": "Controller",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "NewPower": {
       "type": "SFXPower",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Owner": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nSuppressedCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bFakePower": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bDisableVFX": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bDisableDamageAndEffects": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bDisableAnimation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -64,8 +75,9 @@
       "documentation": null,
       "signature_members": {
         "oAnimSet": {
-          "type": null,
-          "documentation": null
+          "type": "AnimSet",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -93,8 +105,9 @@
       "documentation": null,
       "signature_members": {
         "sDescription": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -110,8 +123,9 @@
       "documentation": null,
       "signature_members": {
         "sDisplayName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -139,8 +153,9 @@
       "documentation": null,
       "signature_members": {
         "srImpactText": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -204,8 +219,9 @@
       "documentation": null,
       "signature_members": {
         "nmPower": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -233,8 +249,9 @@
       "documentation": null,
       "signature_members": {
         "bSuppress": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -244,8 +261,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -253,5 +271,7 @@
     }
   },
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

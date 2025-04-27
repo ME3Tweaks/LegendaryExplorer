@@ -2,19 +2,23 @@
   "members": {
     "aFacingData": {
       "type": "BioEvtSysTrackSetFacing",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "aGestureData": {
       "type": "BioEvtSysTrackGesture",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "aPropData": {
       "type": "BioEvtSysTrackProp",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "aLightingData": {
       "type": "BioEvtSysTrackLighting",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "classdef": "SFXConvAuditionHelperInterface",

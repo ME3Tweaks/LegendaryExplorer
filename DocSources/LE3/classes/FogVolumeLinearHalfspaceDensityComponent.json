@@ -4,14 +4,18 @@
   "variables": {
     "HalfspacePlane": {
       "type": "Plane",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "PlaneDistanceFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134230162,
+  "configname": "None",
   "documentation": null
 }

@@ -4,15 +4,18 @@
   "variables": {
     "m_aToggleKeyData": {
       "type": "SFXToggleTrackData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_aTarget": {
       "type": "BioSeqVar_ObjectFindByTag",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     },
     "m_TargetActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -20,16 +23,19 @@
       "documentation": null,
       "signature_members": {
         "Seq": {
-          "type": null,
-          "documentation": null
+          "type": "SequenceOp",
+          "documentation": null,
+          "flags": 128
         },
         "bToggle": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bEnable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -61,5 +67,7 @@
     }
   },
   "states": {},
+  "classflags": 142614675,
+  "configname": "None",
   "documentation": null
 }

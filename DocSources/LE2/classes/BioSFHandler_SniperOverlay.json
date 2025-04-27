@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "nDistance": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -16,5 +17,7 @@
     }
   },
   "states": {},
+  "classflags": 2097178,
+  "configname": "UI",
   "documentation": null
 }

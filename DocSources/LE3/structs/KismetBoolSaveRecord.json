@@ -2,11 +2,13 @@
   "members": {
     "BoolGUID": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bValue": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXSaveGame",

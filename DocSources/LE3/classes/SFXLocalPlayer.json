@@ -4,14 +4,18 @@
   "variables": {
     "GAWReinforcementManager": {
       "type": "SFXGAWReinforcementManagerBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "GAWHandler": {
       "type": "SFXGAWAssetsHandler",
-      "documentation": null
+      "documentation": null,
+      "flags": 71311368
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 10485790,
+  "configname": "Engine",
   "documentation": null
 }

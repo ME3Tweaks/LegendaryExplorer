@@ -4,19 +4,23 @@
   "variables": {
     "FireAction": {
       "type": "SFXSeqAct_DummyWeaponFire",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "OriginActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "TargetActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "ShotCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     }
   },
   "functions": {
@@ -30,12 +34,14 @@
       "documentation": null,
       "signature_members": {
         "InOriginActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "InTargetActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -45,8 +51,9 @@
       "documentation": null,
       "signature_members": {
         "VarName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -56,8 +63,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -65,5 +73,7 @@
     }
   },
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

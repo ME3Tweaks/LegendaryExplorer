@@ -4,10 +4,13 @@
   "variables": {
     "ApexComponents": {
       "type": "ApexComponentBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 67645450
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

@@ -4,90 +4,113 @@
   "variables": {
     "WalkSynchGroupName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "RunSynchGroupName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "IdleSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "MinWalkSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "MidWalkSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "MaxWalkSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "MinRunSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "MidRunSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "MaxRunSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "IdleTimeout": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "BlendTimeIdle2Walk": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "BlendTimeIdle2Run": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "BlendTimeWalk2Idle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "BlendTimeWalk2Run": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "BlendTimeRun2Idle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "BlendTimeRun2Walk": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "IdleTimer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentAcceleration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentWalkRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentRunRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

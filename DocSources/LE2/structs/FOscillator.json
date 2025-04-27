@@ -2,15 +2,18 @@
   "members": {
     "Amplitude": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Frequency": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "InitialOffset": {
       "type": "EInitialOscillatorOffset",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "CameraShake",

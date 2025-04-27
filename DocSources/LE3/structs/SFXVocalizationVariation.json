@@ -2,7 +2,8 @@
   "members": {
     "Variations": {
       "type": "SFXVocalizationLine",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     }
   },
   "classdef": "SFXVocalizationBank",

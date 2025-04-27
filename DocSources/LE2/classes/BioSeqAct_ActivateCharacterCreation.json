@@ -4,7 +4,8 @@
   "variables": {
     "m_sCharacterCreationMap": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     }
   },
   "functions": {
@@ -16,5 +17,7 @@
     }
   },
   "states": {},
+  "classflags": 2097174,
+  "configname": "UI",
   "documentation": null
 }

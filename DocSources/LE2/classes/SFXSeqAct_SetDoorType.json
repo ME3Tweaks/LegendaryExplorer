@@ -4,11 +4,13 @@
   "variables": {
     "m_Door": {
       "type": "SFXDoor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_DoorType": {
       "type": "ESFXDoorType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -26,5 +28,7 @@
     }
   },
   "states": {},
+  "classflags": 2097170,
+  "configname": "None",
   "documentation": null
 }

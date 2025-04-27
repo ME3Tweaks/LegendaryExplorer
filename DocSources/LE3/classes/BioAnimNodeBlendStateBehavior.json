@@ -4,14 +4,18 @@
   "variables": {
     "m_aNodeDefinitions": {
       "type": "BioAnimStateNodeBehaviorDef",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_fQueryPlayTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136319123,
+  "configname": "None",
   "documentation": null
 }

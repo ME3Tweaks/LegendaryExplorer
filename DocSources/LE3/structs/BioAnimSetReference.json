@@ -2,11 +2,13 @@
   "members": {
     "pAnimSet": {
       "type": "AnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nRefCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioGestureAnimSetMgr",

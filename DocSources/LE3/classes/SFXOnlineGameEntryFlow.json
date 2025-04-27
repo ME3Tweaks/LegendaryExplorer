@@ -4,75 +4,93 @@
   "variables": {
     "VfTable_IISFXOnlineComponentGameEntryFlow": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "ZeroId": {
       "type": "UniqueNetId",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "DeferredGameSettings": {
       "type": "SFXOnlineGameSettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PopupName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srJoiningGame": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srConnecting": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srInvalidControllerJoin": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srMultiplayerUpdate": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srDownloadRequiredDataError": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srOK": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "srCancel": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srAlreadyConnected": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srOnlinePassRequired": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "KismetEventTicksDelay": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "CurrentKismetEventTicksDelay": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "InvitePlatformData": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_FlowType": {
       "type": "MPFlowType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_LoginUIState": {
       "type": "SFXOnlineUIState",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -80,12 +98,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -125,8 +145,9 @@
       "documentation": null,
       "signature_members": {
         "nmMovie": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXGUIMovie",
@@ -142,8 +163,9 @@
       "documentation": null,
       "signature_members": {
         "oOnlineSubsystem": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineSubsystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -159,12 +181,14 @@
       "documentation": null,
       "signature_members": {
         "Invite": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineGameSearch",
+          "documentation": null,
+          "flags": 384
         },
         "ResultNum": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -174,8 +198,9 @@
       "documentation": null,
       "signature_members": {
         "loginState": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineUIState",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -185,12 +210,14 @@
       "documentation": null,
       "signature_members": {
         "bodyStr": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "showOkButton": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -206,12 +233,14 @@
       "documentation": null,
       "signature_members": {
         "SessionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -233,20 +262,24 @@
       "documentation": null,
       "signature_members": {
         "mapPackageName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "fromGalaxyMap": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "Difficulty": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineGameDifficulty",
+          "documentation": null,
+          "flags": 144
         },
         "EnemyType": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -256,8 +289,9 @@
       "documentation": null,
       "signature_members": {
         "InviteResult": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineGameSearchResult",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -273,8 +307,9 @@
       "documentation": null,
       "signature_members": {
         "Invite": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineGameSearchResult",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -284,12 +319,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -299,8 +336,9 @@
       "documentation": null,
       "signature_members": {
         "Success": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -334,8 +372,9 @@
       "documentation": null,
       "signature_members": {
         "InviteResult": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineGameSearchResult",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -369,8 +408,9 @@
       "documentation": null,
       "signature_members": {
         "invitedId": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "bool",
@@ -380,8 +420,9 @@
       "documentation": null,
       "signature_members": {
         "MovieName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -397,8 +438,9 @@
       "documentation": null,
       "signature_members": {
         "Success": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -408,8 +450,9 @@
       "documentation": null,
       "signature_members": {
         "Success": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -425,8 +468,9 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -442,8 +486,9 @@
       "documentation": null,
       "signature_members": {
         "Invite": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineGameSearch",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -457,8 +502,9 @@
           "documentation": null,
           "signature_members": {
             "oEvent": {
-              "type": null,
-              "documentation": null
+              "type": "SFXOnlineEvent",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -468,8 +514,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousState": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -484,8 +531,9 @@
           "documentation": null,
           "signature_members": {
             "Success": {
-              "type": null,
-              "documentation": null
+              "type": "bool",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -495,8 +543,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousState": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -517,8 +566,9 @@
           "documentation": null,
           "signature_members": {
             "oEvent": {
-              "type": null,
-              "documentation": null
+              "type": "SFXOnlineEvent",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -533,8 +583,9 @@
           "documentation": null,
           "signature_members": {
             "oEvent": {
-              "type": null,
-              "documentation": null
+              "type": "SFXOnlineEvent",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -544,8 +595,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousState": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -560,8 +612,9 @@
           "documentation": null,
           "signature_members": {
             "oEvent": {
-              "type": null,
-              "documentation": null
+              "type": "SFXOnlineEvent",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -571,8 +624,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousState": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -587,8 +641,9 @@
           "documentation": null,
           "signature_members": {
             "oEvent": {
-              "type": null,
-              "documentation": null
+              "type": "SFXOnlineEvent",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -598,8 +653,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousState": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -620,8 +676,9 @@
           "documentation": null,
           "signature_members": {
             "oEvent": {
-              "type": null,
-              "documentation": null
+              "type": "SFXOnlineEvent",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -631,8 +688,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousState": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -647,8 +705,9 @@
           "documentation": null,
           "signature_members": {
             "loginState": {
-              "type": null,
-              "documentation": null
+              "type": "SFXOnlineUIState",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -658,8 +717,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousState": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -674,8 +734,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousState": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -690,8 +751,9 @@
           "documentation": null,
           "signature_members": {
             "loginState": {
-              "type": null,
-              "documentation": null
+              "type": "SFXOnlineUIState",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -706,8 +768,9 @@
           "documentation": null,
           "signature_members": {
             "oEvent": {
-              "type": null,
-              "documentation": null
+              "type": "SFXOnlineEvent",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -717,8 +780,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousState": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -728,8 +792,9 @@
           "documentation": null,
           "signature_members": {
             "loginState": {
-              "type": null,
-              "documentation": null
+              "type": "SFXOnlineUIState",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -739,5 +804,7 @@
       "documentation": null
     }
   },
+  "classflags": 134217878,
+  "configname": "Game",
   "documentation": null
 }

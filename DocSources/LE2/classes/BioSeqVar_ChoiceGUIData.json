@@ -4,10 +4,13 @@
   "variables": {
     "m_ChoiceData": {
       "type": "SFXGameChoiceGUIData",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144707730,
+  "configname": "None",
   "documentation": null
 }

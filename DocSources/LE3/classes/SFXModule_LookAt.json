@@ -4,63 +4,78 @@
   "variables": {
     "m_Controllers": {
       "type": "BioActorLookAtController",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_pTarget": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LookAtNoticeActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_Definition": {
       "type": "BioLookAtDefinition",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nRank": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LookAtNoticeTimer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NoticeDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481985
     },
     "NoticeEnableDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481985
     },
     "NoticeDisableDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481985
     },
     "ReNoticeMinTime": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481985
     },
     "ReNoticeMaxTime": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481985
     },
     "bDisabling": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bLookAtNotice": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bEnableLookAtTargeting": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481985
     },
     "bAutoLookAtPlayer": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481985
     }
   },
   "functions": {
@@ -68,16 +83,19 @@
       "documentation": null,
       "signature_members": {
         "Target": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "a_eTransition": {
-          "type": null,
-          "documentation": null
+          "type": "ELookAtTransitionType",
+          "documentation": null,
+          "flags": 144
         },
         "nRank": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -103,5 +121,7 @@
     }
   },
   "states": {},
+  "classflags": 134221970,
+  "configname": "Game",
   "documentation": null
 }

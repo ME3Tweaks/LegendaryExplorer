@@ -2,15 +2,18 @@
   "members": {
     "DelayedWriteDelegates": {
       "type": "OnlinePlayerInterface.OnWritePlayerStorageComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "LocalUserNum": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastWriteTimestamp": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXOnlinePlayerStorage",

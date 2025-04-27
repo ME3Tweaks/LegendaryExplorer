@@ -4,22 +4,28 @@
   "variables": {
     "CrustEffectActor": {
       "type": "BioVisualEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "PreviousTarget": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentTarget": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CrustToApply": {
       "type": "BioVFXTemplate",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

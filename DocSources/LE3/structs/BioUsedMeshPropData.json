@@ -2,15 +2,18 @@
   "members": {
     "aPartSys": {
       "type": "ParticleSystemComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827464
     },
     "aClientEffects": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "pPropCmp": {
       "type": "MeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     }
   },
   "classdef": "SFXModule_Gestures",

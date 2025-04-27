@@ -4,14 +4,18 @@
   "variables": {
     "Sound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "WwiseType": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 4114,
+  "configname": "None",
   "documentation": null
 }

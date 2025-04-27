@@ -2,23 +2,28 @@
   "members": {
     "TimeResultWasCalculated": {
       "type": "Double",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GoalLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StartLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GoalActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Result": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "Pawn",

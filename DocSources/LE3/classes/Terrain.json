@@ -4,203 +4,253 @@
   "variables": {
     "CachedTerrainMaterials": {
       "type": "CachedTerrainMaterialArray",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "Heights": {
       "type": "TerrainHeight",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "InfoData": {
       "type": "TerrainInfoData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "AlphaMaps": {
       "type": "AlphaMap",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "WeightedMaterials": {
       "type": "TerrainWeightedMaterial",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "WeightedTextureMaps": {
       "type": "TerrainWeightMapTexture",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "CachedDisplacements": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "Layers": {
       "type": "TerrainLayer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194307
     },
     "DecoLayers": {
       "type": "TerrainDecoLayer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718595
     },
     "TerrainComponents": {
       "type": "TerrainComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 17251696650
     },
     "SelectedVertices": {
       "type": "SelectedTerrainVertex",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "ReleaseResourcesFence": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "LightmassSettings": {
       "type": "LightmassPrimitiveSettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LightingGuid": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "TerrainPhysMaterialOverride": {
       "type": "PhysicalMaterial",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "NormalMapLayer": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "NumSectionsX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "NumSectionsY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "SectionSize": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "MaxCollisionDisplacement": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "MaxTesselationLevel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MinTessellationLevel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TesselationDistanceScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TessellationCheckDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CollisionTesselationLevel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "NumVerticesX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "NumVerticesY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "NumPatchesX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "NumPatchesY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaxComponentSize": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StaticLightingResolution": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LightingChannels": {
       "type": "LightingChannelContainer",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "EditorTessellationLevel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "WireframeColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsOverridingLightResolution": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bBilinearFilterLightmapGeneration": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCastShadow": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bForceDirectLightMap": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bCastDynamicShadow": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bEnableSpecular": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bBlockRigidBody": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bAllowRigidBodyUnderneath": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bNoPhysCollision": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bAcceptsDynamicLights": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bMorphingEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bMorphingGradientsEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bLocked": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bHeightmapLocked": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bShowingCollision": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bShowWireframe": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -218,5 +268,7 @@
     }
   },
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

@@ -2,11 +2,13 @@
   "members": {
     "TargetName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TargetPercentage": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "ParticleModuleTypeDataBeam2",

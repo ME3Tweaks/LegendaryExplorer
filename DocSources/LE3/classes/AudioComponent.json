@@ -4,275 +4,343 @@
   "variables": {
     "SoundCue": {
       "type": "SoundCue",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CueFirstNode": {
       "type": "SoundNode",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "InstanceParameters": {
       "type": "AudioComponentParam",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     },
     "bUseOwnerLocation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAutoPlay": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAutoDestroy": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bStopWhenOwnerDestroyed": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bShouldRemainActiveIfDropped": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bWasOccluded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bSuppressSubtitles": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bWasPlaying": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bAllowSpatialization": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bFinished": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bPreviewComponent": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIgnoreForFlushing": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "StereoBleed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LFEBleed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bEQFilterApplied": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bAlwaysPlay": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIsUISound": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIsMusic": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bNoReverb": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "WaveInstances": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101250
     },
     "SoundNodeData": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101250
     },
     "SoundNodeOffsetMap": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101250
     },
     "SoundNodeResetWaveMap": {
       "type": "MultiMap_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101250
     },
     "Listener": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101250
     },
     "PlaybackTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101250
     },
     "PortalVolume": {
       "type": "PortalVolume",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101250
     },
     "location": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101248
     },
     "ComponentLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101250
     },
     "LastOwner": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "SubtitlePriority": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "FadeInStartTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FadeInStopTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FadeInTargetVolume": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FadeOutStartTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FadeOutStopTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FadeOutTargetVolume": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AdjustVolumeStartTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AdjustVolumeStopTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AdjustVolumeTargetVolume": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrAdjustVolumeTargetVolume": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentNotifyBufferFinishedHook": {
       "type": "SoundNode",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "CurrentLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "CurrentVolume": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "CurrentPitch": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "CurrentHighFrequencyGain": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "CurrentUseSpatialization": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "CurrentUseSeamlessLooping": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "CurrentVolumeMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "CurrentPitchMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "CurrentHighFrequencyGainMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "CurrentVoiceCenterChannelVolume": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "CurrentVoiceRadioVolume": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "LastUpdateTime": {
       "type": "Double",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "SourceInteriorVolume": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "SourceInteriorLPF": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "CurrentInteriorVolume": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "CurrentInteriorLPF": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "VolumeMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PitchMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "HighFrequencyGainMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OcclusionCheckInterval": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastOcclusionCheckTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "PreviewSoundRadius": {
       "type": "DrawSoundRadiusComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633162
     },
     "__OnAudioFinished__Delegate": {
       "type": "OnAudioFinished",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnQueueSubtitles__Delegate": {
       "type": "OnQueueSubtitles",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -280,12 +348,14 @@
       "documentation": null,
       "signature_members": {
         "AdjustVolumeDuration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "AdjustVolumeLevel": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -295,12 +365,14 @@
       "documentation": null,
       "signature_members": {
         "FadeInDuration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "FadeVolumeLevel": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -310,12 +382,14 @@
       "documentation": null,
       "signature_members": {
         "FadeOutDuration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "FadeVolumeLevel": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -331,8 +405,9 @@
       "documentation": null,
       "signature_members": {
         "bNowOccluded": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -342,8 +417,9 @@
       "documentation": null,
       "signature_members": {
         "AC": {
-          "type": null,
-          "documentation": null
+          "type": "AudioComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -353,12 +429,14 @@
       "documentation": null,
       "signature_members": {
         "Subtitles": {
-          "type": null,
-          "documentation": null
+          "type": "SubtitleCue",
+          "documentation": null,
+          "flags": 4194432
         },
         "CueDuration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -380,12 +458,14 @@
       "documentation": null,
       "signature_members": {
         "InName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "InFloat": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -395,12 +475,14 @@
       "documentation": null,
       "signature_members": {
         "InName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "InWave": {
-          "type": null,
-          "documentation": null
+          "type": "SoundNodeWave",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -414,5 +496,7 @@
     }
   },
   "states": {},
+  "classflags": 8401306,
+  "configname": "None",
   "documentation": null
 }

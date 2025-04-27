@@ -4,14 +4,18 @@
   "variables": {
     "Filename": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "Bank": {
       "type": "WwiseBank",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

@@ -4,18 +4,23 @@
   "variables": {
     "AnimatedReactions": {
       "type": "EAICustomAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DamageClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bPlayAnimatedReaction": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 8388626,
+  "configname": "None",
   "documentation": null
 }

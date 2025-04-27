@@ -2,23 +2,28 @@
   "members": {
     "oWeapon": {
       "type": "SFXWeapon",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "oProjectile": {
       "type": "SFXProjectile",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CustomActionReactionType": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TriggerCounter": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Delay": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioPawn",

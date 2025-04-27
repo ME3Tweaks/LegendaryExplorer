@@ -2,15 +2,18 @@
   "members": {
     "Brain": {
       "type": "EEndGameOption",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Heart": {
       "type": "EEndGameOption",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Threshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXGAWAssetsHandler",

@@ -2,7 +2,8 @@
   "members": {
     "ZDepth": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "UIRoot",

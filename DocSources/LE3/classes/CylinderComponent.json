@@ -4,27 +4,33 @@
   "variables": {
     "CollisionHeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 11
     },
     "CollisionRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 11
     },
     "CylinderColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bDrawBoundingBox": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bDrawNonColliding": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bAlwaysRenderIfSelected": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "functions": {
@@ -32,12 +38,14 @@
       "documentation": null,
       "signature_members": {
         "NewRadius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "NewHeight": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -45,5 +53,7 @@
     }
   },
   "states": {},
+  "classflags": 2155884946,
+  "configname": "None",
   "documentation": null
 }

@@ -4,15 +4,18 @@
   "variables": {
     "Location": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     },
     "RotationVector": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     },
     "SocketOrBoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -24,5 +27,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

@@ -2,23 +2,28 @@
   "members": {
     "FirstFocusTarget": {
       "type": "UIObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 139267
     },
     "LastFocusTarget": {
       "type": "UIObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 139267
     },
     "NextFocusTarget": {
       "type": "UIObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 139267
     },
     "PrevFocusTarget": {
       "type": "UIObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 139267
     },
     "bPendingReceiveFocus": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "classdef": "UIRoot",

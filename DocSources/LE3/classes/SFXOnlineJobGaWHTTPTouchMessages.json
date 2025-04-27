@@ -4,11 +4,13 @@
   "variables": {
     "__OnTouchMessagesComplete__Delegate": {
       "type": "OnTouchMessagesComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "mMsgType": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -16,12 +18,14 @@
       "documentation": null,
       "signature_members": {
         "msgType": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "RequestCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnTouchMessagesComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "SFXOnlineJobGaWHTTPTouchMessages",
@@ -37,8 +41,9 @@
       "documentation": null,
       "signature_members": {
         "errorCode": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineJobErrorCode",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -54,12 +59,14 @@
       "documentation": null,
       "signature_members": {
         "Count": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "errorCode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -73,5 +80,7 @@
     }
   },
   "states": {},
+  "classflags": 134217878,
+  "configname": "Game",
   "documentation": null
 }

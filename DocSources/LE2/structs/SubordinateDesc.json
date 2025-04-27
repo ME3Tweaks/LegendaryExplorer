@@ -2,7 +2,8 @@
   "members": {
     "bAllGameModes": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioSFHandler_PCOptions",

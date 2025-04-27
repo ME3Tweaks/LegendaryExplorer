@@ -4,55 +4,68 @@
   "variables": {
     "PoolComponents": {
       "type": "ParticleSystemComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827466
     },
     "ActiveComponents": {
       "type": "ParticleSystemComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827464
     },
     "RelativePSCs": {
       "type": "EmitterBaseInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718592
     },
     "FreeSMComponents": {
       "type": "StaticMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827466
     },
     "FreeMatInstConsts": {
       "type": "MaterialInstanceConstant",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "PSCTemplate": {
       "type": "ParticleSystemComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "MaxActiveEffects": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SMC_MIC_ReductionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SMC_MIC_CurrentReductionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "IdealStaticMeshComponents": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "IdealMaterialInstanceConstants": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bLogPoolOverflow": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     },
     "bLogPoolOverflowList": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     }
   },
   "functions": {
@@ -60,8 +73,9 @@
       "documentation": null,
       "signature_members": {
         "EmitterTemplate": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "ParticleSystemComponent",
@@ -71,28 +85,34 @@
       "documentation": null,
       "signature_members": {
         "EmitterTemplate": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
         },
         "Mesh": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "AttachPointName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bAttachToSocket": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "RelativeLoc": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "RelativeRot": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "ParticleSystemComponent",
@@ -102,24 +122,29 @@
       "documentation": null,
       "signature_members": {
         "EmitterTemplate": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
         },
         "SpawnLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "SpawnRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 144
         },
         "AttachToActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
         },
         "bInheritScaleFromBase": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "ParticleSystemComponent",
@@ -129,8 +154,9 @@
       "documentation": null,
       "signature_members": {
         "EmitterTemplate": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "ParticleSystemComponent",
@@ -140,8 +166,9 @@
       "documentation": null,
       "signature_members": {
         "bCreateNewObject": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "MaterialInstanceConstant",
@@ -151,8 +178,9 @@
       "documentation": null,
       "signature_members": {
         "SMC": {
-          "type": null,
-          "documentation": null
+          "type": "StaticMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -162,8 +190,9 @@
       "documentation": null,
       "signature_members": {
         "bCreateNewObject": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "StaticMeshComponent",
@@ -173,8 +202,9 @@
       "documentation": null,
       "signature_members": {
         "PSC": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystemComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -184,8 +214,9 @@
       "documentation": null,
       "signature_members": {
         "PSC": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystemComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -201,8 +232,9 @@
       "documentation": null,
       "signature_members": {
         "PSC": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystemComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -210,5 +242,7 @@
     }
   },
   "states": {},
+  "classflags": 144703646,
+  "configname": "Game",
   "documentation": null
 }

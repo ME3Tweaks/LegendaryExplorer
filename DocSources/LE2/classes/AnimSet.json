@@ -4,18 +4,23 @@
   "variables": {
     "Sequences": {
       "type": "AnimSequence",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PreviewSkelMeshName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pBioAnimSetData": {
       "type": "BioAnimSetData",
-      "documentation": null
+      "documentation": null,
+      "flags": 67239937
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

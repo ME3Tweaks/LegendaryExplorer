@@ -4,7 +4,8 @@
   "variables": {
     "CoverReplicationData": {
       "type": "CoverReplicationInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -12,24 +13,29 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Link": {
-          "type": null,
-          "documentation": null
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
         },
         "NumSlotsAdjusted": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "SlotsAdjusted": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "bDone": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -39,24 +45,29 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Link": {
-          "type": null,
-          "documentation": null
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
         },
         "NumSlotsDisabled": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "SlotsDisabled": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "bDone": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -66,24 +77,29 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Link": {
-          "type": null,
-          "documentation": null
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
         },
         "NumSlotsEnabled": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "SlotsEnabled": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "bDone": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -93,52 +109,64 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Link": {
-          "type": null,
-          "documentation": null
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
         },
         "bLinkDisabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "NumSlotsEnabled": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "SlotsEnabled": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "NumSlotsDisabled": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "SlotsDisabled": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "NumSlotsAdjusted": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "SlotsAdjusted": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "NumCoverTypesChanged": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "SlotsCoverTypeChanged": {
-          "type": null,
-          "documentation": null
+          "type": "ManualCoverTypeInfo",
+          "documentation": null,
+          "flags": 128
         },
         "bDone": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -148,16 +176,19 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Link": {
-          "type": null,
-          "documentation": null
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
         },
         "bLinkDisabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -167,24 +198,29 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Link": {
-          "type": null,
-          "documentation": null
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
         },
         "NumCoverTypesChanged": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "SlotsCoverTypeChanged": {
-          "type": null,
-          "documentation": null
+          "type": "ManualCoverTypeInfo",
+          "documentation": null,
+          "flags": 128
         },
         "bDone": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -194,8 +230,9 @@
       "documentation": null,
       "signature_members": {
         "PC": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -205,12 +242,14 @@
       "documentation": null,
       "signature_members": {
         "Link": {
-          "type": null,
-          "documentation": null
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
         },
         "SlotIndices": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -220,12 +259,14 @@
       "documentation": null,
       "signature_members": {
         "Link": {
-          "type": null,
-          "documentation": null
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
         },
         "SlotIndices": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -235,12 +276,14 @@
       "documentation": null,
       "signature_members": {
         "Link": {
-          "type": null,
-          "documentation": null
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
         },
         "SlotIndices": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -250,8 +293,9 @@
       "documentation": null,
       "signature_members": {
         "Link": {
-          "type": null,
-          "documentation": null
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -261,16 +305,19 @@
       "documentation": null,
       "signature_members": {
         "Link": {
-          "type": null,
-          "documentation": null
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
         },
         "SlotIndices": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194690
         },
         "NewCoverType": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -292,8 +339,9 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -303,8 +351,9 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -314,8 +363,9 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -325,8 +375,9 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -336,8 +387,9 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -347,8 +399,9 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -356,5 +409,7 @@
     }
   },
   "states": {},
+  "classflags": 10485778,
+  "configname": "None",
   "documentation": null
 }

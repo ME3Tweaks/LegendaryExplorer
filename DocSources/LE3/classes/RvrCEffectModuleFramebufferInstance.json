@@ -4,7 +4,8 @@
   "variables": {
     "m_pPostProcessInstance": {
       "type": "PostProcessChain",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -22,5 +23,7 @@
     }
   },
   "states": {},
+  "classflags": 142606490,
+  "configname": "None",
   "documentation": null
 }

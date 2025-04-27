@@ -2,15 +2,18 @@
   "members": {
     "Projectiles": {
       "type": "Projectile",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ProjectileClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NextIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXObjectPool",

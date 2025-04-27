@@ -4,11 +4,13 @@
   "variables": {
     "VfTable_IUIEventContainer": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "UIEvents": {
       "type": "UIEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 22028290
     }
   },
   "functions": {
@@ -16,12 +18,14 @@
       "documentation": null,
       "signature_members": {
         "NewObj": {
-          "type": null,
-          "documentation": null
+          "type": "SequenceObject",
+          "documentation": null,
+          "flags": 128
         },
         "bRecurse": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -37,12 +41,14 @@
       "documentation": null,
       "signature_members": {
         "out_Events": {
-          "type": null,
-          "documentation": null
+          "type": "UIEvent",
+          "documentation": null,
+          "flags": 4194688
         },
         "LimitClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -52,8 +58,9 @@
       "documentation": null,
       "signature_members": {
         "ObjectToRemove": {
-          "type": null,
-          "documentation": null
+          "type": "SequenceObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -63,8 +70,9 @@
       "documentation": null,
       "signature_members": {
         "ObjectsToRemove": {
-          "type": null,
-          "documentation": null
+          "type": "SequenceObject",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -72,5 +80,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

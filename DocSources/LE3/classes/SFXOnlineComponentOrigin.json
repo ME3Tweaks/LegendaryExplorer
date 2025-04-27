@@ -4,175 +4,218 @@
   "variables": {
     "VfTable_IISFXOnlineComponent": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "mUserId": {
       "type": "QWord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mPresenceString": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mGamePresenceString": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mSessionPresenceString": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mDisplayName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mFriendsListCache": {
       "type": "PCFriend",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mBlockListCache": {
       "type": "PCFriend",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mEntitlementCache": {
       "type": "SFXOnlineEntitlementLookupInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mOriginVersion": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mInviteInfo": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mOriginClosedDelegates": {
       "type": "OnOriginClosedDelegate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mOriginAuthKeyDelegates": {
       "type": "OnOriginAuthKey",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mWalletBalanceDelegates": {
       "type": "OnWalletBalanceAvailable",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mContentId": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "mMultiplayerId": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "mCurrencyId": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "mOfferGroup": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "mAccessEntitlement": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "__OnOriginClosedDelegate__Delegate": {
       "type": "OnOriginClosedDelegate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnOriginAuthKey__Delegate": {
       "type": "OnOriginAuthKey",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnWalletBalanceAvailable__Delegate": {
       "type": "OnWalletBalanceAvailable",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "mTitleStringRef": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "mTimeBetweenOnlineChecks": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "mCheckoutTimeout": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "mFriendQueryTimeout": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "mEntitlementQueryTimeout": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "mQueryAchievementsTimeOut": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "mGrantAchievementsTimeOut": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "mTimeSinceLastOnlineCheck": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mDisableOrigin": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "mServiceStarted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mIsLoggedIn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mIsOriginDisabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mIsEntitlementCacheAvailable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mIsPendingConnection": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mIsOverlayUp": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mIsOverlayEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mOldClient": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mFriendsListUpToDate": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mIsOnline": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mPendingInviteJoin": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "mPresenceState": {
       "type": "EPCPresenceStates",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     }
   },
   "functions": {
@@ -180,8 +223,9 @@
       "documentation": null,
       "signature_members": {
         "authKeyDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnOriginAuthKey",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -191,8 +235,9 @@
       "documentation": null,
       "signature_members": {
         "originClosedDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnOriginClosedDelegate",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -202,8 +247,9 @@
       "documentation": null,
       "signature_members": {
         "walletBalanceDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnWalletBalanceAvailable",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -225,8 +271,9 @@
       "documentation": null,
       "signature_members": {
         "offerId": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -242,8 +289,9 @@
       "documentation": null,
       "signature_members": {
         "authKeyDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnOriginAuthKey",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -253,8 +301,9 @@
       "documentation": null,
       "signature_members": {
         "originClosedDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnOriginClosedDelegate",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -270,8 +319,9 @@
       "documentation": null,
       "signature_members": {
         "walletBalanceDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnWalletBalanceAvailable",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -287,8 +337,9 @@
       "documentation": null,
       "signature_members": {
         "personaName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "bool",
@@ -304,8 +355,9 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -315,8 +367,9 @@
       "documentation": null,
       "signature_members": {
         "oOnlineSubsystem": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineSubsystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -326,12 +379,14 @@
       "documentation": null,
       "signature_members": {
         "Success": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "authKey": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -365,8 +420,9 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -376,12 +432,14 @@
       "documentation": null,
       "signature_members": {
         "Success": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "walletBalance": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -391,8 +449,9 @@
       "documentation": null,
       "signature_members": {
         "isOpening": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -456,8 +515,9 @@
       "documentation": null,
       "signature_members": {
         "presence": {
-          "type": null,
-          "documentation": null
+          "type": "EPCPresenceStates",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -467,12 +527,14 @@
       "documentation": null,
       "signature_members": {
         "presence": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "gamePresence": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -482,8 +544,9 @@
       "documentation": null,
       "signature_members": {
         "SessionId": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -493,8 +556,9 @@
       "documentation": null,
       "signature_members": {
         "offerId": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -516,8 +580,9 @@
       "documentation": null,
       "signature_members": {
         "categoryId": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -539,12 +604,14 @@
       "documentation": null,
       "signature_members": {
         "Success": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "authKey": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -560,12 +627,14 @@
       "documentation": null,
       "signature_members": {
         "Success": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "balance": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -581,8 +650,9 @@
       "documentation": null,
       "signature_members": {
         "AchievementId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -592,8 +662,9 @@
       "documentation": null,
       "signature_members": {
         "AchievementId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -601,5 +672,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "Engine",
   "documentation": null
 }

@@ -2,15 +2,18 @@
   "members": {
     "PlaceableGUID": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsDestroyed": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsDeactivated": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXSaveGame",

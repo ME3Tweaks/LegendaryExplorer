@@ -4,42 +4,53 @@
   "variables": {
     "Angles": {
       "type": "RBCornerAngleInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "CornerSize": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FlatThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CornerShapeOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RoundTesselation": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RoundCurvature": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bNoMeshForConcaveCorners": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseAdjacentRulesetForRightGap": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CornerType": {
       "type": "EPBCornerType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136327314,
+  "configname": "None",
   "documentation": null
 }

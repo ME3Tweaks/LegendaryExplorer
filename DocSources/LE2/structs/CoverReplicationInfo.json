@@ -2,23 +2,28 @@
   "members": {
     "SlotsEnabled": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SlotsDisabled": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SlotsAdjusted": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "SlotsCoverTypeChanged": {
       "type": "ManualCoverTypeInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Link": {
       "type": "CoverLink",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "CoverReplicator",

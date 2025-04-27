@@ -4,79 +4,98 @@
   "variables": {
     "m_powers": {
       "type": "BioPower",
-      "documentation": null
+      "documentation": null,
+      "flags": 1152921504678150145
     },
     "m_aVisualEffects": {
       "type": "EpicPawnVisualEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_attributesClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Squad": {
       "type": "BioBaseSquad",
-      "documentation": null
+      "documentation": null,
+      "flags": 1152921504606846977
     },
     "m_PawnAttributes": {
       "type": "BioAttributesEpicPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "m_nALLEnabled": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nQueueEnabled": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nStackEnabled": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nWeaponsEnabled": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nGrenadesEnabled": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nPowersEnabled": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nCombatTransitionEnabled": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nCurrentPowerIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nDoorProximityRefCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bDoCameraBehaviorTransition": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_eCurrentActionState": {
       "type": "EActionStateVariable",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_ePreviousActionState": {
       "type": "EActionStateVariable",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_combatModeFadeoutState": {
       "type": "EBioAnimNodeCombatModeFadeOut",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_eWeaponFireMode": {
       "type": "EBioEpicPawnBehaviorWeaponFireMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -84,8 +103,9 @@
       "documentation": null,
       "signature_members": {
         "nmLabel": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -95,16 +115,19 @@
       "documentation": null,
       "signature_members": {
         "eResourceType": {
-          "type": null,
-          "documentation": null
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
         },
         "nAmt": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bNotifyTicker": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -114,8 +137,9 @@
       "documentation": null,
       "signature_members": {
         "eResourceType": {
-          "type": null,
-          "documentation": null
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -125,8 +149,9 @@
       "documentation": null,
       "signature_members": {
         "nmPowerName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -136,8 +161,9 @@
       "documentation": null,
       "signature_members": {
         "nmPowerName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "BioPower",
@@ -153,8 +179,9 @@
       "documentation": null,
       "signature_members": {
         "bIncrement": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -170,12 +197,14 @@
       "documentation": null,
       "signature_members": {
         "eState": {
-          "type": null,
-          "documentation": null
+          "type": "EActionStateVariable",
+          "documentation": null,
+          "flags": 128
         },
         "fDelay": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "EActionStateVariable",
@@ -185,8 +214,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -202,12 +232,14 @@
       "documentation": null,
       "signature_members": {
         "nmPower": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "fCooldownRemaining": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -259,12 +291,14 @@
       "documentation": null,
       "signature_members": {
         "eEnableType": {
-          "type": null,
-          "documentation": null
+          "type": "EDisableType",
+          "documentation": null,
+          "flags": 128
         },
         "nmSubType": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -274,12 +308,14 @@
       "documentation": null,
       "signature_members": {
         "eEnableType": {
-          "type": null,
-          "documentation": null
+          "type": "EDisableType",
+          "documentation": null,
+          "flags": 128
         },
         "nmSubType": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -289,12 +325,14 @@
       "documentation": null,
       "signature_members": {
         "eEnableType": {
-          "type": null,
-          "documentation": null
+          "type": "EDisableType",
+          "documentation": null,
+          "flags": 128
         },
         "nmSubType": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -304,16 +342,19 @@
       "documentation": null,
       "signature_members": {
         "bEnable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "eEnableType": {
-          "type": null,
-          "documentation": null
+          "type": "EDisableType",
+          "documentation": null,
+          "flags": 128
         },
         "nmSubType": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -323,12 +364,14 @@
       "documentation": null,
       "signature_members": {
         "eEnableType": {
-          "type": null,
-          "documentation": null
+          "type": "EDisableType",
+          "documentation": null,
+          "flags": 128
         },
         "nmSubType": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -338,16 +381,19 @@
       "documentation": null,
       "signature_members": {
         "bEnable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "eEnableType": {
-          "type": null,
-          "documentation": null
+          "type": "EDisableType",
+          "documentation": null,
+          "flags": 128
         },
         "nmSubType": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -357,12 +403,14 @@
       "documentation": null,
       "signature_members": {
         "eEnableType": {
-          "type": null,
-          "documentation": null
+          "type": "EDisableType",
+          "documentation": null,
+          "flags": 128
         },
         "nmSubType": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -372,16 +420,19 @@
       "documentation": null,
       "signature_members": {
         "bEnable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "eEnableType": {
-          "type": null,
-          "documentation": null
+          "type": "EDisableType",
+          "documentation": null,
+          "flags": 128
         },
         "nmSubType": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -397,8 +448,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -406,5 +458,7 @@
     }
   },
   "states": {},
+  "classflags": 144707734,
+  "configname": "Game",
   "documentation": null
 }

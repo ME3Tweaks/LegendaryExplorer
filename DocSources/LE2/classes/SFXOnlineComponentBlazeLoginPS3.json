@@ -4,7 +4,8 @@
   "variables": {
     "RedeemedProductCode": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -30,8 +31,9 @@
       "documentation": null,
       "signature_members": {
         "connectMode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineConnectMode",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -41,8 +43,9 @@
       "documentation": null,
       "signature_members": {
         "nPurchaseSource": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlinePurchaseSource",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -64,12 +67,14 @@
       "documentation": null,
       "signature_members": {
         "bContinue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "i_sCode": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -83,5 +88,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "Game",
   "documentation": null
 }

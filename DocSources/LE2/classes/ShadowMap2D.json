@@ -4,34 +4,43 @@
   "variables": {
     "Texture": {
       "type": "ShadowMapTexture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "CoordinateScale": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "CoordinateBias": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "LightGuid": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bIsShadowFactorTexture": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "Component": {
       "type": "InstancedStaticMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     },
     "InstanceIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 8389010,
+  "configname": "None",
   "documentation": null
 }

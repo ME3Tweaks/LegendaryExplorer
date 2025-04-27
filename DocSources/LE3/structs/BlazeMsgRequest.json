@@ -2,15 +2,18 @@
   "members": {
     "Params": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "pJobId": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 1052672
     },
     "MessageType": {
       "type": "SFXOnlineMessageType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     }
   },
   "classdef": "SFXOnlineComponentBlazeMessaging",

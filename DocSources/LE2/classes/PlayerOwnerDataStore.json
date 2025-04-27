@@ -4,23 +4,28 @@
   "variables": {
     "ProviderTypes": {
       "type": "PlayerDataProviderTypes",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "WeaponList": {
       "type": "WeaponDataProvider",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PowerupList": {
       "type": "PowerupDataProvider",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PlayerData": {
       "type": "PlayerOwnerDataProvider",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentWeapon": {
       "type": "CurrentWeaponDataProvider",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -40,8 +45,9 @@
       "documentation": null,
       "signature_members": {
         "NewPlayerData": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerDataProvider",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -49,5 +55,7 @@
     }
   },
   "states": {},
+  "classflags": 136315034,
+  "configname": "None",
   "documentation": null
 }

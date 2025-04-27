@@ -2,11 +2,13 @@
   "members": {
     "m_bIsVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_eComponent": {
       "type": "EBioPawnHeadGearComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     }
   },
   "classdef": "BioInterface_Appearance_Pawn",

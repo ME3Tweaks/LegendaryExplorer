@@ -2,11 +2,13 @@
   "members": {
     "LastTargetLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastSrcLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "CoverLink",

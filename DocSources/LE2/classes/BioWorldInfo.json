@@ -4,323 +4,403 @@
   "variables": {
     "m_sFriendlyName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_sCinematicSkipEvent": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_fLookAtDelays": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4218880
     },
     "SelectableActors": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "RadarActors": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PlotStreaming": {
       "type": "PlotStreamingSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_WorldStreamingStates": {
       "type": "WorldStreamingState",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_VFXTemplatePoolSizeOverride": {
       "type": "VFXTemplatePoolSizeSpec",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     },
     "m_BoughtVFXList": {
       "type": "VFXListNode",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "ConditionalClasses": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "m_lstCinematicsSeen": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_sDestinationAreaMap": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_pScannedClusters": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_pScannedSystems": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_pScannedPlanets": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "SubPageStateOverrides": {
       "type": "SubPageState",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "EffectsMaterialPriorities": {
       "type": "EffectsMaterialPriority",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "m_AutoPersistentObjects": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_mVFXPool": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "m_BoughtVFXMap": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "m_ActiveEnvironmentEffect": {
       "type": "WorldEnvironmentEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_PendingEnvironmentEffect": {
       "type": "WorldEnvironmentEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_aBoughtEffects": {
       "type": "BoughtVFXListEnds",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "m_vDestination": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_playerSquad": {
       "type": "BioPlayerSquad",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "TimerList": {
       "type": "BioTimerList",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_oGlobalVariables": {
       "type": "BioGlobalVariableTable",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_oQuestProgress": {
       "type": "BioQuestProgressionMap",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_oDiscoveredCodex": {
       "type": "BioDiscoveredCodexMap",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_oCurrentConversation": {
       "type": "BioConversation",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_pCurrentFaceOnlyVO": {
       "type": "BioSeqAct_FaceOnlyVO",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_pConvCondCheckOverride": {
       "type": "BioConversation",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LocalPlayerController": {
       "type": "BioPlayerController",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_Subtitles": {
       "type": "BioSubtitles",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_oAreaMap": {
       "type": "GFxMovieInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oParentAreaMap": {
       "type": "GFxMovieInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oPropertyEditor": {
       "type": "BioInGamePropertyEditor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pEndGameMusicEvent": {
       "type": "WwiseEventPairObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HighestPriorityAudioEnvVolume": {
       "type": "WwiseEnvironmentVolume",
-      "documentation": null
+      "documentation": null,
+      "flags": 16785410
     },
     "EventNotifier": {
       "type": "BioEventNotifier",
-      "documentation": null
+      "documentation": null,
+      "flags": 71311368
     },
     "m_oTreasure": {
       "type": "SFXPlotTreasure",
-      "documentation": null
+      "documentation": null,
+      "flags": 71311368
     },
     "m_PhysicsSound": {
       "type": "BioPhysicsSounds",
-      "documentation": null
+      "documentation": null,
+      "flags": 71311368
     },
     "m_UIWorld": {
       "type": "BioUIWorld",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303179
     },
     "m_oPowerManager": {
       "type": "BioPowerManager",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "nMemoryBudgetDLC": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nJournalLastSelectedMission": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nJournalLastSelectedAssignment": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nCodexLastSelectedPrimary": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nCodexLastSelectedSecondary": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fConversationInterruptDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fIdleCameraSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fNoSkipBuffer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_fLookAtNoticeMaxRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_fLookAtNoticeInitialDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_fLookAtNoticeDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_fLookAtNoticeSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "m_srProfileNotSignedInWarningMsg": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fMaxVFXBudget": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fUsedVFXBudget": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fGameOverPauseTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "bForceFullGarbageCollection": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nDesignerEnableDifficultyChecksPlotFlag": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "bStreamingLevelsResorted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bJournalShowingMissions": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bCodexShowingPrimary": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bInvokesHintMessages": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bCinematicSkip": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bDisableCinematicSkip": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bForceCinematicDamage": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bFlushSFHud": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bDebugCameras": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_bPartyMembersImmuneToExternalForce": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_bPausedByFocusLoss": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bWaitingForStreamingLoadIdle": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bWaitingForStreamingLoadVisibleComplete": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bGameWasPaused": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bKismetShowHUD": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bAllowBrowserWheel": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_lstBrowserAlerts": {
       "type": "BioBrowserStates",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nJournalSortMethod": {
       "type": "JournalSortMethods",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -328,12 +408,14 @@
       "documentation": null,
       "signature_members": {
         "Player": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
         },
         "ControllerId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -349,8 +431,9 @@
       "documentation": null,
       "signature_members": {
         "i_SubStateOverride": {
-          "type": null,
-          "documentation": null
+          "type": "SubPageState",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -366,12 +449,14 @@
       "documentation": null,
       "signature_members": {
         "EventClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "aEvents": {
-          "type": null,
-          "documentation": null
+          "type": "SequenceEvent",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -381,8 +466,9 @@
       "documentation": null,
       "signature_members": {
         "RenderState": {
-          "type": null,
-          "documentation": null
+          "type": "EPlayerRenderStateSetting",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -392,12 +478,14 @@
       "documentation": null,
       "signature_members": {
         "RenderState": {
-          "type": null,
-          "documentation": null
+          "type": "EPlayerRenderStateSetting",
+          "documentation": null,
+          "flags": 128
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -407,8 +495,9 @@
       "documentation": null,
       "signature_members": {
         "RenderState": {
-          "type": null,
-          "documentation": null
+          "type": "EPlayerRenderStateSetting",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -418,8 +507,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -435,12 +525,14 @@
       "documentation": null,
       "signature_members": {
         "bMale": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bPurge": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -456,8 +548,9 @@
       "documentation": null,
       "signature_members": {
         "nState": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -467,8 +560,9 @@
       "documentation": null,
       "signature_members": {
         "oConv": {
-          "type": null,
-          "documentation": null
+          "type": "BioConversation",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -478,8 +572,9 @@
       "documentation": null,
       "signature_members": {
         "pFOVO": {
-          "type": null,
-          "documentation": null
+          "type": "BioSeqAct_FaceOnlyVO",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -495,16 +590,19 @@
       "documentation": null,
       "signature_members": {
         "oConv": {
-          "type": null,
-          "documentation": null
+          "type": "BioConversation",
+          "documentation": null,
+          "flags": 128
         },
         "Owner_": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "Target": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -538,12 +636,14 @@
       "documentation": null,
       "signature_members": {
         "bFinalAttempt": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bBlocking": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -553,8 +653,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -570,8 +671,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -587,8 +689,9 @@
       "documentation": null,
       "signature_members": {
         "nmStreamingChunkName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -604,16 +707,19 @@
       "documentation": null,
       "signature_members": {
         "a_pEffect": {
-          "type": null,
-          "documentation": null
+          "type": "BioVFXTemplate",
+          "documentation": null,
+          "flags": 128
         },
         "a_nMaxPoolSize": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "a_nMinPoolSize": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -623,16 +729,19 @@
       "documentation": null,
       "signature_members": {
         "a_pEffect": {
-          "type": null,
-          "documentation": null
+          "type": "BioVFXTemplate",
+          "documentation": null,
+          "flags": 128
         },
         "a_rnMaxPoolSize": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "a_rnMinPoolSize": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -642,8 +751,9 @@
       "documentation": null,
       "signature_members": {
         "pEffect": {
-          "type": null,
-          "documentation": null
+          "type": "BioVFXTemplate",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "BioVisualEffectPool",
@@ -671,12 +781,14 @@
       "documentation": null,
       "signature_members": {
         "sAreaName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "sNextAreaStartPoint": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -686,16 +798,19 @@
       "documentation": null,
       "signature_members": {
         "eObjectType": {
-          "type": null,
-          "documentation": null
+          "type": "BioLocalVariableObjectType",
+          "documentation": null,
+          "flags": 128
         },
         "GetFunctionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "sTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -705,16 +820,19 @@
       "documentation": null,
       "signature_members": {
         "eObjectType": {
-          "type": null,
-          "documentation": null
+          "type": "BioLocalVariableObjectType",
+          "documentation": null,
+          "flags": 128
         },
         "GetFunctionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "sTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "float",
@@ -724,16 +842,19 @@
       "documentation": null,
       "signature_members": {
         "eObjectType": {
-          "type": null,
-          "documentation": null
+          "type": "BioLocalVariableObjectType",
+          "documentation": null,
+          "flags": 128
         },
         "GetFunctionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "sTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -743,12 +864,14 @@
       "documentation": null,
       "signature_members": {
         "nConsequence": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nParam": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -758,12 +881,14 @@
       "documentation": null,
       "signature_members": {
         "nTransition": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nParam": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -773,12 +898,14 @@
       "documentation": null,
       "signature_members": {
         "nConditional": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nParam": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -788,8 +915,9 @@
       "documentation": null,
       "signature_members": {
         "EventName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -799,8 +927,9 @@
       "documentation": null,
       "signature_members": {
         "nEvent": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -810,12 +939,14 @@
       "documentation": null,
       "signature_members": {
         "bFemale": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "RemoteEvent": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -825,8 +956,9 @@
       "documentation": null,
       "signature_members": {
         "RemoteEvent": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -842,12 +974,14 @@
       "documentation": null,
       "signature_members": {
         "StateName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -855,5 +989,7 @@
     }
   },
   "states": {},
+  "classflags": 144703670,
+  "configname": "Game",
   "documentation": null
 }

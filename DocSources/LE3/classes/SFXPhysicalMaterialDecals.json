@@ -4,118 +4,148 @@
   "variables": {
     "HeavyPistol": {
       "type": "DecalComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "AutoPistol": {
       "type": "DecalComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "HandCannon": {
       "type": "DecalComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "SMG": {
       "type": "DecalComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "Shotgun": {
       "type": "DecalComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "HeavyShotgun": {
       "type": "DecalComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "FlakGun": {
       "type": "DecalComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "AssaultRifle": {
       "type": "DecalComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "Needler": {
       "type": "DecalComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "Machinegun": {
       "type": "DecalComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "SniperRifle": {
       "type": "DecalComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "AntiMatRifle": {
       "type": "DecalComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "MassCannon": {
       "type": "DecalComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "ParticleBeam": {
       "type": "DecalComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "HeavyPistolFadeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AutoPistolFadeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "HandCannonFadeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SMGFadeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ShotgunFadeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "HeavyShotgunFadeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FlakGunFadeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AssaultRifleFadeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "NeedlerFadeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MachinegunFadeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SniperRifleFadeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AntiMatRifleFadeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MassCannonFadeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ParticleBeamFadeTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 8392722,
+  "configname": "None",
   "documentation": null
 }

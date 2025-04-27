@@ -4,35 +4,43 @@
   "variables": {
     "ImportOptions": {
       "type": "FontImportOptionsData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Characters": {
       "type": "FontCharacter",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     },
     "Textures": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MaxCharHeight": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "CharRemap": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "IsRemapped": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Kerning": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "NumCharacters": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -40,8 +48,9 @@
       "documentation": null,
       "signature_members": {
         "ViewportHeight": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -57,8 +66,9 @@
       "documentation": null,
       "signature_members": {
         "HeightTest": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -68,8 +78,9 @@
       "documentation": null,
       "signature_members": {
         "HeightTest": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -77,5 +88,7 @@
     }
   },
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

@@ -2,27 +2,33 @@
   "members": {
     "aChainedTrees": {
       "type": "BioGestChainTree",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "fEndBlendStartTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fEndBlendDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fEndTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bPlayUntilNext": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bUseDynAnimSets": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioAnimNodeBlendPoseAndGestures",

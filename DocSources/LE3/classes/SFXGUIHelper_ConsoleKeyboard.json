@@ -4,27 +4,33 @@
   "variables": {
     "VfTable_FTickableObject": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "sTitle": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "sDescription": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "sInputValue": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnKeyboardEntryComplete__Delegate": {
       "type": "OnKeyboardEntryComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "bKeyboardVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -32,24 +38,29 @@
       "documentation": null,
       "signature_members": {
         "srTitle": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "srDescription": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
         },
         "nOptions": {
-          "type": null,
-          "documentation": null
+          "type": "Keyboard_Options",
+          "documentation": null,
+          "flags": 128
         },
         "nMaxLength": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sDefault": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -59,12 +70,14 @@
       "documentation": null,
       "signature_members": {
         "EntryOK": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "EntryText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -74,12 +87,14 @@
       "documentation": null,
       "signature_members": {
         "EntryOK": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "EntryText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -87,5 +102,7 @@
     }
   },
   "states": {},
+  "classflags": 134217882,
+  "configname": "None",
   "documentation": null
 }

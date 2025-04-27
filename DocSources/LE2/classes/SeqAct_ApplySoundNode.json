@@ -4,14 +4,18 @@
   "variables": {
     "PlaySound": {
       "type": "SoundCue",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ApplyNode": {
       "type": "SoundNode",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

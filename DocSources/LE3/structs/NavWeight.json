@@ -2,19 +2,23 @@
   "members": {
     "ConstraintWeights": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "Nav": {
       "type": "NavigationPoint",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "Weight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "FailedIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     }
   },
   "classdef": "SFXPathWeightLog",

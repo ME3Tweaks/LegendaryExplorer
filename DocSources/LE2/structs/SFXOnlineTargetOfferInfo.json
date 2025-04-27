@@ -2,11 +2,13 @@
   "members": {
     "offerType": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "OfferId": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "classdef": "ISFXOnlineComponentNotification",

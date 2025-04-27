@@ -4,15 +4,18 @@
   "variables": {
     "m_aMaterials": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194313
     },
     "m_oSettings": {
       "type": "Bio_Appr_Character_Hair_Settings",
-      "documentation": null
+      "documentation": null,
+      "flags": 67772425
     },
     "m_oModelMesh": {
       "type": "SkeletalMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 9
     }
   },
   "functions": {
@@ -24,5 +27,7 @@
     }
   },
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

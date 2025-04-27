@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "ObjectsToRemove": {
-          "type": null,
-          "documentation": null
+          "type": "SequenceObject",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -18,8 +19,9 @@
       "documentation": null,
       "signature_members": {
         "ObjectToRemove": {
-          "type": null,
-          "documentation": null
+          "type": "SequenceObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -29,12 +31,14 @@
       "documentation": null,
       "signature_members": {
         "NewObj": {
-          "type": null,
-          "documentation": null
+          "type": "SequenceObject",
+          "documentation": null,
+          "flags": 128
         },
         "bRecurse": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -44,12 +48,14 @@
       "documentation": null,
       "signature_members": {
         "out_Events": {
-          "type": null,
-          "documentation": null
+          "type": "UIEvent",
+          "documentation": null,
+          "flags": 4194688
         },
         "LimitClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -57,5 +63,7 @@
     }
   },
   "states": {},
+  "classflags": 134234259,
+  "configname": "None",
   "documentation": null
 }

@@ -2,7 +2,8 @@
   "members": {
     "SoloEnableSetting": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     }
   },
   "classdef": "ParticleSystem",

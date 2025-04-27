@@ -4,7 +4,8 @@
   "variables": {
     "ParagonRenegadeModifier": {
       "type": "PowerData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     }
   },
   "functions": {
@@ -24,12 +25,14 @@
       "documentation": null,
       "signature_members": {
         "fCharmSkill": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "nRankToUse": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -39,12 +42,14 @@
       "documentation": null,
       "signature_members": {
         "fIntimidateSkill": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "nRankToUse": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -54,12 +59,14 @@
       "documentation": null,
       "signature_members": {
         "fRepSkill": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "nRankToUse": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -69,8 +76,9 @@
       "documentation": null,
       "signature_members": {
         "bReset": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -78,5 +86,7 @@
     }
   },
   "states": {},
+  "classflags": 10485783,
+  "configname": "Game",
   "documentation": null
 }

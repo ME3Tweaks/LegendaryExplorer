@@ -4,50 +4,63 @@
   "variables": {
     "ClassName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "MappedPowers": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210689
     },
     "Loadout": {
       "type": "SFXLoadoutData",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BioticStrength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TechStrength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CombatStrength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "srClassName": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "srClassDesc": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "srClassPrimaryDesc": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "srClassSecondaryDesc": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ClassType": {
       "type": "ECharacterClass",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 22,
+  "configname": "Game",
   "documentation": null
 }

@@ -4,11 +4,13 @@
   "variables": {
     "SkelControlProfiles": {
       "type": "SkelControlProfile",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "CurrentProfile": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -16,8 +18,9 @@
       "documentation": null,
       "signature_members": {
         "idx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -25,5 +28,7 @@
     }
   },
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

@@ -4,51 +4,63 @@
   "variables": {
     "FaceFXGroupName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "FaceFXAnimName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "EditorData": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "SoundClass": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     },
     "FirstNode": {
       "type": "SoundNode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FaceFXAnimSetRef": {
       "type": "FaceFXAnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaxAudibleDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "VolumeMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PitchMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Duration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxConcurrentPlayCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CurrentPlayCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2105346
     }
   },
   "functions": {
@@ -60,5 +72,7 @@
     }
   },
   "states": {},
+  "classflags": 134217882,
+  "configname": "None",
   "documentation": null
 }

@@ -4,23 +4,28 @@
   "variables": {
     "TierDetails": {
       "type": "TierDetails_t",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "TierInfo": {
       "type": "BioTierInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "DefaultTier": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bReevaluateStreaming": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "FloorTierIndex": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -28,12 +33,14 @@
       "documentation": null,
       "signature_members": {
         "Sequences": {
-          "type": null,
-          "documentation": null
+          "type": "Sequence",
+          "documentation": null,
+          "flags": 4194690
         },
         "PlayerPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -43,12 +50,14 @@
       "documentation": null,
       "signature_members": {
         "fnVirtualChunk": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "aRealChunks": {
-          "type": null,
-          "documentation": null
+          "type": "PlotStreamingElement",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -58,12 +67,14 @@
       "documentation": null,
       "signature_members": {
         "Sequences": {
-          "type": null,
-          "documentation": null
+          "type": "Sequence",
+          "documentation": null,
+          "flags": 4194690
         },
         "PlayerPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -85,8 +96,9 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "BioTierInfo",
@@ -96,8 +108,9 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -107,8 +120,9 @@
       "documentation": null,
       "signature_members": {
         "PlotStreaming": {
-          "type": null,
-          "documentation": null
+          "type": "PlotStreamingSet",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -118,8 +132,9 @@
       "documentation": null,
       "signature_members": {
         "PlotStreaming": {
-          "type": null,
-          "documentation": null
+          "type": "PlotStreamingSet",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -127,5 +142,7 @@
     }
   },
   "states": {},
+  "classflags": 134217886,
+  "configname": "Engine",
   "documentation": null
 }

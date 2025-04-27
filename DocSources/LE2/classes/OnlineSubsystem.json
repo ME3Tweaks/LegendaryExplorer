@@ -4,79 +4,98 @@
   "variables": {
     "VfTable_FTickableObject": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "AccountInterface": {
       "type": "OnlineAccountInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlayerInterface": {
       "type": "OnlinePlayerInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlayerInterfaceEx": {
       "type": "OnlinePlayerInterfaceEx",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SystemInterface": {
       "type": "OnlineSystemInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GameInterface": {
       "type": "OnlineGameInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ContentInterface": {
       "type": "OnlineContentInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "VoiceInterface": {
       "type": "OnlineVoiceInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StatsInterface": {
       "type": "OnlineStatsInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NewsInterface": {
       "type": "OnlineNewsInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PartyChatInterface": {
       "type": "OnlinePartyChatInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NamedInterfaces": {
       "type": "NamedInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "NamedInterfaceDefs": {
       "type": "NamedInterfaceDef",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "Sessions": {
       "type": "NamedSession",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "bUseBuildIdOverride": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "BuildIdOverride": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "IniLocPatcherClassName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "Patcher": {
       "type": "IniLocPatcher",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "AsyncMinCompletionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -84,8 +103,9 @@
       "documentation": null,
       "signature_members": {
         "DebugSpewLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -101,12 +121,14 @@
       "documentation": null,
       "signature_members": {
         "Players": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 4194690
         },
         "DebugLabel": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -122,8 +144,9 @@
       "documentation": null,
       "signature_members": {
         "GameSettings": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineGameSettings",
+          "documentation": null,
+          "flags": 130
         }
       },
       "returntype": "None",
@@ -145,12 +168,14 @@
       "documentation": null,
       "signature_members": {
         "NetIdA": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 386
         },
         "NetIdB": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "bool",
@@ -160,12 +185,14 @@
       "documentation": null,
       "signature_members": {
         "UniqueNetIdString": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "out_UniqueId": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -175,8 +202,9 @@
       "documentation": null,
       "signature_members": {
         "IdToConvert": {
-          "type": null,
-          "documentation": null
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "string",
@@ -186,8 +214,9 @@
       "documentation": null,
       "signature_members": {
         "InterfaceName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Object",
@@ -197,12 +226,14 @@
       "documentation": null,
       "signature_members": {
         "InterfaceName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "NewInterface": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -212,8 +243,9 @@
       "documentation": null,
       "signature_members": {
         "NewInterface": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -223,8 +255,9 @@
       "documentation": null,
       "signature_members": {
         "NewInterface": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -234,8 +267,9 @@
       "documentation": null,
       "signature_members": {
         "NewInterface": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -245,8 +279,9 @@
       "documentation": null,
       "signature_members": {
         "NewInterface": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -256,8 +291,9 @@
       "documentation": null,
       "signature_members": {
         "NewInterface": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -267,8 +303,9 @@
       "documentation": null,
       "signature_members": {
         "NewInterface": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -278,8 +315,9 @@
       "documentation": null,
       "signature_members": {
         "NewInterface": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -289,8 +327,9 @@
       "documentation": null,
       "signature_members": {
         "NewInterface": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -300,8 +339,9 @@
       "documentation": null,
       "signature_members": {
         "NewInterface": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -311,8 +351,9 @@
       "documentation": null,
       "signature_members": {
         "NewInterface": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -338,5 +379,7 @@
     }
   },
   "states": {},
+  "classflags": 136315031,
+  "configname": "Engine",
   "documentation": null
 }

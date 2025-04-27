@@ -4,59 +4,73 @@
   "variables": {
     "__OnOptionSelected__Delegate": {
       "type": "OnOptionSelected",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "lblTitle": {
       "type": "UILabel",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "lblMessage": {
       "type": "UILabel",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "lblQuestion": {
       "type": "UILabel",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "imgQuestion": {
       "type": "UIImage",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "btnbarChoices": {
       "type": "UICalloutButtonPanel",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "TitleWidgetName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MessageWidgetName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "QuestionWidgetName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ChoicesWidgetName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "QuestionWidgetImageName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ButtonBarButtonBGStyleName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ButtonBarButtonTextStyleName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPerformAutomaticLayout": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -64,8 +78,9 @@
       "documentation": null,
       "signature_members": {
         "ButtonAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -75,8 +90,9 @@
       "documentation": null,
       "signature_members": {
         "ButtonAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -86,8 +102,9 @@
       "documentation": null,
       "signature_members": {
         "TargetButton": {
-          "type": null,
-          "documentation": null
+          "type": "UICalloutButton",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -97,8 +114,9 @@
       "documentation": null,
       "signature_members": {
         "ButtonAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -126,12 +144,14 @@
       "documentation": null,
       "signature_members": {
         "ActivatedScene": {
-          "type": null,
-          "documentation": null
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 128
         },
         "bInitialActivation": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -141,8 +161,9 @@
       "documentation": null,
       "signature_members": {
         "ButtonAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -158,16 +179,19 @@
       "documentation": null,
       "signature_members": {
         "Sender": {
-          "type": null,
-          "documentation": null
+          "type": "UIMessageBoxBase",
+          "documentation": null,
+          "flags": 128
         },
         "SelectedInputAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -177,12 +201,14 @@
       "documentation": null,
       "signature_members": {
         "EventObject": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -192,8 +218,9 @@
       "documentation": null,
       "signature_members": {
         "NewMessageString": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -203,8 +230,9 @@
       "documentation": null,
       "signature_members": {
         "NewMessageString": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -214,8 +242,9 @@
       "documentation": null,
       "signature_members": {
         "NewTitleString": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -231,24 +260,29 @@
       "documentation": null,
       "signature_members": {
         "Title": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Message": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Question": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "ButtonAliases": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194432
         },
         "SelectionCallback": {
-          "type": null,
-          "documentation": null
+          "type": "OnOptionSelected",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -256,5 +290,7 @@
     }
   },
   "states": {},
+  "classflags": 10486295,
+  "configname": "UI",
   "documentation": null
 }

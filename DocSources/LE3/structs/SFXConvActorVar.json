@@ -2,15 +2,18 @@
   "members": {
     "nmPinName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "pActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "pSeqVar": {
       "type": "SeqVar_Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXSeqAct_StartAmbientConv",

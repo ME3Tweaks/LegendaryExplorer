@@ -4,59 +4,73 @@
   "variables": {
     "RotOscillation": {
       "type": "ROscillator",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LocOscillation": {
       "type": "VOscillator",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FOVOscillation": {
       "type": "FOscillator",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Anim": {
       "type": "CameraAnim",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OscillationDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OscillationBlendInTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OscillationBlendOutTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AnimPlayRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AnimScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AnimBlendInTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AnimBlendOutTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RandomAnimSegmentDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSingleInstance": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bRandomAnimSegment": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -74,5 +88,7 @@
     }
   },
   "states": {},
+  "classflags": 134221970,
+  "configname": "None",
   "documentation": null
 }

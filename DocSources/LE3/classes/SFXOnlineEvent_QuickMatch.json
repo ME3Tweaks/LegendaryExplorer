@@ -4,18 +4,23 @@
   "variables": {
     "GameToCreate": {
       "type": "SFXOnlineGameSettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GameId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SearchOutcome": {
       "type": "SFXOnlineQuickMatchOutcome",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

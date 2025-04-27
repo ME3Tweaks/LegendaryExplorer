@@ -4,18 +4,23 @@
   "variables": {
     "TrackInst": {
       "type": "InterpTrackInst",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Group": {
       "type": "InterpGroup",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GroupActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

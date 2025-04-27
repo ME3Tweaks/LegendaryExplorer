@@ -2,75 +2,93 @@
   "members": {
     "CookData": {
       "type": "SFXWeaponUICookData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ClassPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "WeaponModGripColors": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "WeaponModBodyColors": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "WeaponModEmissiveValues": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "LoadoutInfo": {
       "type": "LoadoutWeaponInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Stats": {
       "type": "SFXWeaponUIStats",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "className": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Image": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "IconResource": {
       "type": "GFxMovieInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Name": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Description": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ShortDescription": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "IconIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EncumbranceWeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Level": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "Unlocked": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "Type": {
       "type": "ELoadoutWeapons",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXWeaponUIData",

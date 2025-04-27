@@ -4,15 +4,18 @@
   "variables": {
     "m_vRepulsor": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_vCurrentSteeringDirection": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bUnderAttack": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -30,8 +33,9 @@
           "documentation": null,
           "signature_members": {
             "HitLocation": {
-              "type": null,
-              "documentation": null
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -41,24 +45,29 @@
           "documentation": null,
           "signature_members": {
             "InstigatedBy": {
-              "type": null,
-              "documentation": null
+              "type": "Controller",
+              "documentation": null,
+              "flags": 128
             },
             "HitLocation": {
-              "type": null,
-              "documentation": null
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
             },
             "Damage": {
-              "type": null,
-              "documentation": null
+              "type": "int",
+              "documentation": null,
+              "flags": 128
             },
             "DamageType": {
-              "type": null,
-              "documentation": null
+              "type": "Class",
+              "documentation": null,
+              "flags": 128
             },
             "Momentum": {
-              "type": null,
-              "documentation": null
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -73,8 +82,9 @@
           "documentation": null,
           "signature_members": {
             "vSteering": {
-              "type": null,
-              "documentation": null
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -84,8 +94,9 @@
           "documentation": null,
           "signature_members": {
             "vSteering": {
-              "type": null,
-              "documentation": null
+              "type": "Vector",
+              "documentation": null,
+              "flags": 384
             }
           },
           "returntype": null,
@@ -95,8 +106,9 @@
           "documentation": null,
           "signature_members": {
             "HitLocation": {
-              "type": null,
-              "documentation": null
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -106,24 +118,29 @@
           "documentation": null,
           "signature_members": {
             "InstigatedBy": {
-              "type": null,
-              "documentation": null
+              "type": "Controller",
+              "documentation": null,
+              "flags": 128
             },
             "HitLocation": {
-              "type": null,
-              "documentation": null
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
             },
             "Damage": {
-              "type": null,
-              "documentation": null
+              "type": "int",
+              "documentation": null,
+              "flags": 128
             },
             "DamageType": {
-              "type": null,
-              "documentation": null
+              "type": "Class",
+              "documentation": null,
+              "flags": 128
             },
             "Momentum": {
-              "type": null,
-              "documentation": null
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -139,8 +156,9 @@
           "documentation": null,
           "signature_members": {
             "NextState": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -156,8 +174,9 @@
           "documentation": null,
           "signature_members": {
             "PrevState": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -171,5 +190,7 @@
       "documentation": null
     }
   },
+  "classflags": 10486294,
+  "configname": "AI",
   "documentation": null
 }

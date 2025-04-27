@@ -4,159 +4,198 @@
   "variables": {
     "DefaultTutorialMessage": {
       "type": "MPTutorialPromoMessage",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "MPClasses": {
       "type": "MPClassData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "MPKits": {
       "type": "MPKitData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "Classes": {
       "type": "SFXMPClassRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Characters": {
       "type": "SFXMPCharacterRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "FaceCodes": {
       "type": "MPFaceCodeData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DefaultMPPlayerVariables": {
       "type": "StartingMPPlayerVariable",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "NewReinforcements": {
       "type": "NewReinforcementData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ValidNewReinforcementCategories": {
       "type": "EReinforcementGUICategory",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "PendingSaveOperations": {
       "type": "PendingSaveOperation",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PendingLoadOperations": {
       "type": "PendingLoadOperation",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ActiveMatchConsumablesForOfflineTransfer": {
       "type": "ActiveMatchConsumable",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "NewlyAffordableStoreItemsPlayerVariableName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnSaveRecordsDelegate__Delegate": {
       "type": "OnSaveRecordsDelegate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnRefreshMPDataDelegate__Delegate": {
       "type": "OnRefreshMPDataDelegate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PlayerVariables": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "OnlineSave": {
       "type": "SFXOnlineSaveGameMP",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MPMatchResultsData": {
       "type": "SFXMatchResultsData",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentCharacter": {
       "type": "SFXMPCharacterRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrCharacterToModify": {
       "type": "SFXMPCharacterRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxMPLevelBonus": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "AvailableCredits": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NextPackToConsume": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NumCopiesToConsume": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TotalCreditsSpent": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TotalPlatformCurrencySpent": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SessionCreditsSpent": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "SessionCreditsEarned": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "SessionPlatformCurrencySpent": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "TotalGamesPlayed": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TotalTimePlayed": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastLevelUpTime": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "srTooNewErrorMessage": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "srTooNewErrorMessageBoxOK": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDisableSaving": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bDebugPlayerVariables": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bSaveInProgress": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bLoadInProgress": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -164,12 +203,14 @@
       "documentation": null,
       "signature_members": {
         "VariableIDs": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         },
         "VariableValues": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -203,8 +244,9 @@
       "documentation": null,
       "signature_members": {
         "VariableName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -214,8 +256,9 @@
       "documentation": null,
       "signature_members": {
         "VariableID": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -231,8 +274,9 @@
       "documentation": null,
       "signature_members": {
         "VariableName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -248,8 +292,9 @@
       "documentation": null,
       "signature_members": {
         "nResult": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -259,8 +304,9 @@
       "documentation": null,
       "signature_members": {
         "nResult": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -270,12 +316,14 @@
       "documentation": null,
       "signature_members": {
         "VariableNames": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         },
         "SearchText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -291,12 +339,14 @@
       "documentation": null,
       "signature_members": {
         "VariableName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nValue": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -306,12 +356,14 @@
       "documentation": null,
       "signature_members": {
         "VariableID": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nValue": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -339,12 +391,14 @@
       "documentation": null,
       "signature_members": {
         "nCreditAmount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Transaction": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -354,12 +408,14 @@
       "documentation": null,
       "signature_members": {
         "firstName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "faceCode": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -369,12 +425,14 @@
       "documentation": null,
       "signature_members": {
         "Category": {
-          "type": null,
-          "documentation": null
+          "type": "EReinforcementGUICategory",
+          "documentation": null,
+          "flags": 128
         },
         "VariableName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -390,8 +448,9 @@
       "documentation": null,
       "signature_members": {
         "className": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -413,8 +472,9 @@
       "documentation": null,
       "signature_members": {
         "PRI": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPRI",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -424,12 +484,14 @@
       "documentation": null,
       "signature_members": {
         "Category": {
-          "type": null,
-          "documentation": null
+          "type": "EReinforcementGUICategory",
+          "documentation": null,
+          "flags": 128
         },
         "VariableName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -439,8 +501,9 @@
       "documentation": null,
       "signature_members": {
         "Category": {
-          "type": null,
-          "documentation": null
+          "type": "EReinforcementGUICategory",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -450,8 +513,9 @@
       "documentation": null,
       "signature_members": {
         "Character": {
-          "type": null,
-          "documentation": null
+          "type": "SFXMPCharacterRecord",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -461,12 +525,14 @@
       "documentation": null,
       "signature_members": {
         "Category": {
-          "type": null,
-          "documentation": null
+          "type": "EReinforcementGUICategory",
+          "documentation": null,
+          "flags": 128
         },
         "VariableName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "int",
@@ -488,8 +554,9 @@
       "documentation": null,
       "signature_members": {
         "KitName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXMPCharacterRecord",
@@ -499,8 +566,9 @@
       "documentation": null,
       "signature_members": {
         "className": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXMPCharacterRecord",
@@ -510,8 +578,9 @@
       "documentation": null,
       "signature_members": {
         "className": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -521,8 +590,9 @@
       "documentation": null,
       "signature_members": {
         "BaseClassName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "stringref",
@@ -532,8 +602,9 @@
       "documentation": null,
       "signature_members": {
         "className": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXMPClassRecord",
@@ -567,8 +638,9 @@
       "documentation": null,
       "signature_members": {
         "KitName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -578,8 +650,9 @@
       "documentation": null,
       "signature_members": {
         "KitName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "stringref",
@@ -589,8 +662,9 @@
       "documentation": null,
       "signature_members": {
         "KitName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "MPKitData",
@@ -600,8 +674,9 @@
       "documentation": null,
       "signature_members": {
         "KitName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "stringref",
@@ -641,8 +716,9 @@
       "documentation": null,
       "signature_members": {
         "KitName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -658,12 +734,14 @@
       "documentation": null,
       "signature_members": {
         "Category": {
-          "type": null,
-          "documentation": null
+          "type": "EReinforcementGUICategory",
+          "documentation": null,
+          "flags": 128
         },
         "VariableName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -673,8 +751,9 @@
       "documentation": null,
       "signature_members": {
         "Category": {
-          "type": null,
-          "documentation": null
+          "type": "EReinforcementGUICategory",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -684,12 +763,14 @@
       "documentation": null,
       "signature_members": {
         "Category": {
-          "type": null,
-          "documentation": null
+          "type": "EReinforcementGUICategory",
+          "documentation": null,
+          "flags": 128
         },
         "Substring": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -711,8 +792,9 @@
       "documentation": null,
       "signature_members": {
         "KitName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -722,8 +804,9 @@
       "documentation": null,
       "signature_members": {
         "Category": {
-          "type": null,
-          "documentation": null
+          "type": "EReinforcementGUICategory",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -733,12 +816,14 @@
       "documentation": null,
       "signature_members": {
         "className": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "fXP": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -754,12 +839,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -775,8 +862,9 @@
       "documentation": null,
       "signature_members": {
         "className": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -786,12 +874,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -807,8 +897,9 @@
       "documentation": null,
       "signature_members": {
         "RefreshDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnRefreshMPDataDelegate",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -818,8 +909,9 @@
       "documentation": null,
       "signature_members": {
         "RefreshDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnRefreshMPDataDelegate",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -829,12 +921,14 @@
       "documentation": null,
       "signature_members": {
         "KitName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "RetainCustomization": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -844,12 +938,14 @@
       "documentation": null,
       "signature_members": {
         "className": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "RetainCustomization": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -865,8 +961,9 @@
       "documentation": null,
       "signature_members": {
         "PRI": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPRI",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -876,12 +973,14 @@
       "documentation": null,
       "signature_members": {
         "ForceSaveBase": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "SaveDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnSaveRecordsDelegate",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -891,12 +990,14 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -906,12 +1007,14 @@
       "documentation": null,
       "signature_members": {
         "ForceSaveBase": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "SaveDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnSaveRecordsDelegate",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -921,8 +1024,9 @@
       "documentation": null,
       "signature_members": {
         "nCreditAmount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -932,8 +1036,9 @@
       "documentation": null,
       "signature_members": {
         "KitName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -943,8 +1048,9 @@
       "documentation": null,
       "signature_members": {
         "KitName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -954,8 +1060,9 @@
       "documentation": null,
       "signature_members": {
         "serverFaceCodes": {
-          "type": null,
-          "documentation": null
+          "type": "MPFaceCodeData",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -965,12 +1072,14 @@
       "documentation": null,
       "signature_members": {
         "nID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nCopies": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -980,8 +1089,9 @@
       "documentation": null,
       "signature_members": {
         "bDisabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -997,12 +1107,14 @@
       "documentation": null,
       "signature_members": {
         "nCreditAmount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Transaction": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -1024,12 +1136,14 @@
       "documentation": null,
       "signature_members": {
         "CharacterName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "RecordToIgnore": {
-          "type": null,
-          "documentation": null
+          "type": "SFXMPCharacterRecord",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "ECharacterNameResult",
@@ -1037,5 +1151,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "Game",
   "documentation": null
 }

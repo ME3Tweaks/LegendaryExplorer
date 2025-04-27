@@ -2,27 +2,33 @@
   "members": {
     "Career": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "firstName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "className": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "SaveTypes": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "Origin": {
       "type": "EOriginType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "Notoriety": {
       "type": "ENotorietyType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     }
   },
   "classdef": "SFXEngine",

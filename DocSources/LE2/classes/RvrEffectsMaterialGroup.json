@@ -4,14 +4,18 @@
   "variables": {
     "m_lstEffects": {
       "type": "EMG_Entry",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_Guid": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

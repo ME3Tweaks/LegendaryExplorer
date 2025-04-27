@@ -4,23 +4,28 @@
   "variables": {
     "InteractionPoint": {
       "type": "SFXNav_InteractionPoint",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "TemporaryAnim": {
       "type": "AnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "UnawareVisionCone": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "UnawareAlertness": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bUnawareAI": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -40,12 +45,14 @@
       "documentation": null,
       "signature_members": {
         "OldCustomAction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "NewCustomAction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -77,5 +84,7 @@
     }
   },
   "states": {},
+  "classflags": 10485783,
+  "configname": "Game",
   "documentation": null
 }

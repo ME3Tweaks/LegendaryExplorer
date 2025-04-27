@@ -2,19 +2,23 @@
   "members": {
     "ObjectPropertyName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EntryId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EntryType": {
       "type": "EOnlineGameSearchEntryType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SortType": {
       "type": "EOnlineGameSearchSortType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "OnlineGameSearch",

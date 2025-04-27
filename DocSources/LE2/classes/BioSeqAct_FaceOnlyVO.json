@@ -4,107 +4,133 @@
   "variables": {
     "m_mapUsedEnums": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "m_aStrRefs": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_sSubtitle": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_sFaceFXAnim": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_pConversation": {
       "type": "BioConversation",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nmSpeakerTag": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_pAudioObject": {
       "type": "WwiseBaseSoundObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_pFaceFXSet": {
       "type": "FaceFXAnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_srLineStrRef": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fPadLineLength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_srActorNameOverride": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nPickedSpeakerIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fLineLength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fPreLoadTimer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bForceHideSubtitles": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bIgnoreHenchmanSquadCheck": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bPlaySoundOnly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bDisableDelayUntilPreload": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bErrorInActivation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bKilledVO": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bPreLoadRequested": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bPlayRequested": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bAllowInConversation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_eSpeakerList": {
       "type": "EBioFOVOSpeakers",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_eConvLine": {
       "type": "EBioFOVOLines",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -116,5 +142,7 @@
     }
   },
   "states": {},
+  "classflags": 136319122,
+  "configname": "None",
   "documentation": null
 }

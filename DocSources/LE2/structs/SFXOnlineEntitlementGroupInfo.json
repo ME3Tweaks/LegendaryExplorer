@@ -2,11 +2,13 @@
   "members": {
     "GroupName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "entitlementName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "classdef": "ISFXOnlineComponentNotification",

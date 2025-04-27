@@ -4,35 +4,43 @@
   "variables": {
     "VfTable_IUIListElementProvider": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "ProviderTypes": {
       "type": "GameDataProviderTypes",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "PlayerData": {
       "type": "PlayerDataProvider",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "TeamData": {
       "type": "TeamDataProvider",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnAddTeamProvider__Delegate": {
       "type": "OnAddTeamProvider",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "GameData": {
       "type": "GameInfoDataProvider",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bRefreshPlayerDataProviders": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bRefreshTeamDataProviders": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -46,8 +54,9 @@
       "documentation": null,
       "signature_members": {
         "Provider": {
-          "type": null,
-          "documentation": null
+          "type": "TeamDataProvider",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -63,8 +72,9 @@
       "documentation": null,
       "signature_members": {
         "PRI": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -74,8 +84,9 @@
       "documentation": null,
       "signature_members": {
         "TI": {
-          "type": null,
-          "documentation": null
+          "type": "TeamInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -91,8 +102,9 @@
       "documentation": null,
       "signature_members": {
         "GRI": {
-          "type": null,
-          "documentation": null
+          "type": "GameReplicationInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -102,8 +114,9 @@
       "documentation": null,
       "signature_members": {
         "PRI": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -113,8 +126,9 @@
       "documentation": null,
       "signature_members": {
         "TI": {
-          "type": null,
-          "documentation": null
+          "type": "TeamInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -124,8 +138,9 @@
       "documentation": null,
       "signature_members": {
         "PRI": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "PlayerDataProvider",
@@ -135,8 +150,9 @@
       "documentation": null,
       "signature_members": {
         "TI": {
-          "type": null,
-          "documentation": null
+          "type": "TeamInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "TeamDataProvider",
@@ -158,12 +174,14 @@
       "documentation": null,
       "signature_members": {
         "SourceProvider": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 128
         },
         "PropTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -185,8 +203,9 @@
       "documentation": null,
       "signature_members": {
         "PRI": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -196,8 +215,9 @@
       "documentation": null,
       "signature_members": {
         "TI": {
-          "type": null,
-          "documentation": null
+          "type": "TeamInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -207,12 +227,14 @@
       "documentation": null,
       "signature_members": {
         "SourceProvider": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 128
         },
         "PropTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -220,5 +242,7 @@
     }
   },
   "states": {},
+  "classflags": 136315034,
+  "configname": "None",
   "documentation": null
 }

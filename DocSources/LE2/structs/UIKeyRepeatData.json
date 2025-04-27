@@ -2,11 +2,13 @@
   "members": {
     "NextRepeatTime": {
       "type": "Double",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "CurrentRepeatKey": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     }
   },
   "classdef": "UIInteraction",

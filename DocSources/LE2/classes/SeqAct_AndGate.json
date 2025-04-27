@@ -4,18 +4,23 @@
   "variables": {
     "LinkedOutputs": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "LinkedOutputFiredStatus": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "bOpen": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

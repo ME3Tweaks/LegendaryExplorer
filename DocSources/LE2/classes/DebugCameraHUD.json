@@ -13,20 +13,24 @@
       "documentation": null,
       "signature_members": {
         "X": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Y": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "DY": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "MeshComp": {
-          "type": null,
-          "documentation": null
+          "type": "MeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "bool",
@@ -40,5 +44,7 @@
     }
   },
   "states": {},
+  "classflags": 10485790,
+  "configname": "Game",
   "documentation": null
 }

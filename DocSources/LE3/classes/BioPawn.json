@@ -4,1295 +4,1618 @@
   "variables": {
     "m_mAnimsetRegistration": {
       "type": "MultiMap_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "ReplicatedRadiusDamageInfo": {
       "type": "ReplicatedRadiusDamage",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294975520
     },
     "ReplicatedAnimatedReactionInfo": {
       "type": "ReplicatedAnimatedReaction",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294975520
     },
     "ReplicatedPowerComboInfo": {
       "type": "ReplicatedPowerCombo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294975520
     },
     "DesiredSpeedMultiplier": {
       "type": "ScaledFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "AttachSlots": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "BodyStanceNodes": {
       "type": "AnimNodeSlot",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202497
     },
     "CustomActionClasses": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "CustomActions": {
       "type": "BioCustomAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 71442433
     },
     "PowerCustomActionClasses": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "PowerCustomActions": {
       "type": "BioCustomAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 71442433
     },
     "SupportedCustomReachSpecs": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "SupportedSyncActions": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "m_aoAccessories": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71958537
     },
     "RootMotionOverrides": {
       "type": "RootMotionOverrideEntry",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_afnCinematicLevels": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_aAdditionalResourcesToCook": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "AIBarkAnimName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_aReservations": {
       "type": "AttackReservation",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_CollisionCallbacks": {
       "type": "RigidBodyCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "TemporaryAnims": {
       "type": "TemporaryAnimSetInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "CombatVocVariants": {
       "type": "SFXVocalizationBank",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "AimNodes": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "AimNodeOffsets": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "ReactionBones": {
       "type": "ReactionPart",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "AbilityTimeStamps": {
       "type": "AbilityTimeStamp",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "WeaponAnimSpecs": {
       "type": "WeaponAnimSpec",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "__RBCollisionCallback__Delegate": {
       "type": "RBCollisionCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__DamageCallback__Delegate": {
       "type": "DamageCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "KilledByDamageType": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "ReplicatedCustomActionImpactPool": {
       "type": "ReplicatedCustomActionImpact",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294979616
     },
     "ReplicatedPowerSubsequentImpactPool": {
       "type": "ReplicatedPowerSubsequentImpact",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294979616
     },
     "ReplicatedCustomActionImpactInfo": {
       "type": "ReplicatedCustomActionImpact",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ReplicatedCustomActionInfo": {
       "type": "ReplicatedCustomAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294975520
     },
     "ReplicatedPowerSubsequentImpactInfo": {
       "type": "ReplicatedPowerSubsequentImpact",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ReplicatedWeaponImpactInfo": {
       "type": "ReplicatedWeaponImpact",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294975520
     },
     "ReplicatedPowerComboImpactInfo": {
       "type": "ReplicatedPowerComboImpact",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294975520
     },
     "MyGuid": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481987
     },
     "GUID_LifetimeCrust": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CAImpactEndReplicationTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "CAPowerSubsequentImpactEndReplicationTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "KilledByHitLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "m_vSafeTeleportLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "MeshTranslationOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "DesiredMeshTranslationOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LastMantleLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ReplicatedAimDeltaRot": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8224
     },
     "m_vFixedRotation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_rLastStopRotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_rSkidStartRotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_rSkidTargetRotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ReplicatedDirection": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ReplicatedRotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "ReplicatedRootBodyPos": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8224
     },
     "CameraHookOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CameraArmOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RightHandSocketName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "LeftHandSocketName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "SyncPawn": {
       "type": "Pawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "SyncPawnOwner": {
       "type": "BioCustomAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "PreRagdollAnchor": {
       "type": "NavigationPoint",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "WeaponFromLastGameState": {
       "type": "Weapon",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "WeaponOnDeck": {
       "type": "Weapon",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "DeathHitBoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "KilledBy": {
       "type": "Controller",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "HeadMesh": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "MorphHead": {
       "type": "BioMorphFace",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oHairMesh": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67764233
     },
     "m_oHeadGearMesh": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67764233
     },
     "m_oVisorMesh": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67764233
     },
     "m_oFacePlateMesh": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67764233
     },
     "CurrentLink": {
       "type": "CoverLink",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "LightEnvironment": {
       "type": "LightEnvironmentComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "AIBarkAnimSet": {
       "type": "FaceFXAnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DyingSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NotifyNewEnemySound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastPhysicsSetter": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "AimOffsetPct": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_aLastCollidedActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "Squad": {
       "type": "BioBaseSquad",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967329
     },
     "m_nmPhysicsImpactBone": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CombatVoc": {
       "type": "SFXVocalizationBank",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ExplorationVoc": {
       "type": "SFXVocalizationBank",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StealthVoc": {
       "type": "SFXVocalizationBank",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Loadout": {
       "type": "SFXLoadoutData",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nmRagdollRecoverBone": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nmRagdollRecoverDirSwapBone": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CE_LifetimeCrust": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LeftHandIK": {
       "type": "SFXSkelControlLimb",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ActionNode": {
       "type": "BioAnimNodeBlendByAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "SnapshotNode": {
       "type": "BioAnimNodeFrame",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_pOverrideSndSetFaceFXPkg": {
       "type": "FaceFXAnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_pSndSetFaceFXPkg": {
       "type": "FaceFXAnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PowerManager": {
       "type": "SFXPowerManager",
-      "documentation": null
+      "documentation": null,
+      "flags": 71311368
     },
     "CurrentCustomAction": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PreviousCustomAction": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CurrentPowerCustomAction": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "GrammarID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DeathCustomAction": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WalkSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CombatWalkSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CombatGroundSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CoverGroundSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CoverCrouchGroundSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TightAimGroundSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CrouchGroundSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StormSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StormTurnSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StormSpeedScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StormSpeedScaleTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StormStartSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fMoveMag": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LastAnimatedReactionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "HitReactionChanceMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastLargeReactionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LargeReactionInterval": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nTalkedToCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TalentPoints": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fRunAnimPlaybackPos": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fRunAnimPlaybackRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fRunAnimPlaybackLen": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fWalkAnimPlaybackPos": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fWalkAnimPlaybackRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fWalkAnimPlaybackLen": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fWalkStopDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fRunStopDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fCollisionReadyHeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PortArmsTimer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "PortArmsExitDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "PortArmsPlayerInterval": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "PortArmsNPCInterval": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "PortArmsWedgeHeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "PortArmsWedgeRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "DelayedPortArmsTimeAccumulator": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "PortArmsDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentSlotIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "TargetSlotIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PreviousSlotIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LeftSlotIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "RightSlotIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "CurrentSlotPct": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "LastCoverActionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CoverCamPeekToDefaultThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "CoverCamPeekToMidDefaultThresholdIn": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "CoverCamPeekToMidDefaultThresholdOut": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "LastPopOutOfCoverTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "AnimationTransitionCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "AnimationTransitionPending": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "m_fRBSleepEnergyThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fEnableCCDMultiplierThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24578
     },
     "m_eClassification": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "m_fPhysicsForceIncurred": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ThreatRadiusSquared": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "TimeOfDeath": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "MaxBodyCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "FallingStateEntranceTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nMaxTargetTickets": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nMaxAttackTickets": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fTicketExpiryTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_nTargetTickets": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nAttackTickets": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nCurrentReservationID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ConformTraceInterval": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ConformTraceFrameCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "InterpZTranslation": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "MeshAdjustFrequency": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "CurrentMeshAdjustTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LastMantleTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "AimOffsetInterpSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "RemoteAimOffsetInterpSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "TemporaryAimInterpSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "PortArmsAndAimInterpSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ReloadingAimInterpTimeToGo": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AimOriginOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "m_fInitialZVal": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ScaleLimitTimeToGo": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RadarRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "RadarFOV": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fDesiredMaxSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fPowerUsePercent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nPhysicsLevel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fPhysicsRecoverSpeedThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nRemainInRagdoll": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fSleepPerceptionDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ResistanceType": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fRagdollRecoverPhysBlendTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PowerThreshold_Standard": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PowerThreshold_Stagger": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PowerThreshold_Knockback": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fTurningAngle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fAnimStartTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fMoveStartElapsedTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fMoveStopElapsedTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fAnimMoveSpeedSnapshot": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fAnimMoveStartSpeedSnapshot": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "InvalidRagdollStateCounter": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ReplicatedEnsurePawnHasLandedFromRagdoll": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294975520
     },
     "CAEndReplicationTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CAPowerComboReplicationTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CAPowerComboImpactReplicationTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LastReplicatedCustomActionInfoTriggerCounter": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentReplicatedCustomActionImpactIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentReplicatedCustomActionImpactRefCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentReplicatedPowerSubsequentImpactIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentReplicatedPowerSubsequentImpactRefCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LastAnimatedReaction": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ReplicatedRotationInterpolationRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "CoverTransitionStdLeanOutRight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CoverTransitionStdLeanInRight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CoverTransitionStdLeanOutLeft": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CoverTransitionStdLeanInLeft": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CoverTransitionMidLeanOutRight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CoverTransitionMidLeanInRight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CoverTransitionMidLeanOutLeft": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CoverTransitionMidLeanInLeft": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BloodColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FollowDistanceModifier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AchievementForceThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "CameraHookScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CameraArmScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bUseAnimatedRagdoll": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bHACKStopCustomActionInstantly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "SupportsCombatGrammar": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCombatPawn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bInjuredPawn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bIgnoreSelectionMaxRange": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bFullyInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bFullyInitializedMP": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bCanPlayReactions": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSpawnPHATInstance": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bKillOnRagdoll": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCollidesAfterDeath": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSaveMe": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481985
     },
     "bIsSniping": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bAllowSuperStormSpeed": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bCanEarlyMantle": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bCanRagdoll": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAffectedByRagdollPowers": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bCanBeReaped": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bCanPlayMoveStopAnims": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bPreventPermanentDeath": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIsFrozen": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bPlayDeathAnimation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "bUseLargeReactions": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverrideHeadMat": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bOverrideBodyMats": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_bOldUpdateSkelWhenNotRendered": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bEnableStartRootMotion": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bEnableStopRootMotion": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bRootMotionOverriden": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bTurnInPlaceRequested": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bUseWallSlidingSpeedAdj": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bSafeTeleportQueued": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bHideWithCameraCollision": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bPortArmsEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bCanPortArms": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bInPortArms": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8224
     },
     "bPlayingPortArmsAnim": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bDisablePlayerPortArmsEvenIfFriendly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481985
     },
     "bWeaponDebug_Accuracy": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278529
     },
     "bWeaponDebug_DamageRadius": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278529
     },
     "bWasInCover": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsInStationaryCover": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIgnoreDuringCoverSelection": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDoUpdateCoverData": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDisableCoverAdjust": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bRecentlyTookCover": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bDisableVocEvents": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bScalingToZero": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bAdjustMeshTranslationOnSlopes": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bReloadingAimInterp": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDisableAnimatedTransitions": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bRagdollEnteredPendingBodyFallSound": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bDebugCoverLeans": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bPowerInvokedLeanOut": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 18014398509481985
     },
     "bHeadGearVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bMin1Health": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bPhysicsDamageEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bPlotProtected": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSleeping": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bShouldSpawnWeapons": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bScalePowers": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "bIsStealthed": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "bInStealthVolume": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bInvertRagdollRecoverBoneAxis": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bRecoverDirSwap": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bInvertRagdollRecoverDirSwapBoneAxis": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsAPlayer": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8224
     },
     "bStorming": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8224
     },
     "bReplicatedWantsToStorm": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8224
     },
     "bIsFalling": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294975520
     },
     "bIsDowned": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294975520
     },
     "bIsDead": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294975520
     },
     "bIsInRagdollRecovery": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8224
     },
     "bMashSuccess": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294975520
     },
     "bPlayerInRagdoll": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bReplicateCustomActionInfoToOwner": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bHasReplicatedBufferedCustomAction": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bInterpolateReplicatedRotation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bTurnInPlaceRequested": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "bNotifyCoverAlignment": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bBusyConversation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bAchievementDisruptedGranted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAchievementFlyingGranted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAchievementFireGranted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentSlotDirection": {
       "type": "ECoverDirection",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CoverDirection": {
       "type": "ECoverDirection",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     },
     "CoverType": {
       "type": "ECoverType",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     },
     "CoverAction": {
       "type": "ECoverAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     },
     "RaceType": {
       "type": "ERaceType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CharacterType": {
       "type": "ECharacterType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AffiliationType": {
       "type": "EAffiliationType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ChallengeType": {
       "type": "EChallengeType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_eRagdollRecoverBoneAxis": {
       "type": "EAxis",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_eRagdollRecoverDirSwapBoneAxis": {
       "type": "EAxis",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_eCombatModeFadeoutState": {
       "type": "EBioAnimNodeCombatModeFadeOut",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastReplicatedRadiusDamageInfoTriggerCounter": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_eTurningDirection": {
       "type": "EBioAnimTurnDirState",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "m_eAnimStartState": {
       "type": "EBioAnimStartState",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "m_eAnimStopState": {
       "type": "EBioAnimStopState",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "m_eAnimSkidState": {
       "type": "EBioAnimSkidTurnState",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "m_eGetUpState": {
       "type": "EBioAnimGetUpState",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     }
   },
   "functions": {
@@ -1300,8 +1623,9 @@
       "documentation": null,
       "signature_members": {
         "nCost": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -1311,8 +1635,9 @@
       "documentation": null,
       "signature_members": {
         "Set": {
-          "type": null,
-          "documentation": null
+          "type": "AnimSet",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1328,28 +1653,34 @@
       "documentation": null,
       "signature_members": {
         "impulse": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "bIgnorePhysicsThreshold": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "HitBone": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         },
         "bVelChange": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -1359,32 +1690,39 @@
       "documentation": null,
       "signature_members": {
         "impulse": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "bIgnorePhysicsThreshold": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "HitBone": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         },
         "bVelChange": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "AnimatedRagdoll": {
-          "type": null,
-          "documentation": null
+          "type": "EAICustomAction",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -1394,8 +1732,9 @@
       "documentation": null,
       "signature_members": {
         "nPoints": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1405,16 +1744,19 @@
       "documentation": null,
       "signature_members": {
         "eResourceType": {
-          "type": null,
-          "documentation": null
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
         },
         "nAmt": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bNotifyTicker": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -1424,12 +1766,14 @@
       "documentation": null,
       "signature_members": {
         "sBlendName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nChild": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1439,8 +1783,9 @@
       "documentation": null,
       "signature_members": {
         "sBlendName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1450,12 +1795,14 @@
       "documentation": null,
       "signature_members": {
         "SeqNode": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
         },
         "NotifyObject": {
-          "type": null,
-          "documentation": null
+          "type": "BioAnimNotify_CustomAction",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1465,8 +1812,9 @@
       "documentation": null,
       "signature_members": {
         "SkelMesh": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -1482,8 +1830,9 @@
       "documentation": null,
       "signature_members": {
         "InInterpGroup": {
-          "type": null,
-          "documentation": null
+          "type": "InterpGroup",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1493,8 +1842,9 @@
       "documentation": null,
       "signature_members": {
         "InInterpGroup": {
-          "type": null,
-          "documentation": null
+          "type": "InterpGroup",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1510,12 +1860,14 @@
       "documentation": null,
       "signature_members": {
         "rDesiredRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         },
         "bForce": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -1525,8 +1877,9 @@
       "documentation": null,
       "signature_members": {
         "Stance": {
-          "type": null,
-          "documentation": null
+          "type": "BodyStance",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "float",
@@ -1536,8 +1889,9 @@
       "documentation": null,
       "signature_members": {
         "Stance": {
-          "type": null,
-          "documentation": null
+          "type": "BodyStance",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "float",
@@ -1547,12 +1901,14 @@
       "documentation": null,
       "signature_members": {
         "Stance": {
-          "type": null,
-          "documentation": null
+          "type": "BodyStance",
+          "documentation": null,
+          "flags": 4194690
         },
         "RateScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1562,12 +1918,14 @@
       "documentation": null,
       "signature_members": {
         "Stance": {
-          "type": null,
-          "documentation": null
+          "type": "BodyStance",
+          "documentation": null,
+          "flags": 4194690
         },
         "bNewPlaying": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1577,12 +1935,14 @@
       "documentation": null,
       "signature_members": {
         "Stance": {
-          "type": null,
-          "documentation": null
+          "type": "BodyStance",
+          "documentation": null,
+          "flags": 4194690
         },
         "NewRate": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1592,12 +1952,14 @@
       "documentation": null,
       "signature_members": {
         "Stance": {
-          "type": null,
-          "documentation": null
+          "type": "BodyStance",
+          "documentation": null,
+          "flags": 4194690
         },
         "Position": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1607,16 +1969,19 @@
       "documentation": null,
       "signature_members": {
         "SlotPct": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "IdealPosition": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "IdealRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -1626,8 +1991,9 @@
       "documentation": null,
       "signature_members": {
         "vNewLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "float",
@@ -1637,8 +2003,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaSeconds": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1654,16 +2021,19 @@
       "documentation": null,
       "signature_members": {
         "CovAction": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverAction",
+          "documentation": null,
+          "flags": 128
         },
         "bPrecise": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bTestCamera": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -1673,8 +2043,9 @@
       "documentation": null,
       "signature_members": {
         "Path": {
-          "type": null,
-          "documentation": null
+          "type": "ReachSpec",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1684,20 +2055,24 @@
       "documentation": null,
       "signature_members": {
         "CAction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Sync": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 144
         },
         "bForced": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "PowerCustomAction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -1719,16 +2094,19 @@
       "documentation": null,
       "signature_members": {
         "sBlendName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nFlags": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "fWeight": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -1744,8 +2122,9 @@
       "documentation": null,
       "signature_members": {
         "Nav": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1755,8 +2134,9 @@
       "documentation": null,
       "signature_members": {
         "Nav": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1772,8 +2152,9 @@
       "documentation": null,
       "signature_members": {
         "nmSetGroupName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1789,12 +2170,14 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "OutResults": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -1804,8 +2187,9 @@
       "documentation": null,
       "signature_members": {
         "pSrcPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1815,24 +2199,29 @@
       "documentation": null,
       "signature_members": {
         "oPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "fDamage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "DamageCauser": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1848,16 +2237,19 @@
       "documentation": null,
       "signature_members": {
         "NewAction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bForced": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "PowerCustomAction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -1873,8 +2265,9 @@
       "documentation": null,
       "signature_members": {
         "bEnableAI": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1890,8 +2283,9 @@
       "documentation": null,
       "signature_members": {
         "HeightAdjust": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1901,12 +2295,14 @@
       "documentation": null,
       "signature_members": {
         "bResetAI": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bTeleport": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -1916,8 +2312,9 @@
       "documentation": null,
       "signature_members": {
         "NewMode": {
-          "type": null,
-          "documentation": null
+          "type": "EPhysics",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1933,8 +2330,9 @@
       "documentation": null,
       "signature_members": {
         "dmgType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1944,12 +2342,14 @@
       "documentation": null,
       "signature_members": {
         "vHitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
         },
         "oHitActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1959,20 +2359,24 @@
       "documentation": null,
       "signature_members": {
         "vStartLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "vFoundLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "oTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 144
         },
         "nMaxShellsToCheck": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -1982,8 +2386,9 @@
       "documentation": null,
       "signature_members": {
         "InInterpGroup": {
-          "type": null,
-          "documentation": null
+          "type": "InterpGroup",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2023,16 +2428,19 @@
       "documentation": null,
       "signature_members": {
         "Dest": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
         },
         "MoveTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "Direction": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -2042,16 +2450,19 @@
       "documentation": null,
       "signature_members": {
         "AimNode": {
-          "type": null,
-          "documentation": null
+          "type": "EAimNodes",
+          "documentation": null,
+          "flags": 128
         },
         "AimLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "bLogError": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -2067,16 +2478,19 @@
       "documentation": null,
       "signature_members": {
         "sAnimName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "fAnimLength": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "fAnimPos": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -2092,8 +2506,9 @@
       "documentation": null,
       "signature_members": {
         "pAction": {
-          "type": null,
-          "documentation": null
+          "type": "BioCustomAction",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -2139,8 +2554,9 @@
       "documentation": null,
       "signature_members": {
         "Component": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67109008
         }
       },
       "returntype": "Name",
@@ -2174,8 +2590,9 @@
       "documentation": null,
       "signature_members": {
         "eResourceType": {
-          "type": null,
-          "documentation": null
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -2227,28 +2644,34 @@
       "documentation": null,
       "signature_members": {
         "ReactionType": {
-          "type": null,
-          "documentation": null
+          "type": "EReactionTypes",
+          "documentation": null,
+          "flags": 128
         },
         "OutActions": {
-          "type": null,
-          "documentation": null
+          "type": "EAICustomAction",
+          "documentation": null,
+          "flags": 4194688
         },
         "HitPart": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         },
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 144
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 400
         }
       },
       "returntype": "bool",
@@ -2258,12 +2681,14 @@
       "documentation": null,
       "signature_members": {
         "SW": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon_NativeBase",
+          "documentation": null,
+          "flags": 128
         },
         "AimDir": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Vector",
@@ -2303,8 +2728,9 @@
       "documentation": null,
       "signature_members": {
         "RangeType": {
-          "type": null,
-          "documentation": null
+          "type": "EWeaponRange",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -2314,8 +2740,9 @@
       "documentation": null,
       "signature_members": {
         "CurrentWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Vector",
@@ -2337,8 +2764,9 @@
       "documentation": null,
       "signature_members": {
         "nID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -2366,12 +2794,14 @@
       "documentation": null,
       "signature_members": {
         "InLimit": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bMustLean": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -2381,12 +2811,14 @@
       "documentation": null,
       "signature_members": {
         "InLimit": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bMustLean": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -2396,8 +2828,9 @@
       "documentation": null,
       "signature_members": {
         "ReactionType": {
-          "type": null,
-          "documentation": null
+          "type": "EReactionTypes",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -2407,8 +2840,9 @@
       "documentation": null,
       "signature_members": {
         "PawnController": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -2454,8 +2888,9 @@
       "documentation": null,
       "signature_members": {
         "bOnlyCheckBlockingActions": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -2471,8 +2906,9 @@
       "documentation": null,
       "signature_members": {
         "Stance": {
-          "type": null,
-          "documentation": null
+          "type": "BodyStance",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "bool",
@@ -2482,12 +2918,14 @@
       "documentation": null,
       "signature_members": {
         "bCheckReloadRequest": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bBlendOut": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -2509,8 +2947,9 @@
       "documentation": null,
       "signature_members": {
         "bBlendOut": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -2532,12 +2971,14 @@
       "documentation": null,
       "signature_members": {
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "FloorActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2565,8 +3006,9 @@
       "documentation": null,
       "signature_members": {
         "MeshToAdd": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -2576,8 +3018,9 @@
       "documentation": null,
       "signature_members": {
         "MeshToRemove": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -2599,8 +3042,9 @@
       "documentation": null,
       "signature_members": {
         "ePartGroup": {
-          "type": null,
-          "documentation": null
+          "type": "EBioPartGroup",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2616,16 +3060,19 @@
       "documentation": null,
       "signature_members": {
         "SeqNode": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
         },
         "PlayedTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "ExcessTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2659,8 +3106,9 @@
       "documentation": null,
       "signature_members": {
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2676,16 +3124,19 @@
       "documentation": null,
       "signature_members": {
         "bRequireOverlap": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "RadiusScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bIgnoreCurrentCoverAction": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -2695,40 +3146,49 @@
       "documentation": null,
       "signature_members": {
         "Stance": {
-          "type": null,
-          "documentation": null
+          "type": "BodyStance",
+          "documentation": null,
+          "flags": 4194690
         },
         "Rate": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "BlendInTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "BlendOutTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bLooping": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bOverride": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "GroupName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         },
         "StartTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "BlendType": {
-          "type": null,
-          "documentation": null
+          "type": "AlphaBlendType",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "float",
@@ -2738,36 +3198,44 @@
       "documentation": null,
       "signature_members": {
         "Stance": {
-          "type": null,
-          "documentation": null
+          "type": "BodyStance",
+          "documentation": null,
+          "flags": 4194690
         },
         "Duration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "BlendInTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "BlendOutTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bLooping": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bOverride": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "GroupName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         },
         "BlendType": {
-          "type": null,
-          "documentation": null
+          "type": "AlphaBlendType",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -2777,8 +3245,9 @@
       "documentation": null,
       "signature_members": {
         "FootDown": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2788,8 +3257,9 @@
       "documentation": null,
       "signature_members": {
         "Sound": {
-          "type": null,
-          "documentation": null
+          "type": "WwiseEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2799,32 +3269,39 @@
       "documentation": null,
       "signature_members": {
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 128
         },
         "DamageCauser": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2846,8 +3323,9 @@
       "documentation": null,
       "signature_members": {
         "SkelComp": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -2857,12 +3335,14 @@
       "documentation": null,
       "signature_members": {
         "ObjectPool": {
-          "type": null,
-          "documentation": null
+          "type": "SFXObjectPool",
+          "documentation": null,
+          "flags": 128
         },
         "ClientEffects": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectManager",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2872,16 +3352,19 @@
       "documentation": null,
       "signature_members": {
         "oPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "oImpactActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "vImpactDir": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2891,8 +3374,9 @@
       "documentation": null,
       "signature_members": {
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2908,8 +3392,9 @@
       "documentation": null,
       "signature_members": {
         "bResetHealth": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -2919,12 +3404,14 @@
       "documentation": null,
       "signature_members": {
         "nmSetGroupName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "oAnim": {
-          "type": null,
-          "documentation": null
+          "type": "AnimSet",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2934,12 +3421,14 @@
       "documentation": null,
       "signature_members": {
         "nID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bKillTicket": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2949,8 +3438,9 @@
       "documentation": null,
       "signature_members": {
         "nPoints": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2960,8 +3450,9 @@
       "documentation": null,
       "signature_members": {
         "VarName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2971,8 +3462,9 @@
       "documentation": null,
       "signature_members": {
         "rDesDir": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -2982,24 +3474,29 @@
       "documentation": null,
       "signature_members": {
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -3009,12 +3506,14 @@
       "documentation": null,
       "signature_members": {
         "PercentOfHealthRegained": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bIsInstantaneous": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -3024,20 +3523,24 @@
       "documentation": null,
       "signature_members": {
         "HitComponent": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "OtherComponent": {
-          "type": null,
-          "documentation": null
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "RigidCollisionData": {
-          "type": null,
-          "documentation": null
+          "type": "CollisionImpactData",
+          "documentation": null,
+          "flags": 4194690
         },
         "ContactIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3047,8 +3550,9 @@
       "documentation": null,
       "signature_members": {
         "Set": {
-          "type": null,
-          "documentation": null
+          "type": "AnimSet",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3058,8 +3562,9 @@
       "documentation": null,
       "signature_members": {
         "SkelComp": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -3069,16 +3574,19 @@
       "documentation": null,
       "signature_members": {
         "Node": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNode",
+          "documentation": null,
+          "flags": 128
         },
         "RMMode": {
-          "type": null,
-          "documentation": null
+          "type": "ERootMotionMode",
+          "documentation": null,
+          "flags": 128
         },
         "RMRMode": {
-          "type": null,
-          "documentation": null
+          "type": "ERootMotionRotationMode",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3088,8 +3596,9 @@
       "documentation": null,
       "signature_members": {
         "Node": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNode",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3099,8 +3608,9 @@
       "documentation": null,
       "signature_members": {
         "vDest": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3122,28 +3632,34 @@
       "documentation": null,
       "signature_members": {
         "SlotName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ChannelIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "InAnimSeqName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "InPosition": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bFireNotifies": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bLooping": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3153,12 +3669,14 @@
       "documentation": null,
       "signature_members": {
         "Stance": {
-          "type": null,
-          "documentation": null
+          "type": "BodyStance",
+          "documentation": null,
+          "flags": 4194690
         },
         "bNewStatus": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3168,12 +3686,14 @@
       "documentation": null,
       "signature_members": {
         "Stance": {
-          "type": null,
-          "documentation": null
+          "type": "BodyStance",
+          "documentation": null,
+          "flags": 4194690
         },
         "bNewLooping": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3183,20 +3703,24 @@
       "documentation": null,
       "signature_members": {
         "Stance": {
-          "type": null,
-          "documentation": null
+          "type": "BodyStance",
+          "documentation": null,
+          "flags": 4194690
         },
         "AxisX": {
-          "type": null,
-          "documentation": null
+          "type": "ERootBoneAxis",
+          "documentation": null,
+          "flags": 144
         },
         "AxisY": {
-          "type": null,
-          "documentation": null
+          "type": "ERootBoneAxis",
+          "documentation": null,
+          "flags": 144
         },
         "AxisZ": {
-          "type": null,
-          "documentation": null
+          "type": "ERootBoneAxis",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -3206,20 +3730,24 @@
       "documentation": null,
       "signature_members": {
         "Stance": {
-          "type": null,
-          "documentation": null
+          "type": "BodyStance",
+          "documentation": null,
+          "flags": 4194690
         },
         "RPitch": {
-          "type": null,
-          "documentation": null
+          "type": "ERootRotationOption",
+          "documentation": null,
+          "flags": 144
         },
         "RYaw": {
-          "type": null,
-          "documentation": null
+          "type": "ERootRotationOption",
+          "documentation": null,
+          "flags": 144
         },
         "RRoll": {
-          "type": null,
-          "documentation": null
+          "type": "ERootRotationOption",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -3229,8 +3757,9 @@
       "documentation": null,
       "signature_members": {
         "NewCoverAction": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverAction",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3240,8 +3769,9 @@
       "documentation": null,
       "signature_members": {
         "bDoCrouch": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3251,8 +3781,9 @@
       "documentation": null,
       "signature_members": {
         "fSpeedScaling": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3262,8 +3793,9 @@
       "documentation": null,
       "signature_members": {
         "EffectsMaterialType": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3273,8 +3805,9 @@
       "documentation": null,
       "signature_members": {
         "FractionEnabled": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3284,8 +3817,9 @@
       "documentation": null,
       "signature_members": {
         "bVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3295,12 +3829,14 @@
       "documentation": null,
       "signature_members": {
         "NewOffset": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "bForce": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3310,8 +3846,9 @@
       "documentation": null,
       "signature_members": {
         "WwiseComponent": {
-          "type": null,
-          "documentation": null
+          "type": "WwiseAudioComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -3321,12 +3858,14 @@
       "documentation": null,
       "signature_members": {
         "ParameterName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3336,8 +3875,9 @@
       "documentation": null,
       "signature_members": {
         "fScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3347,12 +3887,14 @@
       "documentation": null,
       "signature_members": {
         "ShadowMode": {
-          "type": null,
-          "documentation": null
+          "type": "ELightShadowMode",
+          "documentation": null,
+          "flags": 128
         },
         "EnableShadowCasting": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3362,8 +3904,9 @@
       "documentation": null,
       "signature_members": {
         "bCrouch": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3373,12 +3916,14 @@
       "documentation": null,
       "signature_members": {
         "ParameterName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "Texture",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3388,12 +3933,14 @@
       "documentation": null,
       "signature_members": {
         "nID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "fDuration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3403,12 +3950,14 @@
       "documentation": null,
       "signature_members": {
         "ParameterName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "Color",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -3418,8 +3967,9 @@
       "documentation": null,
       "signature_members": {
         "eSlot": {
-          "type": null,
-          "documentation": null
+          "type": "EAttachSlot",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3429,8 +3979,9 @@
       "documentation": null,
       "signature_members": {
         "Wpn": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -3440,8 +3991,9 @@
       "documentation": null,
       "signature_members": {
         "WpnClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -3451,8 +4003,9 @@
       "documentation": null,
       "signature_members": {
         "pWwiseAudioComponent": {
-          "type": null,
-          "documentation": null
+          "type": "ActorComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -3468,8 +4021,9 @@
       "documentation": null,
       "signature_members": {
         "HeightAdjust": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3479,20 +4033,24 @@
       "documentation": null,
       "signature_members": {
         "NewAction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Sync": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 144
         },
         "bForced": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "PowerCustomAction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -3502,8 +4060,9 @@
       "documentation": null,
       "signature_members": {
         "BlendOutTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3513,12 +4072,14 @@
       "documentation": null,
       "signature_members": {
         "Stance": {
-          "type": null,
-          "documentation": null
+          "type": "BodyStance",
+          "documentation": null,
+          "flags": 4194690
         },
         "BlendOutTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -3528,8 +4089,9 @@
       "documentation": null,
       "signature_members": {
         "bStopRotation": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -3539,8 +4101,9 @@
       "documentation": null,
       "signature_members": {
         "pSrcPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3550,32 +4113,39 @@
       "documentation": null,
       "signature_members": {
         "DamageAmount": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "EventInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 144
         },
         "DamageCauser": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -3597,8 +4167,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3614,12 +4185,14 @@
       "documentation": null,
       "signature_members": {
         "Start": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         },
         "End": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -3647,12 +4220,14 @@
       "documentation": null,
       "signature_members": {
         "NewAimOffsetPct": {
-          "type": null,
-          "documentation": null
+          "type": "Vector2D",
+          "documentation": null,
+          "flags": 128
         },
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3662,8 +4237,9 @@
       "documentation": null,
       "signature_members": {
         "bInWantShadow": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3679,12 +4255,14 @@
       "documentation": null,
       "signature_members": {
         "InWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         },
         "bViaReplication": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3700,32 +4278,39 @@
       "documentation": null,
       "signature_members": {
         "Caster": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "Force": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "TargetOverride": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "EPowerResistance",
@@ -3735,32 +4320,39 @@
       "documentation": null,
       "signature_members": {
         "Resistance": {
-          "type": null,
-          "documentation": null
+          "type": "EPowerResistance",
+          "documentation": null,
+          "flags": 128
         },
         "Caster": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Force": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -3770,8 +4362,9 @@
       "documentation": null,
       "signature_members": {
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_SetPhysics",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3781,8 +4374,9 @@
       "documentation": null,
       "signature_members": {
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_Teleport",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3804,16 +4398,19 @@
       "documentation": null,
       "signature_members": {
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -3823,16 +4420,19 @@
       "documentation": null,
       "signature_members": {
         "InWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         },
         "InFlashLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "bViaReplication": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3842,8 +4442,9 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3853,36 +4454,44 @@
       "documentation": null,
       "signature_members": {
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageCalc": {
-          "type": null,
-          "documentation": null
+          "type": "DamageCalculationAlgorithm",
+          "documentation": null,
+          "flags": 384
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 386
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "DamageCauser": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -3892,8 +4501,9 @@
       "documentation": null,
       "signature_members": {
         "inAction": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_GiveInventory",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3903,12 +4513,14 @@
       "documentation": null,
       "signature_members": {
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "HitLoc": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3924,12 +4536,14 @@
       "documentation": null,
       "signature_members": {
         "C": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "bVehicleTransition": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -3939,16 +4553,19 @@
       "documentation": null,
       "signature_members": {
         "Start": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         },
         "End": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         },
         "Next": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -3970,16 +4587,19 @@
       "documentation": null,
       "signature_members": {
         "InWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         },
         "bViaReplication": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -4001,8 +4621,9 @@
       "documentation": null,
       "signature_members": {
         "nCost": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -4012,8 +4633,9 @@
       "documentation": null,
       "signature_members": {
         "MeshToAdd": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -4023,8 +4645,9 @@
       "documentation": null,
       "signature_members": {
         "i": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -4034,8 +4657,9 @@
       "documentation": null,
       "signature_members": {
         "i": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -4051,16 +4675,19 @@
       "documentation": null,
       "signature_members": {
         "SeqNode": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
         },
         "PlayedTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "ExcessTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -4076,12 +4703,14 @@
       "documentation": null,
       "signature_members": {
         "Stance": {
-          "type": null,
-          "documentation": null
+          "type": "BodyStance",
+          "documentation": null,
+          "flags": 4194690
         },
         "BlendAmount": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -4115,12 +4744,14 @@
       "documentation": null,
       "signature_members": {
         "NewAction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "PowerCustomAction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -4130,12 +4761,14 @@
       "documentation": null,
       "signature_members": {
         "OutMantleInfo": {
-          "type": null,
-          "documentation": null
+          "type": "MantleInfo",
+          "documentation": null,
+          "flags": 4194688
         },
         "bForceLocalSimulation": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -4163,12 +4796,14 @@
       "documentation": null,
       "signature_members": {
         "SyncTarget": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "SyncActionName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -4184,28 +4819,34 @@
       "documentation": null,
       "signature_members": {
         "CustomActionType": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "BoneIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
         },
         "RandomRoll": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -4221,12 +4862,14 @@
       "documentation": null,
       "signature_members": {
         "WeaponClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "bEquipWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -4236,12 +4879,14 @@
       "documentation": null,
       "signature_members": {
         "ChkLoadout": {
-          "type": null,
-          "documentation": null
+          "type": "SFXLoadoutData",
+          "documentation": null,
+          "flags": 128
         },
         "bForceFromEngineLoadout": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -4263,8 +4908,9 @@
       "documentation": null,
       "signature_members": {
         "bKeepReplicationOrder": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -4280,12 +4926,14 @@
       "documentation": null,
       "signature_members": {
         "EventName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Sender": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -4331,12 +4979,14 @@
       "documentation": null,
       "signature_members": {
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "DamageCauser": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Pawn",
@@ -4352,8 +5002,9 @@
       "documentation": null,
       "signature_members": {
         "OutMantleInfo": {
-          "type": null,
-          "documentation": null
+          "type": "MantleInfo",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -4363,8 +5014,9 @@
       "documentation": null,
       "signature_members": {
         "oLoadout": {
-          "type": null,
-          "documentation": null
+          "type": "SFXLoadoutData",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -4380,8 +5032,9 @@
       "documentation": null,
       "signature_members": {
         "AbilityName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -4391,8 +5044,9 @@
       "documentation": null,
       "signature_members": {
         "Cover": {
-          "type": null,
-          "documentation": null
+          "type": "CovPosInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "ECoverType",
@@ -4408,8 +5062,9 @@
       "documentation": null,
       "signature_members": {
         "OutMantleInfo": {
-          "type": null,
-          "documentation": null
+          "type": "MantleInfo",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "float",
@@ -4419,12 +5074,14 @@
       "documentation": null,
       "signature_members": {
         "PhysMat": {
-          "type": null,
-          "documentation": null
+          "type": "PhysicalMaterial",
+          "documentation": null,
+          "flags": 128
         },
         "FootDown": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "ParticleSystem",
@@ -4434,8 +5091,9 @@
       "documentation": null,
       "signature_members": {
         "GEName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXGameEffect",
@@ -4445,8 +5103,9 @@
       "documentation": null,
       "signature_members": {
         "OutMantleInfo": {
-          "type": null,
-          "documentation": null
+          "type": "MantleInfo",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "Vector",
@@ -4456,16 +5115,19 @@
       "documentation": null,
       "signature_members": {
         "Angle": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "SideAngle": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "OutActions": {
-          "type": null,
-          "documentation": null
+          "type": "EAICustomAction",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -4475,8 +5137,9 @@
       "documentation": null,
       "signature_members": {
         "OutMantleInfo": {
-          "type": null,
-          "documentation": null
+          "type": "MantleInfo",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -4486,16 +5149,19 @@
       "documentation": null,
       "signature_members": {
         "Angle": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "SideAngle": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "OutActions": {
-          "type": null,
-          "documentation": null
+          "type": "EAICustomAction",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -4505,8 +5171,9 @@
       "documentation": null,
       "signature_members": {
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "Name",
@@ -4552,12 +5219,14 @@
       "documentation": null,
       "signature_members": {
         "FootStepMat": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPhysicalMaterialFootSteps",
+          "documentation": null,
+          "flags": 128
         },
         "FootDown": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "ParticleSystem",
@@ -4567,16 +5236,19 @@
       "documentation": null,
       "signature_members": {
         "Angle": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "SideAngle": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "OutActions": {
-          "type": null,
-          "documentation": null
+          "type": "EAICustomAction",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -4586,16 +5258,19 @@
       "documentation": null,
       "signature_members": {
         "Angle": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "SideAngle": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "OutActions": {
-          "type": null,
-          "documentation": null
+          "type": "EAICustomAction",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -4605,8 +5280,9 @@
       "documentation": null,
       "signature_members": {
         "cWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXWeapon",
@@ -4616,12 +5292,14 @@
       "documentation": null,
       "signature_members": {
         "HandLoc": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "HandRot": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -4631,20 +5309,24 @@
       "documentation": null,
       "signature_members": {
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "BoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -4654,20 +5336,24 @@
       "documentation": null,
       "signature_members": {
         "HitActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "StartDownTrace": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "bHitSomethingHoriz": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 400
         }
       },
       "returntype": "bool",
@@ -4695,8 +5381,9 @@
       "documentation": null,
       "signature_members": {
         "GEName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -4706,8 +5393,9 @@
       "documentation": null,
       "signature_members": {
         "Resistance": {
-          "type": null,
-          "documentation": null
+          "type": "EResistanceType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -4783,20 +5471,24 @@
       "documentation": null,
       "signature_members": {
         "bImmediate": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "dmgType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Cause": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -4818,8 +5510,9 @@
       "documentation": null,
       "signature_members": {
         "ArmourIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -4829,12 +5522,14 @@
       "documentation": null,
       "signature_members": {
         "Power": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerCustomAction",
+          "documentation": null,
+          "flags": 128
         },
         "Caster": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -4844,12 +5539,14 @@
       "documentation": null,
       "signature_members": {
         "oAttacker": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "Power": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPowerCustomAction",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -4865,8 +5562,9 @@
       "documentation": null,
       "signature_members": {
         "inAction": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSeqAct_GiveWeapon",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -4876,8 +5574,9 @@
       "documentation": null,
       "signature_members": {
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "BioSeqAct_MultiLand",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -4887,8 +5586,9 @@
       "documentation": null,
       "signature_members": {
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "BioSeqAct_OrbitalGame",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -4904,8 +5604,9 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -4927,12 +5628,14 @@
       "documentation": null,
       "signature_members": {
         "SFXDamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -4948,8 +5651,9 @@
       "documentation": null,
       "signature_members": {
         "Killer": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -4959,12 +5663,14 @@
       "documentation": null,
       "signature_members": {
         "CovInfo": {
-          "type": null,
-          "documentation": null
+          "type": "CovPosInfo",
+          "documentation": null,
+          "flags": 128
         },
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -4980,8 +5686,9 @@
       "documentation": null,
       "signature_members": {
         "InSoundCue": {
-          "type": null,
-          "documentation": null
+          "type": "WwiseBaseSoundObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -4991,16 +5698,19 @@
       "documentation": null,
       "signature_members": {
         "FootDown": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 128
         },
         "Loudness": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -5022,8 +5732,9 @@
       "documentation": null,
       "signature_members": {
         "bKeepReplicationOrder": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -5039,16 +5750,19 @@
       "documentation": null,
       "signature_members": {
         "RBCallback": {
-          "type": null,
-          "documentation": null
+          "type": "RBCollisionCallback",
+          "documentation": null,
+          "flags": 4194432
         },
         "bDisablePhysicsDamage": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "nPriority": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -5058,8 +5772,9 @@
       "documentation": null,
       "signature_members": {
         "TempAnim": {
-          "type": null,
-          "documentation": null
+          "type": "AnimSet",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -5081,8 +5796,9 @@
       "documentation": null,
       "signature_members": {
         "nCost": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -5098,8 +5814,9 @@
       "documentation": null,
       "signature_members": {
         "MeshToRemove": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -5115,16 +5832,19 @@
       "documentation": null,
       "signature_members": {
         "WeaponCategory": {
-          "type": null,
-          "documentation": null
+          "type": "ELoadoutWeapons",
+          "documentation": null,
+          "flags": 128
         },
         "NewWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "bEquipWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -5134,24 +5854,29 @@
       "documentation": null,
       "signature_members": {
         "CustomActionType": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "BoneIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -5167,24 +5892,29 @@
       "documentation": null,
       "signature_members": {
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "DamageCauser": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -5194,20 +5924,24 @@
       "documentation": null,
       "signature_members": {
         "ReactionType": {
-          "type": null,
-          "documentation": null
+          "type": "EReactionTypes",
+          "documentation": null,
+          "flags": 128
         },
         "instigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 400
         }
       },
       "returntype": "bool",
@@ -5217,12 +5951,14 @@
       "documentation": null,
       "signature_members": {
         "PlayerLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "oLoadout": {
-          "type": null,
-          "documentation": null
+          "type": "SFXLoadoutData",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -5238,12 +5974,14 @@
       "documentation": null,
       "signature_members": {
         "ChkLoadout": {
-          "type": null,
-          "documentation": null
+          "type": "SFXLoadoutData",
+          "documentation": null,
+          "flags": 128
         },
         "ScaleLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -5253,12 +5991,14 @@
       "documentation": null,
       "signature_members": {
         "CustomActionType": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "PowerCustomAction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -5268,8 +6008,9 @@
       "documentation": null,
       "signature_members": {
         "OtherPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -5279,8 +6020,9 @@
       "documentation": null,
       "signature_members": {
         "AbilityName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -5290,8 +6032,9 @@
       "documentation": null,
       "signature_members": {
         "NewCoverDirection": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverDirection",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -5301,24 +6044,29 @@
       "documentation": null,
       "signature_members": {
         "Link": {
-          "type": null,
-          "documentation": null
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
         },
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "LeftIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "RightIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "SlotPct": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -5328,12 +6076,14 @@
       "documentation": null,
       "signature_members": {
         "Link": {
-          "type": null,
-          "documentation": null
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
         },
         "SlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -5343,8 +6093,9 @@
       "documentation": null,
       "signature_members": {
         "NewCoverType": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -5354,8 +6105,9 @@
       "documentation": null,
       "signature_members": {
         "CE_Crust": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectInterface",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -5365,12 +6117,14 @@
       "documentation": null,
       "signature_members": {
         "Resistance": {
-          "type": null,
-          "documentation": null
+          "type": "EResistanceType",
+          "documentation": null,
+          "flags": 128
         },
         "bValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -5380,16 +6134,19 @@
       "documentation": null,
       "signature_members": {
         "NewWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         },
         "OldWeapon": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeapon",
+          "documentation": null,
+          "flags": 128
         },
         "bDrawOnly": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -5411,12 +6168,14 @@
       "documentation": null,
       "signature_members": {
         "Start": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         },
         "End": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -5426,12 +6185,14 @@
       "documentation": null,
       "signature_members": {
         "Start": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         },
         "End": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -5441,12 +6202,14 @@
       "documentation": null,
       "signature_members": {
         "Start": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         },
         "End": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -5456,12 +6219,14 @@
       "documentation": null,
       "signature_members": {
         "Start": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         },
         "End": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -5471,12 +6236,14 @@
       "documentation": null,
       "signature_members": {
         "Start": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         },
         "End": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -5486,12 +6253,14 @@
       "documentation": null,
       "signature_members": {
         "Start": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         },
         "End": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -5501,12 +6270,14 @@
       "documentation": null,
       "signature_members": {
         "Start": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         },
         "End": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -5516,12 +6287,14 @@
       "documentation": null,
       "signature_members": {
         "Start": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         },
         "End": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -5531,12 +6304,14 @@
       "documentation": null,
       "signature_members": {
         "Start": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         },
         "End": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -5546,12 +6321,14 @@
       "documentation": null,
       "signature_members": {
         "Start": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         },
         "End": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -5561,12 +6338,14 @@
       "documentation": null,
       "signature_members": {
         "Start": {
-          "type": null,
-          "documentation": null
+          "type": "CoverSlotMarker",
+          "documentation": null,
+          "flags": 128
         },
         "End": {
-          "type": null,
-          "documentation": null
+          "type": "CoverSlotMarker",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -5576,12 +6355,14 @@
       "documentation": null,
       "signature_members": {
         "Start": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         },
         "End": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -5609,20 +6390,24 @@
       "documentation": null,
       "signature_members": {
         "PowerCustomAction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Target": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         },
         "TargetLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "bForced": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -5650,12 +6435,14 @@
       "documentation": null,
       "signature_members": {
         "Weap": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         },
         "ForceVelocity": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -5671,16 +6458,19 @@
       "documentation": null,
       "signature_members": {
         "TempAnim": {
-          "type": null,
-          "documentation": null
+          "type": "AnimSet",
+          "documentation": null,
+          "flags": 128
         },
         "fTimeLeft": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bForceRemove": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -5702,8 +6492,9 @@
       "documentation": null,
       "signature_members": {
         "OutActions": {
-          "type": null,
-          "documentation": null
+          "type": "EAICustomAction",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -5713,12 +6504,14 @@
       "documentation": null,
       "signature_members": {
         "CAIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "PowerCustomAction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -5728,8 +6521,9 @@
       "documentation": null,
       "signature_members": {
         "OutMantleInfo": {
-          "type": null,
-          "documentation": null
+          "type": "MantleInfo",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -5777,8 +6571,9 @@
           "documentation": null,
           "signature_members": {
             "NextStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -5788,8 +6583,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -5805,16 +6601,19 @@
           "documentation": null,
           "signature_members": {
             "Killer": {
-              "type": null,
-              "documentation": null
+              "type": "Controller",
+              "documentation": null,
+              "flags": 128
             },
             "DamageType": {
-              "type": null,
-              "documentation": null
+              "type": "Class",
+              "documentation": null,
+              "flags": 128
             },
             "HitLocation": {
-              "type": null,
-              "documentation": null
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -5847,8 +6646,9 @@
           "documentation": null,
           "signature_members": {
             "DeltaTime": {
-              "type": null,
-              "documentation": null
+              "type": "float",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -5858,32 +6658,39 @@
           "documentation": null,
           "signature_members": {
             "Damage": {
-              "type": null,
-              "documentation": null
+              "type": "float",
+              "documentation": null,
+              "flags": 128
             },
             "EventInstigator": {
-              "type": null,
-              "documentation": null
+              "type": "Controller",
+              "documentation": null,
+              "flags": 128
             },
             "HitLocation": {
-              "type": null,
-              "documentation": null
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
             },
             "Momentum": {
-              "type": null,
-              "documentation": null
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
             },
             "DamageType": {
-              "type": null,
-              "documentation": null
+              "type": "Class",
+              "documentation": null,
+              "flags": 128
             },
             "HitInfo": {
-              "type": null,
-              "documentation": null
+              "type": "TraceHitInfo",
+              "documentation": null,
+              "flags": 144
             },
             "DamageCauser": {
-              "type": null,
-              "documentation": null
+              "type": "Actor",
+              "documentation": null,
+              "flags": 144
             }
           },
           "returntype": null,
@@ -5899,8 +6706,9 @@
           "documentation": null,
           "signature_members": {
             "NextState": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -5910,8 +6718,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -5938,8 +6747,9 @@
           "documentation": null,
           "signature_members": {
             "DeltaTime": {
-              "type": null,
-              "documentation": null
+              "type": "float",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -5955,8 +6765,9 @@
           "documentation": null,
           "signature_members": {
             "NextState": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -5966,8 +6777,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -5994,32 +6806,39 @@
           "documentation": null,
           "signature_members": {
             "Damage": {
-              "type": null,
-              "documentation": null
+              "type": "float",
+              "documentation": null,
+              "flags": 128
             },
             "instigatedBy": {
-              "type": null,
-              "documentation": null
+              "type": "Controller",
+              "documentation": null,
+              "flags": 128
             },
             "HitLocation": {
-              "type": null,
-              "documentation": null
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
             },
             "DamageType": {
-              "type": null,
-              "documentation": null
+              "type": "Class",
+              "documentation": null,
+              "flags": 128
             },
             "Momentum": {
-              "type": null,
-              "documentation": null
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
             },
             "HitInfo": {
-              "type": null,
-              "documentation": null
+              "type": "TraceHitInfo",
+              "documentation": null,
+              "flags": 128
             },
             "DamageCauser": {
-              "type": null,
-              "documentation": null
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -6035,8 +6854,9 @@
           "documentation": null,
           "signature_members": {
             "NextStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -6046,8 +6866,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -6068,8 +6889,9 @@
           "documentation": null,
           "signature_members": {
             "NextStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -6079,8 +6901,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -6090,20 +6913,24 @@
           "documentation": null,
           "signature_members": {
             "NewAction": {
-              "type": null,
-              "documentation": null
+              "type": "int",
+              "documentation": null,
+              "flags": 128
             },
             "Sync": {
-              "type": null,
-              "documentation": null
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 144
             },
             "bForced": {
-              "type": null,
-              "documentation": null
+              "type": "bool",
+              "documentation": null,
+              "flags": 144
             },
             "PowerCustomAction": {
-              "type": null,
-              "documentation": null
+              "type": "int",
+              "documentation": null,
+              "flags": 144
             }
           },
           "returntype": null,
@@ -6118,12 +6945,14 @@
           "documentation": null,
           "signature_members": {
             "HitNormal": {
-              "type": null,
-              "documentation": null
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
             },
             "FloorActor": {
-              "type": null,
-              "documentation": null
+              "type": "Actor",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -6133,8 +6962,9 @@
           "documentation": null,
           "signature_members": {
             "PreviousStateName": {
-              "type": null,
-              "documentation": null
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -6144,5 +6974,7 @@
       "documentation": null
     }
   },
+  "classflags": 144706230,
+  "configname": "Game",
   "documentation": null
 }

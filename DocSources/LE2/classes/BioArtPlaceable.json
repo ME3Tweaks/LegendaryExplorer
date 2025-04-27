@@ -4,83 +4,103 @@
   "variables": {
     "m_mAttachedNavPoints": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "m_maoBlockedReachSpecs": {
       "type": "MultiMap_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "VisualEffects": {
       "type": "BioVisualEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_oBehavior": {
       "type": "BioArtPlaceableBehavior",
-      "documentation": null
+      "documentation": null,
+      "flags": 67239936
     },
     "DestroyedMesh": {
       "type": "MeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "PlaceableMesh": {
       "type": "MeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "m_oLastInstigator": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pLightEnvComponent": {
       "type": "LightEnvironmentComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "m_nmMatineeNodeName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NextPlaceable": {
       "type": "BioArtPlaceable",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "FSM": {
       "type": "BioFSMComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "m_nNumParticipants": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fCorpseCleanupFirstAttemptTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24578
     },
     "m_fCorpseCleanupAttemptRetryTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24578
     },
     "m_nMaxCorpseVisibilityCleanupAttempts": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 24578
     },
     "m_fMaxCorpseCleanupDistanceThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24578
     },
     "m_fMaxCorpseCleanupScreenSizeThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24578
     },
     "m_nCorpseCleanupAttempts": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bCanCleanupCorpse": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsFrozen": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -88,36 +108,44 @@
       "documentation": null,
       "signature_members": {
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "fDeathDamage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "InstigatedBy": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "clsDamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 144
         },
         "pDamage": {
-          "type": null,
-          "documentation": null
+          "type": "SFXDamageType",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -133,8 +161,9 @@
       "documentation": null,
       "signature_members": {
         "InInterpGroup": {
-          "type": null,
-          "documentation": null
+          "type": "InterpGroup",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -144,8 +173,9 @@
       "documentation": null,
       "signature_members": {
         "SlotInfos": {
-          "type": null,
-          "documentation": null
+          "type": "AnimSlotInfo",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -155,28 +185,34 @@
       "documentation": null,
       "signature_members": {
         "SlotName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ChannelIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "InAnimSeqName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "InPosition": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bFireNotifies": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bLooping": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -186,8 +222,9 @@
       "documentation": null,
       "signature_members": {
         "InInterpGroup": {
-          "type": null,
-          "documentation": null
+          "type": "InterpGroup",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -197,8 +234,9 @@
       "documentation": null,
       "signature_members": {
         "oUsingPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -208,8 +246,9 @@
       "documentation": null,
       "signature_members": {
         "oUsingPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -219,8 +258,9 @@
       "documentation": null,
       "signature_members": {
         "oUsingPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -230,8 +270,9 @@
       "documentation": null,
       "signature_members": {
         "nmToState": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -241,8 +282,9 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -258,12 +300,14 @@
       "documentation": null,
       "signature_members": {
         "oAttacker": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "Power": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPower",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -273,12 +317,14 @@
       "documentation": null,
       "signature_members": {
         "oAttacker": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "WeaponName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -318,8 +364,9 @@
       "documentation": null,
       "signature_members": {
         "SlotInfos": {
-          "type": null,
-          "documentation": null
+          "type": "AnimSlotInfo",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -329,28 +376,34 @@
       "documentation": null,
       "signature_members": {
         "SlotName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ChannelIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "InAnimSeqName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "InPosition": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bFireNotifies": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bLooping": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -360,8 +413,9 @@
       "documentation": null,
       "signature_members": {
         "InAnimSets": {
-          "type": null,
-          "documentation": null
+          "type": "AnimSet",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -371,8 +425,9 @@
       "documentation": null,
       "signature_members": {
         "UseCase": {
-          "type": null,
-          "documentation": null
+          "type": "eBioAPLUseCase",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -412,12 +467,14 @@
       "documentation": null,
       "signature_members": {
         "oWP": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         },
         "nmSocket": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -425,5 +482,7 @@
     }
   },
   "states": {},
+  "classflags": 144703639,
+  "configname": "Game",
   "documentation": null
 }

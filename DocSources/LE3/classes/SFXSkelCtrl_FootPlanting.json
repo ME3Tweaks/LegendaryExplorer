@@ -4,54 +4,68 @@
   "variables": {
     "LockFootLoc": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "LockedFootWorldLoc": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "FootBoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "IKFootBoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FootLockZThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LockAlphaBlendTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LockAlphaBlendTimeToGo": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "LockAlpha": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "LockAlphaTarget": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "LastDeltaTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bDoFootLocking": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bLockFoot": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

@@ -2,15 +2,18 @@
   "members": {
     "m_nmFindActor": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bLock": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_eFindActorMode": {
       "type": "ESFXFindByTagTypes",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXGameInterpTrackWwiseMicLock",

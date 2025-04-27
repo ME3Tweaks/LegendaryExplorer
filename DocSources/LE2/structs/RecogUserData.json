@@ -2,11 +2,13 @@
   "members": {
     "UserData": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ActiveVocabularies": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SpeechRecognition",

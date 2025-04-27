@@ -2,27 +2,33 @@
   "members": {
     "Impact": {
       "type": "ImpactInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633152
     },
     "Weapon": {
       "type": "SFXWeapon_NativeBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NumHits": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FrameCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bSuppressAudio": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FiringMode": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXPreAsyncWorkTicker",

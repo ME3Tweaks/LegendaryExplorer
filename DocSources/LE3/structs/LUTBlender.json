@@ -2,11 +2,13 @@
   "members": {
     "LUTTextures": {
       "type": "Texture",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "LUTWeights": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "classdef": "PostProcessVolume",

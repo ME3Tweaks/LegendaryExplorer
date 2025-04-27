@@ -4,223 +4,278 @@
   "variables": {
     "Suns": {
       "type": "PlanetSun",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Features": {
       "type": "SFXPlanetFeature",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MapName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "ImageBackground": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "PlanetEvent": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "RingColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CloudColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CoronaColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PreviewImageResource": {
       "type": "GFxMovieInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlanetMaterial": {
       "type": "MaterialInstanceConstant",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CloudMaterial": {
       "type": "MaterialInstanceConstant",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ScenePrefab": {
       "type": "Prefab",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TextureParam": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Description": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ButtonLabel": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MissionBriefing": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ResourceRichness": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlanetRotation": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Opacity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FringeBloom": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RelativeSize": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DefaultDisplaySize": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TerrainDepthFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "UnscaledMineralsSum": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "PlacedMineralsPool": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "RandomMineralsBase": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "EezoMineralsBase": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ScanBarMaxMineralSize": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "PlanetLandCondition": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlanetEventCondition": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlanetEventParameter": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlanetEventTransition": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlanetEventTransitionParameter": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlanetEventMessage": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlanetPlotLabel": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlanetPlotLabelCondition": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ActiveWorld": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "AlreadyExplored": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "PlanetType": {
       "type": "EPlanetType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OrbitRing": {
       "type": "EOrbitRingType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SystemLevelType": {
       "type": "ESystemLevelType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlanetLevelType": {
       "type": "EBioGalaxyMap_PlanetType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlanetLandConditionRegion": {
       "type": "EBioRegionAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlanetLandConditionPlot": {
       "type": "EBioPlanetLandConditionPlotAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlanetLandConditionName": {
       "type": "EBioPlanetLandConditionAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlanetEventConditionRegion": {
       "type": "EBioRegionAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlanetEventConditionPlot": {
       "type": "EBioPlanetEventConditionPlotAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlanetEventConditionName": {
       "type": "EBioPlanetEventConditionAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlanetEventTransitionRegion": {
       "type": "EBioRegionAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlanetEventTransitionPlot": {
       "type": "EBioPlanetEventTransitionPlotAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlanetEventTransitionName": {
       "type": "EBioPlanetEventTransitionAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlanetPlotLabelConditionRegion": {
       "type": "EBioRegionAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlanetPlotLabelConditionPlot": {
       "type": "EBioPlanetPlotLabelConditionPlotAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlanetPlotLabelConditionName": {
       "type": "EBioPlanetPlotLabelConditionAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -234,12 +289,14 @@
       "documentation": null,
       "signature_members": {
         "MineralType": {
-          "type": null,
-          "documentation": null
+          "type": "EMineralType",
+          "documentation": null,
+          "flags": 128
         },
         "UnscaledAmount": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -249,8 +306,9 @@
       "documentation": null,
       "signature_members": {
         "Child": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGalaxyMapObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -260,8 +318,9 @@
       "documentation": null,
       "signature_members": {
         "Children": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGalaxyMapObject",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -277,12 +336,14 @@
       "documentation": null,
       "signature_members": {
         "vSphere": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "SphereRadius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Vector",
@@ -292,12 +353,14 @@
       "documentation": null,
       "signature_members": {
         "vPosition2D": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "SphereRadius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Vector",
@@ -313,12 +376,14 @@
       "documentation": null,
       "signature_members": {
         "Planet": {
-          "type": null,
-          "documentation": null
+          "type": "InterpActor",
+          "documentation": null,
+          "flags": 128
         },
         "TemporaryComponents": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystemComponent",
+          "documentation": null,
+          "flags": 71303552
         }
       },
       "returntype": "None",
@@ -328,8 +393,9 @@
       "documentation": null,
       "signature_members": {
         "vImpacts": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -339,8 +405,9 @@
       "documentation": null,
       "signature_members": {
         "vImpact": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -350,8 +417,9 @@
       "documentation": null,
       "signature_members": {
         "bVisited": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -371,5 +439,7 @@
     }
   },
   "states": {},
+  "classflags": 134217878,
+  "configname": "Game",
   "documentation": null
 }

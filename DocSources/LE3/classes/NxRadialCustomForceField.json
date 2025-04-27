@@ -4,14 +4,18 @@
   "variables": {
     "Kernel": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "SelfRotationStrength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

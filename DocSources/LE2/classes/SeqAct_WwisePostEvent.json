@@ -4,19 +4,23 @@
   "variables": {
     "VfTable_IWwiseComponentCallback": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "WwiseObject": {
       "type": "WwiseBaseSoundObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CriticalSection": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 143362
     },
     "ActiveComponents": {
       "type": "WwiseAudioComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71958539
     }
   },
   "functions": {
@@ -28,5 +32,7 @@
     }
   },
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

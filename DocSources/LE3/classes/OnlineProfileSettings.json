@@ -4,15 +4,18 @@
   "variables": {
     "ProfileSettingIds": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DefaultSettings": {
       "type": "OnlineProfileSetting",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "OwnerMappings": {
       "type": "IdToStringMapping",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     }
   },
   "functions": {
@@ -32,12 +35,14 @@
       "documentation": null,
       "signature_members": {
         "ProfileSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "DefaultFloat": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -47,16 +52,19 @@
       "documentation": null,
       "signature_members": {
         "ProfileSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "DefaultId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "ListIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -66,12 +74,14 @@
       "documentation": null,
       "signature_members": {
         "ProfileSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "DefaultInt": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -103,5 +113,7 @@
     }
   },
   "states": {},
+  "classflags": 136315058,
+  "configname": "None",
   "documentation": null
 }

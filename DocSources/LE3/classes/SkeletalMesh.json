@@ -4,458 +4,573 @@
   "variables": {
     "Bounds": {
       "type": "BoxSphereBounds",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "Materials": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 4099
     },
     "ClothingAssets": {
       "type": "ApexClothingAsset",
-      "documentation": null
+      "documentation": null,
+      "flags": 4099
     },
     "Origin": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4099
     },
     "RotOrigin": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 4099
     },
     "RefSkeleton": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "SkeletalDepth": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "NameIndexMap": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "LODModels": {
       "type": "IndirectArray_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "RefBasesInvMatrix": {
       "type": "BoneTransform",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "SkelMirrorTable": {
       "type": "BoneMirrorInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194369
     },
     "SkelMirrorAxis": {
       "type": "EAxis",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SkelMirrorFlipAxis": {
       "type": "EAxis",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Sockets": {
       "type": "SkeletalMeshSocket",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "BoneBreakNames": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 135171
     },
     "LODInfo": {
       "type": "SkeletalMeshLODInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194369
     },
     "PerPolyCollisionBones": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "AddToParentPerPolyCollisionBone": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "PerPolyBoneKDOPs": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "bPerPolyUseSoftWeighting": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseSimpleLineCollision": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseSimpleBoxCollision": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bForceCPUSkinning": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUseFullPrecisionUVs": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUsePackedPosition": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "LODBiasPC": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LODBiasPS3": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LODBiasXbox360": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ClothMesh": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "ClothMeshScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "ClothToGraphicsVertMap": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "ClothMovementScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "ClothMovementScaleGenMode": {
       "type": "ClothMovementScaleGen",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ClothToAnimMeshMaxDist": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bLimitClothToAnimMesh": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ClothWeldingMap": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "ClothWeldingDomain": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "ClothWeldedIndices": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "bForceNoWelding": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "NumFreeClothVerts": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "ClothIndexBuffer": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "ClothBones": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194307
     },
     "ClothHierarchyLevels": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bEnableClothBendConstraints": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bEnableClothDamping": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUseClothCOMDamping": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ClothStretchStiffness": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ClothBendStiffness": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ClothDensity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ClothThickness": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ClothDamping": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ClothIterations": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ClothHierarchicalIterations": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ClothFriction": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ClothRelativeGridSpacing": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ClothPressure": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ClothCollisionResponseCoefficient": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ClothAttachmentResponseCoefficient": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ClothAttachmentTearFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ClothSleepLinearVelocity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "HardStretchLimitFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bHardStretchLimit": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bEnableClothOrthoBendConstraints": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bEnableClothSelfCollision": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bEnableClothPressure": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bEnableClothTwoWayCollision": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ClothSpecialBones": {
       "type": "ClothSpecialBoneInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194307
     },
     "bEnableClothLineChecks": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bClothMetal": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ClothMetalImpulseThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ClothMetalPenetrationDepth": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ClothMetalMaxDeformationDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bEnableClothTearing": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ClothTearFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ClothTearReserve": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bEnableValidBounds": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ValidBoundsMin": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ValidBoundsMax": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ClothTornTriMap": {
       "type": "Map_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "SoftBodySurfaceToGraphicsVertMap": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "SoftBodySurfaceIndices": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "SoftBodyTetraVertsUnscaled": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "SoftBodyTetraIndices": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "SoftBodyTetraLinks": {
       "type": "SoftBodyTetraLink",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "CachedSoftBodyMeshes": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "CachedSoftBodyMeshScales": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "SoftBodyBones": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194307
     },
     "SoftBodySpecialBones": {
       "type": "SoftBodySpecialBoneInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194307
     },
     "SoftBodyVolumeStiffness": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "SoftBodyStretchingStiffness": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "SoftBodyDensity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "SoftBodyParticleRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "SoftBodyDamping": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "SoftBodySolverIterations": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "SoftBodyFriction": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "SoftBodyRelativeGridSpacing": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "SoftBodySleepLinearVelocity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bEnableSoftBodySelfCollision": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "SoftBodyAttachmentResponse": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "SoftBodyCollisionResponse": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "SoftBodyDetailLevel": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "SoftBodySubdivisionLevel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bSoftBodyIsoSurface": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bEnableSoftBodyDamping": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUseSoftBodyCOMDamping": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "SoftBodyAttachmentThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bEnableSoftBodyTwoWayCollision": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "SoftBodyAttachmentTearFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bEnableSoftBodyLineChecks": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "GraphicsIndexIsCloth": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "ReleaseResourcesFence": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "SkelMeshRUID": {
       "type": "QWord",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "m_VerticesPerBone": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 2097554,
+  "configname": "None",
   "documentation": null
 }

@@ -4,23 +4,28 @@
   "variables": {
     "__OnReadFriendsContentListComplete__Delegate": {
       "type": "OnReadFriendsContentListComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnUploadContentComplete__Delegate": {
       "type": "OnUploadContentComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnDownloadContentComplete__Delegate": {
       "type": "OnDownloadContentComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnGetContentPayloadComplete__Delegate": {
       "type": "OnGetContentPayloadComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnReadContentListComplete__Delegate": {
       "type": "OnReadContentListComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -28,16 +33,19 @@
       "documentation": null,
       "signature_members": {
         "PlayerNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "FileToRate": {
-          "type": null,
-          "documentation": null
+          "type": "CommunityContentFile",
+          "documentation": null,
+          "flags": 4194690
         },
         "NewRating": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -47,8 +55,9 @@
       "documentation": null,
       "signature_members": {
         "GetContentPayloadCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnGetContentPayloadComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -58,8 +67,9 @@
       "documentation": null,
       "signature_members": {
         "GetContentPayloadCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnGetContentPayloadComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -69,16 +79,19 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "FileDownloaded": {
-          "type": null,
-          "documentation": null
+          "type": "CommunityContentFile",
+          "documentation": null,
+          "flags": 4194432
         },
         "Payload": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -88,12 +101,14 @@
       "documentation": null,
       "signature_members": {
         "PlayerNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "FileDownloaded": {
-          "type": null,
-          "documentation": null
+          "type": "CommunityContentFile",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "bool",
@@ -103,8 +118,9 @@
       "documentation": null,
       "signature_members": {
         "DownloadContentCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnDownloadContentComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -114,8 +130,9 @@
       "documentation": null,
       "signature_members": {
         "DownloadContentCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnDownloadContentComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -125,12 +142,14 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "FileDownloaded": {
-          "type": null,
-          "documentation": null
+          "type": "CommunityContentFile",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -140,12 +159,14 @@
       "documentation": null,
       "signature_members": {
         "PlayerNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "FileToDownload": {
-          "type": null,
-          "documentation": null
+          "type": "CommunityContentFile",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "bool",
@@ -155,8 +176,9 @@
       "documentation": null,
       "signature_members": {
         "UploadContentCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnUploadContentComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -166,8 +188,9 @@
       "documentation": null,
       "signature_members": {
         "UploadContentCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnUploadContentComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -177,12 +200,14 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "UploadedFile": {
-          "type": null,
-          "documentation": null
+          "type": "CommunityContentFile",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -192,16 +217,19 @@
       "documentation": null,
       "signature_members": {
         "PlayerNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "Payload": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 4194690
         },
         "MetaData": {
-          "type": null,
-          "documentation": null
+          "type": "CommunityContentMetadata",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "bool",
@@ -211,16 +239,19 @@
       "documentation": null,
       "signature_members": {
         "PlayerNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "Friend": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineFriend",
+          "documentation": null,
+          "flags": 4194690
         },
         "ContentFiles": {
-          "type": null,
-          "documentation": null
+          "type": "CommunityContentFile",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -230,8 +261,9 @@
       "documentation": null,
       "signature_members": {
         "ReadFriendsContentListCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadFriendsContentListComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -241,8 +273,9 @@
       "documentation": null,
       "signature_members": {
         "ReadFriendsContentListCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadFriendsContentListComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -252,8 +285,9 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -263,20 +297,24 @@
       "documentation": null,
       "signature_members": {
         "PlayerNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "Friends": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineFriend",
+          "documentation": null,
+          "flags": 4194690
         },
         "StartAt": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "NumToRead": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -286,12 +324,14 @@
       "documentation": null,
       "signature_members": {
         "PlayerNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "ContentFiles": {
-          "type": null,
-          "documentation": null
+          "type": "CommunityContentFile",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -301,8 +341,9 @@
       "documentation": null,
       "signature_members": {
         "ReadContentListCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadContentListComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -312,8 +353,9 @@
       "documentation": null,
       "signature_members": {
         "ReadContentListCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnReadContentListComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -323,8 +365,9 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -334,16 +377,19 @@
       "documentation": null,
       "signature_members": {
         "PlayerNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "StartAt": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "NumToRead": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -363,5 +409,7 @@
     }
   },
   "states": {},
+  "classflags": 16403,
+  "configname": "None",
   "documentation": null
 }

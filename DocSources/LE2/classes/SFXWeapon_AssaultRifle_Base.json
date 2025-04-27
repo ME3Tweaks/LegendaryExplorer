@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "Level": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -22,5 +23,7 @@
     }
   },
   "states": {},
+  "classflags": 10485815,
+  "configname": "Weapon",
   "documentation": null
 }

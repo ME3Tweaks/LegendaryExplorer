@@ -4,7 +4,8 @@
   "variables": {
     "m_oTrackTimer": {
       "type": "WwiseVolumeTimer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -18,8 +19,9 @@
       "documentation": null,
       "signature_members": {
         "T": {
-          "type": null,
-          "documentation": null
+          "type": "WwiseVolumeTimer",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -27,5 +29,7 @@
     }
   },
   "states": {},
+  "classflags": 144703667,
+  "configname": "None",
   "documentation": null
 }

@@ -2,15 +2,18 @@
   "members": {
     "ChildNodes": {
       "type": "MorphNodeBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ConnName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DrawY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "MorphNodeWeightBase",

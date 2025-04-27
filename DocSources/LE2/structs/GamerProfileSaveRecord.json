@@ -2,87 +2,108 @@
   "members": {
     "BoolVariables": {
       "type": "ProfileBOOLSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "IntVariables": {
       "type": "ME1_ProfileINTSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "FloatVariables": {
       "type": "ME1_ProfileFLOATSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "PlotManagerAchievementMaps": {
       "type": "ME1_PlotManagerAchievementSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "lstPlaythroughs": {
       "type": "ME1_ProfilePlaythroughSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "RewardStats": {
       "type": "ME1_ProfileRewardSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "AchievementStates": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "UnlockedBonusTalents": {
       "type": "ME1_BonusTalentSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "PassiveBonusTalents": {
       "type": "ME1_BonusTalentSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "IntStats": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "FloatStats": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "lstCharacterProfiles": {
       "type": "ME1_CharacterProfileSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "GameOptions": {
       "type": "ME1_GameOptionsSaveRecord",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "LastPlayedCharacterID": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "LastSaveGame": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "LastUsedPlaythroughID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LowestPlaythroughDamageTaken": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MostMoneyAccumulated": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MostPlaythroughPlayerKills": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LowestPlaythroughPlayerDeaths": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FastestPlaythroughTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXSaveGame",

@@ -4,62 +4,78 @@
   "variables": {
     "Head": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LeftArm": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RightArm": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LeftLeg": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RightLeg": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DeathEventName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nHeadRoot": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_nLeftArmRoot": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_nRightArmRoot": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_nLeftLegRoot": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_nRightLegRoot": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "m_fTimeToRagdoll": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fCurrentTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bEventTriggered": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

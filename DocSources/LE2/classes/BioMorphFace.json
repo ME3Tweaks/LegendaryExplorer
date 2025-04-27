@@ -4,43 +4,53 @@
   "variables": {
     "m_aVertexBuffers": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "m_oOtherMeshes": {
       "type": "SkeletalMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_aMorphFeatures": {
       "type": "MorphFeature",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_aFinalSkeleton": {
       "type": "OffsetBonePos",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ReleaseResourcesFence": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "m_oBaseHead": {
       "type": "SkeletalMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oHairMesh": {
       "type": "SkeletalMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oMorphTargetSet": {
       "type": "MorphTargetSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oAnimTree": {
       "type": "AnimTree",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oMaterialOverrides": {
       "type": "BioMaterialOverride",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     }
   },
   "functions": {
@@ -48,8 +58,9 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -59,8 +70,9 @@
       "documentation": null,
       "signature_members": {
         "Mesh": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -70,16 +82,19 @@
       "documentation": null,
       "signature_members": {
         "Buffer": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "vert": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "V": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -89,12 +104,14 @@
       "documentation": null,
       "signature_members": {
         "Buffer": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "vert": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Vector",
@@ -104,8 +121,9 @@
       "documentation": null,
       "signature_members": {
         "Buffer": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -121,8 +139,9 @@
       "documentation": null,
       "signature_members": {
         "BufferIndices": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -130,5 +149,7 @@
     }
   },
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

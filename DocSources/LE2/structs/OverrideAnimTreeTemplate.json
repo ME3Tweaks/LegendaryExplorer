@@ -2,11 +2,13 @@
   "members": {
     "AnimTreeTemplate": {
       "type": "AnimTree",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "eClassification": {
       "type": "EBioPawnClassification",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     }
   },
   "classdef": "Bio_Appr_Character_Body",

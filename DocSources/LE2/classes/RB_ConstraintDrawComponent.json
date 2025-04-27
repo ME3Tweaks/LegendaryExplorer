@@ -4,10 +4,13 @@
   "variables": {
     "LimitMaterial": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 2290090130,
+  "configname": "None",
   "documentation": null
 }

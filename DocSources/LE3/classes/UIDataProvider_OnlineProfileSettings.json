@@ -7,12 +7,14 @@
       "documentation": null,
       "signature_members": {
         "PlayerInterface": {
-          "type": null,
-          "documentation": null
+          "type": "OnlinePlayerInterface",
+          "documentation": null,
+          "flags": 128
         },
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -22,12 +24,14 @@
       "documentation": null,
       "signature_members": {
         "PlayerInterface": {
-          "type": null,
-          "documentation": null
+          "type": "OnlinePlayerInterface",
+          "documentation": null,
+          "flags": 128
         },
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -37,16 +41,19 @@
       "documentation": null,
       "signature_members": {
         "PlayerInterface": {
-          "type": null,
-          "documentation": null
+          "type": "OnlinePlayerInterface",
+          "documentation": null,
+          "flags": 128
         },
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerStorage": {
-          "type": null,
-          "documentation": null
+          "type": "OnlinePlayerStorage",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -56,16 +63,19 @@
       "documentation": null,
       "signature_members": {
         "PlayerInterface": {
-          "type": null,
-          "documentation": null
+          "type": "OnlinePlayerInterface",
+          "documentation": null,
+          "flags": 128
         },
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerStorage": {
-          "type": null,
-          "documentation": null
+          "type": "OnlinePlayerStorage",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -73,5 +83,7 @@
     }
   },
   "states": {},
+  "classflags": 136315034,
+  "configname": "Game",
   "documentation": null
 }

@@ -4,26 +4,33 @@
   "variables": {
     "PerInstanceData": {
       "type": "InstancedStaticMeshInstanceData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "CachedMappings": {
       "type": "InstancedStaticMeshMappingInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "NumPendingLightmaps": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ComponentJoinKey": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "InstancingRandomSeed": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 2290094226,
+  "configname": "None",
   "documentation": null
 }

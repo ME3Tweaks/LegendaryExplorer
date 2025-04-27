@@ -4,51 +4,63 @@
   "variables": {
     "FootstepShake": {
       "type": "ScreenShakeStruct",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FireChargingVFX": {
       "type": "VisualEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PS_HeadGib": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PS_LimbGib": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "nmMuzzleSocketName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nmShellCasingSocketName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "VocalizationBankOverride": {
       "type": "SFXVocalizationBank",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FootstepForceFeedback": {
       "type": "ForceFeedbackWaveform",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ShieldImpactOffset": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PrettyName": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsTalking": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bSupportsVisibleWeapons": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -62,12 +74,14 @@
       "documentation": null,
       "signature_members": {
         "ChkLoadout": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPlayerSquadLoadoutData",
+          "documentation": null,
+          "flags": 128
         },
         "LoadoutWeapons": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -89,8 +103,9 @@
       "documentation": null,
       "signature_members": {
         "WeaponClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -106,12 +121,14 @@
       "documentation": null,
       "signature_members": {
         "Template": {
-          "type": null,
-          "documentation": null
+          "type": "BioVFXTemplate",
+          "documentation": null,
+          "flags": 128
         },
         "Effect": {
-          "type": null,
-          "documentation": null
+          "type": "BioVisualEffect",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -133,16 +150,19 @@
       "documentation": null,
       "signature_members": {
         "FootDown": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 128
         },
         "Loudness": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -150,5 +170,7 @@
     }
   },
   "states": {},
+  "classflags": 10486327,
+  "configname": "Game",
   "documentation": null
 }

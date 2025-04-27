@@ -4,119 +4,148 @@
   "variables": {
     "Credits": {
       "type": "SFXCreditEntry",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "DLCCredits": {
       "type": "SFXCreditEntry",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "EndCredits": {
       "type": "SFXCreditEntry",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "__OnCreditsFinished__Delegate": {
       "type": "OnCreditsFinished",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_nmCreditMusic": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "m_oFlashingCredit": {
       "type": "GFxValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "FadeInTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "HoldTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "FadeOutTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "BreakSpace": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "ColumnPadding": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "TotalRunningTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "ScrollingCreditStartTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16385
     },
     "ConfirmExitMessage": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ExitYes": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "ExitNo": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_fElapsedPlayTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "m_nCreditIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "m_fScrollingCreditsEpoch": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "m_fTransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "m_fTargetTransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "m_bPlaying": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "m_bPlayingScrollingCredits": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "m_bFromMainMenu": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "m_bFromAdditionalContent": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "m_bFromPRCChoiceGUI": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "m_bGameWasPausedOnStart": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bGameWasUsingVSync": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_eFlashingCreditState": {
       "type": "EFlashingCreditState",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     }
   },
   "functions": {
@@ -130,8 +159,9 @@
       "documentation": null,
       "signature_members": {
         "creditsMovie": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGUI_Credits",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -159,8 +189,9 @@
       "documentation": null,
       "signature_members": {
         "bVsync": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -170,8 +201,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -187,16 +219,19 @@
       "documentation": null,
       "signature_members": {
         "sTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "fSpace": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "fFontScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -206,8 +241,9 @@
       "documentation": null,
       "signature_members": {
         "fSpace": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -217,24 +253,29 @@
       "documentation": null,
       "signature_members": {
         "sTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sNames": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "nColumns": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "fSpace": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "fFontScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -244,8 +285,9 @@
       "documentation": null,
       "signature_members": {
         "credit": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCreditEntry",
+          "documentation": null,
+          "flags": 130
         }
       },
       "returntype": "None",
@@ -255,12 +297,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -300,8 +344,9 @@
       "documentation": null,
       "signature_members": {
         "bPause": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -311,8 +356,9 @@
       "documentation": null,
       "signature_members": {
         "fScrollPct": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -322,16 +368,19 @@
       "documentation": null,
       "signature_members": {
         "sTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sNames": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "fFontScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "GFxValue",
@@ -347,8 +396,9 @@
       "documentation": null,
       "signature_members": {
         "fColumnPadding": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -364,8 +414,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -375,8 +426,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -384,5 +436,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "Credits",
   "documentation": null
 }

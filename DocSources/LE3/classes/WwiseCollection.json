@@ -4,22 +4,28 @@
   "variables": {
     "Events": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 4325379
     },
     "EventPairs": {
       "type": "WwiseEventPairObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 4325379
     },
     "Streams": {
       "type": "WwiseStream",
-      "documentation": null
+      "documentation": null,
+      "flags": 4325379
     },
     "Bank": {
       "type": "WwiseBank",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 33554450,
+  "configname": "None",
   "documentation": null
 }

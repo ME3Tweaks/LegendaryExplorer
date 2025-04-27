@@ -2,31 +2,38 @@
   "members": {
     "DirName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Type": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Attributes": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "hddFreeSizeKB": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "sizeKB": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "sysSizeKB": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Commerce2Userdata": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXOnlineComponentPlatformPS3",

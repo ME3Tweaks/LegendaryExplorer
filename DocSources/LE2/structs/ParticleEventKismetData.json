@@ -2,11 +2,13 @@
   "members": {
     "Normal": {
       "type": "RwVector3",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "UsePSysCompLocation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "ParticleSystemComponent",

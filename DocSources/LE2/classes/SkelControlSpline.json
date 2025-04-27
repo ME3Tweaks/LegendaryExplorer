@@ -4,30 +4,38 @@
   "variables": {
     "SplineLength": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "EndSplineTension": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StartSplineTension": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bInvertSplineBoneAxis": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SplineBoneAxis": {
       "type": "EAxis",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BoneRotMode": {
       "type": "ESplineControlRotMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

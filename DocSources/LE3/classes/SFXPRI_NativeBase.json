@@ -4,51 +4,63 @@
   "variables": {
     "bSquadUsesPowers": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "bAutoSave": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "bAutoLogin": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "bSwapCrossCircle": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "bSwapTriggersShoulders": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "bHideCinematicHelmetPreference": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "ControllerSensitivityConfig": {
       "type": "EProfileControllerSensitivityOptions",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "TriggerConfig": {
       "type": "ETriggerConfigOptions",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "StickConfig": {
       "type": "EStickConfigOptions",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "AimAssistConfig": {
       "type": "EAimAssistOptions",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "AutoLevelUp": {
       "type": "EAutoLevelOptions",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "HenchmenHelmetPreference": {
       "type": "EHenchHelmetOptions",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     }
   },
   "functions": {
@@ -60,5 +72,7 @@
     }
   },
   "states": {},
+  "classflags": 144703666,
+  "configname": "None",
   "documentation": null
 }

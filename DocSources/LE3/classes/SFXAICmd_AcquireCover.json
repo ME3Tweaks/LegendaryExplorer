@@ -4,23 +4,28 @@
   "variables": {
     "NewCoverGoal": {
       "type": "CoverInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CoverEvaluator": {
       "type": "Goal_AtCover",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CoverGoalActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bDoPeriodicCoverCheck": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bCanShoot": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -28,24 +33,29 @@
       "documentation": null,
       "signature_members": {
         "AI": {
-          "type": null,
-          "documentation": null
+          "type": "SFXAI_Cover",
+          "documentation": null,
+          "flags": 128
         },
         "GoalEvaluator": {
-          "type": null,
-          "documentation": null
+          "type": "Goal_AtCover",
+          "documentation": null,
+          "flags": 128
         },
         "GoalActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "bUsePeriodicCheck": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bAllowedToFire": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -64,5 +74,7 @@
       "documentation": null
     }
   },
+  "classflags": 18,
+  "configname": "None",
   "documentation": null
 }

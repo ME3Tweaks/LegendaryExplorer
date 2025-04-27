@@ -4,7 +4,8 @@
   "variables": {
     "ButtonPanel": {
       "type": "UICalloutButtonPanel",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "functions": {
@@ -12,12 +13,14 @@
       "documentation": null,
       "signature_members": {
         "CurrentAliasName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "NewAliasName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -27,8 +30,9 @@
       "documentation": null,
       "signature_members": {
         "ButtonAliasName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -50,8 +54,9 @@
       "documentation": null,
       "signature_members": {
         "TargetObject": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -61,8 +66,9 @@
       "documentation": null,
       "signature_members": {
         "ButtonAliasName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -72,8 +78,9 @@
       "documentation": null,
       "signature_members": {
         "ButtonAliasName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -81,5 +88,7 @@
     }
   },
   "states": {},
+  "classflags": 136315570,
+  "configname": "None",
   "documentation": null
 }

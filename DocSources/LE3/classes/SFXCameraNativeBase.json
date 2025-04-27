@@ -4,55 +4,68 @@
   "variables": {
     "CameraModes": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_aTraceInfo": {
       "type": "SFXCameraNativeBaseTraceInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "AdditiveRotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "SubtractiveRotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentCameraMode": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LastGoodMode": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CameraStick": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "MovementStick": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "AspectRatio": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bDisabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bIgnoreSlowMo": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bCameraSwitchEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bUseCameraRotation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -60,8 +73,9 @@
       "documentation": null,
       "signature_members": {
         "Shake": {
-          "type": null,
-          "documentation": null
+          "type": "ScreenShakeStruct",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -71,12 +85,14 @@
       "documentation": null,
       "signature_members": {
         "inHorizFOV": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "CameraTargetPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -86,12 +102,14 @@
       "documentation": null,
       "signature_members": {
         "IPE": {
-          "type": null,
-          "documentation": null
+          "type": "BioInGamePropertyEditor",
+          "documentation": null,
+          "flags": 128
         },
         "Parent": {
-          "type": null,
-          "documentation": null
+          "type": "BioPropertyEditorBaseNode",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -107,16 +125,19 @@
       "documentation": null,
       "signature_members": {
         "oHit": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 384
         },
         "vLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "vNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -126,32 +147,39 @@
       "documentation": null,
       "signature_members": {
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 384
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "TraceEnd": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
         },
         "TraceActors": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "Extent": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "ExtraTraceFlags": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Actor",
@@ -161,44 +189,54 @@
       "documentation": null,
       "signature_members": {
         "Anim": {
-          "type": null,
-          "documentation": null
+          "type": "CameraAnim",
+          "documentation": null,
+          "flags": 128
         },
         "Rate": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "Scale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "StartTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "BlendInTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "BlendOutTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bLoop": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bRandomStartTime": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "Duration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bSingleInstance": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "CameraAnimInst",
@@ -214,12 +252,14 @@
       "documentation": null,
       "signature_members": {
         "NewViewTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "TransitionParams": {
-          "type": null,
-          "documentation": null
+          "type": "ViewTargetTransitionParams",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -229,8 +269,9 @@
       "documentation": null,
       "signature_members": {
         "VT": {
-          "type": null,
-          "documentation": null
+          "type": "TViewTarget",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -240,8 +281,9 @@
       "documentation": null,
       "signature_members": {
         "vWorldLoc": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "Vector",
@@ -251,16 +293,19 @@
       "documentation": null,
       "signature_members": {
         "vWorldLoc": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
         },
         "i_fSafeZoneX": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "i_fSafeZoneY": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Vector",
@@ -268,5 +313,7 @@
     }
   },
   "states": {},
+  "classflags": 144703642,
+  "configname": "Game",
   "documentation": null
 }

@@ -4,67 +4,83 @@
   "variables": {
     "ChunkHealth": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "FracturedByDamageType": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "OverrideFragmentDestroyEffects": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "DeferredPartsToSpawn": {
       "type": "DeferredPartToSpawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "PartImpactEffect": {
       "type": "PhysEffectInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FracturedStaticMeshComponent": {
       "type": "FracturedStaticMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67764235
     },
     "SkinnedComponent": {
       "type": "FracturedSkinnedMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641354
     },
     "ExplosionFractureSound": {
       "type": "SoundCue",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SingleChunkFractureSound": {
       "type": "SoundCue",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MI_LoseChunkPreviousMaterial": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "MaxPartsToSpawnAtOnce": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ChunkHealthScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FractureCullMinDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FractureCullMaxDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bHasShownMissingSoundWarning": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bBreakChunksOnActorTouch": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -96,20 +112,24 @@
       "documentation": null,
       "signature_members": {
         "Origin": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Radius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "RBStrength": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bWantPhysChunksAndParticles": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -125,32 +145,39 @@
       "documentation": null,
       "signature_members": {
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "EventInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 144
         },
         "DamageCauser": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -160,8 +187,9 @@
       "documentation": null,
       "signature_members": {
         "IndexToRemoveDecalsFrom": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -171,16 +199,19 @@
       "documentation": null,
       "signature_members": {
         "bForceDedicated": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "EffectInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "bWantPhysChunksAndParticles": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -190,8 +221,9 @@
       "documentation": null,
       "signature_members": {
         "dmgType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -207,24 +239,29 @@
       "documentation": null,
       "signature_members": {
         "FragmentVis": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 4194688
         },
         "IgnoreFrags": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194432
         },
         "ChunkDir": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DisableCollWithPart": {
-          "type": null,
-          "documentation": null
+          "type": "FracturedStaticMeshPart",
+          "documentation": null,
+          "flags": 4194432
         },
         "bWantPhysChunks": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -246,24 +283,29 @@
       "documentation": null,
       "signature_members": {
         "ChunkIndices": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194432
         },
         "InitialVel": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "InitialAngVel": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "RelativeScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bExplosion": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "FracturedStaticMeshPart",
@@ -273,24 +315,29 @@
       "documentation": null,
       "signature_members": {
         "ChunkIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "InitialVel": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "InitialAngVel": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "RelativeScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bExplosion": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "FracturedStaticMeshPart",
@@ -298,5 +345,7 @@
     }
   },
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

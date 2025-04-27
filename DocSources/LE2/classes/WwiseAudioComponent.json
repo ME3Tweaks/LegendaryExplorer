@@ -4,119 +4,148 @@
   "variables": {
     "m_fLastObstructionUpdate": {
       "type": "Double",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "Callbacks": {
       "type": "WwiseComponentCallbackInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 6430722
     },
     "m_pNotifyCriticalSection": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 2109440
     },
     "WwiseEvents": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 2109440
     },
     "Location": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101248
     },
     "Orientation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101248
     },
     "ComponentLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101250
     },
     "ComponentOrientation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101250
     },
     "CachedLastPosition": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CachedLastOrientation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_ComponentGroup": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nAttachBoneIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Cleaned": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2236418
     },
     "m_fDistanceToListener": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101248
     },
     "m_fMaxAudible3DSoundDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101248
     },
     "m_nMaxAudible3DSoundEventPlayingID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101248
     },
     "m_nNumberOf3DSoundsPlaying": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101248
     },
     "m_nNumberOfSoundsUseAttenuation": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101248
     },
     "m_nNumberOfSoundsWithUserDefinedPositioning": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101248
     },
     "m_fTargetOcclusion": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fTargetObstruction": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fCurrentOcclusion": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fCurrentObstruction": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ObstructionUpdateSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bUseOwnerLocation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bEnableEnvAudio": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bEnableObstructionOcclusion": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bIsRegistered": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_b3D": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -124,8 +153,9 @@
       "documentation": null,
       "signature_members": {
         "NewLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -147,8 +177,9 @@
       "documentation": null,
       "signature_members": {
         "GameObjectName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -170,8 +201,9 @@
       "documentation": null,
       "signature_members": {
         "i_bValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -181,8 +213,9 @@
       "documentation": null,
       "signature_members": {
         "i_bValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -210,12 +243,14 @@
       "documentation": null,
       "signature_members": {
         "in_pszRtpcName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "in_value": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -225,24 +260,29 @@
       "documentation": null,
       "signature_members": {
         "pActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "Label": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         },
         "ComponentGroup": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         },
         "AttachBone": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         },
         "bRegister": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "WwiseAudioComponent",
@@ -252,8 +292,9 @@
       "documentation": null,
       "signature_members": {
         "WwisePlayingID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -263,8 +304,9 @@
       "documentation": null,
       "signature_members": {
         "Event": {
-          "type": null,
-          "documentation": null
+          "type": "WwiseBaseSoundObject",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -274,8 +316,9 @@
       "documentation": null,
       "signature_members": {
         "GlobalEventName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -285,8 +328,9 @@
       "documentation": null,
       "signature_members": {
         "sTrigger": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -296,12 +340,14 @@
       "documentation": null,
       "signature_members": {
         "sGroup": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sState": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -311,12 +357,14 @@
       "documentation": null,
       "signature_members": {
         "sName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -326,12 +374,14 @@
       "documentation": null,
       "signature_members": {
         "sName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -341,8 +391,9 @@
       "documentation": null,
       "signature_members": {
         "Base": {
-          "type": null,
-          "documentation": null
+          "type": "WwiseBaseSoundObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -352,8 +403,9 @@
       "documentation": null,
       "signature_members": {
         "AudioEvent": {
-          "type": null,
-          "documentation": null
+          "type": "WwiseEventPair",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -363,12 +415,14 @@
       "documentation": null,
       "signature_members": {
         "Base": {
-          "type": null,
-          "documentation": null
+          "type": "WwiseBaseSoundObject",
+          "documentation": null,
+          "flags": 128
         },
         "bTrackPosition": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -378,12 +432,14 @@
       "documentation": null,
       "signature_members": {
         "AudioEvent": {
-          "type": null,
-          "documentation": null
+          "type": "WwiseEventPair",
+          "documentation": null,
+          "flags": 128
         },
         "bTrackPosition": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -393,8 +449,9 @@
       "documentation": null,
       "signature_members": {
         "WwisePlayingID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -404,8 +461,9 @@
       "documentation": null,
       "signature_members": {
         "Base": {
-          "type": null,
-          "documentation": null
+          "type": "WwiseBaseSoundObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -421,12 +479,14 @@
       "documentation": null,
       "signature_members": {
         "BaseSound": {
-          "type": null,
-          "documentation": null
+          "type": "WwiseBaseSoundObject",
+          "documentation": null,
+          "flags": 128
         },
         "StopEvent": {
-          "type": null,
-          "documentation": null
+          "type": "WwiseEvent",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -436,12 +496,14 @@
       "documentation": null,
       "signature_members": {
         "RTPCHandler": {
-          "type": null,
-          "documentation": null
+          "type": "WwiseRTPCForActorHandler",
+          "documentation": null,
+          "flags": 4194688
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -449,5 +511,7 @@
     }
   },
   "states": {},
+  "classflags": 134230166,
+  "configname": "Engine",
   "documentation": null
 }

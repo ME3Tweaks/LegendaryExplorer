@@ -4,15 +4,18 @@
   "variables": {
     "ReportName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "__GameReportingCallback__Delegate": {
       "type": "GameReportingCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "mGameReport": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     }
   },
   "functions": {
@@ -20,8 +23,9 @@
       "documentation": null,
       "signature_members": {
         "StatsWrite": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineStatsWrite",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -31,12 +35,14 @@
       "documentation": null,
       "signature_members": {
         "InCallback": {
-          "type": null,
-          "documentation": null
+          "type": "GameReportingCallback",
+          "documentation": null,
+          "flags": 4194432
         },
         "StatsWrite": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineStatsWrite",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXOnlineJobGameReporting",
@@ -46,12 +52,14 @@
       "documentation": null,
       "signature_members": {
         "errorCode": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineJobErrorCode",
+          "documentation": null,
+          "flags": 128
         },
         "InJobId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -77,5 +85,7 @@
     }
   },
   "states": {},
+  "classflags": 134217878,
+  "configname": "Game",
   "documentation": null
 }

@@ -4,19 +4,23 @@
   "variables": {
     "prop": {
       "type": "Property",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StepSize": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "floatVal": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "otherVal": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -24,8 +28,9 @@
       "documentation": null,
       "signature_members": {
         "selectable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -33,5 +38,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

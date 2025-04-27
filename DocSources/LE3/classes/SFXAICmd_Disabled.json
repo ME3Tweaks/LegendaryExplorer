@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "AttemptCommand": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -18,8 +19,9 @@
       "documentation": null,
       "signature_members": {
         "nReason": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -29,24 +31,29 @@
       "documentation": null,
       "signature_members": {
         "oTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "bCheckLOS": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bForceShoot": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "fAttackDuration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "FireDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "FireWeaponDelegate",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -56,20 +63,24 @@
       "documentation": null,
       "signature_members": {
         "NewMoveGoal": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "NewMoveOffset": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bForceWalk": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "MoveDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "MoveToDelegate",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -85,8 +96,9 @@
       "documentation": null,
       "signature_members": {
         "ActorToFollow": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -96,12 +108,14 @@
       "documentation": null,
       "signature_members": {
         "InteractionPoint": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "fFidelityTimeout": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -111,20 +125,24 @@
       "documentation": null,
       "signature_members": {
         "nmPowerToUse": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "oTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "PowerDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "UsePowerDelegate",
+          "documentation": null,
+          "flags": 4194448
         },
         "bIgnoreSuppression": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -137,5 +155,7 @@
       "documentation": null
     }
   },
+  "classflags": 18,
+  "configname": "None",
   "documentation": null
 }

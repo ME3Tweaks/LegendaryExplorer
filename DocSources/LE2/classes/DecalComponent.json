@@ -4,207 +4,258 @@
   "variables": {
     "StaticReceivers": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 18886658
     },
     "HitNodeIndices": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202498
     },
     "DecalReceivers": {
       "type": "DecalReceiver",
-      "documentation": null
+      "documentation": null,
+      "flags": 23592962
     },
     "Planes": {
       "type": "Plane",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "Filter": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "ReceiverImages": {
       "type": "PrimitiveComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "ReleaseResourcesFence": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 2109442
     },
     "Location": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "Orientation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "HitLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HitNormal": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HitTangent": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "HitBinormal": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ParentRelativeLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ParentRelativeOrientation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OriginalParentRelativeLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "OriginalParentRelativeOrientationVec": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "DecalMaterial": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "HitComponent": {
       "type": "PrimitiveComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     },
     "HitBone": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "BlendRange": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Width": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Height": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TileX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TileY": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OffsetX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "OffsetY": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DecalRotation": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FieldOfView": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NearPlane": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FarPlane": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "HitNodeIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "HitLevelIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "FracturedStaticMeshComponentIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "DepthBias": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SlopeScaleDepthBias": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SortOrder": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BackfaceAngle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bNoClip": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bStaticDecal": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bProjectOnBackfaces": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bProjectOnHidden": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bProjectOnBSP": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bProjectOnStaticMeshes": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bProjectOnSkeletalMeshes": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bProjectOnTerrain": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bFlipBackfaceDirection": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bMovableDecal": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bHasBeenAttached": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "DecalTransform": {
       "type": "EDecalTransform",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "FilterMode": {
       "type": "EFilterMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -218,8 +269,9 @@
       "documentation": null,
       "signature_members": {
         "NewDecalMaterial": {
-          "type": null,
-          "documentation": null
+          "type": "MaterialInterface",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -233,5 +285,7 @@
     }
   },
   "states": {},
+  "classflags": 2290094226,
+  "configname": "None",
   "documentation": null
 }

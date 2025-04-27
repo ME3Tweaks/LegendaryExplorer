@@ -2,31 +2,38 @@
   "members": {
     "MarkupString": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194307
     },
     "Subscriber": {
       "type": "UIDataStoreSubscriber",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "DataStoreName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "DataStoreField": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "ResolvedDataStore": {
       "type": "UIDataStore",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "BindingIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "RequiredFieldType": {
       "type": "EUIDataProviderFieldType",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     }
   },
   "classdef": "UIRoot",

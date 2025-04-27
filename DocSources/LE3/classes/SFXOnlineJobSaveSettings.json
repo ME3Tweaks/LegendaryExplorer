@@ -4,31 +4,38 @@
   "variables": {
     "Settings": {
       "type": "SettingsPair",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "JobCompleteDelegates": {
       "type": "SFXOnlineComponentUnrealPlayer.OnWritePlayerStorageComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "__SaveSettingsCallback__Delegate": {
       "type": "SaveSettingsCallback",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_Save_RPC_TimeOut": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16386
     },
     "CallbackArg": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OutstandingSubJobs": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CallbackHasRun": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -36,8 +43,9 @@
       "documentation": null,
       "signature_members": {
         "JobCompleteDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineComponentUnrealPlayer.OnWritePlayerStorageComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -47,12 +55,14 @@
       "documentation": null,
       "signature_members": {
         "InKey": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "InValue": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -62,8 +72,9 @@
       "documentation": null,
       "signature_members": {
         "Success": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -73,12 +84,14 @@
       "documentation": null,
       "signature_members": {
         "InCallback": {
-          "type": null,
-          "documentation": null
+          "type": "SaveSettingsCallback",
+          "documentation": null,
+          "flags": 4194432
         },
         "InCallbackArg": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXOnlineJobSaveSettings",
@@ -88,16 +101,19 @@
       "documentation": null,
       "signature_members": {
         "errorCode": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineJobErrorCode",
+          "documentation": null,
+          "flags": 128
         },
         "InJobId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "InCallbackArg": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -111,5 +127,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "Game",
   "documentation": null
 }

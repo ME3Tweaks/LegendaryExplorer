@@ -4,43 +4,53 @@
   "variables": {
     "MeleeDamage": {
       "type": "PowerData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "MeleeForce": {
       "type": "PowerData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "MeleeImpactRadius": {
       "type": "PowerData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "MeleeConeAngle": {
       "type": "PowerData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "HeavyMeleeDamage": {
       "type": "PowerData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "HeavyMeleeForce": {
       "type": "PowerData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "HeavyMeleeImpactRadius": {
       "type": "PowerData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "HeavyMeleeConeAngle": {
       "type": "PowerData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "CoverMeleeImpactRadius": {
       "type": "PowerData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "MeleeKillCategory": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -48,8 +58,9 @@
       "documentation": null,
       "signature_members": {
         "oImpacted": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -59,8 +70,9 @@
       "documentation": null,
       "signature_members": {
         "oImpacted": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -70,8 +82,9 @@
       "documentation": null,
       "signature_members": {
         "bReset": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -79,5 +92,7 @@
     }
   },
   "states": {},
+  "classflags": 10485783,
+  "configname": "Game",
   "documentation": null
 }

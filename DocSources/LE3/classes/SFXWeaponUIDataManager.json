@@ -4,71 +4,88 @@
   "variables": {
     "WeaponUIDataResources": {
       "type": "SFXUIDataResource",
-      "documentation": null
+      "documentation": null,
+      "flags": 4218880
     },
     "WeaponUIData": {
       "type": "SFXWeaponSelectWeaponData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "ModUIData": {
       "type": "SFXWeaponModData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "RomanNumerals": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "__OnDataLoadedDelegate__Delegate": {
       "type": "OnDataLoadedDelegate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "StatNameAccuracy": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "StatNameDamage": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "StatNameFireRate": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "StatNameMagSize": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "StatNameWeight": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "MaxAccuracyValue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "MaxDamageValue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "MaxFireRateValue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "MaxMagazineValue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "MaxWeightValue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "MaxWeaponLevel": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "DataIsLoaded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -82,32 +99,39 @@
       "documentation": null,
       "signature_members": {
         "WeaponPath": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "WeaponLevelOverMaxLevel": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Accuracy": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "RateOfFire": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "AmmoCapacity": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "Weight": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -117,8 +141,9 @@
       "documentation": null,
       "signature_members": {
         "nWeaponIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -140,12 +165,14 @@
       "documentation": null,
       "signature_members": {
         "eType": {
-          "type": null,
-          "documentation": null
+          "type": "ELoadoutWeapons",
+          "documentation": null,
+          "flags": 128
         },
         "bOnlyAvailableWeapons": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -155,12 +182,14 @@
       "documentation": null,
       "signature_members": {
         "nWeaponIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nmHench": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -170,12 +199,14 @@
       "documentation": null,
       "signature_members": {
         "nModIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "string",
@@ -185,12 +216,14 @@
       "documentation": null,
       "signature_members": {
         "nModIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "string",
@@ -200,12 +233,14 @@
       "documentation": null,
       "signature_members": {
         "nWeapIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bAllowAllMods": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -215,12 +250,14 @@
       "documentation": null,
       "signature_members": {
         "eType": {
-          "type": null,
-          "documentation": null
+          "type": "ELoadoutWeapons",
+          "documentation": null,
+          "flags": 128
         },
         "bAllowAllMods": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -230,12 +267,14 @@
       "documentation": null,
       "signature_members": {
         "oModData": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeaponModData",
+          "documentation": null,
+          "flags": 4194434
         },
         "nLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "SFXWeaponUIStats",
@@ -245,8 +284,9 @@
       "documentation": null,
       "signature_members": {
         "nLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -256,12 +296,14 @@
       "documentation": null,
       "signature_members": {
         "nmWeapClass": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nmHench": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -271,12 +313,14 @@
       "documentation": null,
       "signature_members": {
         "nmModClass": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 400
         }
       },
       "returntype": "SFXWeaponModData",
@@ -286,12 +330,14 @@
       "documentation": null,
       "signature_members": {
         "nWeapIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nmHench": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXWeaponUIStats",
@@ -301,12 +347,14 @@
       "documentation": null,
       "signature_members": {
         "nmWeapClass": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nmHench": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXWeaponUIStats",
@@ -316,12 +364,14 @@
       "documentation": null,
       "signature_members": {
         "eType": {
-          "type": null,
-          "documentation": null
+          "type": "ELoadoutWeapons",
+          "documentation": null,
+          "flags": 128
         },
         "bOnlyAvailableWeapons": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -331,12 +381,14 @@
       "documentation": null,
       "signature_members": {
         "nmWeaponClass": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "SFXWeaponSelectWeaponData",
@@ -346,12 +398,14 @@
       "documentation": null,
       "signature_members": {
         "nmWeaponClass": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "SFXWeaponSelectWeaponData",
@@ -361,24 +415,29 @@
       "documentation": null,
       "signature_members": {
         "nWeapIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "eStat": {
-          "type": null,
-          "documentation": null
+          "type": "EWeaponStatBars",
+          "documentation": null,
+          "flags": 128
         },
         "oModValues": {
-          "type": null,
-          "documentation": null
+          "type": "SFXWeaponUIStats",
+          "documentation": null,
+          "flags": 130
         },
         "bAddModStat": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "fModBonus": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 400
         }
       },
       "returntype": "float",
@@ -388,8 +447,9 @@
       "documentation": null,
       "signature_members": {
         "nWeaponIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -399,12 +459,14 @@
       "documentation": null,
       "signature_members": {
         "doneCallback": {
-          "type": null,
-          "documentation": null
+          "type": "OnDataLoadedDelegate",
+          "documentation": null,
+          "flags": 4194432
         },
         "bForceReLoad": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -414,8 +476,9 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -431,8 +494,9 @@
       "documentation": null,
       "signature_members": {
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -440,5 +504,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "UI",
   "documentation": null
 }

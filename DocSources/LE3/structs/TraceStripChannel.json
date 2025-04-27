@@ -2,43 +2,53 @@
   "members": {
     "Keys": {
       "type": "TraceStripKey",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DrawColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nmButton": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nmAxis": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Owner": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nmProperty": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nmAnimnode": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CachedProperty": {
       "type": "Property",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CachedAnimNode": {
       "type": "AnimNodeBlendBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fDynamicMax": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioHUD",

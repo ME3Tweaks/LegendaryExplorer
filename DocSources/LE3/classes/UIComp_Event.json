@@ -4,19 +4,23 @@
   "variables": {
     "DefaultEvents": {
       "type": "DefaultEventSpecification",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DisabledEventAliases": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "EventContainer": {
       "type": "UISequence",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "InputProcessor": {
       "type": "UIEvent_ProcessInput",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -24,12 +28,14 @@
       "documentation": null,
       "signature_members": {
         "InputEventOwner": {
-          "type": null,
-          "documentation": null
+          "type": "UIState",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -39,12 +45,14 @@
       "documentation": null,
       "signature_members": {
         "InputEventOwner": {
-          "type": null,
-          "documentation": null
+          "type": "UIState",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -52,5 +60,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

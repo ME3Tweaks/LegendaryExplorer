@@ -2,11 +2,13 @@
   "members": {
     "Node": {
       "type": "AnimNodeBlendList",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Index": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioAnimCheckBlendOut",

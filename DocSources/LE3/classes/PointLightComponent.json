@@ -4,47 +4,58 @@
   "variables": {
     "CachedParentToWorld": {
       "type": "Matrix",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "LightmassSettings": {
       "type": "LightmassPointLightSettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Translation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "PreviewLightRadius": {
       "type": "DrawLightRadiusComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633162
     },
     "PreviewLightSourceRadius": {
       "type": "DrawLightRadiusComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633162
     },
     "ShadowRadiusMultiplier": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "Radius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "FalloffExponent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "ShadowFalloffExponent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MinShadowFalloffRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAllowedInBasePass": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -52,8 +63,9 @@
       "documentation": null,
       "signature_members": {
         "NewTranslation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -73,5 +85,7 @@
     }
   },
   "states": {},
+  "classflags": 144707730,
+  "configname": "None",
   "documentation": null
 }

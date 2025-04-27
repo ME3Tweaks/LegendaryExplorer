@@ -4,11 +4,13 @@
   "variables": {
     "movie": {
       "type": "GFxMovie",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUnload": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -20,5 +22,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

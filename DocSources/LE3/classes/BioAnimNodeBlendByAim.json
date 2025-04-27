@@ -4,42 +4,53 @@
   "variables": {
     "LimitsDefault": {
       "type": "BioAnimNodeBlendByAimLimits",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "LimitsMirrored": {
       "type": "BioAnimNodeBlendByAimLimits",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "BlendOut": {
       "type": "BioAnimCheckBlendOut",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "AimBlendOutDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "YawRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "Yaw": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "Pitch": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RemainingBlendDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bUseMirrored": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

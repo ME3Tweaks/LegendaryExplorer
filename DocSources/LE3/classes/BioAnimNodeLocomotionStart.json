@@ -4,50 +4,63 @@
   "variables": {
     "BlendOutRelPos": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "FreeRotationRelPos": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "SynchGroupName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "LeftFootNormalizedRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "MovementSync": {
       "type": "BioAnimMovementSync",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "BlendOut": {
       "type": "BioAnimCheckBlendOut",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "BlendAngle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "StateTag": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bBlendingOut": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bOverrideRMM": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bOverrideRMR": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

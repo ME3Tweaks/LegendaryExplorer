@@ -2,11 +2,13 @@
   "members": {
     "ClientEffect": {
       "type": "RvrClientEffectInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaterialType": {
       "type": "EClientEffectMaterial",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "RvrClientEffectByImpactMaterial",

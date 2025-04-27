@@ -2,15 +2,18 @@
   "members": {
     "bAllowInvoke": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "eLabel": {
       "type": "ESFPanelInvokeLabel",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "eCategory": {
       "type": "ESFPanelInvokeCategories",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioSFPanel",

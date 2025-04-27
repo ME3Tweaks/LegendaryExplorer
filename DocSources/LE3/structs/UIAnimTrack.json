@@ -2,15 +2,18 @@
   "members": {
     "KeyFrames": {
       "type": "UIAnimationKeyFrame",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "LoopFrames": {
       "type": "UIAnimationKeyFrame",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "TrackType": {
       "type": "EUIAnimType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "UIAnimation",

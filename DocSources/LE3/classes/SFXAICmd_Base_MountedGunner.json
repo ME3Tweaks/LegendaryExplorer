@@ -23,12 +23,14 @@
           "documentation": null,
           "signature_members": {
             "W": {
-              "type": null,
-              "documentation": null
+              "type": "Weapon",
+              "documentation": null,
+              "flags": 128
             },
             "StartFireLoc": {
-              "type": null,
-              "documentation": null
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -38,8 +40,9 @@
           "documentation": null,
           "signature_members": {
             "DeltaTime": {
-              "type": null,
-              "documentation": null
+              "type": "float",
+              "documentation": null,
+              "flags": 128
             }
           },
           "returntype": null,
@@ -55,5 +58,7 @@
       "documentation": null
     }
   },
+  "classflags": 18,
+  "configname": "None",
   "documentation": null
 }

@@ -2,83 +2,103 @@
   "members": {
     "Planet": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlanetCircle": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlanetRing": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Object": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Arrow": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AsteroidBelt": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SystemSphere": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SystemCard1": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SystemCard2": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Emitter": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Sunlight": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Sun": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LensFlare": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MassRelay": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MassRelayRed": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MassRelayVFX": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FuelDepot": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Crosshair": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Camera": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ReaperArrow": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXGalaxyMapGameData",

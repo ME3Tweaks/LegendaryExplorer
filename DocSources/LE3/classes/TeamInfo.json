@@ -4,23 +4,28 @@
   "variables": {
     "TeamName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 1077968930
     },
     "Size": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741824
     },
     "Score": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741856
     },
     "TeamIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 5368709152
     },
     "TeamColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1073741824
     }
   },
   "functions": {
@@ -40,8 +45,9 @@
       "documentation": null,
       "signature_members": {
         "VarName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -57,8 +63,9 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -86,8 +93,9 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -101,5 +109,7 @@
     }
   },
   "states": {},
+  "classflags": 144705714,
+  "configname": "None",
   "documentation": null
 }

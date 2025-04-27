@@ -2,55 +2,68 @@
   "members": {
     "DrawCoords": {
       "type": "TextureCoordinates",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "OverideDrawColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "Scaling": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "DrawFont": {
       "type": "Font",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "ImageExtent": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "SpacingAdjust": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "DrawX": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "DrawY": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "DrawXL": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "DrawYL": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "ViewportHeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "bUseOverrideColor": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "TextAlignment": {
       "type": "EUIAlignment",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     }
   },
   "classdef": "UIRoot",

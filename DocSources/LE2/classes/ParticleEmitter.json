@@ -4,46 +4,58 @@
   "variables": {
     "SpawnRateModules": {
       "type": "ParticleModule",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "LODLevels": {
       "type": "ParticleLODLevel",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "EmitterName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SubUVDataOffset": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "PeakActiveParticles": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "InitialAllocationCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ConvertedModules": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsSoloing": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bCookedOut": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "EmitterRenderMode": {
       "type": "EEmitterRenderMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144707731,
+  "configname": "None",
   "documentation": null
 }

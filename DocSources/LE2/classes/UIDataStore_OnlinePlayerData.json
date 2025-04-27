@@ -4,119 +4,148 @@
   "variables": {
     "VfTable_IUIListElementProvider": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "FriendsProvider": {
       "type": "UIDataProvider_OnlineFriends",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlayersProvider": {
       "type": "UIDataProvider_OnlinePlayers",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ClanMatesProvider": {
       "type": "UIDataProvider_OnlineClanMates",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Player": {
       "type": "LocalPlayer",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlayerNick": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "NumNewDownloads": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NumTotalDownloads": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ProfileSettingsClassName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "ProfileSettingsClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ProfileProvider": {
       "type": "UIDataProvider_OnlineProfileSettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlayerStorageClassName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "PlayerStorageClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StorageProvider": {
       "type": "UIDataProvider_OnlinePlayerStorage",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FriendMessagesProvider": {
       "type": "UIDataProvider_OnlineFriendMessages",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AchievementsProvider": {
       "type": "UIDataProvider_PlayerAchievements",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FriendsProviderClassName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "FriendsProviderClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlayersProviderClassName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "PlayersProviderClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ClanMatesProviderClassName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "ClanMatesProviderClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FriendMessagesProviderClassName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "FriendMessagesProviderClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AchievementsProviderClassName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "AchievementsProviderClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PartyChatProviderClassName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "PartyChatProviderClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PartyChatProvider": {
       "type": "UIDataProvider_OnlinePartyChatList",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -124,8 +153,9 @@
       "documentation": null,
       "signature_members": {
         "ControllerId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "OnlinePlayerStorage",
@@ -135,8 +165,9 @@
       "documentation": null,
       "signature_members": {
         "ControllerId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "OnlineProfileSettings",
@@ -152,8 +183,9 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -181,8 +213,9 @@
       "documentation": null,
       "signature_members": {
         "LocalUserNum": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -198,8 +231,9 @@
       "documentation": null,
       "signature_members": {
         "InPlayer": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -209,12 +243,14 @@
       "documentation": null,
       "signature_members": {
         "SourceProvider": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 128
         },
         "SettingsName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -222,5 +258,7 @@
     }
   },
   "states": {},
+  "classflags": 136315038,
+  "configname": "Engine",
   "documentation": null
 }

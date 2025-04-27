@@ -4,7 +4,8 @@
   "variables": {
     "m_eCerberus3DStateChange": {
       "type": "Cerberus3DState",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -16,5 +17,7 @@
     }
   },
   "states": {},
+  "classflags": 35651602,
+  "configname": "None",
   "documentation": null
 }

@@ -2,11 +2,13 @@
   "members": {
     "sPropertyName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "sPropertyValue": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     }
   },
   "classdef": "BioArtPlaceableRoles",

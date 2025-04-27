@@ -2,11 +2,13 @@
   "members": {
     "PlotBool": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "UnlockDay": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioGlobalVariableTable",

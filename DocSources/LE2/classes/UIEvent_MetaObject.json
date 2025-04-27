@@ -4,7 +4,8 @@
   "variables": {
     "VfTable_FCallbackEventDevice": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     }
   },
   "functions": {
@@ -18,8 +19,9 @@
       "documentation": null,
       "signature_members": {
         "TargetObject": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -27,5 +29,7 @@
     }
   },
   "states": {},
+  "classflags": 136315578,
+  "configname": "None",
   "documentation": null
 }

@@ -4,94 +4,118 @@
   "variables": {
     "SpawningModules": {
       "type": "ParticleModuleSpawnBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "SpawnModules": {
       "type": "ParticleModule",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "UpdateModules": {
       "type": "ParticleModule",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "OrbitModules": {
       "type": "ParticleModuleOrbit",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "EventReceiverModules": {
       "type": "ParticleModuleEventReceiverBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "SpawnRateModules": {
       "type": "ParticleModule",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "Modules": {
       "type": "ParticleModule",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "ModuleOffsetMap": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "ModuleInstanceOffsetMap": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "TypeDataModule": {
       "type": "ParticleModule",
-      "documentation": null
+      "documentation": null,
+      "flags": 8
     },
     "SpawnModule": {
       "type": "ParticleModuleSpawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 8
     },
     "EventGenerator": {
       "type": "ParticleModuleEventGenerator",
-      "documentation": null
+      "documentation": null,
+      "flags": 8
     },
     "RequiredModule": {
       "type": "ParticleModuleRequired",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "Level": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "PeakActiveParticles": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ModuleMapsInstanceSize": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "ModuleMapsParticleSize": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "ModuleMapsTypeDataOffset": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "ModuleMapsTypeDataInstanceOffset": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "bEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ConvertedModules": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ModuleMapsCreated": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144715922,
+  "configname": "None",
   "documentation": null
 }

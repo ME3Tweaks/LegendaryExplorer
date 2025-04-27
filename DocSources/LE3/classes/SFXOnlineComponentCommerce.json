@@ -4,95 +4,118 @@
   "variables": {
     "VfTable_IISFXOnlineComponentCommerce": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "VfTable_Blaze::BlazeStateEventHandler": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "VfTable_DIME::DimeStrategy": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "aServerEntitlementGrantIds": {
       "type": "SFXOnlineEntitlementLookupInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "aServerEntitlementRevokeIds": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "aNamEntitlements": {
       "type": "SFXOnlineEntitlementLookupInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "aCachedEntitlements": {
       "type": "BWEntitlementInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "aCachedDIMEEntitlements": {
       "type": "BWEntitlementInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "aCachedOffers": {
       "type": "BWOfferInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "aCachedConsumables": {
       "type": "BWConsumableInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "sWalletBalance": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "aFetchDetailsIDList": {
       "type": "BWOfferId",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "aDLCEntitlementInfo": {
       "type": "SFXOnlineEntitlementLookupInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210690
     },
     "__OnRefreshDigitalRightsResult__Delegate": {
       "type": "OnRefreshDigitalRightsResult",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnConsumeResult__Delegate": {
       "type": "OnConsumeResult",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnGrantEntitlementResult__Delegate": {
       "type": "OnGrantEntitlementResult",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnProcessAutoGrantsComplete__Delegate": {
       "type": "OnProcessAutoGrantsComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnPromptRedeemCodeResult__Delegate": {
       "type": "OnPromptRedeemCodeResult",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnPurchaseOfferIdResult__Delegate": {
       "type": "OnPurchaseOfferIdResult",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnFetchOfferDetailsComplete__Delegate": {
       "type": "OnFetchOfferDetailsComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnDimeConfigLoaded__Delegate": {
       "type": "OnDimeConfigLoaded",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "CurrentDimeState": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAwaitingDimeForRefresh": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -106,16 +129,19 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "BWConsumableId",
+          "documentation": null,
+          "flags": 128
         },
         "nCopies": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "dCallback": {
-          "type": null,
-          "documentation": null
+          "type": "OnConsumeResult",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -143,12 +169,14 @@
       "documentation": null,
       "signature_members": {
         "aOffers": {
-          "type": null,
-          "documentation": null
+          "type": "BWOfferId",
+          "documentation": null,
+          "flags": 4194432
         },
         "dCallback": {
-          "type": null,
-          "documentation": null
+          "type": "OnFetchOfferDetailsComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -164,12 +192,14 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "BWConsumableId",
+          "documentation": null,
+          "flags": 128
         },
         "oConsumable": {
-          "type": null,
-          "documentation": null
+          "type": "BWConsumableInfo",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -179,8 +209,9 @@
       "documentation": null,
       "signature_members": {
         "aConsumables": {
-          "type": null,
-          "documentation": null
+          "type": "BWConsumableInfo",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -190,12 +221,14 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "BWEntitlementId",
+          "documentation": null,
+          "flags": 128
         },
         "oEntitlement": {
-          "type": null,
-          "documentation": null
+          "type": "BWEntitlementInfo",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -205,8 +238,9 @@
       "documentation": null,
       "signature_members": {
         "aEntitlements": {
-          "type": null,
-          "documentation": null
+          "type": "BWEntitlementInfo",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -216,12 +250,14 @@
       "documentation": null,
       "signature_members": {
         "aOffers": {
-          "type": null,
-          "documentation": null
+          "type": "BWOfferInfo",
+          "documentation": null,
+          "flags": 4194688
         },
         "aOfferFilter": {
-          "type": null,
-          "documentation": null
+          "type": "BWOfferId",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -231,16 +267,19 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "BWEntitlementId",
+          "documentation": null,
+          "flags": 128
         },
         "dCallback": {
-          "type": null,
-          "documentation": null
+          "type": "OnGrantEntitlementResult",
+          "documentation": null,
+          "flags": 4194448
         },
         "bUseNucleusCheck": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -250,12 +289,14 @@
       "documentation": null,
       "signature_members": {
         "sConfig": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "dCallback": {
-          "type": null,
-          "documentation": null
+          "type": "OnDimeConfigLoaded",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -271,8 +312,9 @@
       "documentation": null,
       "signature_members": {
         "nResult": {
-          "type": null,
-          "documentation": null
+          "type": "CodeRedemptionResult",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -282,16 +324,19 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "BWConsumableId",
+          "documentation": null,
+          "flags": 128
         },
         "nCopies": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nResult": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -313,12 +358,14 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "BWEntitlementId",
+          "documentation": null,
+          "flags": 128
         },
         "nResult": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -328,8 +375,9 @@
       "documentation": null,
       "signature_members": {
         "oOnlineSubsystem": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineSubsystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -345,8 +393,9 @@
       "documentation": null,
       "signature_members": {
         "nResult": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -356,8 +405,9 @@
       "documentation": null,
       "signature_members": {
         "nResult": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -367,8 +417,9 @@
       "documentation": null,
       "signature_members": {
         "nResult": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -384,8 +435,9 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -395,8 +447,9 @@
       "documentation": null,
       "signature_members": {
         "dCallback": {
-          "type": null,
-          "documentation": null
+          "type": "OnProcessAutoGrantsComplete",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -406,12 +459,14 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "BWEntitlementId",
+          "documentation": null,
+          "flags": 128
         },
         "nResult": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -421,8 +476,9 @@
       "documentation": null,
       "signature_members": {
         "dCallback": {
-          "type": null,
-          "documentation": null
+          "type": "OnPromptRedeemCodeResult",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -432,12 +488,14 @@
       "documentation": null,
       "signature_members": {
         "Id": {
-          "type": null,
-          "documentation": null
+          "type": "BWOfferId",
+          "documentation": null,
+          "flags": 128
         },
         "dCallback": {
-          "type": null,
-          "documentation": null
+          "type": "OnPurchaseOfferIdResult",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -447,8 +505,9 @@
       "documentation": null,
       "signature_members": {
         "dCallback": {
-          "type": null,
-          "documentation": null
+          "type": "OnRefreshDigitalRightsResult",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -458,8 +517,9 @@
       "documentation": null,
       "signature_members": {
         "a_sEncryptedContent": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -469,12 +529,14 @@
       "documentation": null,
       "signature_members": {
         "bContinue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "strCode": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
         }
       },
       "returntype": "None",
@@ -494,5 +556,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "Game",
   "documentation": null
 }

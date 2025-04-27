@@ -4,11 +4,13 @@
   "variables": {
     "SupportedValues": {
       "type": "SwitchObjectCase",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "MetaClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -16,8 +18,9 @@
       "documentation": null,
       "signature_members": {
         "InsertIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -27,8 +30,9 @@
       "documentation": null,
       "signature_members": {
         "ValueIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -38,8 +42,9 @@
       "documentation": null,
       "signature_members": {
         "RemoveIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -53,5 +58,7 @@
     }
   },
   "states": {},
+  "classflags": 136315538,
+  "configname": "None",
   "documentation": null
 }

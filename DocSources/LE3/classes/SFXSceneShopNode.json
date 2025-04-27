@@ -4,14 +4,18 @@
   "variables": {
     "m_aOutputPins": {
       "type": "SFXSSNodePin",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aInputPins": {
       "type": "SFXSSNodePin",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315027,
+  "configname": "None",
   "documentation": null
 }

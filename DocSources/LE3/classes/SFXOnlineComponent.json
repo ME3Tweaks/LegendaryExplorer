@@ -4,23 +4,28 @@
   "variables": {
     "EventSubscriberTable": {
       "type": "SFXOnlineSubscriberEventType",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnEvent__Delegate": {
       "type": "OnEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "APIName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "OnlineSubsystem": {
       "type": "SFXOnlineSubsystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NeedsStateMachine": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "functions": {
@@ -28,12 +33,14 @@
       "documentation": null,
       "signature_members": {
         "eEventType": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
         },
         "aPendingEvents": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -49,12 +56,14 @@
       "documentation": null,
       "signature_members": {
         "eEventType": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
         },
         "nEventID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "SFXOnlineEvent",
@@ -64,8 +73,9 @@
       "documentation": null,
       "signature_members": {
         "eEventType": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -81,12 +91,14 @@
       "documentation": null,
       "signature_members": {
         "eEventType": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
         },
         "nEventID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -108,8 +120,9 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -119,16 +132,19 @@
       "documentation": null,
       "signature_members": {
         "eEventType": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
         },
         "eStatus": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventStatus",
+          "documentation": null,
+          "flags": 144
         },
         "eOutcome": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventStatusFinished",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -138,12 +154,14 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         },
         "eStatusFinished": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventStatusFinished",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -153,16 +171,19 @@
       "documentation": null,
       "signature_members": {
         "eWork": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
         },
         "eStatusFinished": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventStatusFinished",
+          "documentation": null,
+          "flags": 144
         },
         "nEventID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -172,16 +193,19 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         },
         "eEventType": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 144
         },
         "TimeOut": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -191,16 +215,19 @@
       "documentation": null,
       "signature_members": {
         "eWork": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
         },
         "nEventID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "fTimeOut": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -210,8 +237,9 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -221,8 +249,9 @@
       "documentation": null,
       "signature_members": {
         "oOnlineSubsystem": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineSubsystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -238,8 +267,9 @@
       "documentation": null,
       "signature_members": {
         "oCallbackTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -249,12 +279,14 @@
       "documentation": null,
       "signature_members": {
         "eEventType": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
         },
         "fnEventCallback": {
-          "type": null,
-          "documentation": null
+          "type": "OnEvent",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -264,8 +296,9 @@
       "documentation": null,
       "signature_members": {
         "oCallbackTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -275,12 +308,14 @@
       "documentation": null,
       "signature_members": {
         "oEventType": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
         },
         "fnEventCallback": {
-          "type": null,
-          "documentation": null
+          "type": "OnEvent",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -290,12 +325,14 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         },
         "fnWorkComplete": {
-          "type": null,
-          "documentation": null
+          "type": "OnEvent",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -305,12 +342,14 @@
       "documentation": null,
       "signature_members": {
         "aOnlineEventSet": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 4194432
         },
         "fnWorkComplete": {
-          "type": null,
-          "documentation": null
+          "type": "OnEvent",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -320,12 +359,14 @@
       "documentation": null,
       "signature_members": {
         "aWorkUnits": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 4194432
         },
         "fnWorkComplete": {
-          "type": null,
-          "documentation": null
+          "type": "OnEvent",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -335,16 +376,19 @@
       "documentation": null,
       "signature_members": {
         "eWork": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
         },
         "fnWorkComplete": {
-          "type": null,
-          "documentation": null
+          "type": "OnEvent",
+          "documentation": null,
+          "flags": 4194432
         },
         "nEventID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -352,5 +396,7 @@
     }
   },
   "states": {},
+  "classflags": 134217875,
+  "configname": "None",
   "documentation": null
 }

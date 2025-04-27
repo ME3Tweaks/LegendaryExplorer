@@ -4,71 +4,88 @@
   "variables": {
     "VfTable_FCallbackEventDevice": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "VfTable_IISFXOnlineComponentNotification": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "m_aMOTDInfo": {
       "type": "SFXOnlineMOTDInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "StoreCatalogId": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "m_aEntitlementInfo": {
       "type": "SFXOnlineEntitlementLookupInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "m_sDimeConfig": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "m_pBlazeUtil": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "m_PendingLiveBINIVersion": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "m_LiveBINIVersion": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "CerberusOfferId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "PRCMessageTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "AllianceNewsItemMessageTitle": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_LiveBINIUpdated": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "m_FetchingLiveBINIData": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "m_DisableLiveBINI": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bSkipLiveINIUpdateOnLogin": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "m_CurrentDownloadStep": {
       "type": "EDownloadDataStep",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -82,8 +99,9 @@
       "documentation": null,
       "signature_members": {
         "i": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -117,20 +135,24 @@
       "documentation": null,
       "signature_members": {
         "updatedSecurityRatings": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194432
         },
         "updatedWarAssets": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194432
         },
         "Level": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "errorCode": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -140,8 +162,9 @@
       "documentation": null,
       "signature_members": {
         "Type": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineConnection_MessageType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXOnlineMOTDInfo",
@@ -157,8 +180,9 @@
       "documentation": null,
       "signature_members": {
         "nSource": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlinePurchaseSource",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -192,8 +216,9 @@
       "documentation": null,
       "signature_members": {
         "oOnlineSubsystem": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineSubsystem",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -209,8 +234,9 @@
       "documentation": null,
       "signature_members": {
         "oEvent": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -226,8 +252,9 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -237,8 +264,9 @@
       "documentation": null,
       "signature_members": {
         "bMainMenu": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -272,8 +300,9 @@
       "documentation": null,
       "signature_members": {
         "bMainMenu": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -299,5 +328,7 @@
     }
   },
   "states": {},
+  "classflags": 134217878,
+  "configname": "Engine",
   "documentation": null
 }

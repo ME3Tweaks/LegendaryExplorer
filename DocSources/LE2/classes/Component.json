@@ -4,14 +4,18 @@
   "variables": {
     "TemplateOwnerClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "TemplateName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217875,
+  "configname": "None",
   "documentation": null
 }

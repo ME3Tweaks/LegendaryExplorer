@@ -4,35 +4,43 @@
   "variables": {
     "FogVolumeActors": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "SimpleLightColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "ApproxFogLightColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "FogMaterial": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DefaultFogVolumeMaterial": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StartDistance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "bEnabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bAffectsTranslucency": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -40,8 +48,9 @@
       "documentation": null,
       "signature_members": {
         "bSetEnabled": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -49,5 +58,7 @@
     }
   },
   "states": {},
+  "classflags": 134221971,
+  "configname": "None",
   "documentation": null
 }

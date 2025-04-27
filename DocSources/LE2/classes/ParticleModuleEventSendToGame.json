@@ -7,20 +7,24 @@
       "documentation": null,
       "signature_members": {
         "InCollideDirection": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
         },
         "inHitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
         },
         "InHitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
         },
         "InBoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -28,5 +32,7 @@
     }
   },
   "states": {},
+  "classflags": 134221971,
+  "configname": "None",
   "documentation": null
 }

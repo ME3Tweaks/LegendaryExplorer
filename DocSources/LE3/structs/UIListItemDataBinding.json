@@ -2,15 +2,18 @@
   "members": {
     "DataSourceProvider": {
       "type": "UIListElementCellProvider",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DataSourceTag": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DataSourceIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "UIComp_ListPresenterBase",

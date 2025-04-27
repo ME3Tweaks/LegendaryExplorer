@@ -2,43 +2,53 @@
   "members": {
     "ClusterPlanes": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "ClusterBackgrounds": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "System": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SystemCircle": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ClusterSphere": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ClusterStars": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FuelElipse": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Emitter": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Crosshair": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Camera": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXGalaxyMapGameData",

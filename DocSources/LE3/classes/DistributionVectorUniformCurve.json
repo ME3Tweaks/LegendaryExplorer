@@ -4,30 +4,38 @@
   "variables": {
     "ConstantCurve": {
       "type": "InterpCurveTwoVectors",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "bLockAxes1": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bLockAxes2": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bUseExtremes": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MirrorFlags": {
       "type": "EDistributionVectorMirrorFlags",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LockedAxes": {
       "type": "EDistributionVectorLockFlags",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134230162,
+  "configname": "None",
   "documentation": null
 }

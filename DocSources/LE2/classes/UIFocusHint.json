@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "WidgetOwner": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -16,5 +17,7 @@
     }
   },
   "states": {},
+  "classflags": 10486294,
+  "configname": "UI",
   "documentation": null
 }

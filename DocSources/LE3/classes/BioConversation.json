@@ -4,90 +4,113 @@
   "variables": {
     "m_mapStrRefToAnimData": {
       "type": "MultiMap_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "m_StartingList": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4325377
     },
     "m_EntryList": {
       "type": "BioDialogEntryNode",
-      "documentation": null
+      "documentation": null,
+      "flags": 4325377
     },
     "m_ReplyList": {
       "type": "BioDialogReplyNode",
-      "documentation": null
+      "documentation": null,
+      "flags": 4325377
     },
     "m_aSpeakerList": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4325377
     },
     "m_aScriptList": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4325377
     },
     "m_aStageDirections": {
       "type": "BioStageDirection",
-      "documentation": null
+      "documentation": null,
+      "flags": 144115188080181249
     },
     "m_aMaleFaceSets": {
       "type": "FaceFXAnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "m_aFemaleFaceSets": {
       "type": "FaceFXAnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "m_aMaleSoundObjects": {
       "type": "WwiseBaseSoundObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_aFemaleSoundObjects": {
       "type": "WwiseBaseSoundObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MatineeSequence": {
       "type": "Sequence",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "FaceFXSet": {
       "type": "FaceFXAnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "m_pNonSpeakerFaceFXSet": {
       "type": "FaceFXAnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pRubberMouthAnimSet": {
       "type": "FaceFXAnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nResRefID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     },
     "m_bOneLinerConversation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     },
     "m_bPlayerSexIsValid": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bPlayerIsFemale": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bHasSpeechGrammar": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bUsesRubberMouth": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

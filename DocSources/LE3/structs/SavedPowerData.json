@@ -2,15 +2,18 @@
   "members": {
     "EvolveChoices": {
       "type": "EEvolveChoice",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Power": {
       "type": "SFXPowerCustomActionBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Rank": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXPowerLevelUpHelper",

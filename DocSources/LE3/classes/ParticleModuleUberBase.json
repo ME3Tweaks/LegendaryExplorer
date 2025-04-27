@@ -4,10 +4,13 @@
   "variables": {
     "RequiredModules": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134230163,
+  "configname": "None",
   "documentation": null
 }

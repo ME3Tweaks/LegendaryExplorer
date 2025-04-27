@@ -2,27 +2,33 @@
   "members": {
     "Guid": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "BranchShadowMap": {
       "type": "ShadowMap1D",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "FrondShadowMap": {
       "type": "ShadowMap1D",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "LeafMeshShadowMap": {
       "type": "ShadowMap1D",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "LeafCardShadowMap": {
       "type": "ShadowMap1D",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "BillboardShadowMap": {
       "type": "ShadowMap1D",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "classdef": "SpeedTreeComponent",

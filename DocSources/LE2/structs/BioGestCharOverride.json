@@ -2,39 +2,48 @@
   "members": {
     "nmFemale": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "nmAsari": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "nmTurian": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "nmSalarian": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "nmQuarian": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "nmOther": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "nmKrogan": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "nmGeth": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "nmOtherArtificial": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     }
   },
   "classdef": "BioGestureRuntimeData",

@@ -4,15 +4,18 @@
   "variables": {
     "VfTable_IUIListElementProvider": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "PlayerListFieldName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "Players": {
       "type": "PlayerDataProvider",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -20,8 +23,9 @@
       "documentation": null,
       "signature_members": {
         "AllPlayers": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerDataProvider",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -29,5 +33,7 @@
     }
   },
   "states": {},
+  "classflags": 136315034,
+  "configname": "None",
   "documentation": null
 }

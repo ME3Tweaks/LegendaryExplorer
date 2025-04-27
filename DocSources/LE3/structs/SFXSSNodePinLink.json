@@ -2,11 +2,13 @@
   "members": {
     "pLinkedNode": {
       "type": "SFXSceneShopNode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nLinkedIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXSceneShopNode",

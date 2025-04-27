@@ -4,123 +4,153 @@
   "variables": {
     "CurrentAllowedMods": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "ModAttachSounds": {
       "type": "ModAttachSoundInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4218880
     },
     "ModMeshActors": {
       "type": "DynamicSMActor_Spawnable",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "WeaponModBaseGripColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "WeaponModBaseBodyColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "WeaponModBaseEmissiveColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_oModControlMovieInfo": {
       "type": "GFxMovieInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_oModStatsMovieInfo": {
       "type": "GFxMovieInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WeaponSelect": {
       "type": "SFXGUI_WeaponSelection",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "DataManager": {
       "type": "SFXWeaponUIDataManager",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "Kismet": {
       "type": "SFXSeqAct_LaunchWeaponSelection",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentChosenMods": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "WeaponMeshActor": {
       "type": "SkeletalMeshActorSpawnable",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentMods": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ModStatsDisplay": {
       "type": "SFXGUIMovie",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ModModsDisplay": {
       "type": "SFXGUIMovie",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ModifyColorSound": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "DefaultAttachSound": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "CurrentModifyWeaponID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fPreviousMipLevelFadingValue": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ModLeftButtonText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "ModRightButtonText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "ModifyWeaponText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "srUnavailable": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "MinDisplayBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "MipFadingRestoreFrameDelay": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 24576
     },
     "NumRemainingFramesToMipFadingRestore": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ShowAllMods": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CurrentModSelectionIsValid": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bMonitorWeaponLoadIn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -128,8 +158,9 @@
       "documentation": null,
       "signature_members": {
         "usingGamepad": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -151,12 +182,14 @@
       "documentation": null,
       "signature_members": {
         "modStatsRT": {
-          "type": null,
-          "documentation": null
+          "type": "TextureRenderTarget2D",
+          "documentation": null,
+          "flags": 128
         },
         "modControlRT": {
-          "type": null,
-          "documentation": null
+          "type": "TextureRenderTarget2D",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -166,8 +199,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -183,8 +217,9 @@
       "documentation": null,
       "signature_members": {
         "sName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -194,20 +229,24 @@
       "documentation": null,
       "signature_members": {
         "sName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "fValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "fBonus": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "fCompare": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -229,36 +268,44 @@
       "documentation": null,
       "signature_members": {
         "nDisplay": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "sName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sImgPath": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "nModIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nLeftOption": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nRightOption": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nNumOptions": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bIsAvailable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -268,12 +315,14 @@
       "documentation": null,
       "signature_members": {
         "sName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sDesc": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -283,8 +332,9 @@
       "documentation": null,
       "signature_members": {
         "bVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -294,8 +344,9 @@
       "documentation": null,
       "signature_members": {
         "eModSlot": {
-          "type": null,
-          "documentation": null
+          "type": "WeaponUIModSlot",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -311,8 +362,9 @@
       "documentation": null,
       "signature_members": {
         "eSlot": {
-          "type": null,
-          "documentation": null
+          "type": "WeaponUIModSlot",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -322,12 +374,14 @@
       "documentation": null,
       "signature_members": {
         "bForce": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bFullShutdown": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -337,8 +391,9 @@
       "documentation": null,
       "signature_members": {
         "nModIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -366,8 +421,9 @@
       "documentation": null,
       "signature_members": {
         "eModSlot": {
-          "type": null,
-          "documentation": null
+          "type": "WeaponUIModSlot",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -377,8 +433,9 @@
       "documentation": null,
       "signature_members": {
         "nCurrentModIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -388,8 +445,9 @@
       "documentation": null,
       "signature_members": {
         "nModIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -399,12 +457,14 @@
       "documentation": null,
       "signature_members": {
         "nDisplay": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nDesiredModIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -444,16 +504,19 @@
       "documentation": null,
       "signature_members": {
         "nmWeaponClass": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nmModClass1": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "nmModClass2": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -463,12 +526,14 @@
       "documentation": null,
       "signature_members": {
         "nmParam": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Clr": {
-          "type": null,
-          "documentation": null
+          "type": "LinearColor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -478,8 +543,9 @@
       "documentation": null,
       "signature_members": {
         "nLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -489,8 +555,9 @@
       "documentation": null,
       "signature_members": {
         "nLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -500,8 +567,9 @@
       "documentation": null,
       "signature_members": {
         "nLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -511,12 +579,14 @@
       "documentation": null,
       "signature_members": {
         "eModSlot": {
-          "type": null,
-          "documentation": null
+          "type": "WeaponUIModSlot",
+          "documentation": null,
+          "flags": 128
         },
         "nLevel": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -526,12 +596,14 @@
       "documentation": null,
       "signature_members": {
         "nDisplay": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nOtherIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -547,8 +619,9 @@
       "documentation": null,
       "signature_members": {
         "eSlot": {
-          "type": null,
-          "documentation": null
+          "type": "WeaponUIModSlot",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -558,8 +631,9 @@
       "documentation": null,
       "signature_members": {
         "nWeapIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -569,8 +643,9 @@
       "documentation": null,
       "signature_members": {
         "nWeapIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -578,5 +653,7 @@
     }
   },
   "states": {},
+  "classflags": 22,
+  "configname": "UI",
   "documentation": null
 }

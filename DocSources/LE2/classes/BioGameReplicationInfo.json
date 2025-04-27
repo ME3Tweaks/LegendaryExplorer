@@ -4,10 +4,13 @@
   "variables": {
     "Temp": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 32
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 10485782,
+  "configname": "Game",
   "documentation": null
 }

@@ -4,75 +4,93 @@
   "variables": {
     "CameraRubberBandCurve": {
       "type": "InterpCurveFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194307
     },
     "CameraDesiredPosition": {
       "type": "TPOV",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "KickBackModifier": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "FaceTargetTransition": {
       "type": "SFXCameraTransition_FaceTarget",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     },
     "ScreenShakeModifier": {
       "type": "SFXCameraModifier_ScreenShake",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "CurrentModalAction": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "FreeCam": {
       "type": "SFXCameraMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "DefaultTransition": {
       "type": "SFXCameraMode_Interpolate",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "TransitionTimeout": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LastTransitionTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fLastAspectRatio": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CameraRubberBandMaxStretchLength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "CameraRubberBandSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "RotationalDecay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaxTransitionStackDepth": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCurrentTransitionIsModal": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bDebugging": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bLastConstrainAspect": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -80,8 +98,9 @@
       "documentation": null,
       "signature_members": {
         "Shake": {
-          "type": null,
-          "documentation": null
+          "type": "ScreenShakeStruct",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -97,8 +116,9 @@
       "documentation": null,
       "signature_members": {
         "ModifierClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "CameraModifier",
@@ -108,16 +128,19 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "OutViewRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         },
         "OutDeltaRot": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -127,12 +150,14 @@
       "documentation": null,
       "signature_members": {
         "OutVT": {
-          "type": null,
-          "documentation": null
+          "type": "TViewTarget",
+          "documentation": null,
+          "flags": 384
         },
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -154,12 +179,14 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "OutVT": {
-          "type": null,
-          "documentation": null
+          "type": "TViewTarget",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -169,16 +196,19 @@
       "documentation": null,
       "signature_members": {
         "Transition": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode_Interpolate",
+          "documentation": null,
+          "flags": 128
         },
         "Time": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "mode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "SFXCameraMode_Interpolate",
@@ -188,12 +218,14 @@
       "documentation": null,
       "signature_members": {
         "AimPoint": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Time": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -203,8 +235,9 @@
       "documentation": null,
       "signature_members": {
         "NewRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -214,20 +247,24 @@
       "documentation": null,
       "signature_members": {
         "mode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 128
         },
         "NewTransitionTemplate": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode_Interpolate",
+          "documentation": null,
+          "flags": 128
         },
         "Time": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "PreserveTarget": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXCameraMode_Interpolate",
@@ -237,16 +274,19 @@
       "documentation": null,
       "signature_members": {
         "Start": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Target": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "TimeDelta": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Vector",
@@ -256,8 +296,9 @@
       "documentation": null,
       "signature_members": {
         "NewMode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -267,12 +308,14 @@
       "documentation": null,
       "signature_members": {
         "fDeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "OutVT": {
-          "type": null,
-          "documentation": null
+          "type": "TViewTarget",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -280,5 +323,7 @@
     }
   },
   "states": {},
+  "classflags": 10485786,
+  "configname": "None",
   "documentation": null
 }

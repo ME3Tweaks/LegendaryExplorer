@@ -4,39 +4,48 @@
   "variables": {
     "CoverGoalConstraints": {
       "type": "CoverGoalConstraint",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "AI": {
       "type": "SFXAI_NativeBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BestMarker": {
       "type": "CoverSlotMarker",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TetherActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BestRating": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxToRate": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "NumMarkersTested": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MoveTowardsGoalActor": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIncludePathCost": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -44,8 +53,9 @@
       "documentation": null,
       "signature_members": {
         "Constraint": {
-          "type": null,
-          "documentation": null
+          "type": "CoverGoalConstraint",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -61,16 +71,19 @@
       "documentation": null,
       "signature_members": {
         "oAI": {
-          "type": null,
-          "documentation": null
+          "type": "SFXAI_NativeBase",
+          "documentation": null,
+          "flags": 128
         },
         "GoalActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "bAddPathCost": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -86,16 +99,19 @@
       "documentation": null,
       "signature_members": {
         "Marker": {
-          "type": null,
-          "documentation": null
+          "type": "CoverSlotMarker",
+          "documentation": null,
+          "flags": 128
         },
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "BaseRating": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -103,5 +119,7 @@
     }
   },
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

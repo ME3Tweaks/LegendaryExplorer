@@ -4,95 +4,118 @@
   "variables": {
     "MovieStateDelegates": {
       "type": "LoadingMovieDelegate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "NativeMovies": {
       "type": "NativeLoadingMovie",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "AreaLoadTips": {
       "type": "LoadingLevelTip",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "LoadTips": {
       "type": "LoadingTip",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "LoadingMovieNames": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DefaultLoadingMovies": {
       "type": "BioLoadingMovie",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__LoadingMovieDelegate__Delegate": {
       "type": "LoadingMovieDelegate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MovieSound": {
       "type": "WwiseEventPairObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WWiseGlobalEvent_LoadMute": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "WWiseGlobalEvent_LoadUnMute": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "FadeOutWwiseEvent": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nLoopBackFrame": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "srLevelLoadTipStrRef": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FadeInTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FadeOutTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MinPlayTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LoadMovieAudioTimerDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "bPlayToCompletion": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bRequireExplicitStop": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bResetToDefaultOnPlayLoadMovie": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bShowLevelLoadTip": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bStreamFromDisc": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlaybackState": {
       "type": "LoadingMovieState",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -106,8 +129,9 @@
       "documentation": null,
       "signature_members": {
         "LevelName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -129,12 +153,14 @@
       "documentation": null,
       "signature_members": {
         "LevelName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "bForcePlay": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -150,28 +176,34 @@
       "documentation": null,
       "signature_members": {
         "Movies": {
-          "type": null,
-          "documentation": null
+          "type": "BioLoadingMovie",
+          "documentation": null,
+          "flags": 4194690
         },
         "ScreenTip": {
-          "type": null,
-          "documentation": null
+          "type": "BioSFScreenTip",
+          "documentation": null,
+          "flags": 128
         },
         "HideLoadingTip": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "RequiresExplicitStop": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "PlayToCompletion": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "StreamFromDisc": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -181,24 +213,29 @@
       "documentation": null,
       "signature_members": {
         "Tag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ScreenTip": {
-          "type": null,
-          "documentation": null
+          "type": "BioSFScreenTip",
+          "documentation": null,
+          "flags": 144
         },
         "RequiresExplicitStop": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "PlayToCompletion": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "StreamFromDisc": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -208,8 +245,9 @@
       "documentation": null,
       "signature_members": {
         "bDelayStopUntilGameHasRendered": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -219,8 +257,9 @@
       "documentation": null,
       "signature_members": {
         "TriggerState": {
-          "type": null,
-          "documentation": null
+          "type": "LoadingMovieState",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -230,12 +269,14 @@
       "documentation": null,
       "signature_members": {
         "TriggerState": {
-          "type": null,
-          "documentation": null
+          "type": "LoadingMovieState",
+          "documentation": null,
+          "flags": 128
         },
         "InDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "LoadingMovieDelegate",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -243,5 +284,7 @@
     }
   },
   "states": {},
+  "classflags": 136315038,
+  "configname": "Game",
   "documentation": null
 }

@@ -2,11 +2,13 @@
   "members": {
     "FirstNode": {
       "type": "WeightNodeRule",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SecondNode": {
       "type": "WeightNodeRule",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "AnimNode_MultiBlendPerBone",

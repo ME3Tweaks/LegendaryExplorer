@@ -4,47 +4,58 @@
   "variables": {
     "m_CurrentSlide": {
       "type": "SFXSlideshowEntry",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_ShowParams": {
       "type": "SFXSlideshowParams",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__SlideshowFinished__Delegate": {
       "type": "SlideshowFinished",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "m_fCurrentSlideElapsedTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nCurrentSlideIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nAdjacentPreloadCount": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bWaitingForInit": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bBeginWhenDoneInit": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bCanGoNext": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bCanGoPrev": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bCanExit": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -58,8 +69,9 @@
       "documentation": null,
       "signature_members": {
         "slideshow": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSFHandler_Slideshow",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -69,8 +81,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -80,12 +93,14 @@
       "documentation": null,
       "signature_members": {
         "bForward": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bAutoAdvanced": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -101,8 +116,9 @@
       "documentation": null,
       "signature_members": {
         "bFadeToBlack": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -124,12 +140,14 @@
       "documentation": null,
       "signature_members": {
         "oParams": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSlideshowParams",
+          "documentation": null,
+          "flags": 4194690
         },
         "OnFinished": {
-          "type": null,
-          "documentation": null
+          "type": "SlideshowFinished",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -145,16 +163,19 @@
       "documentation": null,
       "signature_members": {
         "bFadeIn": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bFadeOut": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "fFadeScalar": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -164,8 +185,9 @@
       "documentation": null,
       "signature_members": {
         "bForward": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -181,16 +203,19 @@
       "documentation": null,
       "signature_members": {
         "bCanGoNext": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bCanGoPrev": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bCanExit": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -198,5 +223,7 @@
     }
   },
   "states": {},
+  "classflags": 136315038,
+  "configname": "UI",
   "documentation": null
 }

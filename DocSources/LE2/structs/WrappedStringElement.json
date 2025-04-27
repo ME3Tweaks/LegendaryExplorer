@@ -2,11 +2,13 @@
   "members": {
     "Value": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "LineExtent": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     }
   },
   "classdef": "UIRoot",

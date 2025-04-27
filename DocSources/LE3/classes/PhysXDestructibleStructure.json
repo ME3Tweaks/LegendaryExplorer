@@ -4,71 +4,88 @@
   "variables": {
     "Actors": {
       "type": "PhysXDestructibleActor",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "ActorKillList": {
       "type": "PhysXDestructibleActor",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "Chunks": {
       "type": "PhysXDestructibleChunk",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "Overlaps": {
       "type": "PhysXDestructibleOverlap",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "Active": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "PseudoSupporterFifo": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "FractureOriginFifo": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "FractureOriginChunks": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "RouteUpdateArea": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "PassiveFractureChunks": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "RouteUpdateFifo": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "Manager": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "PseudoSupporterFifoStart": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "FractureOriginFifoStart": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "PerFrameProcessBudget": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "RouteUpdateFifoStart": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "SupportDepth": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     }
   },
   "functions": {
@@ -76,8 +93,9 @@
       "documentation": null,
       "signature_members": {
         "ChunkIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -87,32 +105,39 @@
       "documentation": null,
       "signature_members": {
         "ChunkIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Point": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "BaseDamage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Radius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bFullDamage": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "DamageFalloffExp": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Output": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -122,20 +147,24 @@
       "documentation": null,
       "signature_members": {
         "ChunkIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Point": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "impulse": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "bInheritRootVel": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -145,8 +174,9 @@
       "documentation": null,
       "signature_members": {
         "ChunkIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Vector",
@@ -156,8 +186,9 @@
       "documentation": null,
       "signature_members": {
         "ChunkIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Matrix",
@@ -165,5 +196,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

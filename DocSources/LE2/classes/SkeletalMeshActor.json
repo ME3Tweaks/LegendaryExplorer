@@ -4,43 +4,53 @@
   "variables": {
     "ControlTargets": {
       "type": "SkelMeshActorControlTarget",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "InterpGroupList": {
       "type": "InterpGroup",
-      "documentation": null
+      "documentation": null,
+      "flags": 1152921504611049472
     },
     "SkeletalMeshComponent": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "LightEnvironment": {
       "type": "LightEnvironmentComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67764235
     },
     "FacialAudioComp": {
       "type": "AudioComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "ReplicatedMesh": {
       "type": "SkeletalMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294975520
     },
     "ReplicatedMaterial": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     },
     "bDamageAppliesImpulse": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCheckpointSaveRotation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bShouldDoAnimNotifies": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -48,8 +58,9 @@
       "documentation": null,
       "signature_members": {
         "PSC": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystemComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -59,8 +70,9 @@
       "documentation": null,
       "signature_members": {
         "AnimNotifyData": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNotify_PlayParticleEffect",
+          "documentation": null,
+          "flags": 130
         }
       },
       "returntype": "None",
@@ -70,8 +82,9 @@
       "documentation": null,
       "signature_members": {
         "Record": {
-          "type": null,
-          "documentation": null
+          "type": "CheckpointRecord",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -81,8 +94,9 @@
       "documentation": null,
       "signature_members": {
         "Record": {
-          "type": null,
-          "documentation": null
+          "type": "CheckpointRecord",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -98,32 +112,39 @@
       "documentation": null,
       "signature_members": {
         "Damage": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "EventInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Momentum": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "DamageType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "HitInfo": {
-          "type": null,
-          "documentation": null
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 144
         },
         "DamageCauser": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -133,12 +154,14 @@
       "documentation": null,
       "signature_members": {
         "Attachment": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_AttachToActor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -148,8 +171,9 @@
       "documentation": null,
       "signature_members": {
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_SetSkelControlTarget",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -159,8 +183,9 @@
       "documentation": null,
       "signature_members": {
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_UpdatePhysBonesFromAnim",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -170,8 +195,9 @@
       "documentation": null,
       "signature_members": {
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_SetMesh",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -193,8 +219,9 @@
       "documentation": null,
       "signature_members": {
         "inAction": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_PlayFaceFXAnim",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -216,20 +243,24 @@
       "documentation": null,
       "signature_members": {
         "AnimSet": {
-          "type": null,
-          "documentation": null
+          "type": "FaceFXAnimSet",
+          "documentation": null,
+          "flags": 128
         },
         "GroupName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "SeqName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "SoundCueToPlay": {
-          "type": null,
-          "documentation": null
+          "type": "SoundCue",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -239,8 +270,9 @@
       "documentation": null,
       "signature_members": {
         "InInterpGroup": {
-          "type": null,
-          "documentation": null
+          "type": "InterpGroup",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -250,8 +282,9 @@
       "documentation": null,
       "signature_members": {
         "InInterpGroup": {
-          "type": null,
-          "documentation": null
+          "type": "InterpGroup",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -261,28 +294,34 @@
       "documentation": null,
       "signature_members": {
         "SlotName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ChannelIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "InAnimSeqName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "InPosition": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bFireNotifies": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bLooping": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -292,8 +331,9 @@
       "documentation": null,
       "signature_members": {
         "InInterpGroup": {
-          "type": null,
-          "documentation": null
+          "type": "InterpGroup",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -303,8 +343,9 @@
       "documentation": null,
       "signature_members": {
         "InInterpGroup": {
-          "type": null,
-          "documentation": null
+          "type": "InterpGroup",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -314,8 +355,9 @@
       "documentation": null,
       "signature_members": {
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_SetMaterial",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -325,8 +367,9 @@
       "documentation": null,
       "signature_members": {
         "Action": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -336,8 +379,9 @@
       "documentation": null,
       "signature_members": {
         "VarName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -363,5 +407,7 @@
     }
   },
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

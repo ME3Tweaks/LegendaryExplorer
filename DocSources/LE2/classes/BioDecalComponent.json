@@ -4,62 +4,78 @@
   "variables": {
     "FadeInTime": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "FadeOutTime": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "DecalLifetime": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "DecalSize": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "DecalRoll": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "DecalYaw": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "DecalPitch": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "SizeScale": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 71827465
     },
     "aDecalMaterialParameters": {
       "type": "BioCurveDrivenParameter",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     },
     "m_MaterialInstance": {
       "type": "MaterialInstanceConstant",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_SkeletalDecal": {
       "type": "SpotLightComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     },
     "m_SkeletalReceiver": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     },
     "bScaleByDistance": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bProjectOnShields": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 2290094226,
+  "configname": "None",
   "documentation": null
 }

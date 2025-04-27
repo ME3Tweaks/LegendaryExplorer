@@ -2,31 +2,38 @@
   "members": {
     "PlayerName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242881
     },
     "PlayerInfo": {
       "type": "KeyValuePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242881
     },
     "PlayerNum": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048577
     },
     "PlayerID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048577
     },
     "Ping": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048577
     },
     "Score": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048577
     },
     "StatsID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048577
     }
   },
   "classdef": "Info",

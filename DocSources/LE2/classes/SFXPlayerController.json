@@ -4,7 +4,8 @@
   "variables": {
     "CurrentCustomAction": {
       "type": "EAICustomAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -18,8 +19,9 @@
       "documentation": null,
       "signature_members": {
         "CovInfo": {
-          "type": null,
-          "documentation": null
+          "type": "CovPosInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -29,8 +31,9 @@
       "documentation": null,
       "signature_members": {
         "CovInfo": {
-          "type": null,
-          "documentation": null
+          "type": "CovPosInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -46,8 +49,9 @@
       "documentation": null,
       "signature_members": {
         "pAction": {
-          "type": null,
-          "documentation": null
+          "type": "BioCustomAction",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -57,8 +61,9 @@
       "documentation": null,
       "signature_members": {
         "PrevAction": {
-          "type": null,
-          "documentation": null
+          "type": "EAICustomAction",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -68,8 +73,9 @@
       "documentation": null,
       "signature_members": {
         "NewAction": {
-          "type": null,
-          "documentation": null
+          "type": "EAICustomAction",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -79,8 +85,9 @@
       "documentation": null,
       "signature_members": {
         "CAction": {
-          "type": null,
-          "documentation": null
+          "type": "EAICustomAction",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -90,8 +97,9 @@
       "documentation": null,
       "signature_members": {
         "CAction": {
-          "type": null,
-          "documentation": null
+          "type": "EAICustomAction",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -107,8 +115,9 @@
       "documentation": null,
       "signature_members": {
         "NewAction": {
-          "type": null,
-          "documentation": null
+          "type": "EAICustomAction",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -118,12 +127,14 @@
       "documentation": null,
       "signature_members": {
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Wall": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -133,12 +144,14 @@
       "documentation": null,
       "signature_members": {
         "Other": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "HitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -148,24 +161,29 @@
       "documentation": null,
       "signature_members": {
         "Shooter": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "W": {
-          "type": null,
-          "documentation": null
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
         },
         "WeapLoc": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "LineDir": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -173,5 +191,7 @@
     }
   },
   "states": {},
+  "classflags": 10485814,
+  "configname": "Game",
   "documentation": null
 }

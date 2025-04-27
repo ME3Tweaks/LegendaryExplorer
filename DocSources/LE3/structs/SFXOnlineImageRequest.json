@@ -2,19 +2,23 @@
   "members": {
     "mImageName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "mJob": {
       "type": "SFXOnlineJobHTTPRequest",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "mDynamicImage": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "mCompleted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXOnlineComponentImageManager",

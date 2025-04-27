@@ -7,24 +7,29 @@
       "documentation": null,
       "signature_members": {
         "InEvent": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleModuleEventSendToGame",
+          "documentation": null,
+          "flags": 128
         },
         "InCollideDirection": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
         },
         "inHitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
         },
         "InHitNormal": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
         },
         "InBoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -32,5 +37,7 @@
     }
   },
   "states": {},
+  "classflags": 144703635,
+  "configname": "Game",
   "documentation": null
 }

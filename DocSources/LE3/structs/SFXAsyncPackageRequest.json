@@ -2,15 +2,18 @@
   "members": {
     "AssetRequests": {
       "type": "SFXAsyncAssetRequest",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PackageName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AsyncLoadGroup": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXAsyncAssetLoader",

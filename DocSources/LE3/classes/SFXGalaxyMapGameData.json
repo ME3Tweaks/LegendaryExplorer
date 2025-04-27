@@ -4,27 +4,33 @@
   "variables": {
     "AudioData": {
       "type": "SFXGalaxyAudioData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "PlanetTemplates": {
       "type": "SFXGalaxyTemplates_Planet",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "ClusterTemplates": {
       "type": "SFXGalaxyTemplates_Cluster",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "SystemTemplates": {
       "type": "SFXGalaxyTemplates_System",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "GalaxyTemplates": {
       "type": "SFXGalaxyTemplates_Galaxy",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ScanningTemplates": {
       "type": "SFXGalaxyTemplates_SystemScanning",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -42,5 +48,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

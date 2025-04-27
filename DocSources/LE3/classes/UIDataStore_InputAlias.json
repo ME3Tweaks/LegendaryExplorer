@@ -4,11 +4,13 @@
   "variables": {
     "InputAliases": {
       "type": "UIDataStoreInputAlias",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "InputAliasLookupMap": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     }
   },
   "functions": {
@@ -16,8 +18,9 @@
       "documentation": null,
       "signature_members": {
         "DesiredAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -27,12 +30,14 @@
       "documentation": null,
       "signature_members": {
         "DesiredAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "OverridePlatform": {
-          "type": null,
-          "documentation": null
+          "type": "EInputPlatformType",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "string",
@@ -42,12 +47,14 @@
       "documentation": null,
       "signature_members": {
         "AliasIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "OverridePlatform": {
-          "type": null,
-          "documentation": null
+          "type": "EInputPlatformType",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "string",
@@ -57,16 +64,19 @@
       "documentation": null,
       "signature_members": {
         "out_InputKeyData": {
-          "type": null,
-          "documentation": null
+          "type": "RawInputKeyEventData",
+          "documentation": null,
+          "flags": 384
         },
         "DesiredAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "OverridePlatform": {
-          "type": null,
-          "documentation": null
+          "type": "EInputPlatformType",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -76,16 +86,19 @@
       "documentation": null,
       "signature_members": {
         "out_InputKeyData": {
-          "type": null,
-          "documentation": null
+          "type": "RawInputKeyEventData",
+          "documentation": null,
+          "flags": 384
         },
         "AliasIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "OverridePlatform": {
-          "type": null,
-          "documentation": null
+          "type": "EInputPlatformType",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -95,12 +108,14 @@
       "documentation": null,
       "signature_members": {
         "DesiredAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "OverridePlatform": {
-          "type": null,
-          "documentation": null
+          "type": "EInputPlatformType",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Name",
@@ -110,12 +125,14 @@
       "documentation": null,
       "signature_members": {
         "AliasIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "OverridePlatform": {
-          "type": null,
-          "documentation": null
+          "type": "EInputPlatformType",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Name",
@@ -125,12 +142,14 @@
       "documentation": null,
       "signature_members": {
         "DesiredAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "DesiredPlatform": {
-          "type": null,
-          "documentation": null
+          "type": "EInputPlatformType",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -138,5 +157,7 @@
     }
   },
   "states": {},
+  "classflags": 136315038,
+  "configname": "Input",
   "documentation": null
 }

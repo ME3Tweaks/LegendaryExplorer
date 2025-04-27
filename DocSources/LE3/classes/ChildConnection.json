@@ -4,10 +4,13 @@
   "variables": {
     "Parent": {
       "type": "NetConnection",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 268435468,
+  "configname": "Engine",
   "documentation": null
 }

@@ -2,11 +2,13 @@
   "members": {
     "sSpeakerTag": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "aSpeaker": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "classdef": "BioConversation",

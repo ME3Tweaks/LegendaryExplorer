@@ -4,23 +4,28 @@
   "variables": {
     "FlowDirection": {
       "type": "ArrowComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "Sprite": {
       "type": "SpriteComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "InfluenceComponent": {
       "type": "FluidInfluenceComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67764235
     },
     "bActive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     },
     "bToggled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4294967328
     }
   },
   "functions": {
@@ -28,8 +33,9 @@
       "documentation": null,
       "signature_members": {
         "VarName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -39,8 +45,9 @@
       "documentation": null,
       "signature_members": {
         "inAction": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -48,5 +55,7 @@
     }
   },
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

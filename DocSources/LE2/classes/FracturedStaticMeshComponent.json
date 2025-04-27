@@ -4,47 +4,58 @@
   "variables": {
     "FragmentNeighborsVisible": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202498
     },
     "VisibleBox": {
       "type": "Box",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "LoseChunkOutsideMaterialOverride": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SkinnedComponent": {
       "type": "FracturedSkinnedMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67641352
     },
     "TopBottomFragmentDistThreshold": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FragmentBoundsMaxZ": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FragmentBoundsMinZ": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bUseSkinnedRendering": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bUseVisibleVertsForBounds": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bTopFragmentsRootNonDestroyable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bBottomFragmentsRootNonDestroyable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -64,8 +75,9 @@
       "documentation": null,
       "signature_members": {
         "AdditionalVisibleFragments": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "int",
@@ -75,12 +87,14 @@
       "documentation": null,
       "signature_members": {
         "IgnoreFragments": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194432
         },
         "MinConnectionArea": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "FragmentGroup",
@@ -96,8 +110,9 @@
       "documentation": null,
       "signature_members": {
         "FragmentIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Vector",
@@ -107,8 +122,9 @@
       "documentation": null,
       "signature_members": {
         "FragmentIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Box",
@@ -118,8 +134,9 @@
       "documentation": null,
       "signature_members": {
         "FragmentIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -129,8 +146,9 @@
       "documentation": null,
       "signature_members": {
         "FragmentIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -140,8 +158,9 @@
       "documentation": null,
       "signature_members": {
         "FragmentIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -151,8 +170,9 @@
       "documentation": null,
       "signature_members": {
         "VisibilityFactors": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -160,5 +180,7 @@
     }
   },
   "states": {},
+  "classflags": 2290094226,
+  "configname": "None",
   "documentation": null
 }

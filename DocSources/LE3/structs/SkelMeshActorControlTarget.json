@@ -2,11 +2,13 @@
   "members": {
     "ControlName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TargetActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SkeletalMeshActor",

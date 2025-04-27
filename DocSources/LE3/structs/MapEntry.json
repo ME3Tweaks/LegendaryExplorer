@@ -2,11 +2,13 @@
   "members": {
     "EntryId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "IncreaseValue": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "ISFXOnlineComponentGalaxyAtWar",

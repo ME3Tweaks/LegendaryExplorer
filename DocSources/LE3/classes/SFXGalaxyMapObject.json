@@ -4,111 +4,138 @@
   "variables": {
     "Tag": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "Children": {
       "type": "SFXGalaxyMapObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "TemporaryComponents": {
       "type": "ActorComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71835656
     },
     "Appearance": {
       "type": "SFXGalaxyMapObjectAppearanceBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     },
     "VisitedEvent": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "VisitedEventParam": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ObjectActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "PosX": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PosY": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TableID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "DisplayName": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Scale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "nPreviouslySelectedIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "VisibleConditional": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "VisibleParameter": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "UsableConditional": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "UsableParameter": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fScanDetectionRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "VirtualObject": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ActorSpawned": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "VisibleConditionalRegion": {
       "type": "EBioRegionAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "VisibleConditionalPlot": {
       "type": "EGalaxyObjectVisiblePlotAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "VisibleConditionalName": {
       "type": "EGalaxyObjectVisibleAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "UsableConditionalRegion": {
       "type": "EBioRegionAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "UsableConditionalPlot": {
       "type": "EGalaxyObjectUsablePlotAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "UsableConditionalName": {
       "type": "EGalaxyObjectUsableAutoSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MapObjectLevel": {
       "type": "ESFXGalaxyMapObjectLevel",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -116,8 +143,9 @@
       "documentation": null,
       "signature_members": {
         "oChild": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGalaxyMapObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -127,12 +155,14 @@
       "documentation": null,
       "signature_members": {
         "nmAssociation": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "oActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -142,8 +172,9 @@
       "documentation": null,
       "signature_members": {
         "oComponent": {
-          "type": null,
-          "documentation": null
+          "type": "ActorComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -153,12 +184,14 @@
       "documentation": null,
       "signature_members": {
         "aPlotNames": {
-          "type": null,
-          "documentation": null
+          "type": "stringref",
+          "documentation": null,
+          "flags": 4194688
         },
         "eMapLevel": {
-          "type": null,
-          "documentation": null
+          "type": "EBioGalaxyMapState",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -174,8 +207,9 @@
       "documentation": null,
       "signature_members": {
         "oActorToClean": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -191,8 +225,9 @@
       "documentation": null,
       "signature_members": {
         "childClassType": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -202,8 +237,9 @@
       "documentation": null,
       "signature_members": {
         "childClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXGalaxyMapObject",
@@ -213,20 +249,24 @@
       "documentation": null,
       "signature_members": {
         "nWorldID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nCluster": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "nSystem": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "nPlanet": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -236,8 +276,9 @@
       "documentation": null,
       "signature_members": {
         "oComponent": {
-          "type": null,
-          "documentation": null
+          "type": "ActorComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -247,16 +288,19 @@
       "documentation": null,
       "signature_members": {
         "nCluster": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nSystem": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nPlanet": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -266,8 +310,9 @@
       "documentation": null,
       "signature_members": {
         "nTableId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXGalaxyMapObject",
@@ -277,8 +322,9 @@
       "documentation": null,
       "signature_members": {
         "nWorldID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -294,8 +340,9 @@
       "documentation": null,
       "signature_members": {
         "eMapLevel": {
-          "type": null,
-          "documentation": null
+          "type": "EBioGalaxyMapState",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -311,8 +358,9 @@
       "documentation": null,
       "signature_members": {
         "nWorldID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -322,8 +370,9 @@
       "documentation": null,
       "signature_members": {
         "vMapCenter": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Vector",
@@ -333,8 +382,9 @@
       "documentation": null,
       "signature_members": {
         "nWorldID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -350,12 +400,14 @@
       "documentation": null,
       "signature_members": {
         "pActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "pGalaxy": {
-          "type": null,
-          "documentation": null
+          "type": "BioCameraBehaviorGalaxy",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -413,12 +465,14 @@
       "documentation": null,
       "signature_members": {
         "oScanInstigator": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         },
         "vScanOrigin": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -428,8 +482,9 @@
       "documentation": null,
       "signature_members": {
         "Child": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGalaxyMapObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -439,12 +494,14 @@
       "documentation": null,
       "signature_members": {
         "nX": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "nY": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -454,16 +511,19 @@
       "documentation": null,
       "signature_members": {
         "pGalaxy": {
-          "type": null,
-          "documentation": null
+          "type": "BioCameraBehaviorGalaxy",
+          "documentation": null,
+          "flags": 128
         },
         "vLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "nmTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Actor",
@@ -473,12 +533,14 @@
       "documentation": null,
       "signature_members": {
         "oGalaxy": {
-          "type": null,
-          "documentation": null
+          "type": "BioCameraBehaviorGalaxy",
+          "documentation": null,
+          "flags": 128
         },
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -488,12 +550,14 @@
       "documentation": null,
       "signature_members": {
         "oGalaxy": {
-          "type": null,
-          "documentation": null
+          "type": "BioCameraBehaviorGalaxy",
+          "documentation": null,
+          "flags": 128
         },
         "fDeltaT": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -503,16 +567,19 @@
       "documentation": null,
       "signature_members": {
         "nObjectCount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "nExploredCount": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "eMapLevel": {
-          "type": null,
-          "documentation": null
+          "type": "EBioGalaxyMapState",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -540,16 +607,19 @@
       "documentation": null,
       "signature_members": {
         "oActorClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "vLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "nmTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Actor",
@@ -557,5 +627,7 @@
     }
   },
   "states": {},
+  "classflags": 142606487,
+  "configname": "Game",
   "documentation": null
 }

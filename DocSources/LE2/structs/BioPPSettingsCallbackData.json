@@ -2,11 +2,13 @@
   "members": {
     "fpCallback": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "pData": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioPlayerController",

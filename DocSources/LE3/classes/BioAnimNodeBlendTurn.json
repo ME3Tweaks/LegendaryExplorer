@@ -4,18 +4,23 @@
   "variables": {
     "BlendOut": {
       "type": "BioAnimCheckBlendOut",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "BlendTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "YawTurnTriggerDegrees": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

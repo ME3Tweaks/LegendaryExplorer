@@ -4,35 +4,43 @@
   "variables": {
     "__OverrideListSort__Delegate": {
       "type": "OverrideListSort",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "InitialSortColumn": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "InitialSecondarySortColumn": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PrimarySortColumn": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 139267
     },
     "SecondarySortColumn": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 139267
     },
     "bAllowCompoundSorting": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bReversePrimarySorting": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bReverseSecondarySorting": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -40,20 +48,24 @@
       "documentation": null,
       "signature_members": {
         "Sender": {
-          "type": null,
-          "documentation": null
+          "type": "UIList",
+          "documentation": null,
+          "flags": 128
         },
         "CollectionFieldName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "SortParameters": {
-          "type": null,
-          "documentation": null
+          "type": "UIListSortingParameters",
+          "documentation": null,
+          "flags": 386
         },
         "OrderedIndices": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -63,8 +75,9 @@
       "documentation": null,
       "signature_members": {
         "bResort": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -74,8 +87,9 @@
       "documentation": null,
       "signature_members": {
         "bCaseSensitive": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -85,16 +99,19 @@
       "documentation": null,
       "signature_members": {
         "ColumnIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bSecondarySort": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bCaseSensitive": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -102,5 +119,7 @@
     }
   },
   "states": {},
+  "classflags": 134221970,
+  "configname": "None",
   "documentation": null
 }

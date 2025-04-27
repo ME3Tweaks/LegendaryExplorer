@@ -4,11 +4,13 @@
   "variables": {
     "mRequest": {
       "type": "SFXOnlineImageRequest",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnJobComplete__Delegate": {
       "type": "OnJobComplete",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -22,8 +24,9 @@
       "documentation": null,
       "signature_members": {
         "request": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlineImageRequest",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -49,5 +52,7 @@
     }
   },
   "states": {},
+  "classflags": 134217878,
+  "configname": "Game",
   "documentation": null
 }

@@ -2,43 +2,53 @@
   "members": {
     "srKBMText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "srAText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "srBText": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nIconIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bNoFade": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bModal": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bForcePlayersOnly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nIconSet": {
       "type": "BioMessageBoxIconSets",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_SkinType": {
       "type": "SFX_MB_Skin",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_TextAlign": {
       "type": "SFX_MB_TextAlign",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioDefine",

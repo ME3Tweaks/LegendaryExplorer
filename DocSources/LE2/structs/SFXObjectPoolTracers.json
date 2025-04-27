@@ -2,19 +2,23 @@
   "members": {
     "Tracers": {
       "type": "Projectile",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Mesh": {
       "type": "StaticMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Template": {
       "type": "ParticleSystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NextIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXObjectPool",

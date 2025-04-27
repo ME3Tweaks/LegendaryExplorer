@@ -4,99 +4,123 @@
   "variables": {
     "m_oApperance": {
       "type": "BioBaseAppearancePlaceable",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     },
     "m_nmDestroyedState": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nmDamagedState": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DefaultStartingState": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OnUseSucceed": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OnUseFail": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DefaultInertState": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_RoleData": {
       "type": "BioArtPlaceableRoles",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bPlayerOnly": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bPhysicsAffectable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bPhysicsAffectableOnDestroyed": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bPhysicsFixedAnimated": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bIsContainer": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bAllowRoleCustomization": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bIsStatic": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bIsMovable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bIsDeletable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_eUseCase": {
       "type": "eBioAPLUseCase",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_StartingState": {
       "type": "eArtPlaceableStates",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_InertState": {
       "type": "eArtPlaceableStates",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_State0": {
       "type": "eArtPlaceableStates",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_State1": {
       "type": "eArtPlaceableStates",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_SkillDifficulty": {
       "type": "EBioSkillGameDifficulty",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_eRole": {
       "type": "eArtPlaceableRole",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -104,8 +128,9 @@
       "documentation": null,
       "signature_members": {
         "oBehave": {
-          "type": null,
-          "documentation": null
+          "type": "BioArtPlaceableBehavior",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -115,8 +140,9 @@
       "documentation": null,
       "signature_members": {
         "bYes": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -126,12 +152,14 @@
       "documentation": null,
       "signature_members": {
         "nNewRole": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "oBehave": {
-          "type": null,
-          "documentation": null
+          "type": "BioArtPlaceableBehavior",
+          "documentation": null,
+          "flags": 67109008
         }
       },
       "returntype": "None",
@@ -139,5 +167,7 @@
     }
   },
   "states": {},
+  "classflags": 142606483,
+  "configname": "None",
   "documentation": null
 }

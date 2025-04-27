@@ -2,11 +2,13 @@
   "members": {
     "SaveDelegate": {
       "type": "OnSaveRecordsDelegate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ForceSaveBase": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXSaveManagerMP",

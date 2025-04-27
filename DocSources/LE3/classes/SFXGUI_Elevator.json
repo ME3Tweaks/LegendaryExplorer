@@ -4,43 +4,53 @@
   "variables": {
     "__OnRequestExitDelegate__Delegate": {
       "type": "OnRequestExitDelegate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnRequestDestinationDelegate__Delegate": {
       "type": "OnRequestDestinationDelegate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "ElevatorData": {
       "type": "SFXGUIData_Elevator",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DefaultDestination": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIsFinished": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIsAborted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bWasPaused": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIsFlashLoaded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bIsScriptLoaded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bDestinationRequested": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -48,32 +58,39 @@
       "documentation": null,
       "signature_members": {
         "KeepAlive": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Title": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "SubTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Desc": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Image": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Default": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "Able": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -89,20 +106,24 @@
       "documentation": null,
       "signature_members": {
         "sTitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sSubtitle": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sAText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "sBText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -112,8 +133,9 @@
       "documentation": null,
       "signature_members": {
         "usingGamepad": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -123,12 +145,14 @@
       "documentation": null,
       "signature_members": {
         "InitialElevatorGUIData": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGUIData_Elevator",
+          "documentation": null,
+          "flags": 128
         },
         "InitialDefaultDestination": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -138,8 +162,9 @@
       "documentation": null,
       "signature_members": {
         "DestinationID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -179,8 +204,9 @@
       "documentation": null,
       "signature_members": {
         "nRequest": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -202,8 +228,9 @@
       "documentation": null,
       "signature_members": {
         "fn_OnRequestDestinationDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnRequestDestinationDelegate",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -213,8 +240,9 @@
       "documentation": null,
       "signature_members": {
         "fn_OnRequestExitDelegate": {
-          "type": null,
-          "documentation": null
+          "type": "OnRequestExitDelegate",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -222,5 +250,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "UI",
   "documentation": null
 }

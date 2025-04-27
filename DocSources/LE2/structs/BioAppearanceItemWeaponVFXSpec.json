@@ -2,11 +2,13 @@
   "members": {
     "m_type": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_Damage": {
       "type": "EBioAppearanceItemWeaponVFXDamageEnum",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     }
   },
   "classdef": "BioAppearanceItemWeapon",

@@ -2,19 +2,23 @@
   "members": {
     "AnimationTracks": {
       "type": "UIAnimTrack",
-      "documentation": null
+      "documentation": null,
+      "flags": 5242880
     },
     "SequenceRef": {
       "type": "UIAnimationSeq",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "PlaybackRate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "LoopMode": {
       "type": "EUIAnimationLoopMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     }
   },
   "classdef": "UIAnimation",

@@ -4,111 +4,138 @@
   "variables": {
     "CompressedByteStream": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 2305843009213698048
     },
     "Notifies": {
       "type": "AnimNotifyEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     },
     "MetaData": {
       "type": "AnimMetaData",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "TranslationData": {
       "type": "TranslationTrack",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202498
     },
     "RotationData": {
       "type": "RotationTrack",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202498
     },
     "CurveData": {
       "type": "CurveTrack",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "CompressedTrackOffsets": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "AdditiveBasePose": {
       "type": "RawAnimSequenceTrack",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "TranslationCodec": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "RotationCodec": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "SequenceName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_pBioAnimSetData": {
       "type": "BioAnimSetData",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SequenceLength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NumFrames": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RateScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "LargestTrackStreamSize": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "EncodingPkgVersion": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "UseScore": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bNoLoopingInterpolation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bRawAnimationBulkDataCached": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "bRawAnimationDirty": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "bIsAdditive": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bHasBeenUsed": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bHasWeightIgnoreNotifies": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "TranslationCompressionFormat": {
       "type": "AnimationCompressionFormat",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "RotationCompressionFormat": {
       "type": "AnimationCompressionFormat",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "KeyEncodingFormat": {
       "type": "AnimationKeyFormat",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "functions": {
@@ -116,16 +143,19 @@
       "documentation": null,
       "signature_members": {
         "NotifyClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "PlayRate": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "StartPosition": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "float",
@@ -133,5 +163,7 @@
     }
   },
   "states": {},
+  "classflags": 144703638,
+  "configname": "Engine",
   "documentation": null
 }

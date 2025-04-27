@@ -7,12 +7,14 @@
       "documentation": null,
       "signature_members": {
         "nCommand": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "lstArguments": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "None",
@@ -32,5 +34,7 @@
     }
   },
   "states": {},
+  "classflags": 35651606,
+  "configname": "UI",
   "documentation": null
 }

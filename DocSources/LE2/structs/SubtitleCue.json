@@ -2,11 +2,13 @@
   "members": {
     "Text": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227075
     },
     "Time": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 32771
     }
   },
   "classdef": "EngineTypes",

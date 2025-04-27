@@ -4,15 +4,18 @@
   "variables": {
     "SettingsArrayProviders": {
       "type": "SettingsArrayProvider",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Settings": {
       "type": "Settings",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsAListRow": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -20,8 +23,9 @@
       "documentation": null,
       "signature_members": {
         "SettingName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -31,12 +35,14 @@
       "documentation": null,
       "signature_members": {
         "SourceProvider": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 128
         },
         "PropTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -46,8 +52,9 @@
       "documentation": null,
       "signature_members": {
         "DataSourceInstance": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -57,8 +64,9 @@
       "documentation": null,
       "signature_members": {
         "DataSourceInstance": {
-          "type": null,
-          "documentation": null
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -66,5 +74,7 @@
     }
   },
   "states": {},
+  "classflags": 136315034,
+  "configname": "None",
   "documentation": null
 }

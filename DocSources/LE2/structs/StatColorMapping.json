@@ -2,15 +2,18 @@
   "members": {
     "StatName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "ColorMap": {
       "type": "StatColorMapEntry",
-      "documentation": null
+      "documentation": null,
+      "flags": 4472832
     },
     "DisableBlend": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 278528
     }
   },
   "classdef": "Engine",

@@ -4,11 +4,13 @@
   "variables": {
     "BoxExtent": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "RenderComponent": {
       "type": "DrawBoxComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     }
   },
   "functions": {
@@ -20,5 +22,7 @@
     }
   },
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

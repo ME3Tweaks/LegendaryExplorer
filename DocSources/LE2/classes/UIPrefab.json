@@ -4,26 +4,33 @@
   "variables": {
     "OriginalWidth": {
       "type": "UIScreenValue_Extent",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "OriginalHeight": {
       "type": "UIScreenValue_Extent",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "PrefabVersion": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "InternalPrefabVersion": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "ModificationCounter": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 211813014,
+  "configname": "UI",
   "documentation": null
 }

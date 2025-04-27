@@ -2,11 +2,13 @@
   "members": {
     "Archetype": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "RemovedVersion": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "classdef": "Prefab",

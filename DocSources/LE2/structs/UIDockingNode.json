@@ -2,11 +2,13 @@
   "members": {
     "Widget": {
       "type": "UIObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Face": {
       "type": "EUIWidgetFace",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "UIRoot",

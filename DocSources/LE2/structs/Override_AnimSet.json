@@ -2,19 +2,23 @@
   "members": {
     "aBioMaleSets": {
       "type": "FaceFXAnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "aBioFemaleSets": {
       "type": "FaceFXAnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "fxaAnimSet": {
       "type": "FaceFXAnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "eAnimSequence": {
       "type": "EBioAutoSetFXAnimTrack",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "InterpTrackFaceFX",

@@ -4,34 +4,43 @@
   "variables": {
     "m_oHeadGearSettings": {
       "type": "Bio_Appr_Character_HeadGear_Settings",
-      "documentation": null
+      "documentation": null,
+      "flags": 67764233
     },
     "m_nModelVariant": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nMaterialConfig": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bIsHeadGearLoaded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bIsHeadGearHidden": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_eArmorType": {
       "type": "EBioArmorType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_eVisualOverride": {
       "type": "EBioArmorType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142614674,
+  "configname": "None",
   "documentation": null
 }

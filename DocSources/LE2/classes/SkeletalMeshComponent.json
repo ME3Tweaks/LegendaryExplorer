@@ -4,787 +4,983 @@
   "variables": {
     "SkeletalMesh": {
       "type": "SkeletalMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AttachedToSkelComponent": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "AnimTreeTemplate": {
       "type": "AnimTree",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "Animations": {
       "type": "AnimNode",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303179
     },
     "AnimTickArray": {
       "type": "AnimTickEntry",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202498
     },
     "PhysicsAsset": {
       "type": "PhysicsAsset",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "PhysicsAssetInstance": {
       "type": "PhysicsAssetInstance",
-      "documentation": null
+      "documentation": null,
+      "flags": 71311370
     },
     "ApexClothing": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12289
     },
     "PhysicsWeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "GlobalAnimRateScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MeshObject": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "WireframeColor": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "SpaceBases": {
       "type": "Matrix",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "LocalAtoms": {
       "type": "BoneAtom",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "RequiredBones": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "ComposeOrderedRequiredBones": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "ComposeOrderedRequiredBonesSkelControlIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "PhysicsBodySetupToBoneIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "ParentAnimComponent": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633163
     },
     "ParentBoneMap": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "AnimSets": {
       "type": "AnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "TemporarySavedAnimSets": {
       "type": "AnimSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "MorphSets": {
       "type": "MorphTargetSet",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "ActiveMorphs": {
       "type": "ActiveMorph",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "ActiveCurveMorphs": {
       "type": "ActiveMorph",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "MorphTargetIndexMap": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "Attachments": {
       "type": "Attachment",
-      "documentation": null
+      "documentation": null,
+      "flags": 6815746
     },
     "SkelControlIndex": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202498
     },
     "PostPhysSkelControlIndex": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202498
     },
     "ForcedLodModel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MinLodModel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PredictedLODLevel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OldPredictedLODLevel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxDistanceFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bForceWireframe": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bForceRefpose": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOldForceRefPose": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bNoSkeletonUpdate": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDisplayBones": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bShowPrePhysBones": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bHideSkin": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bForceRawOffset": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIgnoreControllers": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bTransformFromAnimParent": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TickTag": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "CachedAtomsTag": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bUseSingleBodyPhysics": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bRequiredBonesUpToDate": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "MinDistFactorForKinematicUpdate": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FramesPhysicsAsleep": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bSkipAllUpdateWhenPhysicsAsleep": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bConsiderAllBodiesForBounds": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUpdateSkelWhenNotRendered": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIgnoreControllersWhenNotRendered": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bTickAnimNodesWhenNotRendered": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bNotUpdatingKinematicDueToDistance": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bForceDiscardRootMotion": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bRootMotionModeChangeNotify": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bRootMotionExtractedNotify": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDisableFaceFXMaterialInstanceCreation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAnimTreeInitialised": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bAnimSetUpdated": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bForceMeshObjectUpdate": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bHasPhysicsAssetInstance": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bUpdateKinematicBonesFromAnimation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUpdateJointsFromAnimation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSkelCompFixed": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bHasHadPhysicsBlendedIn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bForceUpdateAttachmentsInTick": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bEnableFullAnimWeightBodies": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bPerBoneVolumeEffects": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSyncActorLocationToRootRigidBody": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUseRawData": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "bDisableWarningWhenAnimNotFound": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bOverrideAttachmentOwnerVisibility": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bNeedsToDeleteHitMask": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bBioComputedValidPose": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bBioAllowResubmitPose": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bPauseAnims": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bChartDistanceFactor": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bEnableLineCheckWithBounds": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bIsFrozen": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bFrozenMeshProcessed": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bMeshShouldBeFrozen": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LineCheckBoundsScale": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "BioActorsToReBase": {
       "type": "BioActorReBase",
-      "documentation": null
+      "documentation": null,
+      "flags": 4726786
     },
     "BioActorsToAttach": {
       "type": "BioActorAttach",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202498
     },
     "bEnableClothSimulation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bDisableClothCollision": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bClothFrozen": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bAutoFreezeClothWhenNotRendered": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bClothAwakeOnStartup": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bClothBaseVelClamp": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bClothBaseVelInterp": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAttachClothVertsToBaseBody": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsClothOnStaticObject": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bUpdatedFixedClothVerts": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bClothPositionalDampening": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bClothWindRelativeToOwner": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bRecentlyRendered": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bCacheAnimSequenceNodes": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bAlwaysUpdateMeshObject": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bNeedsInstanceWeightUpdate": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bAlwaysUseInstanceWeights": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bUpdateComposeSkeletonPasses": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "HiddenMaterials": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202498
     },
     "InstanceVertexWeightBones": {
       "type": "BonePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "FrozenLocalToWorldPos": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "FrozenLocalToWorldRot": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "ClothExternalForce": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ClothWind": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ClothBaseVelClampRange": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ClothBlendWeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ClothDynamicBlendWeight": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ClothBlendMinDistanceFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ClothBlendMaxDistanceFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MinPosDampRange": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaxPosDampRange": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MinPosDampScale": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaxPosDampScale": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ClothSim": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "SceneIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "ClothMeshPosData": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "ClothMeshNormalData": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "ClothMeshIndexData": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "NumClothMeshVerts": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NumClothMeshIndices": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ClothMeshParentData": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "NumClothMeshParentIndices": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ClothMeshWeldedPosData": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "ClothMeshWeldedNormalData": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "ClothMeshWeldedIndexData": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "ClothDirtyBufferFlag": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ClothRBChannel": {
       "type": "ERBCollisionChannel",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ClothRBCollideWithChannels": {
       "type": "RBCollisionChannelContainer",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ClothForceScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ClothImpulseScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ClothAttachmentTearFactor": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bClothUseCompartment": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "MinDistanceForClothReset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "LastClothLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "SoftBodySim": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "SoftBodySceneIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "bEnableSoftBodySimulation": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "SoftBodyTetraPosData": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "SoftBodyTetraIndexData": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "NumSoftBodyTetraVerts": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NumSoftBodyTetraIndices": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SoftBodyImpulseScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSoftBodyFrozen": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "bAutoFreezeSoftBodyWhenNotRendered": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSoftBodyAwakeOnStartup": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bSoftBodyUseCompartment": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "SoftBodyRBChannel": {
       "type": "ERBCollisionChannel",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "SoftBodyRBCollideWithChannels": {
       "type": "RBCollisionChannelContainer",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "SoftBodyASVPlane": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "LimitMaterial": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RootMotionDelta": {
       "type": "BoneAtom",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "RootMotionVelocity": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "RootBoneTranslation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "RootMotionAccelScale": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RootMotionMode": {
       "type": "ERootMotionMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PreviousRMM": {
       "type": "ERootMotionMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "PendingRMM": {
       "type": "ERootMotionMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OldPendingRMM": {
       "type": "ERootMotionMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bRMMOneFrameDelay": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "RootMotionRotationMode": {
       "type": "ERootMotionRotationMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FaceFXBlendMode": {
       "type": "EFaceFXBlendMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FaceFXActorInstance": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "bFaceFXDisabled": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "FaceFXTimer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FaceBlendAtoms": {
       "type": "BoneAtom",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "MaterialBlendValues": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "bDoClipToClipBlend": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bNotThisFrame": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bSetNotThisFrame": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bBioFaceFXOpenInMatinee": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "FaceBlendTimer": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "FaceBlendSpeed": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "FaceBlendInterpolator": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bOverrideParentSkeleton": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nmOverrideStartBoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OverrideBones": {
       "type": "BoneOverrideInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "MinAutoLODLevel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CachedFaceFXAudioComp": {
       "type": "AudioComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "BoneVisibility": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202498
     },
     "LocalToWorldBoneAtom": {
       "type": "BoneAtom",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "ProgressiveDrawingFraction": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "WwiseSound": {
       "type": "WwiseBaseSoundObject",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "BoneMaterialDrivers": {
       "type": "BoneDrivenMaterialParameter",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "m_bBioAreRigidBodiesAwake": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RootBodyOffsetInvTM": {
       "type": "Matrix",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_bStopFaceFXAnim": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "m_pBioFaceFXAsset": {
       "type": "FaceFXAsset",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_aBioFFXBoneMap": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 12288
     },
     "m_bBioFFXShouldRelinkBoneMap": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -792,20 +988,24 @@
       "documentation": null,
       "signature_members": {
         "Impulse": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "HitLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "InBoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bVelChange": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -815,8 +1015,9 @@
       "documentation": null,
       "signature_members": {
         "PSC": {
-          "type": null,
-          "documentation": null
+          "type": "ParticleSystemComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -826,8 +1027,9 @@
       "documentation": null,
       "signature_members": {
         "AnimNotifyData": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNotify_PlayParticleEffect",
+          "documentation": null,
+          "flags": 130
         }
       },
       "returntype": "None",
@@ -843,28 +1045,34 @@
       "documentation": null,
       "signature_members": {
         "AnimName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Duration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bLoop": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bRestartIfAlreadyPlaying": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "StartTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         },
         "bPlayBackwards": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -874,12 +1082,14 @@
       "documentation": null,
       "signature_members": {
         "MaterialID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bShow": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -889,8 +1099,9 @@
       "documentation": null,
       "signature_members": {
         "bEnable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -906,8 +1117,9 @@
       "documentation": null,
       "signature_members": {
         "bFrozen": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -923,8 +1135,9 @@
       "documentation": null,
       "signature_members": {
         "BoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -934,12 +1147,14 @@
       "documentation": null,
       "signature_members": {
         "BoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PhysBodyOption": {
-          "type": null,
-          "documentation": null
+          "type": "EPhysBodyOp",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -949,8 +1164,9 @@
       "documentation": null,
       "signature_members": {
         "BoneIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -960,8 +1176,9 @@
       "documentation": null,
       "signature_members": {
         "BoneIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -971,12 +1188,14 @@
       "documentation": null,
       "signature_members": {
         "BoneIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "PhysBodyOption": {
-          "type": null,
-          "documentation": null
+          "type": "EPhysBodyOp",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -986,28 +1205,34 @@
       "documentation": null,
       "signature_members": {
         "RegName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "RegOp": {
-          "type": null,
-          "documentation": null
+          "type": "EFaceFXRegOp",
+          "documentation": null,
+          "flags": 128
         },
         "FirstValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "FirstInterpDuration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "NextValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "NextInterpDuration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1017,20 +1242,24 @@
       "documentation": null,
       "signature_members": {
         "RegName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "RegVal": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "RegOp": {
-          "type": null,
-          "documentation": null
+          "type": "EFaceFXRegOp",
+          "documentation": null,
+          "flags": 128
         },
         "InterpDuration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -1040,8 +1269,9 @@
       "documentation": null,
       "signature_members": {
         "RegName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "float",
@@ -1051,8 +1281,9 @@
       "documentation": null,
       "signature_members": {
         "RegName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1068,8 +1299,9 @@
       "documentation": null,
       "signature_members": {
         "bBioRampDown": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -1079,20 +1311,24 @@
       "documentation": null,
       "signature_members": {
         "FaceFXAnimSetRef": {
-          "type": null,
-          "documentation": null
+          "type": "FaceFXAnimSet",
+          "documentation": null,
+          "flags": 128
         },
         "AnimName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "GroupName": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "SoundCueToPlay": {
-          "type": null,
-          "documentation": null
+          "type": "SoundCue",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1102,8 +1338,9 @@
       "documentation": null,
       "signature_members": {
         "bEnable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1113,8 +1350,9 @@
       "documentation": null,
       "signature_members": {
         "BonePairs": {
-          "type": null,
-          "documentation": null
+          "type": "BonePair",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -1124,8 +1362,9 @@
       "documentation": null,
       "signature_members": {
         "Bones": {
-          "type": null,
-          "documentation": null
+          "type": "BonePair",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -1135,8 +1374,9 @@
       "documentation": null,
       "signature_members": {
         "BoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1146,12 +1386,14 @@
       "documentation": null,
       "signature_members": {
         "BoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bPairWithParent": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -1161,20 +1403,24 @@
       "documentation": null,
       "signature_members": {
         "Origin": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "Radius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "TraceFlags": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "out_Bones": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -1196,12 +1442,14 @@
       "documentation": null,
       "signature_members": {
         "bMoveUnfixedBodies": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bTeleport": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1211,8 +1459,9 @@
       "documentation": null,
       "signature_members": {
         "bHasInstance": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1222,8 +1471,9 @@
       "documentation": null,
       "signature_members": {
         "BoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "RB_BodyInstance",
@@ -1233,8 +1483,9 @@
       "documentation": null,
       "signature_members": {
         "ConstraintIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -1244,8 +1495,9 @@
       "documentation": null,
       "signature_members": {
         "ConstraintName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -1273,8 +1525,9 @@
       "documentation": null,
       "signature_members": {
         "NewParentAnimComp": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -1284,8 +1537,9 @@
       "documentation": null,
       "signature_members": {
         "NewTemplate": {
-          "type": null,
-          "documentation": null
+          "type": "AnimTree",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1295,16 +1549,19 @@
       "documentation": null,
       "signature_members": {
         "TestLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "bCheckZeroExtent": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bCheckNonZeroExtent": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Vector",
@@ -1314,20 +1571,24 @@
       "documentation": null,
       "signature_members": {
         "vTestLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "BoneNames": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         },
         "fRadius": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "bOutsideRadius": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -1337,16 +1598,19 @@
       "documentation": null,
       "signature_members": {
         "TestLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "BoneLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 400
         },
         "IgnoreScale": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Name",
@@ -1356,24 +1620,29 @@
       "documentation": null,
       "signature_members": {
         "BoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "InPosition": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "InRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         },
         "OutPosition": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "OutRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -1383,24 +1652,29 @@
       "documentation": null,
       "signature_members": {
         "BoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "InPosition": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "InRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
         },
         "OutPosition": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "OutRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -1410,12 +1684,14 @@
       "documentation": null,
       "signature_members": {
         "BoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Axis": {
-          "type": null,
-          "documentation": null
+          "type": "EAxis",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Vector",
@@ -1425,8 +1701,9 @@
       "documentation": null,
       "signature_members": {
         "BoneIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Vector",
@@ -1436,12 +1713,14 @@
       "documentation": null,
       "signature_members": {
         "BoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ParentBoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -1451,8 +1730,9 @@
       "documentation": null,
       "signature_members": {
         "BoneNames": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -1462,8 +1742,9 @@
       "documentation": null,
       "signature_members": {
         "BoneIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -1473,8 +1754,9 @@
       "documentation": null,
       "signature_members": {
         "BoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -1484,8 +1766,9 @@
       "documentation": null,
       "signature_members": {
         "BoneIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Matrix",
@@ -1495,8 +1778,9 @@
       "documentation": null,
       "signature_members": {
         "BoneIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -1506,8 +1790,9 @@
       "documentation": null,
       "signature_members": {
         "BoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -1517,12 +1802,14 @@
       "documentation": null,
       "signature_members": {
         "BoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Space": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Vector",
@@ -1532,12 +1819,14 @@
       "documentation": null,
       "signature_members": {
         "BoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Space": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Quat",
@@ -1547,8 +1836,9 @@
       "documentation": null,
       "signature_members": {
         "InNodeName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "MorphNodeBase",
@@ -1558,8 +1848,9 @@
       "documentation": null,
       "signature_members": {
         "InControlName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SkelControlBase",
@@ -1569,12 +1860,14 @@
       "documentation": null,
       "signature_members": {
         "BaseClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Node": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNode",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -1584,8 +1877,9 @@
       "documentation": null,
       "signature_members": {
         "InNodeName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "AnimNode",
@@ -1595,8 +1889,9 @@
       "documentation": null,
       "signature_members": {
         "MorphTargetName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "MorphTarget",
@@ -1606,8 +1901,9 @@
       "documentation": null,
       "signature_members": {
         "AnimSeqName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -1617,12 +1913,14 @@
       "documentation": null,
       "signature_members": {
         "AnimSeqName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Duration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -1650,8 +1948,9 @@
       "documentation": null,
       "signature_members": {
         "AnimSeqName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "AnimSequence",
@@ -1667,8 +1966,9 @@
       "documentation": null,
       "signature_members": {
         "bNewFrozen": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1684,12 +1984,14 @@
       "documentation": null,
       "signature_members": {
         "ClothValidBoundsMin": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "ClothValidBoundsMax": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1699,8 +2001,9 @@
       "documentation": null,
       "signature_members": {
         "IfEnableClothValidBounds": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1710,12 +2013,14 @@
       "documentation": null,
       "signature_members": {
         "AttatchTwoWay": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "AttachTearable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1725,8 +2030,9 @@
       "documentation": null,
       "signature_members": {
         "VelocityOffSet": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1736,8 +2042,9 @@
       "documentation": null,
       "signature_members": {
         "ClothOffSet": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1747,8 +2054,9 @@
       "documentation": null,
       "signature_members": {
         "IfClothSleep": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1758,8 +2066,9 @@
       "documentation": null,
       "signature_members": {
         "ClothThickness": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1769,8 +2078,9 @@
       "documentation": null,
       "signature_members": {
         "ClothTearFactor": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1780,8 +2090,9 @@
       "documentation": null,
       "signature_members": {
         "ClothStretchingStiffness": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1791,8 +2102,9 @@
       "documentation": null,
       "signature_members": {
         "ClothSolverIterations": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1802,8 +2114,9 @@
       "documentation": null,
       "signature_members": {
         "ClothSleepLinearVelocity": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1813,8 +2126,9 @@
       "documentation": null,
       "signature_members": {
         "ClothPressure": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1824,8 +2138,9 @@
       "documentation": null,
       "signature_members": {
         "ClothFriction": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1835,8 +2150,9 @@
       "documentation": null,
       "signature_members": {
         "ClothFlags": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1846,8 +2162,9 @@
       "documentation": null,
       "signature_members": {
         "ClothDampingCoefficient": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1857,8 +2174,9 @@
       "documentation": null,
       "signature_members": {
         "ClothCollisionResponseCoefficient": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1868,8 +2186,9 @@
       "documentation": null,
       "signature_members": {
         "ClothBendingStiffness": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1879,8 +2198,9 @@
       "documentation": null,
       "signature_members": {
         "ClothAttachTearFactor": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1890,8 +2210,9 @@
       "documentation": null,
       "signature_members": {
         "ClothAttachmentResponseCoefficient": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -1991,8 +2312,9 @@
       "documentation": null,
       "signature_members": {
         "bAttachVerts": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2002,8 +2324,9 @@
       "documentation": null,
       "signature_members": {
         "InForce": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2019,8 +2342,9 @@
       "documentation": null,
       "signature_members": {
         "bNewFrozen": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2030,8 +2354,9 @@
       "documentation": null,
       "signature_members": {
         "bInEnable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2041,8 +2366,9 @@
       "documentation": null,
       "signature_members": {
         "bNewForceRefPose": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2052,12 +2378,14 @@
       "documentation": null,
       "signature_members": {
         "NewPhysicsAsset": {
-          "type": null,
-          "documentation": null
+          "type": "PhysicsAsset",
+          "documentation": null,
+          "flags": 128
         },
         "bForceReInit": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -2067,16 +2395,19 @@
       "documentation": null,
       "signature_members": {
         "NewMesh": {
-          "type": null,
-          "documentation": null
+          "type": "SkeletalMesh",
+          "documentation": null,
+          "flags": 128
         },
         "bKeepSpaceBases": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "InbAlwaysUseInstanceWeights": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -2086,20 +2417,24 @@
       "documentation": null,
       "signature_members": {
         "Component": {
-          "type": null,
-          "documentation": null
+          "type": "ActorComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "Position": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "Orientation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
         },
         "BoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -2109,12 +2444,14 @@
       "documentation": null,
       "signature_members": {
         "BaseClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "OutComponent": {
-          "type": null,
-          "documentation": null
+          "type": "ActorComponent",
+          "documentation": null,
+          "flags": 67109248
         }
       },
       "returntype": "None",
@@ -2124,12 +2461,14 @@
       "documentation": null,
       "signature_members": {
         "Component": {
-          "type": null,
-          "documentation": null
+          "type": "ActorComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "BoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -2139,8 +2478,9 @@
       "documentation": null,
       "signature_members": {
         "InBoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "ActorComponent",
@@ -2150,8 +2490,9 @@
       "documentation": null,
       "signature_members": {
         "InSocketName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -2161,8 +2502,9 @@
       "documentation": null,
       "signature_members": {
         "InSocketName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SkeletalMeshSocket",
@@ -2172,20 +2514,24 @@
       "documentation": null,
       "signature_members": {
         "InSocketName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "OutLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         },
         "OutRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 400
         },
         "Space": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -2195,12 +2541,14 @@
       "documentation": null,
       "signature_members": {
         "Component": {
-          "type": null,
-          "documentation": null
+          "type": "ActorComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "SocketName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -2210,8 +2558,9 @@
       "documentation": null,
       "signature_members": {
         "Component": {
-          "type": null,
-          "documentation": null
+          "type": "ActorComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -2221,24 +2570,29 @@
       "documentation": null,
       "signature_members": {
         "Component": {
-          "type": null,
-          "documentation": null
+          "type": "ActorComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "BoneName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "RelativeLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         },
         "RelativeRotation": {
-          "type": null,
-          "documentation": null
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 144
         },
         "RelativeScale": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -2246,5 +2600,7 @@
     }
   },
   "states": {},
+  "classflags": 2157973906,
+  "configname": "None",
   "documentation": null
 }

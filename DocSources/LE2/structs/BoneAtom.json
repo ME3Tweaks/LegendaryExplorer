@@ -2,15 +2,18 @@
   "members": {
     "Rotation": {
       "type": "Quat",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Translation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Scale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "Object",

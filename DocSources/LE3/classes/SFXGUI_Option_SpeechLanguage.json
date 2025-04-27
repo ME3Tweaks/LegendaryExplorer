@@ -4,7 +4,8 @@
   "variables": {
     "CurrentTextLanguage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "aReturnLangs": {
-          "type": null,
-          "documentation": null
+          "type": "LanguageOptionInfo",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -33,5 +35,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

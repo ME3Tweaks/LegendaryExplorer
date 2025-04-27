@@ -2,11 +2,13 @@
   "members": {
     "m_pMaterial": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nmTag": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "RvrMaterialMultiplexor",

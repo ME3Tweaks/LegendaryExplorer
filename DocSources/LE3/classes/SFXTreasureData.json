@@ -4,11 +4,13 @@
   "variables": {
     "LevelTreasure": {
       "type": "TD",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "ArmorTreasure": {
       "type": "ArmorTreasureData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     }
   },
   "functions": {
@@ -22,8 +24,9 @@
       "documentation": null,
       "signature_members": {
         "OutArmorTreasure": {
-          "type": null,
-          "documentation": null
+          "type": "ArmorTreasureData",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -33,12 +36,14 @@
       "documentation": null,
       "signature_members": {
         "tData": {
-          "type": null,
-          "documentation": null
+          "type": "TD",
+          "documentation": null,
+          "flags": 4194688
         },
         "Level": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -48,12 +53,14 @@
       "documentation": null,
       "signature_members": {
         "TREASURE": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Level": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -63,12 +70,14 @@
       "documentation": null,
       "signature_members": {
         "TREASURE": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Level": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -78,8 +87,9 @@
       "documentation": null,
       "signature_members": {
         "Armor": {
-          "type": null,
-          "documentation": null
+          "type": "EArmorTreasurePiece",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -89,12 +99,14 @@
       "documentation": null,
       "signature_members": {
         "TREASURE": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "Level": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "bool",
@@ -102,5 +114,7 @@
     }
   },
   "states": {},
+  "classflags": 2097174,
+  "configname": "Game",
   "documentation": null
 }

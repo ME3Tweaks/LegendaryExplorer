@@ -4,27 +4,33 @@
   "variables": {
     "ZoomTimeDilation": {
       "type": "ScaledFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "ZoomTimeDilationDuration": {
       "type": "ScaledFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "OwnerTimeDilationCounterScale": {
       "type": "ScaledFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "ActivateSniperZoomWwiseEvent": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DeActivateSniperZoomWwiseEvent": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SniperRifleDamagePenalty": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -32,8 +38,9 @@
       "documentation": null,
       "signature_members": {
         "bState": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -55,12 +62,14 @@
       "documentation": null,
       "signature_members": {
         "DecalEffects": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPhysicalMaterialDecals",
+          "documentation": null,
+          "flags": 128
         },
         "FadeTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "DecalComponent",
@@ -70,8 +79,9 @@
       "documentation": null,
       "signature_members": {
         "ImpactEffects": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPhysicalMaterialImpactEffects",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "ParticleSystem",
@@ -81,8 +91,9 @@
       "documentation": null,
       "signature_members": {
         "ImpactSounds": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPhysicalMaterialImpactSounds",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "WwiseEvent",
@@ -96,5 +107,7 @@
     }
   },
   "states": {},
+  "classflags": 10486327,
+  "configname": "Weapon",
   "documentation": null
 }

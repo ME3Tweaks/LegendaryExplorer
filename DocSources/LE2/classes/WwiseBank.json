@@ -4,22 +4,28 @@
   "variables": {
     "Children": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 143362
     },
     "Parent": {
       "type": "WwiseBank",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "IsLoaded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 139267
     },
     "IsLocalised": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

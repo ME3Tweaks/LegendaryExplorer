@@ -2,15 +2,18 @@
   "members": {
     "pOwner": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     },
     "pEffect": {
       "type": "PostProcessEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CombineType": {
       "type": "EAddPostProcessEffectCombineType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "PostProcessChain",

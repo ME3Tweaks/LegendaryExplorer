@@ -2,11 +2,13 @@
   "members": {
     "m_fIntensity": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fBlendTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXInterpTrackSetEnvEffectIntensity",

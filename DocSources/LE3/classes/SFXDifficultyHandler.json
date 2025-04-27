@@ -4,111 +4,138 @@
   "variables": {
     "Level1DifficultyData": {
       "type": "DifficultySettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "Level2DifficultyData": {
       "type": "DifficultySettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "Level3DifficultyData": {
       "type": "DifficultySettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "Level4DifficultyData": {
       "type": "DifficultySettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "Level5DifficultyData": {
       "type": "DifficultySettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "CurrentLevel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxPlayerLevel": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "DifficultyScore": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StoppingPowerScalar": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OutHenchDamageScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "OutAIDamageScale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "AmmoPct": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GrenadesPerDrop": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DownedDistanceRange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ShieldRegenPct": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ShieldRegenDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PartialShieldRegenDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CoverDamageReduction": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NoCoverDamageBonus": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ReviveDamageReductionLength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ReviveDamageReductionAmount": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxSwarmers": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlayerPartyHealthGateDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlayerPartyShieldGateDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bNeedsUpdate": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentDifficulty": {
       "type": "EDifficultyOptions",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NormalizedDifficulty": {
       "type": "EDifficultyOptions",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -116,12 +143,14 @@
       "documentation": null,
       "signature_members": {
         "PropertyName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "DifficultyCategory": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -131,12 +160,14 @@
       "documentation": null,
       "signature_members": {
         "PropertyName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "DifficultyCategory": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -158,20 +189,24 @@
       "documentation": null,
       "signature_members": {
         "PropertyName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "DifficultyCategory": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Difficulty": {
-          "type": null,
-          "documentation": null
+          "type": "EDifficultyOptions",
+          "documentation": null,
+          "flags": 128
         },
         "Score": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -181,12 +216,14 @@
       "documentation": null,
       "signature_members": {
         "PropertyName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "DifficultyCategory": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -196,12 +233,14 @@
       "documentation": null,
       "signature_members": {
         "PropertyName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "DifficultyCategory": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -211,12 +250,14 @@
       "documentation": null,
       "signature_members": {
         "PropertyName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "DifficultyCategory": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -230,5 +271,7 @@
     }
   },
   "states": {},
+  "classflags": 136315030,
+  "configname": "Difficulty",
   "documentation": null
 }

@@ -4,30 +4,38 @@
   "variables": {
     "BlendOut": {
       "type": "BioAnimCheckBlendOut",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ToIdleBlendDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ToMovingBlendDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ToStopBlendDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "IdleToStartBlendDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "StopToStartBlendDuration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

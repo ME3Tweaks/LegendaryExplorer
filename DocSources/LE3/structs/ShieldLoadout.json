@@ -2,15 +2,18 @@
   "members": {
     "Shields": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ShieldLevelRange": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaxShields": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXLoadoutData",

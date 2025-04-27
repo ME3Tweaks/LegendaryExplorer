@@ -4,123 +4,153 @@
   "variables": {
     "RawData": {
       "type": "UntypedBulkData_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "CompressedPCData": {
       "type": "UntypedBulkData_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "CompressedXbox360Data": {
       "type": "UntypedBulkData_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "CompressedPS3Data": {
       "type": "UntypedBulkData_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "SpokenText": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227075
     },
     "ChannelOffsets": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "ChannelSizes": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "Subtitles": {
       "type": "SubtitleCue",
-      "documentation": null
+      "documentation": null,
+      "flags": 4227075
     },
     "LocalizedSubtitles": {
       "type": "LocalizedSubtitle",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "VorbisDecompressor": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "RawPCMData": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "ResourceData": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "CompressionQuality": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Volume": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "Pitch": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "Duration": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "NumChannels": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "SampleRate": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "RawPCMDataSize": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "ResourceID": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "ResourceSize": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bForceRealTimeDecompression": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bLoopingSound": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDynamicResource": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "bUseTTS": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bProcedural": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bMature": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 32771
     },
     "bManualWordWrap": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 32771
     },
     "TTSSpeaker": {
       "type": "ETTSSpeaker",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DecompressionType": {
       "type": "EDecompressionType",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     }
   },
   "functions": {
@@ -128,12 +158,14 @@
       "documentation": null,
       "signature_members": {
         "Buffer": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 4194688
         },
         "SamplesNeeded": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -141,5 +173,7 @@
     }
   },
   "states": {},
+  "classflags": 136320178,
+  "configname": "None",
   "documentation": null
 }

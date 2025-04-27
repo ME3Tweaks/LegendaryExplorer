@@ -4,23 +4,28 @@
   "variables": {
     "VfTable_IUIDataStoreSubscriber": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "VfTable_IUIStringRenderer": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "DataSource": {
       "type": "UIDataStoreBinding",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "StringRenderComponent": {
       "type": "UIComp_DrawString",
-      "documentation": null
+      "documentation": null,
+      "flags": 101187595
     },
     "LabelBackground": {
       "type": "UIComp_DrawImage",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633163
     }
   },
   "functions": {
@@ -34,8 +39,9 @@
       "documentation": null,
       "signature_members": {
         "out_BoundDataStores": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataStore",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -45,8 +51,9 @@
       "documentation": null,
       "signature_members": {
         "BindingIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "string",
@@ -62,24 +69,29 @@
       "documentation": null,
       "signature_members": {
         "SourceDataStore": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataStore",
+          "documentation": null,
+          "flags": 128
         },
         "bValuesInvalidated": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "PropertyTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "SourceProvider": {
-          "type": null,
-          "documentation": null
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 128
         },
         "ArrayIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -89,8 +101,9 @@
       "documentation": null,
       "signature_members": {
         "BindingIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -100,12 +113,14 @@
       "documentation": null,
       "signature_members": {
         "MarkupText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         },
         "BindingIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -115,12 +130,14 @@
       "documentation": null,
       "signature_members": {
         "Horizontal": {
-          "type": null,
-          "documentation": null
+          "type": "EUIAlignment",
+          "documentation": null,
+          "flags": 128
         },
         "Vertical": {
-          "type": null,
-          "documentation": null
+          "type": "EUIAlignment",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -130,8 +147,9 @@
       "documentation": null,
       "signature_members": {
         "NewText": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -141,8 +159,9 @@
       "documentation": null,
       "signature_members": {
         "bShouldIgnoreMarkup": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -152,8 +171,9 @@
       "documentation": null,
       "signature_members": {
         "ValueArray": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -161,5 +181,7 @@
     }
   },
   "states": {},
+  "classflags": 144704150,
+  "configname": "UI",
   "documentation": null
 }

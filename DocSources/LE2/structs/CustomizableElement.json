@@ -2,47 +2,58 @@
   "members": {
     "Mesh": {
       "type": "PlayerMeshInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "GameEffects": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Pattern": {
       "type": "PlayerPatternInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Tint": {
       "type": "PlayerTintInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Spec": {
       "type": "PlayerSpecInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Id": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Name": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Description": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlotFlag": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bCustomizable": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Type": {
       "type": "ECustomizableElementType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioDefine",

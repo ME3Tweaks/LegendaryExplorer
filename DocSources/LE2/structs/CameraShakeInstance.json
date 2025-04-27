@@ -2,55 +2,68 @@
   "members": {
     "UserPlaySpaceMatrix": {
       "type": "Matrix",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LocSinOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RotSinOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SourceShake": {
       "type": "CameraShake",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AnimInst": {
       "type": "CameraAnimInst",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "OscillatorTimeRemaining": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentBlendInTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentBlendOutTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "FOVSinOffset": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Scale": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bBlendingIn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bBlendingOut": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlaySpace": {
       "type": "ECameraAnimPlaySpace",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "CameraModifier_CameraShake",

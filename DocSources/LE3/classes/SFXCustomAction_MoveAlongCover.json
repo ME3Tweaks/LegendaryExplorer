@@ -4,35 +4,43 @@
   "variables": {
     "m_MoveCoverDestination": {
       "type": "CoverInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_MoveCoverFinalDestination": {
       "type": "CoverInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_oCoverAI": {
       "type": "SFXAI_Cover",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_MoveCoverMarker": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_MovementToSlotStart": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bIsCoverIntermediate": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bIsInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bIsInterrupted": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -40,16 +48,19 @@
       "documentation": null,
       "signature_members": {
         "TargetCoverDir": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverDirection",
+          "documentation": null,
+          "flags": 128
         },
         "TargetCoverLink": {
-          "type": null,
-          "documentation": null
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
         },
         "TargetCoverSlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -71,8 +82,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -82,12 +94,14 @@
       "documentation": null,
       "signature_members": {
         "OldCustomAction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "NewCustomAction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -97,8 +111,9 @@
       "documentation": null,
       "signature_members": {
         "TargetCover": {
-          "type": null,
-          "documentation": null
+          "type": "CoverSlotMarker",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -108,12 +123,14 @@
       "documentation": null,
       "signature_members": {
         "SyncPawn": {
-          "type": null,
-          "documentation": null
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
         },
         "bForced": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -123,12 +140,14 @@
       "documentation": null,
       "signature_members": {
         "targetLink": {
-          "type": null,
-          "documentation": null
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
         },
         "TargetSlotIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -148,5 +167,7 @@
     }
   },
   "states": {},
+  "classflags": 10485782,
+  "configname": "Game",
   "documentation": null
 }

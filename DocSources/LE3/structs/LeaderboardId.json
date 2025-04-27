@@ -2,11 +2,13 @@
   "members": {
     "sLbName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Scope": {
       "type": "LeaderboardStatScope",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "classdef": "SFXOnlineComponentBlazeLeaderboard",

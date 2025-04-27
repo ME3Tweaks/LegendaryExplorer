@@ -2,19 +2,23 @@
   "members": {
     "ScanPulse": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ScanResult": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Reaper": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ReaperPing": {
       "type": "SFXGalaxyTemplatePair",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXGalaxyMapGameData",

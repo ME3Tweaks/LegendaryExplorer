@@ -4,18 +4,23 @@
   "variables": {
     "m_oHairSettings": {
       "type": "Bio_Appr_Character_Hair_Settings",
-      "documentation": null
+      "documentation": null,
+      "flags": 67764233
     },
     "m_nMaterialConfig": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_nHairAppearance": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142614674,
+  "configname": "None",
   "documentation": null
 }

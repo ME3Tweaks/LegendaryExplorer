@@ -4,26 +4,33 @@
   "variables": {
     "LinearKernel": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "RenderComponent": {
       "type": "DrawSphereComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "ForceStrength": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "ForceRadius": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8589934593
     },
     "ForceFalloff": {
       "type": "ERadialImpulseFalloff",
-      "documentation": null
+      "documentation": null,
+      "flags": 524297
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

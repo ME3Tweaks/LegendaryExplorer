@@ -2,19 +2,23 @@
   "members": {
     "SrcType": {
       "type": "ECoverType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SrcAction": {
       "type": "ECoverAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DestType": {
       "type": "ECoverType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DestAction": {
       "type": "ECoverAction",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "CoverLink",

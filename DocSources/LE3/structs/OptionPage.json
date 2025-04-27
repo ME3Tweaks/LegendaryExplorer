@@ -2,15 +2,18 @@
   "members": {
     "Options": {
       "type": "EGuiOptions",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Label": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Story": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioSFHandler_Options",

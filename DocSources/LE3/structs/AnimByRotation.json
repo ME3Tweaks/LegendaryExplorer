@@ -2,15 +2,18 @@
   "members": {
     "DesiredRotation": {
       "type": "Rotator",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AnimName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AnimSeq": {
       "type": "AnimSequence",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     }
   },
   "classdef": "BioAnimNodeSequenceByBoneRotation",

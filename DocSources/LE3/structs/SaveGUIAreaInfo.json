@@ -2,15 +2,18 @@
   "members": {
     "ImageName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023158273
     },
     "AreaName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AreaStrRef": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXSFHandler_Save",

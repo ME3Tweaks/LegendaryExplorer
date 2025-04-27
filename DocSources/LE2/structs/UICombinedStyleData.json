@@ -2,67 +2,83 @@
   "members": {
     "AdjustmentType": {
       "type": "UIImageAdjustmentData",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "TextColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "ImageColor": {
       "type": "LinearColor",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "AtlasCoords": {
       "type": "TextureCoordinates",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "TextPadding": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "ImagePadding": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "DrawFont": {
       "type": "Font",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "FallbackImage": {
       "type": "Surface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "TextAutoScaling": {
       "type": "TextAutoScaleValue",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "TextScale": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "TextSpacingAdjust": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "TextAttributes": {
       "type": "UITextAttributes",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "bInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048578
     },
     "TextAlignment": {
       "type": "EUIAlignment",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "TextClipMode": {
       "type": "ETextClipMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "TextClipAlignment": {
       "type": "EUIAlignment",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     }
   },
   "classdef": "UIRoot",

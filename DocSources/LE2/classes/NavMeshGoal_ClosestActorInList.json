@@ -4,15 +4,18 @@
   "variables": {
     "PolyToGoalActorMap": {
       "type": "MultiMap_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "GoalList": {
       "type": "BiasedGoalActor",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "CachedAnchorPoly": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4096
     }
   },
   "functions": {
@@ -32,12 +35,14 @@
       "documentation": null,
       "signature_members": {
         "NavHandle": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationHandle",
+          "documentation": null,
+          "flags": 128
         },
         "InGoalList": {
-          "type": null,
-          "documentation": null
+          "type": "BiasedGoalActor",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "NavMeshGoal_ClosestActorInList",
@@ -45,5 +50,7 @@
     }
   },
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

@@ -4,10 +4,13 @@
   "variables": {
     "PawnsToIgnore": {
       "type": "Pawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

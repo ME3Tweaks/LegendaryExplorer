@@ -2,11 +2,13 @@
   "members": {
     "ClassName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bFallThru": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SeqCond_SwitchClass",

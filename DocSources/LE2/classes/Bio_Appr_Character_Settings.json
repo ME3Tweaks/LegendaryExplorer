@@ -4,26 +4,33 @@
   "variables": {
     "m_oBodySettings": {
       "type": "Bio_Appr_Character_Body_Settings",
-      "documentation": null
+      "documentation": null,
+      "flags": 67764233
     },
     "m_oHeadSettings": {
       "type": "Bio_Appr_Character_Head_Settings",
-      "documentation": null
+      "documentation": null,
+      "flags": 67764233
     },
     "m_nHeadAppearance": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bIsHeadHidden": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bIsHeadLoaded": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142614674,
+  "configname": "None",
   "documentation": null
 }

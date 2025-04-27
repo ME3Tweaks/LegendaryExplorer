@@ -4,30 +4,38 @@
   "variables": {
     "TrackInst": {
       "type": "InterpTrackInst",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Group": {
       "type": "InterpGroup",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "GroupActor": {
       "type": "Actor",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SFXGameTerminated": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "SFXGameInitialized": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "SFXGroupActorIsSet": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

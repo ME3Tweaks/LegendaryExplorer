@@ -2,27 +2,33 @@
   "members": {
     "PlotIDSet": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PlotIDClear": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PlotInts": {
       "type": "SetMissionPlotIntPair",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PlotCond": {
       "type": "SetMissionCondSetPair",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Mission": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LoadMapName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioCheatManagerNonNative",

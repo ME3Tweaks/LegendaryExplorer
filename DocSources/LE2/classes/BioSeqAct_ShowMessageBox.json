@@ -4,27 +4,33 @@
   "variables": {
     "sVariableLines": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "sMessageLines": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": -4611686018423193599
     },
     "m_font": {
       "type": "Font",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_colorForeground": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_colorBackground": {
       "type": "Color",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_isActivated": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -36,5 +42,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

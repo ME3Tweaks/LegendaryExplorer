@@ -4,22 +4,28 @@
   "variables": {
     "ValueA": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ValueB": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "FloatResult": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "IntResult": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

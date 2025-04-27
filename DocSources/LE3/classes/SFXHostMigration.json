@@ -4,7 +4,8 @@
   "variables": {
     "bNeedRestoration": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -18,8 +19,9 @@
       "documentation": null,
       "signature_members": {
         "bEnable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -41,8 +43,9 @@
       "documentation": null,
       "signature_members": {
         "GRI": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGRI",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -64,8 +67,9 @@
       "documentation": null,
       "signature_members": {
         "PRI": {
-          "type": null,
-          "documentation": null
+          "type": "SFXPRI",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -75,8 +79,9 @@
       "documentation": null,
       "signature_members": {
         "GRI": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGRI",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -86,8 +91,9 @@
       "documentation": null,
       "signature_members": {
         "InWave": {
-          "type": null,
-          "documentation": null
+          "type": "WaveEventInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -95,5 +101,7 @@
     }
   },
   "states": {},
+  "classflags": 27,
+  "configname": "None",
   "documentation": null
 }

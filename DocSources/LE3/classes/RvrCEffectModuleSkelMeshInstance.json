@@ -4,10 +4,13 @@
   "variables": {
     "m_pSkelMesh": {
       "type": "SkeletalMeshComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142606490,
+  "configname": "None",
   "documentation": null
 }

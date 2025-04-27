@@ -4,18 +4,23 @@
   "variables": {
     "Data": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 4098
     },
     "Id": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     },
     "IsRegistered": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 139267
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217875,
+  "configname": "None",
   "documentation": null
 }

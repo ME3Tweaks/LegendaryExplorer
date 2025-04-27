@@ -4,7 +4,8 @@
   "variables": {
     "GameEffects": {
       "type": "SFXGameEffect",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "EffectClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -23,8 +25,9 @@
       "documentation": null,
       "signature_members": {
         "EffectClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -34,8 +37,9 @@
       "documentation": null,
       "signature_members": {
         "EffectClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXGameEffect",
@@ -51,12 +55,14 @@
       "documentation": null,
       "signature_members": {
         "EffectClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "BaseValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "float",
@@ -72,12 +78,14 @@
       "documentation": null,
       "signature_members": {
         "EffectClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Category": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -87,16 +95,19 @@
       "documentation": null,
       "signature_members": {
         "EffectClasses": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 4194690
         },
         "Category": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Instigator": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -106,8 +117,9 @@
       "documentation": null,
       "signature_members": {
         "Category": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -117,8 +129,9 @@
       "documentation": null,
       "signature_members": {
         "EffectClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -128,8 +141,9 @@
       "documentation": null,
       "signature_members": {
         "Effect": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGameEffect",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -139,28 +153,34 @@
       "documentation": null,
       "signature_members": {
         "EffectClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Category": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "Duration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "DurationType": {
-          "type": null,
-          "documentation": null
+          "type": "EDurationType",
+          "documentation": null,
+          "flags": 128
         },
         "EffectValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "Instigator": {
-          "type": null,
-          "documentation": null
+          "type": "Controller",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "SFXGameEffect",
@@ -170,12 +190,14 @@
       "documentation": null,
       "signature_members": {
         "EffectClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "Category": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -185,8 +207,9 @@
       "documentation": null,
       "signature_members": {
         "Category": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -196,8 +219,9 @@
       "documentation": null,
       "signature_members": {
         "EffectClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -207,12 +231,14 @@
       "documentation": null,
       "signature_members": {
         "EffectClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         },
         "BestEffect": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGameEffect",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -222,8 +248,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaSeconds": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -231,5 +258,7 @@
     }
   },
   "states": {},
+  "classflags": 4114,
+  "configname": "None",
   "documentation": null
 }

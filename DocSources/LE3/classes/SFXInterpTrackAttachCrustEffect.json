@@ -4,15 +4,18 @@
   "variables": {
     "m_aCrustEffectKeyData": {
       "type": "SFXAttachCrustEffectTrackData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_aTarget": {
       "type": "BioSeqVar_ObjectFindByTag",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     },
     "oEffect": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -44,16 +47,19 @@
       "documentation": null,
       "signature_members": {
         "pTrackInst": {
-          "type": null,
-          "documentation": null
+          "type": "BioInterpTrackInst",
+          "documentation": null,
+          "flags": 128
         },
         "bAttach": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "fLifeTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -61,5 +67,7 @@
     }
   },
   "states": {},
+  "classflags": 142614674,
+  "configname": "None",
   "documentation": null
 }

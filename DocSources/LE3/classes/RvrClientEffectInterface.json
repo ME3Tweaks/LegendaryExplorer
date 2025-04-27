@@ -4,11 +4,13 @@
   "variables": {
     "m_nPriority": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_bIgnoreAttachedActorHiddenState": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -16,16 +18,19 @@
       "documentation": null,
       "signature_members": {
         "pComponent": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectComponent",
+          "documentation": null,
+          "flags": 67108992
         },
         "pInstance": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectModuleInstance",
+          "documentation": null,
+          "flags": 128
         },
         "nIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -35,8 +40,9 @@
       "documentation": null,
       "signature_members": {
         "pComponent": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "RvrClientEffectModule",
@@ -44,5 +50,7 @@
     }
   },
   "states": {},
+  "classflags": 134217875,
+  "configname": "None",
   "documentation": null
 }

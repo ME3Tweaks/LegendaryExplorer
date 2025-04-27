@@ -4,119 +4,148 @@
   "variables": {
     "ShepardImage": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "LoadoutWeapons": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "SubMenuEnabledWeapons": {
       "type": "LoadoutWeaponInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "AvailableHenchmen": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "WeaponMenuEnabledWeaponIDs": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "TopMenu": {
       "type": "BioSFHandler_ChoiceGUI",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "SubMenu": {
       "type": "BioSFHandler_ChoiceGUI",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "SpecialWeaponToggleMenu": {
       "type": "BioSFHandler_ChoiceGUI",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "WeaponEquipSound": {
       "type": "WwiseEvent",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SubMenuWeaponIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "ButtonText_Choose": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ButtonText_Exit": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ButtonText_SquadWeapons": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ButtonText_CustomizeSquadWeapons": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ButtonText_CustomizeWeapons": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ButtonText_Accept": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ButtonText_Back": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WeaponMenuSubHeading": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "LeftBracketToken": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RightBracketToken": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WeaponClassTokenString": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ClassDescriptionTokenString": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PawnActiveWeaponsString": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ShepardNameString": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SingleCustomToken": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "WeaponDescriptionTokenString": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentPawn": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bFinished": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bAllHenchmen": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -130,8 +159,9 @@
       "documentation": null,
       "signature_members": {
         "DeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -153,8 +183,9 @@
       "documentation": null,
       "signature_members": {
         "HenchClassName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "LoadoutInfo",
@@ -164,8 +195,9 @@
       "documentation": null,
       "signature_members": {
         "HenchClassName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "HenchmanInfoStruct",
@@ -175,8 +207,9 @@
       "documentation": null,
       "signature_members": {
         "Tag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -186,12 +219,14 @@
       "documentation": null,
       "signature_members": {
         "PawnID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Entry": {
-          "type": null,
-          "documentation": null
+          "type": "SFXChoiceEntry",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -207,12 +242,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -228,8 +265,9 @@
       "documentation": null,
       "signature_members": {
         "HenchIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -239,8 +277,9 @@
       "documentation": null,
       "signature_members": {
         "Path": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "Texture2D",
@@ -256,12 +295,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -271,8 +312,9 @@
       "documentation": null,
       "signature_members": {
         "HenchIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -288,8 +330,9 @@
       "documentation": null,
       "signature_members": {
         "GroupIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -299,12 +342,14 @@
       "documentation": null,
       "signature_members": {
         "PawnID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "WeaponClass": {
-          "type": null,
-          "documentation": null
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -314,12 +359,14 @@
       "documentation": null,
       "signature_members": {
         "PawnID": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "WeaponGroupID": {
-          "type": null,
-          "documentation": null
+          "type": "ELoadoutWeapons",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -335,8 +382,9 @@
       "documentation": null,
       "signature_members": {
         "GroupIdx": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -346,12 +394,14 @@
       "documentation": null,
       "signature_members": {
         "bAPressed": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nContext": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -365,5 +415,7 @@
     }
   },
   "states": {},
+  "classflags": 2097171,
+  "configname": "Game",
   "documentation": null
 }

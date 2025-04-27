@@ -4,18 +4,23 @@
   "variables": {
     "TurnInPlaceNodes": {
       "type": "BioAnimNodeBlend_TurnInPlace",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202498
     },
     "BioPawnOwner": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     },
     "ActiveTurnInPlaceNode": {
       "type": "BioAnimNodeBlend_TurnInPlace",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

@@ -4,35 +4,43 @@
   "variables": {
     "TraceExtent": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StartOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "EndOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "HitLocation": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     },
     "HitObject": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     },
     "Distance": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 131073
     },
     "bTraceActors": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bTraceWorld": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -44,5 +52,7 @@
     }
   },
   "states": {},
+  "classflags": 136315026,
+  "configname": "None",
   "documentation": null
 }

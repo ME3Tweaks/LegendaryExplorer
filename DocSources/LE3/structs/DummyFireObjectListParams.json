@@ -2,31 +2,38 @@
   "members": {
     "SecondsPerObject": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "ObjectChangeDelay": {
       "type": "Vector2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     },
     "TimeUntilObjectChange": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DelayTimeRemaining": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentObjIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bDelay": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CyclingMethod": {
       "type": "DummyFireObjectCyclingMethod",
-      "documentation": null
+      "documentation": null,
+      "flags": 3
     }
   },
   "classdef": "SFXSeqAct_DummyWeaponFire",

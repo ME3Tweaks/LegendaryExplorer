@@ -2,27 +2,33 @@
   "members": {
     "Text": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Values": {
       "type": "PhotoModeOptionText",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "Label": {
       "type": "stringref",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DefaultValue": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bHidden": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Id": {
       "type": "PhotoModeOptionType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXSFHandler_PhotoMode",

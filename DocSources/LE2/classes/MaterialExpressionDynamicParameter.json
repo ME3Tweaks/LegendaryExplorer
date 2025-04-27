@@ -4,10 +4,13 @@
   "variables": {
     "ParamNames": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194369
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136323218,
+  "configname": "None",
   "documentation": null
 }

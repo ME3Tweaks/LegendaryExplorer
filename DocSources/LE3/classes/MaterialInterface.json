@@ -4,23 +4,28 @@
   "variables": {
     "LightmassSettings": {
       "type": "LightmassMaterialInterfaceSettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_Guid": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "LightingGuid": {
       "type": "Guid",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "FlattenedTexture": {
       "type": "Texture",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ParentRefFence": {
       "type": "RenderCommandFence_Mirror",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     }
   },
   "functions": {
@@ -28,8 +33,9 @@
       "documentation": null,
       "signature_members": {
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -39,8 +45,9 @@
       "documentation": null,
       "signature_members": {
         "EffectName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -50,16 +57,19 @@
       "documentation": null,
       "signature_members": {
         "ParameterName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "OutFontValue": {
-          "type": null,
-          "documentation": null
+          "type": "Font",
+          "documentation": null,
+          "flags": 384
         },
         "OutFontPage": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -81,12 +91,14 @@
       "documentation": null,
       "signature_members": {
         "ParameterName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "OutValue": {
-          "type": null,
-          "documentation": null
+          "type": "InterpCurveFloat",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -96,12 +108,14 @@
       "documentation": null,
       "signature_members": {
         "ParameterName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "OutValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -111,12 +125,14 @@
       "documentation": null,
       "signature_members": {
         "ParameterName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "OutValue": {
-          "type": null,
-          "documentation": null
+          "type": "Texture",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -126,12 +142,14 @@
       "documentation": null,
       "signature_members": {
         "ParameterName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "OutValue": {
-          "type": null,
-          "documentation": null
+          "type": "InterpCurveVector",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -141,12 +159,14 @@
       "documentation": null,
       "signature_members": {
         "ParameterName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "OutValue": {
-          "type": null,
-          "documentation": null
+          "type": "LinearColor",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -156,20 +176,24 @@
       "documentation": null,
       "signature_members": {
         "OverrideForceMiplevelsToBeResident": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "bForceMiplevelsToBeResidentValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "ForceDuration": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "CinematicTextureGroups": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -177,5 +201,7 @@
     }
   },
   "states": {},
+  "classflags": 134217875,
+  "configname": "None",
   "documentation": null
 }

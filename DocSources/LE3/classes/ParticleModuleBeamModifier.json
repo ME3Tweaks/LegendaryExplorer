@@ -4,38 +4,48 @@
   "variables": {
     "PositionRw": {
       "type": "BioRawDistributionRwVector3",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "TangentRw": {
       "type": "BioRawDistributionRwVector3",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "Strength": {
       "type": "RawDistributionFloat",
-      "documentation": null
+      "documentation": null,
+      "flags": 4718593
     },
     "PositionOptions": {
       "type": "BeamModifierOptions",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "TangentOptions": {
       "type": "BeamModifierOptions",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StrengthOptions": {
       "type": "BeamModifierOptions",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bAbsoluteTangent": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ModifierType": {
       "type": "BeamModifierType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142610578,
+  "configname": "None",
   "documentation": null
 }

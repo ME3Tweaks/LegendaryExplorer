@@ -2,15 +2,18 @@
   "members": {
     "DroppedAmmos": {
       "type": "DroppedPickup",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "DroppedAmmoClass": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "NextIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXObjectPool",

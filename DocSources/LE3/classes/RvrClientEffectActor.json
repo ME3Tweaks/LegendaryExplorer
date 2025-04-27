@@ -4,15 +4,18 @@
   "variables": {
     "m_pCEffectComponent": {
       "type": "RvrClientEffectComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633161
     },
     "m_pPool": {
       "type": "RvrClientEffectPool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bDestroyOnFinished": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -26,8 +29,9 @@
       "documentation": null,
       "signature_members": {
         "pAct": {
-          "type": null,
-          "documentation": null
+          "type": "RvrSeqAct_ActivateClientEffect",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -37,8 +41,9 @@
       "documentation": null,
       "signature_members": {
         "pComponent": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectComponent",
+          "documentation": null,
+          "flags": 67108992
         }
       },
       "returntype": "None",
@@ -48,8 +53,9 @@
       "documentation": null,
       "signature_members": {
         "bCalledFromSpawn": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -59,8 +65,9 @@
       "documentation": null,
       "signature_members": {
         "pAct": {
-          "type": null,
-          "documentation": null
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -82,8 +89,9 @@
       "documentation": null,
       "signature_members": {
         "pTemplate": {
-          "type": null,
-          "documentation": null
+          "type": "RvrClientEffectInterface",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -93,8 +101,9 @@
       "documentation": null,
       "signature_members": {
         "bAllowCooldown": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -102,5 +111,7 @@
     }
   },
   "states": {},
+  "classflags": 144704146,
+  "configname": "None",
   "documentation": null
 }

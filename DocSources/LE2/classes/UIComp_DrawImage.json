@@ -4,27 +4,33 @@
   "variables": {
     "VfTable_IUIStyleResolver": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "VfTable_ICustomPropertyItemHandler": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "StyleResolverTag": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ImageRef": {
       "type": "UITexture",
-      "documentation": null
+      "documentation": null,
+      "flags": 339738633
     },
     "StyleCustomization": {
       "type": "UIImageStyleOverride",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ImageStyle": {
       "type": "UIStyleReference",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -32,20 +38,24 @@
       "documentation": null,
       "signature_members": {
         "ActiveSkin": {
-          "type": null,
-          "documentation": null
+          "type": "UISkin",
+          "documentation": null,
+          "flags": 128
         },
         "bClearExistingValue": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "CurrentMenuState": {
-          "type": null,
-          "documentation": null
+          "type": "UIState",
+          "documentation": null,
+          "flags": 144
         },
         "StylePropertyName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 146
         }
       },
       "returntype": "bool",
@@ -55,8 +65,9 @@
       "documentation": null,
       "signature_members": {
         "NewResolverTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -108,12 +119,14 @@
       "documentation": null,
       "signature_members": {
         "Orientation": {
-          "type": null,
-          "documentation": null
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
         },
         "NewFormattingData": {
-          "type": null,
-          "documentation": null
+          "type": "UIImageAdjustmentData",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -123,12 +136,14 @@
       "documentation": null,
       "signature_members": {
         "HorizontalPadding": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "VerticalPadding": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -138,8 +153,9 @@
       "documentation": null,
       "signature_members": {
         "NewOpacity": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -149,8 +165,9 @@
       "documentation": null,
       "signature_members": {
         "NewColor": {
-          "type": null,
-          "documentation": null
+          "type": "LinearColor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -160,8 +177,9 @@
       "documentation": null,
       "signature_members": {
         "NewCoordinates": {
-          "type": null,
-          "documentation": null
+          "type": "TextureCoordinates",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -171,8 +189,9 @@
       "documentation": null,
       "signature_members": {
         "NewImage": {
-          "type": null,
-          "documentation": null
+          "type": "Surface",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -182,8 +201,9 @@
       "documentation": null,
       "signature_members": {
         "DesiredMenuState": {
-          "type": null,
-          "documentation": null
+          "type": "UIState",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "UIStyle_Image",
@@ -191,5 +211,7 @@
     }
   },
   "states": {},
+  "classflags": 144707730,
+  "configname": "None",
   "documentation": null
 }

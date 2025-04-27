@@ -4,39 +4,48 @@
   "variables": {
     "Player": {
       "type": "BioPawn",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TimeToHideDeathIconAt": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RemainingTimeUntilShowTitle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "MaxWorldDistanceForVisibility": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "MaxScreenDistanceFromCenter": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "LingeringDeathIconTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "TitleTextDelayTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "PreviousIconIsVisible": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PreviousPlayerIsDead": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -56,12 +65,14 @@
       "documentation": null,
       "signature_members": {
         "TargetLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "SceneView": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGUISceneView",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "bool",
@@ -71,8 +82,9 @@
       "documentation": null,
       "signature_members": {
         "SceneView": {
-          "type": null,
-          "documentation": null
+          "type": "SFXGUISceneView",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "None",
@@ -82,12 +94,14 @@
       "documentation": null,
       "signature_members": {
         "PlayerIsDown": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIsDead": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -101,5 +115,7 @@
     }
   },
   "states": {},
+  "classflags": 142606494,
+  "configname": "UI",
   "documentation": null
 }

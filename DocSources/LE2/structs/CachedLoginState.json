@@ -2,15 +2,18 @@
   "members": {
     "OnlineXuid": {
       "type": "UniqueNetId",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "OfflineXuid": {
       "type": "UniqueNetId",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "LoginStatus": {
       "type": "ELoginStatus",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     }
   },
   "classdef": "SFXOnlineComponentPlatformXenon",

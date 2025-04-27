@@ -4,43 +4,53 @@
   "variables": {
     "VfTable_ICustomPropertyItemHandler": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "ElementSchema": {
       "type": "UIElementCellSchema",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194307
     },
     "SelectionHintPadding": {
       "type": "UIScreenValue_Extent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ListItems": {
       "type": "UIListItem",
-      "documentation": null
+      "documentation": null,
+      "flags": 89268225
     },
     "ColumnHeaderBackground": {
       "type": "UITexture",
-      "documentation": null
+      "documentation": null,
+      "flags": 339738633
     },
     "ListItemOverlay": {
       "type": "UITexture",
-      "documentation": null
+      "documentation": null,
+      "flags": 339738633
     },
     "ColumnHeaderBackgroundCoordinates": {
       "type": "TextureCoordinates",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ListItemOverlayCoordinates": {
       "type": "TextureCoordinates",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "MaxElementsPerPage": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bDisplayColumnHeaders": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -48,8 +58,9 @@
       "documentation": null,
       "signature_members": {
         "DataSourceIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -57,5 +68,7 @@
     }
   },
   "states": {},
+  "classflags": 144707730,
+  "configname": "None",
   "documentation": null
 }

@@ -4,7 +4,8 @@
   "variables": {
     "PlaceableStates": {
       "type": "BioState",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     }
   },
   "functions": {
@@ -12,8 +13,9 @@
       "documentation": null,
       "signature_members": {
         "Index": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "BioState",
@@ -23,8 +25,9 @@
       "documentation": null,
       "signature_members": {
         "BPC": {
-          "type": null,
-          "documentation": null
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -34,8 +37,9 @@
       "documentation": null,
       "signature_members": {
         "RequestedState": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "BioState",
@@ -43,5 +47,7 @@
     }
   },
   "states": {},
+  "classflags": 142610578,
+  "configname": "None",
   "documentation": null
 }

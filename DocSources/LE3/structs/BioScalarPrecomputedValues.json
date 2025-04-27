@@ -2,11 +2,13 @@
   "members": {
     "fRangeLowerRatio": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fRangeUpperRatio": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioAnimNodeBlendScalar",

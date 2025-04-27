@@ -4,47 +4,58 @@
   "variables": {
     "PathWeightLog": {
       "type": "SFXPathWeightLog",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CombatIdleNode": {
       "type": "SFXNav_InteractionPoint",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nMantleCostModifier": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "LastShotAtTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_nEnabledFlags": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_fNextTimeForReachableCheck": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "NextTimeForBlockedReachSpecCheck": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bCanSkipNodes": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bInitiallyDisabled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CustomReachSpecBlocked": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "CombatMood": {
       "type": "EAICombatMood",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -52,8 +63,9 @@
       "documentation": null,
       "signature_members": {
         "vSteering": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -63,8 +75,9 @@
       "documentation": null,
       "signature_members": {
         "oLevel": {
-          "type": null,
-          "documentation": null
+          "type": "Level",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -80,16 +93,19 @@
       "documentation": null,
       "signature_members": {
         "Nav": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         },
         "Sector": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Distance": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -111,12 +127,14 @@
       "documentation": null,
       "signature_members": {
         "bEnable": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         },
         "nRequestedBy": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -126,12 +144,14 @@
       "documentation": null,
       "signature_members": {
         "oActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 384
         },
         "vLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -141,8 +161,9 @@
       "documentation": null,
       "signature_members": {
         "oAimTarget": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "Vector",
@@ -158,8 +179,9 @@
       "documentation": null,
       "signature_members": {
         "SectorLine": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
         }
       },
       "returntype": "int",
@@ -169,8 +191,9 @@
       "documentation": null,
       "signature_members": {
         "vSteering": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -180,12 +203,14 @@
       "documentation": null,
       "signature_members": {
         "OriginNav": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         },
         "TargetNav": {
-          "type": null,
-          "documentation": null
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -195,16 +220,19 @@
       "documentation": null,
       "signature_members": {
         "Distance": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "out_EnemyPawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 400
         },
         "bExact": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -214,12 +242,14 @@
       "documentation": null,
       "signature_members": {
         "oActor": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         },
         "oLevel": {
-          "type": null,
-          "documentation": null
+          "type": "Level",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -229,8 +259,9 @@
       "documentation": null,
       "signature_members": {
         "ReachSpec": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCustomReachSpec",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -252,12 +283,14 @@
       "documentation": null,
       "signature_members": {
         "vLocation": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
         },
         "fOffset": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -279,8 +312,9 @@
       "documentation": null,
       "signature_members": {
         "ReachSpec": {
-          "type": null,
-          "documentation": null
+          "type": "ReachSpec",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -290,8 +324,9 @@
       "documentation": null,
       "signature_members": {
         "bTeleport": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -301,8 +336,9 @@
       "documentation": null,
       "signature_members": {
         "vMove": {
-          "type": null,
-          "documentation": null
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -312,8 +348,9 @@
       "documentation": null,
       "signature_members": {
         "SpawnPoint": {
-          "type": null,
-          "documentation": null
+          "type": "PathNode",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -353,8 +390,9 @@
       "documentation": null,
       "signature_members": {
         "CombatRange": {
-          "type": null,
-          "documentation": null
+          "type": "EAICombatRange",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "float",
@@ -362,5 +400,7 @@
     }
   },
   "states": {},
+  "classflags": 211813014,
+  "configname": "AI",
   "documentation": null
 }

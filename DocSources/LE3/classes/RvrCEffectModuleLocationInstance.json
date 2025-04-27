@@ -4,14 +4,18 @@
   "variables": {
     "m_vHitBoneOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_nmHitBone": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142606490,
+  "configname": "None",
   "documentation": null
 }

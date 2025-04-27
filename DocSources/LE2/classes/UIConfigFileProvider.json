@@ -4,14 +4,18 @@
   "variables": {
     "Sections": {
       "type": "UIConfigSectionProvider",
-      "documentation": null
+      "documentation": null,
+      "flags": 4202496
     },
     "ConfigFileName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 12591104
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136315034,
+  "configname": "None",
   "documentation": null
 }

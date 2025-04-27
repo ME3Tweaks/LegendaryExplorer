@@ -2,19 +2,23 @@
   "members": {
     "OnTimer": {
       "type": "BioTimerDelegate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "sTimerName": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Params": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "fTickTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "BioTimerList",

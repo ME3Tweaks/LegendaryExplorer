@@ -4,31 +4,38 @@
   "variables": {
     "Sprite": {
       "type": "Texture2D",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ScreenSize": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "U": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "UL": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "V": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "VL": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bIsScreenSizeScaled": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -36,24 +43,29 @@
       "documentation": null,
       "signature_members": {
         "NewSprite": {
-          "type": null,
-          "documentation": null
+          "type": "Texture2D",
+          "documentation": null,
+          "flags": 128
         },
         "NewU": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "NewUL": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "NewV": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "NewVL": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -63,20 +75,24 @@
       "documentation": null,
       "signature_members": {
         "NewU": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "NewUL": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "NewV": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "NewVL": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -86,8 +102,9 @@
       "documentation": null,
       "signature_members": {
         "NewSprite": {
-          "type": null,
-          "documentation": null
+          "type": "Texture2D",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -95,5 +112,7 @@
     }
   },
   "states": {},
+  "classflags": 2290102418,
+  "configname": "None",
   "documentation": null
 }

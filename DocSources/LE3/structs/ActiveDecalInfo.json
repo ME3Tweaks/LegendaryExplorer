@@ -2,11 +2,13 @@
   "members": {
     "Decal": {
       "type": "DecalComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 67633160
     },
     "LifetimeRemaining": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "DecalManager",

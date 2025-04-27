@@ -2,11 +2,13 @@
   "members": {
     "DamageCauser": {
       "type": "Controller",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DamageDone": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXPRI",

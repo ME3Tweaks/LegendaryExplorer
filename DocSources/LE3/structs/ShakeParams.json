@@ -2,19 +2,23 @@
   "members": {
     "X": {
       "type": "EShakeParam",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Y": {
       "type": "EShakeParam",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Z": {
       "type": "EShakeParam",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Padding": {
       "type": "byte",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     }
   },
   "classdef": "GameTypes",

@@ -2,47 +2,58 @@
   "members": {
     "ChoiceEntry": {
       "type": "SFXChoiceEntry",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "stTech": {
       "type": "STech",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "stTreasure": {
       "type": "STreasure",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlotName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TechId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlotId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TreasureId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "UnlockId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "nContextId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RMode": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DisableId": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "SFXGameChoiceGUIData_Research",

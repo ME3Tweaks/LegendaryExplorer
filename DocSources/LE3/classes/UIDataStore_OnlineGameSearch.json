@@ -4,35 +4,43 @@
   "variables": {
     "VfTable_IUIListElementProvider": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "VfTable_IUIListElementCellProvider": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "GameSearchCfgList": {
       "type": "GameSearchCfg",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "GameInterface": {
       "type": "OnlineGameInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SearchResultsName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "OnlineSub": {
       "type": "OnlineSubsystem",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "SelectedIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "ActiveSearchIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -58,12 +66,14 @@
       "documentation": null,
       "signature_members": {
         "ListIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Result": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineGameSearchResult",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -79,8 +89,9 @@
       "documentation": null,
       "signature_members": {
         "bInvalidateExistingSearchResults": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -90,8 +101,9 @@
       "documentation": null,
       "signature_members": {
         "bInvalidateExistingSearchResults": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -101,12 +113,14 @@
       "documentation": null,
       "signature_members": {
         "NewIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bInvalidateExistingSearchResults": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -116,12 +130,14 @@
       "documentation": null,
       "signature_members": {
         "SearchName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bInvalidateExistingSearchResults": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -131,12 +147,14 @@
       "documentation": null,
       "signature_members": {
         "ControllerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "ListIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -146,12 +164,14 @@
       "documentation": null,
       "signature_members": {
         "ControllerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "bInvalidateExistingSearchResults": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -167,8 +187,9 @@
       "documentation": null,
       "signature_members": {
         "SearchTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -184,8 +205,9 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -195,12 +217,14 @@
       "documentation": null,
       "signature_members": {
         "ControllerId": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "Search": {
-          "type": null,
-          "documentation": null
+          "type": "OnlineGameSearch",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -208,5 +232,7 @@
     }
   },
   "states": {},
+  "classflags": 136315035,
+  "configname": "None",
   "documentation": null
 }

@@ -4,18 +4,23 @@
   "variables": {
     "AdjustmentType": {
       "type": "UIImageAdjustmentData",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "Coordinates": {
       "type": "TextureCoordinates",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "DefaultImage": {
       "type": "Surface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

@@ -4,30 +4,38 @@
   "variables": {
     "Movie": {
       "type": "BioLoadingMovie",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ScreenTip": {
       "type": "BioSFScreenTip",
-      "documentation": null
+      "documentation": null,
+      "flags": 67108865
     },
     "HideScaleform": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "RequiresExplicitStop": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PlayToCompletion": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "StreamFromDisc": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144703634,
+  "configname": "None",
   "documentation": null
 }

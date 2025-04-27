@@ -4,35 +4,43 @@
   "variables": {
     "m_CurrentCoverInfo": {
       "type": "CovPosInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_BS_StanceFromExplore": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_BS_StanceFromCombat": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_BS_StanceFromCover": {
       "type": "BodyStance",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_fCollisionOffPerioud": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "m_fCollisionOffTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_bCoverCacheValid": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "m_CurrentBodyStance": {
       "type": "ECoverBodyStanceID",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -40,8 +48,9 @@
       "documentation": null,
       "signature_members": {
         "CoverInfo": {
-          "type": null,
-          "documentation": null
+          "type": "CovPosInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -51,8 +60,9 @@
       "documentation": null,
       "signature_members": {
         "StanceID": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverBodyStanceID",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -62,8 +72,9 @@
       "documentation": null,
       "signature_members": {
         "StanceID": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverBodyStanceID",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -73,8 +84,9 @@
       "documentation": null,
       "signature_members": {
         "StanceID": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverBodyStanceID",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -84,12 +96,14 @@
       "documentation": null,
       "signature_members": {
         "StanceID": {
-          "type": null,
-          "documentation": null
+          "type": "ECoverBodyStanceID",
+          "documentation": null,
+          "flags": 128
         },
         "out_BodyStance": {
-          "type": null,
-          "documentation": null
+          "type": "BodyStance",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -99,16 +113,19 @@
       "documentation": null,
       "signature_members": {
         "SeqNode": {
-          "type": null,
-          "documentation": null
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
         },
         "PlayedTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         },
         "ExcessTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -118,8 +135,9 @@
       "documentation": null,
       "signature_members": {
         "fDeltaTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -139,5 +157,7 @@
     }
   },
   "states": {},
+  "classflags": 22,
+  "configname": "Game",
   "documentation": null
 }

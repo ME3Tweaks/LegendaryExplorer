@@ -4,10 +4,13 @@
   "variables": {
     "Data": {
       "type": "FontImportOptionsData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217882,
+  "configname": "None",
   "documentation": null
 }

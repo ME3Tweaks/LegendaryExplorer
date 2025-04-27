@@ -4,31 +4,38 @@
   "variables": {
     "ObjectiveType": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "AssetPath": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 36028797023174656
     },
     "RequiredSpawnTags": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "MeshAssets": {
       "type": "SFXOperation_ObjectiveMeshInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "ChosenMeshUniqueString": {
       "type": "string",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "MinDistanceFromPlayerForSpawn": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     },
     "PerformVisibilityCheckForSpawn": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 16384
     }
   },
   "functions": {
@@ -36,8 +43,9 @@
       "documentation": null,
       "signature_members": {
         "SpawnPoint": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOperation_ObjectiveSpawnPoint",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -45,5 +53,7 @@
     }
   },
   "states": {},
+  "classflags": 2098198,
+  "configname": "Game",
   "documentation": null
 }

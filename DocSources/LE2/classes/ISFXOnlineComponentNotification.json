@@ -7,8 +7,9 @@
       "documentation": null,
       "signature_members": {
         "nSource": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnlinePurchaseSource",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXOnlineTargetOfferInfo",
@@ -18,8 +19,9 @@
       "documentation": null,
       "signature_members": {
         "aOfferId": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnline_OfferID",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "SFXOnlineNotificationOfferPurchaseStatus",
@@ -29,8 +31,9 @@
       "documentation": null,
       "signature_members": {
         "aOfferIds": {
-          "type": null,
-          "documentation": null
+          "type": "SFXOnline_OfferID",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -40,8 +43,9 @@
       "documentation": null,
       "signature_members": {
         "internalId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -81,8 +85,9 @@
       "documentation": null,
       "signature_members": {
         "nDay": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -102,5 +107,7 @@
     }
   },
   "states": {},
+  "classflags": 134234259,
+  "configname": "None",
   "documentation": null
 }

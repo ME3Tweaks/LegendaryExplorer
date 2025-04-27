@@ -4,51 +4,63 @@
   "variables": {
     "VfTable_IUIListElementProvider": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "VfTable_IUIListElementCellProvider": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 8392706
     },
     "StatsReadClasses": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "StatsReadName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "PlayerNickData": {
       "type": "PlayerNickMetaData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "RankNameMetaData": {
       "type": "RankMetaData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     },
     "TotalRowsName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 2
     },
     "StatsReadObjects": {
       "type": "OnlineStatsRead",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "StatsRead": {
       "type": "OnlineStatsRead",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "CurrentReadType": {
       "type": "EStatsFetchType",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "StatsInterface": {
       "type": "OnlineStatsInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "PlayerInterface": {
       "type": "OnlinePlayerInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -62,8 +74,9 @@
       "documentation": null,
       "signature_members": {
         "bWasSuccessful": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -73,12 +86,14 @@
       "documentation": null,
       "signature_members": {
         "ConrollerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         },
         "ListIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -88,8 +103,9 @@
       "documentation": null,
       "signature_members": {
         "ControllerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -109,5 +125,7 @@
     }
   },
   "states": {},
+  "classflags": 136315067,
+  "configname": "None",
   "documentation": null
 }

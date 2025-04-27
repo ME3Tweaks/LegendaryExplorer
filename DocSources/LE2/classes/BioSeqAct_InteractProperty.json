@@ -4,39 +4,48 @@
   "variables": {
     "aObjectProperties": {
       "type": "BioPropertyMap",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "aObjectFunctions": {
       "type": "BioPropertyMap",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "aBehaviorProperties": {
       "type": "BioPropertyMap",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "aBehaviorFunctions": {
       "type": "BioPropertyMap",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "aSelectionProperties": {
       "type": "BioPropertyMap",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Properties": {
       "type": "BioPropertyInfo",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303169
     },
     "cObjectType": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "cBehaviorType": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "cSelectionType": {
       "type": "Class",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -48,5 +57,7 @@
     }
   },
   "states": {},
+  "classflags": 144703635,
+  "configname": "None",
   "documentation": null
 }

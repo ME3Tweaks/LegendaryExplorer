@@ -2,11 +2,13 @@
   "members": {
     "HotKeyPawn": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "HotKeyEvent": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "SFXSaveGame",

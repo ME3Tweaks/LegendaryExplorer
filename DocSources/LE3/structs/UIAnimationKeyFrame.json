@@ -2,19 +2,23 @@
   "members": {
     "Data": {
       "type": "UIAnimationRawData",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RemainingTime": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "InterpExponent": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "InterpMode": {
       "type": "EUIAnimationInterpMode",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "UIAnimation",

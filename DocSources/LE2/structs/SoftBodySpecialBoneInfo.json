@@ -2,15 +2,18 @@
   "members": {
     "BoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "BoneType": {
       "type": "SoftBodyBoneType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "AttachedVertexIndices": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194306
     }
   },
   "classdef": "SkeletalMesh",

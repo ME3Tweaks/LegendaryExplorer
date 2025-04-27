@@ -4,38 +4,48 @@
   "variables": {
     "m_aArmorSpec": {
       "type": "BioHeadGearAppearanceArmorSpec",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_aFacePlateMeshSpec": {
       "type": "BioFacePlateMeshSpec",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303177
     },
     "m_apFacePlateMaterial": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_apVisorMesh": {
       "type": "SkeletalMesh",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_apVisorMaterial": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_nmPrefix": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_oSettings": {
       "type": "Bio_Appr_Character_HeadGear_Settings",
-      "documentation": null
+      "documentation": null,
+      "flags": 67772425
     },
     "m_eArmorType": {
       "type": "EBioArmorType",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 142606482,
+  "configname": "None",
   "documentation": null
 }

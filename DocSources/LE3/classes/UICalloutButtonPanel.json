@@ -4,43 +4,53 @@
   "variables": {
     "CalloutButtons": {
       "type": "UICalloutButton",
-      "documentation": null
+      "documentation": null,
+      "flags": 71442433
     },
     "CalloutButtonAliases": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 4210688
     },
     "ButtonInputKeyMappings": {
       "type": "Object",
-      "documentation": null
+      "documentation": null,
+      "flags": 12290
     },
     "ButtonPadding": {
       "type": "UIScreenValue_Extent",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ButtonTemplate": {
       "type": "UICalloutButton",
-      "documentation": null
+      "documentation": null,
+      "flags": 69337089
     },
     "bGeneratingInitialButtons": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     },
     "bSupportsButtonRepeat": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bRefreshButtonDocking": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8193
     },
     "ButtonBarOrientation": {
       "type": "EUIOrientation",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ButtonLayout": {
       "type": "ECalloutButtonLayoutType",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -48,12 +58,14 @@
       "documentation": null,
       "signature_members": {
         "WidgetOwner": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
         },
         "NewChild": {
-          "type": null,
-          "documentation": null
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -63,12 +75,14 @@
       "documentation": null,
       "signature_members": {
         "InputAliasTag": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -78,8 +92,9 @@
       "documentation": null,
       "signature_members": {
         "ButtonInputAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -89,16 +104,19 @@
       "documentation": null,
       "signature_members": {
         "ButtonInputAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ButtonName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         },
         "bInsertChild": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "UICalloutButton",
@@ -108,20 +126,24 @@
       "documentation": null,
       "signature_members": {
         "ButtonInputAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PlayerIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 144
         },
         "bEnableButton": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bUpdateButtonVisibility": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -131,12 +153,14 @@
       "documentation": null,
       "signature_members": {
         "ButtonToInsert": {
-          "type": null,
-          "documentation": null
+          "type": "UICalloutButton",
+          "documentation": null,
+          "flags": 128
         },
         "bSearchChildrenArray": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -146,8 +170,9 @@
       "documentation": null,
       "signature_members": {
         "ButtonInputAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "UICalloutButton",
@@ -157,8 +182,9 @@
       "documentation": null,
       "signature_members": {
         "ButtonInputAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -168,12 +194,14 @@
       "documentation": null,
       "signature_members": {
         "AvailableAliases": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
         },
         "PlayerOwner": {
-          "type": null,
-          "documentation": null
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -183,8 +211,9 @@
       "documentation": null,
       "signature_members": {
         "bCreateIfNecessary": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "UIEvent_CalloutButtonInputProxy",
@@ -194,8 +223,9 @@
       "documentation": null,
       "signature_members": {
         "NewButton": {
-          "type": null,
-          "documentation": null
+          "type": "UICalloutButton",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "int",
@@ -217,8 +247,9 @@
       "documentation": null,
       "signature_members": {
         "ButtonToRemove": {
-          "type": null,
-          "documentation": null
+          "type": "UICalloutButton",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -228,8 +259,9 @@
       "documentation": null,
       "signature_members": {
         "ButtonInputAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -239,16 +271,19 @@
       "documentation": null,
       "signature_members": {
         "WidgetOwner": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
         },
         "OldChild": {
-          "type": null,
-          "documentation": null
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
         },
         "ExclusionSet": {
-          "type": null,
-          "documentation": null
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 4194448
         }
       },
       "returntype": "None",
@@ -258,8 +293,9 @@
       "documentation": null,
       "signature_members": {
         "WidgetOwner": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -269,8 +305,9 @@
       "documentation": null,
       "signature_members": {
         "bImmediately": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -280,12 +317,14 @@
       "documentation": null,
       "signature_members": {
         "ButtonInputAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "NewClickHandler": {
-          "type": null,
-          "documentation": null
+          "type": "OnClicked",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -295,12 +334,14 @@
       "documentation": null,
       "signature_members": {
         "ButtonInputAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "NewButtonCaption": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "bool",
@@ -310,12 +351,14 @@
       "documentation": null,
       "signature_members": {
         "ButtonInputAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "NewButtonInputAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 2176
         }
       },
       "returntype": "bool",
@@ -325,12 +368,14 @@
       "documentation": null,
       "signature_members": {
         "ButtonInputAlias": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bShowButton": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "bool",
@@ -346,8 +391,9 @@
       "documentation": null,
       "signature_members": {
         "ChildButton": {
-          "type": null,
-          "documentation": null
+          "type": "UICalloutButton",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -363,12 +409,14 @@
       "documentation": null,
       "signature_members": {
         "SourceWidget": {
-          "type": null,
-          "documentation": null
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
         },
         "bIsVisible": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -382,5 +430,7 @@
     }
   },
   "states": {},
+  "classflags": 144705174,
+  "configname": "UI",
   "documentation": null
 }

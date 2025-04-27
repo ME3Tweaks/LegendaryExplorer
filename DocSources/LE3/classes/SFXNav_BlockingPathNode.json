@@ -4,11 +4,13 @@
   "variables": {
     "PathBlockingVolume": {
       "type": "BlockingVolume",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "bRemovedFromInclusionaryList": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -16,8 +18,9 @@
       "documentation": null,
       "signature_members": {
         "Mover": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -27,8 +30,9 @@
       "documentation": null,
       "signature_members": {
         "Mover": {
-          "type": null,
-          "documentation": null
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -36,5 +40,7 @@
     }
   },
   "states": {},
+  "classflags": 144704147,
+  "configname": "None",
   "documentation": null
 }

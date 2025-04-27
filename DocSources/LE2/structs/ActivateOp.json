@@ -2,19 +2,23 @@
   "members": {
     "ActivatorOp": {
       "type": "SequenceOp",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "Op": {
       "type": "SequenceOp",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "InputIdx": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "RemainingDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "classdef": "Sequence",

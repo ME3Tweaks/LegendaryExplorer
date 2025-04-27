@@ -4,27 +4,33 @@
   "variables": {
     "LocalizedSettings": {
       "type": "LocalizedStringSetting",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "Properties": {
       "type": "SettingsProperty",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "LocalizedSettingsMappings": {
       "type": "LocalizedStringSettingMetaData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "PropertyMappings": {
       "type": "SettingsPropertyPropertyMetaData",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__NotifySettingValueUpdated__Delegate": {
       "type": "NotifySettingValueUpdated",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__NotifyPropertyValueUpdated__Delegate": {
       "type": "NotifyPropertyValueUpdated",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     }
   },
   "functions": {
@@ -32,12 +38,14 @@
       "documentation": null,
       "signature_members": {
         "URL": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         },
         "Game": {
-          "type": null,
-          "documentation": null
+          "type": "GameInfo",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -47,8 +55,9 @@
       "documentation": null,
       "signature_members": {
         "URL": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -58,8 +67,9 @@
       "documentation": null,
       "signature_members": {
         "URL": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -69,8 +79,9 @@
       "documentation": null,
       "signature_members": {
         "URL": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -80,8 +91,9 @@
       "documentation": null,
       "signature_members": {
         "URL": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -91,8 +103,9 @@
       "documentation": null,
       "signature_members": {
         "QoSSettings": {
-          "type": null,
-          "documentation": null
+          "type": "LocalizedStringSetting",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -102,8 +115,9 @@
       "documentation": null,
       "signature_members": {
         "QoSProps": {
-          "type": null,
-          "documentation": null
+          "type": "SettingsProperty",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -113,12 +127,14 @@
       "documentation": null,
       "signature_members": {
         "PropertyId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "OutValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -128,12 +144,14 @@
       "documentation": null,
       "signature_members": {
         "PropertyId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "NewValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -143,24 +161,29 @@
       "documentation": null,
       "signature_members": {
         "PropertyId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "OutMinValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "OutMaxValue": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "RangeIncrement": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "bFormatAsInt": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -170,12 +193,14 @@
       "documentation": null,
       "signature_members": {
         "PropertyId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "OutType": {
-          "type": null,
-          "documentation": null
+          "type": "EPropertyValueMappingType",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -185,8 +210,9 @@
       "documentation": null,
       "signature_members": {
         "SettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -196,8 +222,9 @@
       "documentation": null,
       "signature_members": {
         "PropertyId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -207,12 +234,14 @@
       "documentation": null,
       "signature_members": {
         "Props": {
-          "type": null,
-          "documentation": null
+          "type": "SettingsProperty",
+          "documentation": null,
+          "flags": 4194690
         },
         "bShouldAddIfMissing": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -222,12 +251,14 @@
       "documentation": null,
       "signature_members": {
         "Settings": {
-          "type": null,
-          "documentation": null
+          "type": "LocalizedStringSetting",
+          "documentation": null,
+          "flags": 4194690
         },
         "bShouldAddIfMissing": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -237,8 +268,9 @@
       "documentation": null,
       "signature_members": {
         "PropertyId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "ESettingsDataType",
@@ -248,12 +280,14 @@
       "documentation": null,
       "signature_members": {
         "PropertyId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ValueId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -263,12 +297,14 @@
       "documentation": null,
       "signature_members": {
         "PropertyId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ValueId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -278,12 +314,14 @@
       "documentation": null,
       "signature_members": {
         "PropertyId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -293,12 +331,14 @@
       "documentation": null,
       "signature_members": {
         "PropertyId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -308,12 +348,14 @@
       "documentation": null,
       "signature_members": {
         "PropertyId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -323,12 +365,14 @@
       "documentation": null,
       "signature_members": {
         "PropertyId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -338,12 +382,14 @@
       "documentation": null,
       "signature_members": {
         "PropertyId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -353,12 +399,14 @@
       "documentation": null,
       "signature_members": {
         "PropertyId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Value": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -368,12 +416,14 @@
       "documentation": null,
       "signature_members": {
         "PropertyName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "NewValue": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "bool",
@@ -383,8 +433,9 @@
       "documentation": null,
       "signature_members": {
         "PropertyName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -394,8 +445,9 @@
       "documentation": null,
       "signature_members": {
         "PropertyId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -405,8 +457,9 @@
       "documentation": null,
       "signature_members": {
         "PropertyId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -416,8 +469,9 @@
       "documentation": null,
       "signature_members": {
         "PropertyId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -427,12 +481,14 @@
       "documentation": null,
       "signature_members": {
         "PropertyName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "PropertyId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -442,12 +498,14 @@
       "documentation": null,
       "signature_members": {
         "StringSettingName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "NewValue": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
         }
       },
       "returntype": "bool",
@@ -457,8 +515,9 @@
       "documentation": null,
       "signature_members": {
         "StringSettingName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -468,12 +527,14 @@
       "documentation": null,
       "signature_members": {
         "StringSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ValueIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -483,8 +544,9 @@
       "documentation": null,
       "signature_members": {
         "StringSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -494,8 +556,9 @@
       "documentation": null,
       "signature_members": {
         "StringSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "string",
@@ -505,8 +568,9 @@
       "documentation": null,
       "signature_members": {
         "StringSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "Name",
@@ -516,12 +580,14 @@
       "documentation": null,
       "signature_members": {
         "StringSettingName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "StringSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -531,12 +597,14 @@
       "documentation": null,
       "signature_members": {
         "StringSettingName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ValueIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -546,16 +614,19 @@
       "documentation": null,
       "signature_members": {
         "StringSettingName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ValueIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bShouldAutoAdd": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -565,12 +636,14 @@
       "documentation": null,
       "signature_members": {
         "StringSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Values": {
-          "type": null,
-          "documentation": null
+          "type": "IdToStringMapping",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "bool",
@@ -580,16 +653,19 @@
       "documentation": null,
       "signature_members": {
         "StringSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "Direction": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bShouldWrap": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -599,12 +675,14 @@
       "documentation": null,
       "signature_members": {
         "StringSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ValueIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "bool",
@@ -614,16 +692,19 @@
       "documentation": null,
       "signature_members": {
         "StringSettingId": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "ValueIndex": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "bShouldAutoAdd": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "None",
@@ -633,16 +714,19 @@
       "documentation": null,
       "signature_members": {
         "Data": {
-          "type": null,
-          "documentation": null
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
         },
         "OutInt1": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "OutInt2": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -652,12 +736,14 @@
       "documentation": null,
       "signature_members": {
         "Data": {
-          "type": null,
-          "documentation": null
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
         },
         "OutBlob": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -667,8 +753,9 @@
       "documentation": null,
       "signature_members": {
         "Data": {
-          "type": null,
-          "documentation": null
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "int",
@@ -678,8 +765,9 @@
       "documentation": null,
       "signature_members": {
         "Data": {
-          "type": null,
-          "documentation": null
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "float",
@@ -689,8 +777,9 @@
       "documentation": null,
       "signature_members": {
         "Data": {
-          "type": null,
-          "documentation": null
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "string",
@@ -700,8 +789,9 @@
       "documentation": null,
       "signature_members": {
         "Data": {
-          "type": null,
-          "documentation": null
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -711,12 +801,14 @@
       "documentation": null,
       "signature_members": {
         "Data": {
-          "type": null,
-          "documentation": null
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
         },
         "Data2Copy": {
-          "type": null,
-          "documentation": null
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "None",
@@ -726,12 +818,14 @@
       "documentation": null,
       "signature_members": {
         "Data": {
-          "type": null,
-          "documentation": null
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
         },
         "InBlob": {
-          "type": null,
-          "documentation": null
+          "type": "byte",
+          "documentation": null,
+          "flags": 4194688
         }
       },
       "returntype": "None",
@@ -741,16 +835,19 @@
       "documentation": null,
       "signature_members": {
         "Data": {
-          "type": null,
-          "documentation": null
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
         },
         "InInt1": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         },
         "InInt2": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -760,12 +857,14 @@
       "documentation": null,
       "signature_members": {
         "Data": {
-          "type": null,
-          "documentation": null
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
         },
         "InInt": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -775,12 +874,14 @@
       "documentation": null,
       "signature_members": {
         "Data": {
-          "type": null,
-          "documentation": null
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
         },
         "InFloat": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -790,12 +891,14 @@
       "documentation": null,
       "signature_members": {
         "Data": {
-          "type": null,
-          "documentation": null
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
         },
         "InString": {
-          "type": null,
-          "documentation": null
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
         }
       },
       "returntype": "None",
@@ -805,8 +908,9 @@
       "documentation": null,
       "signature_members": {
         "PropertyName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -816,8 +920,9 @@
       "documentation": null,
       "signature_members": {
         "SettingName": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -825,5 +930,7 @@
     }
   },
   "states": {},
+  "classflags": 136315059,
+  "configname": "None",
   "documentation": null
 }

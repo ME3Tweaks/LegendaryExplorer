@@ -2,15 +2,18 @@
   "members": {
     "m_aModelSpec": {
       "type": "BioHeadGearAppearanceModelSpec",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_nmPackage": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_eArmorType": {
       "type": "EBioArmorType",
-      "documentation": null
+      "documentation": null,
+      "flags": 131075
     }
   },
   "classdef": "Bio_Appr_Character_HeadGear",

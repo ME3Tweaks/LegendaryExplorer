@@ -2,27 +2,33 @@
   "members": {
     "Material": {
       "type": "Material",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "PhysMaterial": {
       "type": "PhysicalMaterial",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "BoneName": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "HitComponent": {
       "type": "PrimitiveComponent",
-      "documentation": null
+      "documentation": null,
+      "flags": 68681736
     },
     "Item": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     },
     "LevelIndex": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1048576
     }
   },
   "classdef": "Actor",

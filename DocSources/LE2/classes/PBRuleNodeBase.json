@@ -4,10 +4,13 @@
   "variables": {
     "NextRules": {
       "type": "PBRuleLink",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194368
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136327315,
+  "configname": "None",
   "documentation": null
 }

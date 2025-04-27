@@ -7,12 +7,14 @@
       "documentation": null,
       "signature_members": {
         "Pawn": {
-          "type": null,
-          "documentation": null
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
         },
         "bCheckPlaypens": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "int",
@@ -20,5 +22,7 @@
     }
   },
   "states": {},
+  "classflags": 10485779,
+  "configname": "None",
   "documentation": null
 }

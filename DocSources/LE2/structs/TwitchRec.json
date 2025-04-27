@@ -2,11 +2,13 @@
   "members": {
     "nTwitchAnim": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "fDelay": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "BioTimedActivity",

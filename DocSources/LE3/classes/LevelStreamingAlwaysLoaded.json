@@ -4,10 +4,13 @@
   "variables": {
     "bIsProceduralBuildingLODLevel": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 136319122,
+  "configname": "None",
   "documentation": null
 }

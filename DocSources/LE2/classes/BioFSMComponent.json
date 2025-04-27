@@ -4,31 +4,38 @@
   "variables": {
     "OnTransition": {
       "type": "OnTransitionDelegate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "__OnTransitionDelegate__Delegate": {
       "type": "OnTransitionDelegate",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194304
     },
     "FSMData": {
       "type": "BioFSM",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CurrentState": {
       "type": "BioState",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PendingState": {
       "type": "BioState",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PendingTransition": {
       "type": "BioTransition",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "PendingStateChange": {
       "type": "eBioPendingStateChange",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {
@@ -42,12 +49,14 @@
       "documentation": null,
       "signature_members": {
         "From": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "To": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -63,8 +72,9 @@
       "documentation": null,
       "signature_members": {
         "ToState": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "bool",
@@ -74,20 +84,24 @@
       "documentation": null,
       "signature_members": {
         "ToState": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "NamedTransition": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         },
         "IgnoreTransition": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         },
         "bForceStateNow": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "BioState",
@@ -97,12 +111,14 @@
       "documentation": null,
       "signature_members": {
         "ToState": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "NamedTransition": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
         }
       },
       "returntype": "BioTransition",
@@ -118,16 +134,19 @@
       "documentation": null,
       "signature_members": {
         "FromState": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "ToState": {
-          "type": null,
-          "documentation": null
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
         },
         "bCallCPP": {
-          "type": null,
-          "documentation": null
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -135,5 +154,7 @@
     }
   },
   "states": {},
+  "classflags": 134230162,
+  "configname": "None",
   "documentation": null
 }

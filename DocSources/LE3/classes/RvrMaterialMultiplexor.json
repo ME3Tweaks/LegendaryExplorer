@@ -4,26 +4,33 @@
   "variables": {
     "DefaultMaterialInstances": {
       "type": "Pointer",
-      "documentation": null
+      "documentation": null,
+      "flags": 2101250
     },
     "m_lstParents": {
       "type": "RvrMultiplexorEntry",
-      "documentation": null
+      "documentation": null,
+      "flags": 4194305
     },
     "m_nmParentNameParameter": {
       "type": "Name",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "m_pDefaultMaterial": {
       "type": "MaterialInterface",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "ReentrantFlag": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 8194
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217874,
+  "configname": "None",
   "documentation": null
 }

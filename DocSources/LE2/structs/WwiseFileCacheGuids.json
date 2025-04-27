@@ -2,7 +2,8 @@
   "members": {
     "Guids": {
       "type": "WwisePlatformGuid",
-      "documentation": null
+      "documentation": null,
+      "flags": 4325379
     }
   },
   "classdef": "WwiseStream",

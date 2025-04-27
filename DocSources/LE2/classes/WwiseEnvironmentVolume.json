@@ -4,14 +4,18 @@
   "variables": {
     "Settings": {
       "type": "WwiseEnvironmentSettings",
-      "documentation": null
+      "documentation": null,
+      "flags": 71434249
     },
     "Priority": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 144704178,
+  "configname": "None",
   "documentation": null
 }

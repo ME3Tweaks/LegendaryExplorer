@@ -4,31 +4,38 @@
   "variables": {
     "PainShake": {
       "type": "ScreenShakeStruct",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "TargetOffset": {
       "type": "Vector",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "DesignerSeq": {
       "type": "SFXSeqAct_BeginIllusiveManConflict",
-      "documentation": null
+      "documentation": null,
+      "flags": 1152921504606846976
     },
     "CameraMode": {
       "type": "SFXCameraMode_IllusiveManConflict",
-      "documentation": null
+      "documentation": null,
+      "flags": 71303176
     },
     "Difficulty": {
       "type": "int",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "AccumulatedMovement": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     },
     "bPushing": {
       "type": "bool",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {
@@ -66,20 +73,24 @@
       "documentation": null,
       "signature_members": {
         "OldCameraMode": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 128
         },
         "PreserveTarget": {
-          "type": null,
-          "documentation": null
+          "type": "int",
+          "documentation": null,
+          "flags": 384
         },
         "TransitionTime": {
-          "type": null,
-          "documentation": null
+          "type": "float",
+          "documentation": null,
+          "flags": 384
         },
         "Transition": {
-          "type": null,
-          "documentation": null
+          "type": "SFXCameraMode_Interpolate",
+          "documentation": null,
+          "flags": 384
         }
       },
       "returntype": "SFXCameraMode",
@@ -107,8 +118,9 @@
       "documentation": null,
       "signature_members": {
         "Seq": {
-          "type": null,
-          "documentation": null
+          "type": "SFXSeqAct_BeginIllusiveManConflict",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -134,5 +146,7 @@
     }
   },
   "states": {},
+  "classflags": 10485782,
+  "configname": "Input",
   "documentation": null
 }

@@ -2,11 +2,13 @@
   "members": {
     "Angle": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     },
     "CornerSize": {
       "type": "float",
-      "documentation": null
+      "documentation": null,
+      "flags": 1
     }
   },
   "classdef": "PBRuleNodeCorner",

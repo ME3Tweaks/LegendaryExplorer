@@ -4,7 +4,8 @@
   "variables": {
     "PlayerData": {
       "type": "PlayerDataProvider",
-      "documentation": null
+      "documentation": null,
+      "flags": 8192
     }
   },
   "functions": {
@@ -18,8 +19,9 @@
       "documentation": null,
       "signature_members": {
         "NewPlayerData": {
-          "type": null,
-          "documentation": null
+          "type": "PlayerDataProvider",
+          "documentation": null,
+          "flags": 128
         }
       },
       "returntype": "None",
@@ -27,5 +29,7 @@
     }
   },
   "states": {},
+  "classflags": 136315034,
+  "configname": "None",
   "documentation": null
 }

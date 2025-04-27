@@ -4,10 +4,13 @@
   "variables": {
     "m_pSceneGameData": {
       "type": "SFXSceneShopGameData",
-      "documentation": null
+      "documentation": null,
+      "flags": 0
     }
   },
   "functions": {},
   "states": {},
+  "classflags": 134217883,
+  "configname": "None",
   "documentation": null
 }
